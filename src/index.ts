@@ -6,75 +6,99 @@ import "./index.css";
     const $slider = this;
     
     class Model {
-      config = $.extend({}, options);
+      // config = $.extend({}, options);
     }
 
     class View {
+      config: {isInterval?: boolean} = $.extend({}, options);
+
       $rangeBetween = $('<div/>').appendTo($slider).addClass('slider__between');
-      $firstButton = $('<button/>').appendTo($slider).addClass('slider__first-button');
       $secondButton = $('<button/>').appendTo($slider).addClass('slider__second-button');
+      $firstButton = $('<button/>');
 
-      dragAndDrop = () => {
-        this.$secondButton.mousedown((ev) => {
-          let sliderCoords = this.getCoords($slider);
-          let betweenCoords = this.getCoords(this.$rangeBetween); 
-          let firstButtonCoords = this.getCoords(this.$firstButton);
-          let secondButtonCoords = this.getCoords(this.$secondButton);
-          let shiftX1 = ev.pageX - firstButtonCoords.left;
-          let shiftX2 = ev.pageX - secondButtonCoords.left;
-          let sliderWidth = $slider.width();
-          let secondButtonWidth = this.$secondButton.width();
-          
-          $(document).mousemove((ev) => {
-            let left1 = ev.pageX - sliderCoords.left;
-            let right1;
+      addInterval = () => {
+        if (this.config.isInterval) {
+          const $firstButton = this.$firstButton.appendTo($slider).addClass('slider__first-button');
 
-            if (left1 < 0) left1 = 0;
-            if (sliderWidth && secondButtonWidth) {
-              right1 = sliderWidth - secondButtonWidth;
-              if (left1 > right1) left1 = right1;
+          const moveFirstSlider = (event: JQuery.MouseDownEvent) => {
+            const shiftX1 = event.clientX - this.getCoords($firstButton).left;
+
+            const move = (event: JQuery.MouseMoveEvent) => {
+              const clientX = event.clientX;
+    
+              $firstButton.css('left', clientX - shiftX1);
+              this.$rangeBetween.css('left', clientX - shiftX1);
+              this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt($firstButton.css('left')));
+    
+              if (parseInt($firstButton.css('left')) < 0) {
+                $firstButton.css('left', 0);
+                this.$rangeBetween.css('left', 0);
+                this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt($firstButton.css('left')));
+              }
+              else if (parseInt($firstButton.css('left')) + parseInt($firstButton.css('width')) > parseInt(this.$secondButton.css('left'))) {
+                $firstButton.css('left', parseInt(this.$secondButton.css('left')) - parseInt($firstButton.css('width')));
+              }
             }
 
-            this.$secondButton.css("margin-left", `${left1}px`);
-            this.$rangeBetween.css("width", `${parseInt(this.$secondButton.css("margin-left")) - parseInt(this.$firstButton.css("margin-left"))}px`);
-          });
+            $(document).on('mousemove', move);
 
-          $(document).mouseup(() => {
-            $(document).off('mousedown');
-            $(document).off('mousemove');
-          });
-        });
+            $(document).on('mouseup', () => {
+              $(document).off('mousemove', move);
+            });
+          }
 
-        this.$firstButton.mousedown((ev) => {
-          let sliderCoords = this.getCoords($slider);
-          let betweenCoords = this.getCoords(this.$rangeBetween); 
-          let firstButtonCoords = this.getCoords(this.$firstButton);
-          let secondButtonCoords = this.getCoords(this.$secondButton);
-          let shiftX1 = ev.pageX - firstButtonCoords.left;
-          let shiftX2 = ev.pageX - secondButtonCoords.left;
-          let sliderWidth = $slider.width();
-          let firstButtonWidth = this.$firstButton.width();
-          
-          $(document).mousemove((ev) => {
-            let left1 = ev.pageX - sliderCoords.left;
-            let right1;
+          $firstButton.on('mousedown', moveFirstSlider);
+        }
+      }
 
-            if (left1 < 0) left1 = 0;
-            if (sliderWidth && firstButtonWidth) {
-              right1 = sliderWidth - firstButtonWidth;
-              if (left1 > right1) left1 = right1;
+      moveSlider = (event: JQuery.MouseDownEvent) => {
+        const shiftX = event.clientX - this.getCoords(this.$secondButton).left;
+
+        const move = (event: JQuery.MouseMoveEvent) => {
+          const clientX = event.clientX;
+          const secondButtonWidth = parseInt(this.$secondButton.css('width'));
+          const sliderWidth = parseInt($slider.css('width'));
+
+          if (!this.config.isInterval) {
+            this.$secondButton.css('left', clientX - shiftX);
+            this.$rangeBetween.css('width', clientX - shiftX);
+
+            if (parseInt(this.$secondButton.css('left')) < 0) {
+              this.$secondButton.css('left', 0);
             }
+            else if (parseInt(this.$secondButton.css('left')) > sliderWidth - secondButtonWidth) {
+              this.$secondButton.css('left', sliderWidth - secondButtonWidth);
+              this.$rangeBetween.css('width', sliderWidth);
+            }
+          }
+          else {
+            this.$secondButton.css('left', clientX - shiftX);
+            this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')));
+            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')));
 
-            this.$firstButton.css("margin-left", `${left1}px`);
-            this.$rangeBetween.css("margin-left", `${left1}px`);
-            this.$rangeBetween.css("width", `${parseInt(this.$secondButton.css("margin-left")) - parseInt(this.$firstButton.css("margin-left"))}px`);
-          });
+            if (parseInt(this.$secondButton.css('left')) < parseInt(this.$firstButton.css('left')) + parseInt(this.$firstButton.css('width'))) {
+              this.$secondButton.css('left', parseInt(this.$firstButton.css('left')) + parseInt(this.$firstButton.css('width')));
+            }
+            else if (parseInt(this.$secondButton.css('left')) > sliderWidth - secondButtonWidth) {
+              this.$secondButton.css('left', sliderWidth - secondButtonWidth);
+              this.$rangeBetween.css('width', sliderWidth - parseInt(this.$firstButton.css('left')));
+            }
+          }
+        }
 
-          $(document).mouseup(() => {
-            $(document).off('mousedown');
-            $(document).off('mousemove');
-          });
+        $(document).on('mousemove', move);
+
+        $(document).on('mouseup', () => {
+          $(document).off('mousemove', move);
         });
+
+        this.$secondButton.on('dragstart', () => {
+          return false;
+        });
+      }
+
+      dragSlider = () => {
+        this.$secondButton.on('mousedown', this.moveSlider);
       }
 
       getCoords = (el: JQuery) => {
@@ -98,10 +122,11 @@ import "./index.css";
 
     let view = new View();
 
-    view.dragAndDrop();
+    view.dragSlider();
+    view.addInterval();
 
     return this;
   };
 })(jQuery);
 
-$('.slider').mySlider();
+$('.slider').mySlider({isInterval: true});

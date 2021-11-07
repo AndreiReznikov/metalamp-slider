@@ -1,3 +1,14 @@
+html, body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .slider {
   position: relative;
   width: 500px;
@@ -11,8 +22,8 @@
   height: 5px;
   width: 100px;
   margin-top: 3px;
-  border: none;
-  background-color: green;
+  border-radius: 4px;
+  background-color: rgb(24, 51, 83);
 }
 
 .slider__first-button, .slider__second-button {
@@ -28,5 +39,5 @@
 }
 
 .slider__second-button {
-  margin-left: 100px;
+  left: 100px;
 }
