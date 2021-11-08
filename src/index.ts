@@ -1,9 +1,9 @@
 import "./index.css";
 
 (function($) {
-  $.fn.mySlider = function(options: {}): JQuery {
+  const mySlider = function(input: JQuery<HTMLElement>, options: {}): JQuery {
 
-    const $slider = this;
+    const $slider = input;
     
     // class Model {
     //   // config = $.extend({}, options);
@@ -40,24 +40,18 @@ import "./index.css";
         const minValue = this.config.minValue;
         const maxValue = this.config.maxValue;
 
-        const isNumber = (value: number) => {
-          return typeof(value) === 'number';
-        }
+        const minValueElement = $('<div/>').appendTo($slider).addClass('slider__min-value');
+        const maxValueElement = $('<div/>').appendTo($slider).addClass('slider__max-value');
 
-        if (isNumber(minValue) && isNumber(maxValue)) {
-          const minValueElement = $('<div/>').appendTo($slider).addClass('slider__min-value');
-          const maxValueElement = $('<div/>').appendTo($slider).addClass('slider__max-value');
+        minValueElement.html(`${minValue}`);
+        maxValueElement.html(`${maxValue}`);
 
-          minValueElement.html(`${this.config.minValue}`);
-          maxValueElement.html(`${this.config.maxValue}`);
+        const sliderWidth = parseInt($slider.css('width'));
+        const minValueElementWidth = parseInt(minValueElement.css('width'));
+        const maxValueElementWidth = parseInt(maxValueElement.css('width'));
 
-          const sliderWidth = parseInt($slider.css('width'));
-          const minValueElementWidth = parseInt(minValueElement.css('width'));
-          const maxValueElementWidth = parseInt(maxValueElement.css('width'));
-
-          minValueElement.css('left', 0 - minValueElementWidth / 2)
-          maxValueElement.css('left', sliderWidth - maxValueElementWidth / 2)
-        }
+        minValueElement.css('left', 0 - minValueElementWidth/2)
+        maxValueElement.css('left', sliderWidth - maxValueElementWidth/2)
       }
 
       addTooltip = () => {
@@ -69,7 +63,7 @@ import "./index.css";
           const tooltip1 = $('<div/>').appendTo($slider).addClass('slider__first-tooltip');
           const tooltip2 = $('<div/>').appendTo($slider).addClass('slider__second-tooltip');
 
-          const moveTooltip = (event: JQuery.MouseMoveEvent) => {
+          const moveTooltip = () => {
             const tooltipValue1 = Math.round(((parseInt(this.$firstButton.css('left')) + parseInt(this.$firstButton.css('width'))/2)/(parseInt($slider.css('width'))) * (maxValue - minValue)) + minValue);
             const tooltipValue2 = Math.round(((parseInt(this.$secondButton.css('left')) + parseInt(this.$secondButton.css('width'))/2)/(parseInt($slider.css('width'))) * (maxValue - minValue)) + minValue);
             const tooltipPositionLeft1 = (parseInt(this.$firstButton.css('left') ) + parseInt(this.$firstButton.css('width'))/2) - parseInt(tooltip1.css('width'))/2;
@@ -216,8 +210,19 @@ import "./index.css";
     view.addValues();
     view.addTooltip();
 
-    return this;
+    return input;
   };
+
+  $.fn.mySlider = function(options: {}) {
+    return this.each(function() {
+      mySlider($(this), options)
+    })
+  }
 })(jQuery);
 
-$('.slider').mySlider({isInterval: true, maxValue: 500, minValue: -112, isTooltip: true});
+$('.slider').mySlider({
+  isInterval: true,
+  minValue: 12,
+  maxValue: 500,
+  isTooltip: true
+});
