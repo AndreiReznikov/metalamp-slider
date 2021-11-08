@@ -41,3 +41,29 @@ html, body {
 .slider__second-button {
   left: 100px;
 }
+
+.slider__min-value {
+  position: absolute;
+  top: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.slider__max-value {
+  position: absolute;
+  top: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.slider__first-tooltip {
+  position: absolute;
+  bottom: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.slider__second-tooltip {
+  position: absolute;
+  bottom: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
