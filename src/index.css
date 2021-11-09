@@ -15,6 +15,7 @@ html, body {
   height: 8px;
   border-radius: 4px;
   background-color: #ddd;
+  cursor: pointer;
 }
 
 .slider__between {
@@ -48,6 +49,7 @@ html, body {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .slider__first-tooltip, .slider__second-tooltip {

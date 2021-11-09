@@ -47,11 +47,40 @@ import "./index.css";
         maxValueElement.html(`${maxValue}`);
 
         const sliderWidth = parseInt($slider.css('width'));
+        const buttonWidth = parseInt(this.$secondButton.css('width'));
         const minValueElementWidth = parseInt(minValueElement.css('width'));
         const maxValueElementWidth = parseInt(maxValueElement.css('width'));
 
-        minValueElement.css('left', 0 - minValueElementWidth/2)
-        maxValueElement.css('left', sliderWidth - maxValueElementWidth/2)
+        minValueElement.css('left', 0 - minValueElementWidth/2);
+        maxValueElement.css('left', sliderWidth - maxValueElementWidth/2);
+
+        minValueElement.click((event: JQuery.ClickEvent) => {
+          if (this.config.isInterval) {
+            event.stopPropagation();
+            this.$firstButton.css('left', 0 - buttonWidth/2);
+            this.$rangeBetween.css('left', 0);
+            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')));
+          }
+          else {
+            event.stopPropagation();
+            this.$secondButton.css('left', 0 - buttonWidth/2);
+            this.$rangeBetween.css('width', 0);
+          }
+        });
+
+        maxValueElement.click((event: JQuery.ClickEvent) => {
+          if (this.config.isInterval) {
+            event.stopPropagation();
+            this.$secondButton.css('left', sliderWidth - buttonWidth/2);
+            this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')));
+          }
+          else {
+            event.stopPropagation();
+            this.$secondButton.css('left', sliderWidth - buttonWidth/2);
+            this.$rangeBetween.css('width', sliderWidth);
+          }
+        });
       }
 
       addTooltip = () => {
@@ -92,6 +121,41 @@ import "./index.css";
 
           $(document).on('mousemove', moveTooltip);
         }
+      }
+
+      sliderOnClick = () => {
+        $slider.click((event: JQuery.ClickEvent) => {
+          const clientX = event.clientX;
+          const sliderLeft = $slider.position().left;
+          const firstButtonLeft = parseInt(this.$firstButton.css('left'));
+          const secondButtonLeft = parseInt(this.$secondButton.css('left'));
+          const buttonWidth = parseInt(this.$secondButton.css('width'));
+          const rangeBetweenWidth = parseInt(this.$rangeBetween.css('width'));
+
+          const clickAheadOfFirstSlider = clientX - sliderLeft > firstButtonLeft + buttonWidth && clientX - sliderLeft < firstButtonLeft + buttonWidth + rangeBetweenWidth/2;
+          const clickBehindOfFirstSlider = clientX - sliderLeft < firstButtonLeft;
+          const clickAheadOfSecondSlider = clientX - sliderLeft > secondButtonLeft + buttonWidth;
+          const clickBehindOfSecondSlider = clientX - sliderLeft < secondButtonLeft && clientX - sliderLeft > firstButtonLeft + rangeBetweenWidth/2;
+
+          if (clickAheadOfSecondSlider) {
+            this.$secondButton.css('left', clientX - sliderLeft - buttonWidth /2);
+            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+          }
+          else if (clickBehindOfFirstSlider ) {
+            this.$firstButton.css('left', clientX - sliderLeft - buttonWidth/2);
+            this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+          }
+          else if (clickBehindOfSecondSlider) {
+            this.$secondButton.css('left', clientX - sliderLeft - buttonWidth/2);
+            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+          }
+          else if (clickAheadOfFirstSlider) {
+            this.$firstButton.css('left', clientX - sliderLeft - buttonWidth/2);
+            this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+          }
+        });
       }
 
       grabSecondSlider = (event: JQuery.MouseDownEvent) => {
@@ -209,20 +273,21 @@ import "./index.css";
     view.addInterval();
     view.addValues();
     view.addTooltip();
+    view.sliderOnClick();
 
     return input;
   };
 
   $.fn.mySlider = function(options: {}) {
     return this.each(function() {
-      mySlider($(this), options)
-    })
+      mySlider($(this), options);
+    });
   }
 })(jQuery);
 
 $('.slider').mySlider({
   isInterval: true,
-  minValue: 12,
+  minValue: 142,
   maxValue: 500,
   isTooltip: true
 });
