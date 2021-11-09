@@ -137,23 +137,29 @@ import "./index.css";
           const clickAheadOfSecondSlider = clientX - sliderLeft > secondButtonLeft + buttonWidth;
           const clickBehindOfSecondSlider = clientX - sliderLeft < secondButtonLeft && clientX - sliderLeft > firstButtonLeft + rangeBetweenWidth/2;
 
-          if (clickAheadOfSecondSlider) {
-            this.$secondButton.css('left', clientX - sliderLeft - buttonWidth /2);
-            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+          if (this.config.isInterval) {
+            if (clickBehindOfSecondSlider) {
+              this.$secondButton.css('left', clientX - sliderLeft - buttonWidth/2);
+              this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+            }
+            else if (clickAheadOfSecondSlider) {
+              this.$secondButton.css('left', clientX - sliderLeft - buttonWidth /2);
+              this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+            }
+            else if (clickBehindOfFirstSlider ) {
+              this.$firstButton.css('left', clientX - sliderLeft - buttonWidth/2);
+              this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+              this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+            }
+            else if (clickAheadOfFirstSlider) {
+              this.$firstButton.css('left', clientX - sliderLeft - buttonWidth/2);
+              this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+              this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+            }
           }
-          else if (clickBehindOfFirstSlider ) {
-            this.$firstButton.css('left', clientX - sliderLeft - buttonWidth/2);
-            this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
-            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
-          }
-          else if (clickBehindOfSecondSlider) {
+          else {
             this.$secondButton.css('left', clientX - sliderLeft - buttonWidth/2);
-            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
-          }
-          else if (clickAheadOfFirstSlider) {
-            this.$firstButton.css('left', clientX - sliderLeft - buttonWidth/2);
-            this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
-            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) + buttonWidth/2);
           }
         });
       }
@@ -286,7 +292,7 @@ import "./index.css";
 })(jQuery);
 
 $('.slider').mySlider({
-  isInterval: true,
+  isInterval: false,
   minValue: 142,
   maxValue: 500,
   isTooltip: true
