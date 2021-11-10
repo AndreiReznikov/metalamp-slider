@@ -25,8 +25,8 @@ import "./index.css";
         isInterval: false,
         minValue: 0,
         maxValue: 100,
-        from: -240,
-        to: -15,
+        from: 10,
+        to: 50,
         isTooltip: true 
       };
 
@@ -51,7 +51,6 @@ import "./index.css";
         const minValue = this.config.minValue;
         const maxValue = this.config.maxValue;
         const minValueRatio = minValue/(maxValue - minValue);
-        const maxValueRatio = maxValue/(maxValue - minValue);
         const fromRatio = from/(maxValue - minValue);
         const toRatio = to/(maxValue - minValue);
         const buttonWidth = parseInt(this.$secondButton.css('width'));
@@ -60,26 +59,36 @@ import "./index.css";
         const fromMinValuePositonLeft = minValueRatio * parseInt(this.$slider.css('width'));
 
         if (minValue < 0 && maxValue < 0) {
-          const minValueRatio = maxValue/minValue;
-          const fromRatio = from/minValue;
-          const toRatio = to/minValue;
+          const minusMinValueRatio = maxValue/(minValue - maxValue);
+          const minusFromRatio = from/(minValue - maxValue);
+          const minusToRatio = to/(minValue - maxValue);
 
-          const value = toRatio - minValueRatio;
-          const value2 = value * parseInt(this.$slider.css('width'));
+          const secondButtonMarginRatio = minusToRatio - minusMinValueRatio;
+          const secondButtonStartPosition = secondButtonMarginRatio * parseInt(this.$slider.css('width'));
 
-          const value3 = fromRatio - minValueRatio;
-          const value4 = value3 * parseInt(this.$slider.css('width'));
+          const firstButtonMarginRatio = minusFromRatio - minusMinValueRatio;
+          const firstButtonStartPosition = firstButtonMarginRatio * parseInt(this.$slider.css('width'));
 
-          this.$firstButton.css('left', parseInt(this.$slider.css('width')) - value4 - buttonWidth/2);
-          this.$secondButton.css('left', parseInt(this.$slider.css('width')) - value2 - buttonWidth/2);
+          if (this.config.isInterval) {
+            this.$firstButton.css('left', parseInt(this.$slider.css('width')) - firstButtonStartPosition - buttonWidth/2);
+          }
+          this.$secondButton.css('left', parseInt(this.$slider.css('width')) - secondButtonStartPosition - buttonWidth/2);
         }
         else {
-          this.$firstButton.css('left', -fromMinValuePositonLeft + fromPositonLeft - buttonWidth/2);
+            if (this.config.isInterval) {
+              this.$firstButton.css('left', -fromMinValuePositonLeft + fromPositonLeft - buttonWidth/2);
+            }
           this.$secondButton.css('left', -fromMinValuePositonLeft + toPositonLeft - buttonWidth/2);
         }
 
-        this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
-        this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')));
+        if (this.config.isInterval) {
+          this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+          this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')));
+        }
+        else {
+          this.$rangeBetween.css('left', 0);
+          this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) + buttonWidth/2);
+        }
 
         this.addTooltip();
       }
@@ -375,7 +384,9 @@ import "./index.css";
 
 $('.slider').mySlider({
   isInterval: true,
-  minValue: -260,
-  maxValue: -5,
+  minValue: 15,
+  maxValue: 250,
+  from: 60,
+  to: 120,
   isTooltip: true
 });
