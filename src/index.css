@@ -9,7 +9,7 @@ html, body {
   box-sizing: border-box;
 }
 
-.slider {
+.slider__line {
   position: relative;
   width: 500px;
   height: 8px;
@@ -22,7 +22,6 @@ html, body {
   display: flex;
   position: absolute;
   height: 8px;
-  width: 105px;
   border-radius: 4px;
   background-color: rgb(24, 51, 83);
 }
@@ -37,10 +36,6 @@ html, body {
   border: none;
   border-radius: 50%;
   background-color: rgb(24, 51, 83);
-}
-
-.slider__second-button {
-  left: 100px;
 }
 
 .slider__min-value, .slider__max-value {
