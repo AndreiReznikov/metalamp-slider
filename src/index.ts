@@ -191,35 +191,44 @@ import "./index.css";
         const maxValue = this.config.maxValue;
         const tooltip1 = this.tooltip1;
         const tooltip2 = this.tooltip2;
+        const buttonWidth = parseInt(this.$secondButton.css('width'));
+
+        const position = this.config.isVertical ? 'top' : 'left';
+        const lengthParameter = this.config.isVertical ? 'height' : 'width';
 
         if (isTooltip) {
           tooltip1.appendTo(this.$slider).addClass('slider__first-tooltip');
           tooltip2.appendTo(this.$slider).addClass('slider__second-tooltip');
 
+          if (this.config.isVertical) {
+            tooltip1.css('left', buttonWidth);
+            tooltip2.css('left', buttonWidth);
+          }
+
           const moveTooltip = () => {
-            const tooltipValue1 = Math.round(((parseInt(this.$firstButton.css('left')) + parseInt(this.$firstButton.css('width'))/2)/(parseInt(this.$slider.css('width'))) * (maxValue - minValue)) + minValue);
-            const tooltipValue2 = Math.round(((parseInt(this.$secondButton.css('left')) + parseInt(this.$secondButton.css('width'))/2)/(parseInt(this.$slider.css('width'))) * (maxValue - minValue)) + minValue);
-            const tooltipPositionLeft1 = (parseInt(this.$firstButton.css('left') ) + parseInt(this.$firstButton.css('width'))/2) - parseInt(tooltip1.css('width'))/2;
-            const tooltipPositionLeft2 = (parseInt(this.$secondButton.css('left') ) + parseInt(this.$secondButton.css('width'))/2) - parseInt(tooltip2.css('width'))/2;
+            const tooltipValue1 = Math.round(((parseInt(this.$firstButton.css(position)) + parseInt(this.$firstButton.css(lengthParameter))/2)/(parseInt(this.$slider.css(lengthParameter))) * (maxValue - minValue)) + minValue);
+            const tooltipValue2 = Math.round(((parseInt(this.$secondButton.css(position)) + parseInt(this.$secondButton.css(lengthParameter))/2)/(parseInt(this.$slider.css(lengthParameter))) * (maxValue - minValue)) + minValue);
+            const tooltipPositionLeft1 = (parseInt(this.$firstButton.css(position)) + parseInt(this.$firstButton.css(lengthParameter))/2) - parseInt(tooltip1.css(lengthParameter))/2;
+            const tooltipPositionLeft2 = (parseInt(this.$secondButton.css(position)) + parseInt(this.$secondButton.css(lengthParameter))/2) - parseInt(tooltip2.css(lengthParameter))/2;
 
             if (this.config.isInterval) {
               tooltip1.html(`${tooltipValue1}`);
-              tooltip1.css('left', tooltipPositionLeft1);
+              tooltip1.css(position, tooltipPositionLeft1);
             }
             else {
               tooltip1.css('display', 'none');
             }
 
             tooltip2.html(`${tooltipValue2}`);
-            tooltip2.css('left', tooltipPositionLeft2);
+            tooltip2.css(position, tooltipPositionLeft2);
 
-            const areTooltipsClose = parseInt(tooltip1.css('left')) + parseInt(tooltip1.css('width')) > parseInt(tooltip2.css('left'));
-            const tooltipClosePositionLeft1 = parseInt(this.$firstButton.css('left')) - parseInt(tooltip1.css('width'));
-            const tooltipClosePositionLeft2 = parseInt(this.$secondButton.css('left')) + parseInt(this.$secondButton.css('width'));
+            const areTooltipsClose = parseInt(tooltip1.css(position)) + parseInt(tooltip1.css(lengthParameter)) > parseInt(tooltip2.css(position));
+            const tooltipClosePositionLeft1 = parseInt(this.$firstButton.css(position)) - parseInt(tooltip1.css(lengthParameter));
+            const tooltipClosePositionLeft2 = parseInt(this.$secondButton.css(position)) + parseInt(this.$secondButton.css(lengthParameter));
 
             if (areTooltipsClose) {
-              tooltip1.css('left', tooltipClosePositionLeft1);
-              tooltip2.css('left', tooltipClosePositionLeft2);
+              tooltip1.css(position, tooltipClosePositionLeft1);
+              tooltip2.css(position, tooltipClosePositionLeft2);
             }
           };
 
@@ -249,52 +258,56 @@ import "./index.css";
       sliderOnClick = () => {
         this.$slider.mousedown((event: JQuery.MouseDownEvent) => {           
           const clientX = event.clientX;
-          const sliderLeft = this.getCoords(this.$slider).left + parseInt(this.$slider.css('margin'));
-          const firstButtonLeft = parseInt(this.$firstButton.css('left'));
-          const secondButtonLeft = parseInt(this.$secondButton.css('left'));
+          const clientY = event.clientY;
+          const clientAxis = this.config.isVertical ? clientY : clientX;
+          const sliderPosition = (this.config.isVertical ? this.getCoords(this.$slider).top : this.getCoords(this.$slider).left) + parseInt(this.$slider.css('margin'));
+          const position = this.config.isVertical ? 'top' : 'left';
+          const lengthParameter = this.config.isVertical ? 'height' : 'width';
+          const firstButtonLeft = parseInt(this.$firstButton.css(position));
+          const secondButtonLeft = parseInt(this.$secondButton.css(position));
           const buttonWidth = parseInt(this.$secondButton.css('width'));
-          const rangeBetweenWidth = parseInt(this.$rangeBetween.css('width'));
+          const rangeBetweenWidth = parseInt(this.$rangeBetween.css(lengthParameter));
           const step = this.config.step;
-          const stepWidth = (step/(this.config.maxValue - this.config.minValue)) * parseInt(this.$slider.css('width'));
-          const intervalForFirstButtonStep = firstButtonLeft + buttonWidth/2 - (clientX - sliderLeft);
-          const intervalForSecondButtonStep = secondButtonLeft + buttonWidth/2 - (clientX - sliderLeft);
+          const stepWidth = (step/(this.config.maxValue - this.config.minValue)) * parseInt(this.$slider.css(lengthParameter));
+          const intervalForFirstButtonStep = firstButtonLeft + buttonWidth/2 - (clientAxis - sliderPosition);
+          const intervalForSecondButtonStep = secondButtonLeft + buttonWidth/2 - (clientAxis - sliderPosition);
           const firstButtonStepsNumber = intervalForFirstButtonStep/stepWidth;
           const secondButtonStepsNumber = intervalForSecondButtonStep/stepWidth;
 
-          const clickAheadOfFirstSlider = clientX - sliderLeft > firstButtonLeft + buttonWidth && clientX - sliderLeft < firstButtonLeft + buttonWidth + rangeBetweenWidth/2;
-          const clickBehindOfFirstSlider = clientX - sliderLeft < firstButtonLeft;
-          const clickAheadOfSecondSlider = clientX - sliderLeft > secondButtonLeft + buttonWidth;
-          const clickBehindOfSecondSlider = clientX - sliderLeft < secondButtonLeft && clientX - sliderLeft > firstButtonLeft + buttonWidth/2 + rangeBetweenWidth/2;
+          const clickAheadOfFirstSlider = clientAxis - sliderPosition > firstButtonLeft + buttonWidth && clientAxis - sliderPosition < firstButtonLeft + buttonWidth + rangeBetweenWidth/2;
+          const clickBehindOfFirstSlider = clientAxis - sliderPosition < firstButtonLeft;
+          const clickAheadOfSecondSlider = clientAxis - sliderPosition > secondButtonLeft + buttonWidth;
+          const clickBehindOfSecondSlider = clientAxis - sliderPosition < secondButtonLeft && clientAxis - sliderPosition > firstButtonLeft + buttonWidth/2 + rangeBetweenWidth/2;
               
           if (this.config.isInterval) {
             if (clickBehindOfSecondSlider || clickAheadOfSecondSlider) {
               if (this.config.step > 0) {
-                this.$secondButton.css('left', parseInt(this.$secondButton.css('left')) - Math.round(secondButtonStepsNumber) * stepWidth);
+                this.$secondButton.css(position, parseInt(this.$secondButton.css(position)) - Math.round(secondButtonStepsNumber) * stepWidth);
               }
               else {
-                this.$secondButton.css('left', clientX - sliderLeft - buttonWidth/2);
+                this.$secondButton.css(position, clientAxis - sliderPosition - buttonWidth/2);
               }
             }
             else if (clickBehindOfFirstSlider || clickAheadOfFirstSlider) {
               if (this.config.step > 0) {
-                this.$firstButton.css('left', parseInt(this.$firstButton.css('left')) - Math.round(firstButtonStepsNumber) * stepWidth);
+                this.$firstButton.css(position, parseInt(this.$firstButton.css(position)) - Math.round(firstButtonStepsNumber) * stepWidth);
               }
               else {
-                this.$firstButton.css('left', clientX - sliderLeft - buttonWidth/2);
+                this.$firstButton.css(position, clientAxis - sliderPosition - buttonWidth/2);
               }
-              this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+              this.$rangeBetween.css(position, parseInt(this.$firstButton.css(position)) + buttonWidth/2);
             }
 
-            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')) + buttonWidth/2);
+            this.$rangeBetween.css(lengthParameter, parseInt(this.$secondButton.css(position)) - parseInt(this.$firstButton.css(position)) + buttonWidth/2);
           }
           else {
             if (this.config.step > 0) {
-              this.$secondButton.css('left', parseInt(this.$secondButton.css('left')) - Math.round(secondButtonStepsNumber) * stepWidth);
+              this.$secondButton.css(position, parseInt(this.$secondButton.css(position)) - Math.round(secondButtonStepsNumber) * stepWidth);
             }
             else {
-              this.$secondButton.css('left', clientX - sliderLeft - buttonWidth/2);
+              this.$secondButton.css(position, clientAxis - sliderPosition - buttonWidth/2);
             }
-            this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) + buttonWidth/2);
+            this.$rangeBetween.css(lengthParameter, parseInt(this.$secondButton.css(position)) + buttonWidth/2);
           }
               
           this.addTooltip();
@@ -309,27 +322,29 @@ import "./index.css";
         const moveSecondSlider = (event: JQuery.MouseMoveEvent) => {
           const clientX2 = event.clientX;
           const clientY2 = event.clientY;
+          const clientAxis2 = this.config.isVertical ? clientY2 : clientX2;
           const buttonWidth = parseInt(this.$secondButton.css('width'));
           const sliderWidth = parseInt(this.$slider.css('width'));
           const sliderHeight = parseInt(this.$slider.css('height'));
+          const sliderPosition = this.config.isVertical ? this.getCoords(this.$slider).top : this.getCoords(this.$slider).left
           const firstButtonLeft = parseInt(this.$firstButton.css('left'));
           const firstButtonTop = parseInt(this.$firstButton.css('top'));
-          const step = this.config.step;
-          const stepWidth = (step/(this.config.maxValue - this.config.minValue)) * parseInt(this.$slider.css('width'));
           const sliderLengthParameter = this.config.isVertical ? sliderHeight : sliderWidth;
           const firstButtonLengthParameter = this.config.isVertical ? firstButtonTop : firstButtonLeft;
           const position = this.config.isVertical ? 'top' : 'left';
           const lengthParameter = this.config.isVertical ? 'height' : 'width';
+          const step = this.config.step;
+          const stepWidth = (step/(this.config.maxValue - this.config.minValue)) * parseInt(this.$slider.css(lengthParameter));
 
-          const isCursorNearStepAhead = clientX2 - $this.position().left + parseInt(this.$slider.css('margin')) > parseInt(this.$secondButton.css('left')) + buttonWidth + stepWidth/2;
-          const isCursorNearStepBehind = clientX2 - $this.position().left + parseInt(this.$slider.css('margin')) < parseInt(this.$secondButton.css('left')) - stepWidth/2;
+          const isCursorNearStepAhead = clientAxis2 - sliderPosition + parseInt(this.$slider.css('margin')) > parseInt(this.$secondButton.css(position)) + buttonWidth + stepWidth/2;
+          const isCursorNearStepBehind = clientAxis2 - sliderPosition + parseInt(this.$slider.css('margin')) < parseInt(this.$secondButton.css(position)) - stepWidth/2;
           
           if (step > 0) {
             if (isCursorNearStepAhead) {
-              this.$secondButton.css('left', parseInt(this.$secondButton.css('left')) + stepWidth);
+              this.$secondButton.css(position, parseInt(this.$secondButton.css(position)) + stepWidth);
             }
             else if (isCursorNearStepBehind) {
-              this.$secondButton.css('left', parseInt(this.$secondButton.css('left')) - stepWidth);
+              this.$secondButton.css(position, parseInt(this.$secondButton.css(position)) - stepWidth);
             }
           }
           else {
@@ -384,21 +399,23 @@ import "./index.css";
         const moveFirstSlider = (event: JQuery.MouseMoveEvent) => {
           const clientX1 = event.clientX;
           const clientY1 = event.clientY;
+          const clientAxis1 = this.config.isVertical ? clientY1 : clientX1;
           const buttonWidth = parseInt(this.$firstButton.css('width'));
-          const step = this.config.step;
-          const stepWidth = (step/(this.config.maxValue - this.config.minValue)) * parseInt(this.$slider.css('width'));
+          const sliderPosition = this.config.isVertical ? this.getCoords(this.$slider).top : this.getCoords(this.$slider).left
           const position = this.config.isVertical ? 'top' : 'left';
           const lengthParameter = this.config.isVertical ? 'height' : 'width';
+          const step = this.config.step;
+          const stepWidth = (step/(this.config.maxValue - this.config.minValue)) * parseInt(this.$slider.css(lengthParameter));
 
-          const isCursorNearStepAhead = Math.round(clientX1 - $this.position().left + parseInt($this.css('margin'))) > parseInt(this.$firstButton.css('left')) + buttonWidth + stepWidth/2;
-          const isCursorNearStepBehind = Math.round(clientX1 - $this.position().left + parseInt(this.$slider.css('margin'))) < parseInt(this.$firstButton.css('left')) - stepWidth/2;
+          const isCursorNearStepAhead = Math.round(clientAxis1 - sliderPosition + parseInt($this.css('margin'))) > parseInt(this.$firstButton.css(position)) + buttonWidth + stepWidth/2;
+          const isCursorNearStepBehind = Math.round(clientAxis1 - sliderPosition+ parseInt(this.$slider.css('margin'))) < parseInt(this.$firstButton.css(position)) - stepWidth/2;
           
           if (step > 0) {
             if (isCursorNearStepAhead) {
-              this.$firstButton.css('left', parseInt(this.$firstButton.css('left')) + stepWidth);
+              this.$firstButton.css(position, parseInt(this.$firstButton.css(position)) + stepWidth);
             }
             else if (isCursorNearStepBehind) {
-              this.$firstButton.css('left', parseInt(this.$firstButton.css('left')) - stepWidth);
+              this.$firstButton.css(position, parseInt(this.$firstButton.css(position)) - stepWidth);
             }
           }
           else {
@@ -486,6 +503,6 @@ $('.slider').mySlider({
   maxValue: 250,
   from: 35,
   to: 120,
-  isTooltip: false,
+  isTooltip: true,
   isVertical: true
 });
