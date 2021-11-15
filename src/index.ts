@@ -42,6 +42,24 @@ import "./index.css";
       tooltip1 = $('<div/>');
       tooltip2 = $('<div/>');
 
+      initSlider = () => {
+        if (this.config.isVertical) {
+          this.$firstButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
+          this.$secondButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
+        }
+        else {
+          this.$firstButton.css({'top': '50%', 'transform': 'translateY(-50%)'});
+          this.$secondButton.css({'top': '50%', 'transform': 'translateY(-50%)'});
+        }
+      }
+      
+      switchToVerticalView = () => {
+        if (this.config.isVertical) {
+          $this.css('width', '8px');
+          $this.css('height', '500px');
+        }
+      }
+
       addInterval = () => {
         if (this.config.isInterval) {
           this.$firstButton.appendTo(this.$slider).addClass('slider__first-button');
@@ -109,24 +127,35 @@ import "./index.css";
         minValueElement.html(`${minValue}`);
         maxValueElement.html(`${maxValue}`);
 
-        const sliderWidth = parseInt(this.$slider.css('width'));
-        const buttonWidth = parseInt(this.$secondButton.css('width'));
-        const minValueElementWidth = parseInt(minValueElement.css('width'));
-        const maxValueElementWidth = parseInt(maxValueElement.css('width'));
+        const position = this.config.isVertical ? 'top' : 'left';
+        const lengthParameter = this.config.isVertical ? 'height' : 'width';
 
-        minValueElement.css('left', 0 - minValueElementWidth/2);
-        maxValueElement.css('left', sliderWidth - maxValueElementWidth/2);
+        const sliderWidth = parseInt(this.$slider.css(lengthParameter));
+        const buttonWidth = parseInt(this.$secondButton.css(lengthParameter));
+        const minValueElementWidth = parseInt(minValueElement.css(lengthParameter));
+        const maxValueElementWidth = parseInt(maxValueElement.css(lengthParameter));
+
+        if (this.config.isVertical) {
+          minValueElement.css(position, 0 - 2*minValueElementWidth);
+          maxValueElement.css(position, sliderWidth + maxValueElementWidth);
+          minValueElement.css('left', 0 - parseInt(minValueElement.css('width'))/2 + parseInt(this.$slider.css('width'))/2);
+          maxValueElement.css('left', 0 - parseInt(maxValueElement.css('width'))/2 + parseInt(this.$slider.css('width'))/2);
+        }
+        else {
+          minValueElement.css(position, 0 - minValueElementWidth/2);
+          maxValueElement.css(position, sliderWidth - maxValueElementWidth/2);
+        }
 
         minValueElement.mousedown((event: JQuery.MouseDownEvent) => {
           minValueElement.mouseup((event: JQuery.MouseUpEvent) => {
             if (this.config.isInterval) {
-              this.$firstButton.css('left', 0 - buttonWidth/2);
-              this.$rangeBetween.css('left', 0);
-              this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')));
+              this.$firstButton.css(position, 0 - buttonWidth/2);
+              this.$rangeBetween.css(position, 0);
+              this.$rangeBetween.css(lengthParameter, parseInt(this.$secondButton.css(position)) - parseInt(this.$firstButton.css(position)));
             }
             else {
-              this.$secondButton.css('left', 0 - buttonWidth/2);
-              this.$rangeBetween.css('width', 0);
+              this.$secondButton.css(position, 0 - buttonWidth/2);
+              this.$rangeBetween.css(lengthParameter, 0);
             }
   
             event.stopPropagation();
@@ -139,13 +168,13 @@ import "./index.css";
         maxValueElement.mousedown((event: JQuery.MouseDownEvent) => {
           maxValueElement.mouseup((event: JQuery.MouseUpEvent) => {
             if (this.config.isInterval) {
-              this.$secondButton.css('left', sliderWidth - buttonWidth/2);
-              this.$rangeBetween.css('left', parseInt(this.$firstButton.css('left')) + buttonWidth/2);
-              this.$rangeBetween.css('width', parseInt(this.$secondButton.css('left')) - parseInt(this.$firstButton.css('left')));
+              this.$secondButton.css(position, sliderWidth - buttonWidth/2);
+              this.$rangeBetween.css(position, parseInt(this.$firstButton.css(position)) + buttonWidth/2);
+              this.$rangeBetween.css(lengthParameter, parseInt(this.$secondButton.css(position)) - parseInt(this.$firstButton.css(position)));
             }
             else {
-              this.$secondButton.css('left', sliderWidth - buttonWidth/2);
-              this.$rangeBetween.css('width', sliderWidth);
+              this.$secondButton.css(position, sliderWidth - buttonWidth/2);
+              this.$rangeBetween.css(lengthParameter, sliderWidth);
             }
   
             event.stopPropagation();
@@ -214,13 +243,6 @@ import "./index.css";
 
           this.tooltip1.css('background-color', tooltipColor);
           this.tooltip2.css('background-color', tooltipColor);
-        }
-      }
-
-      switchToVerticalView = () => {
-        if (this.config.isVertical) {
-          $this.css('width', '8px');
-          $this.css('height', '500px');
         }
       }
 
@@ -329,7 +351,7 @@ import "./index.css";
             }
             else if (secondButtonLengthParameter > sliderLengthParameter - buttonWidth/2) {
               this.$secondButton.css(position, sliderLengthParameter - buttonWidth/2);
-              this.$rangeBetween.css(lengthParameter, sliderLengthParameter - firstButtonLengthParameter);
+              this.$rangeBetween.css(lengthParameter, sliderLengthParameter - firstButtonLengthParameter - buttonWidth/2);
             }
           }
           else {
@@ -386,7 +408,7 @@ import "./index.css";
           const firstButtonLengthParameter = parseInt(this.$firstButton.css(position));
           const secondButtonLengthParameter = parseInt(this.$secondButton.css(position));
 
-          this.$rangeBetween.css(position, firstButtonLengthParameter);
+          this.$rangeBetween.css(position, firstButtonLengthParameter + buttonWidth/2);
           this.$rangeBetween.css(lengthParameter, secondButtonLengthParameter - firstButtonLengthParameter);
 
           this.$firstButton.css('z-index', 1);
@@ -437,15 +459,16 @@ import "./index.css";
 
     let view = new View();
 
+    view.switchToVerticalView();
+    view.initSlider();
     view.dragSlider();
     view.addInterval();
-    // view.addFromAndToValues();
-    // view.addMinAndMaxValues();
+    view.addFromAndToValues();
+    view.addMinAndMaxValues();
     view.addTooltip();
     view.sliderOnClick();
     view.changeColor();
     view.changeTooltipColor();
-    view.switchToVerticalView();
 
     return input;
   };
@@ -461,8 +484,8 @@ $('.slider').mySlider({
   isInterval: true,
   minValue: 15,
   maxValue: 250,
-  // from: 35,
-  // to: 120,
+  from: 35,
+  to: 120,
   isTooltip: false,
   isVertical: true
 });
