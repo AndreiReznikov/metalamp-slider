@@ -6,7 +6,8 @@ import "./index.css";
     const $this = input;
     
     // class Model {
-    //   // config = $.extend({}, options);
+    //   config = $.extend({}, options);
+    //   }
     // }
 
     interface Config {
@@ -35,14 +36,16 @@ import "./index.css";
 
       config: Config = $.extend({}, this.data, options);
 
-      $slider = $('<div/>').appendTo($this).addClass('slider__line');
-      $rangeBetween = $('<div/>').appendTo(this.$slider).addClass('slider__between');
-      $secondButton = $('<button/>').appendTo(this.$slider).addClass('slider__second-button');
+      $slider = $('<div/>');
+      $rangeBetween = $('<div/>');
+      $secondButton = $('<button/>');
       $firstButton = $('<button/>');
-      tooltip1 = $('<div/>');
-      tooltip2 = $('<div/>');
 
       initSlider = () => {
+        this.$slider.appendTo($this).addClass('slider__line');
+        this.$rangeBetween.appendTo(this.$slider).addClass('slider__between');
+        this.$secondButton.appendTo(this.$slider).addClass('slider__second-button');
+
         if (this.config.isVertical) {
           this.$firstButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
           this.$secondButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
@@ -54,16 +57,16 @@ import "./index.css";
       }
       
       switchToVerticalView = () => {
-        if (this.config.isVertical) {
-          $this.css('width', '8px');
-          $this.css('height', '500px');
-        }
+        if (!this.config.isVertical) return;
+        
+        $this.css('width', '8px');
+        $this.css('height', '500px');
       }
 
       addInterval = () => {
-        if (this.config.isInterval) {
-          this.$firstButton.appendTo(this.$slider).addClass('slider__first-button');
-        }
+        if (!this.config.isInterval) return;
+        
+        this.$firstButton.appendTo(this.$slider).addClass('slider__first-button');
       }
 
       addFromAndToValues = () => {
@@ -102,6 +105,7 @@ import "./index.css";
             if (this.config.isInterval) {
               this.$firstButton.css(position, fromPositonLeft - fromMinValuePositonLeft - buttonWidth/2);
             }
+
           this.$secondButton.css(position, toPositonLeft - fromMinValuePositonLeft - buttonWidth/2);
         }
 
@@ -114,7 +118,7 @@ import "./index.css";
           this.$rangeBetween.css(lengthParameter, parseInt(this.$secondButton.css(position)) + buttonWidth/2);
         }
 
-        this.addTooltip();
+        tooltip.moveTooltip();
       }
 
       addMinAndMaxValues = () => {
@@ -159,7 +163,7 @@ import "./index.css";
             }
   
             event.stopPropagation();
-            this.addTooltip();
+            tooltip.moveTooltip();
           })
 
           event.stopPropagation();
@@ -178,62 +182,11 @@ import "./index.css";
             }
   
             event.stopPropagation();
-            this.addTooltip();
+            tooltip.moveTooltip();
           })
 
           event.stopPropagation();
         });
-      }
-
-      addTooltip = () => {
-        const isTooltip = this.config.isTooltip;
-        const minValue = this.config.minValue;
-        const maxValue = this.config.maxValue;
-        const tooltip1 = this.tooltip1;
-        const tooltip2 = this.tooltip2;
-        const buttonWidth = parseInt(this.$secondButton.css('width'));
-
-        const position = this.config.isVertical ? 'top' : 'left';
-        const lengthParameter = this.config.isVertical ? 'height' : 'width';
-
-        if (isTooltip) {
-          tooltip1.appendTo(this.$slider).addClass('slider__first-tooltip');
-          tooltip2.appendTo(this.$slider).addClass('slider__second-tooltip');
-
-          if (this.config.isVertical) {
-            tooltip1.css('left', buttonWidth);
-            tooltip2.css('left', buttonWidth);
-          }
-
-          const moveTooltip = () => {
-            const tooltipValue1 = Math.round(((parseInt(this.$firstButton.css(position)) + parseInt(this.$firstButton.css(lengthParameter))/2)/(parseInt(this.$slider.css(lengthParameter))) * (maxValue - minValue)) + minValue);
-            const tooltipValue2 = Math.round(((parseInt(this.$secondButton.css(position)) + parseInt(this.$secondButton.css(lengthParameter))/2)/(parseInt(this.$slider.css(lengthParameter))) * (maxValue - minValue)) + minValue);
-            const tooltipPositionLeft1 = (parseInt(this.$firstButton.css(position)) + parseInt(this.$firstButton.css(lengthParameter))/2) - parseInt(tooltip1.css(lengthParameter))/2;
-            const tooltipPositionLeft2 = (parseInt(this.$secondButton.css(position)) + parseInt(this.$secondButton.css(lengthParameter))/2) - parseInt(tooltip2.css(lengthParameter))/2;
-
-            if (this.config.isInterval) {
-              tooltip1.html(`${tooltipValue1}`);
-              tooltip1.css(position, tooltipPositionLeft1);
-            }
-            else {
-              tooltip1.css('display', 'none');
-            }
-
-            tooltip2.html(`${tooltipValue2}`);
-            tooltip2.css(position, tooltipPositionLeft2);
-
-            const areTooltipsClose = parseInt(tooltip1.css(position)) + parseInt(tooltip1.css(lengthParameter)) > parseInt(tooltip2.css(position));
-            const tooltipClosePositionLeft1 = parseInt(this.$firstButton.css(position)) - parseInt(tooltip1.css(lengthParameter));
-            const tooltipClosePositionLeft2 = parseInt(this.$secondButton.css(position)) + parseInt(this.$secondButton.css(lengthParameter));
-
-            if (areTooltipsClose) {
-              tooltip1.css(position, tooltipClosePositionLeft1);
-              tooltip2.css(position, tooltipClosePositionLeft2);
-            }
-          };
-
-          moveTooltip();
-        }
       }
 
       changeColor = () => {
@@ -250,12 +203,12 @@ import "./index.css";
         if (this.config.tooltipColor) {
           const tooltipColor = this.config.tooltipColor;
 
-          this.tooltip1.css('background-color', tooltipColor);
-          this.tooltip2.css('background-color', tooltipColor);
+          tooltip.tooltip1.css('background-color', tooltipColor);
+          tooltip.tooltip2.css('background-color', tooltipColor);
         }
       }
 
-      sliderOnClick = () => {
+      sliderOnDown = () => {
         this.$slider.mousedown((event: JQuery.MouseDownEvent) => {           
           const clientX = event.clientX;
           const clientY = event.clientY;
@@ -310,7 +263,7 @@ import "./index.css";
             this.$rangeBetween.css(lengthParameter, parseInt(this.$secondButton.css(position)) + buttonWidth/2);
           }
               
-          this.addTooltip();
+          tooltip.moveTooltip();
         });
       }
 
@@ -381,7 +334,7 @@ import "./index.css";
             }
           }
 
-          this.addTooltip();
+          tooltip.moveTooltip();
         }
 
         $(document).on('mousemove', moveSecondSlider);
@@ -440,7 +393,7 @@ import "./index.css";
             this.$firstButton.css(position, secondButtonLengthParameter);
           }
 
-          this.addTooltip();
+          tooltip.moveTooltip();
         }
 
         $(document).on('mousemove', moveFirstSlider);
@@ -462,6 +415,58 @@ import "./index.css";
             left: coords.left,
         }
       }
+    };
+
+    class Tooltip extends View {
+
+      tooltip1 = $('<div/>');
+      tooltip2 = $('<div/>');
+      minValue = view.config.minValue;
+      maxValue = view.config.maxValue;
+
+      position = view.config.isVertical ? 'top' : 'left';
+      lengthParameter = view.config.isVertical ? 'height' : 'width';
+        
+      addTooltip = () => {
+        if (!view.config.isTooltip) return;
+
+        const buttonWidth = parseInt(view.$secondButton.css('width'));
+               
+        this.tooltip1.appendTo(view.$slider).addClass('slider__first-tooltip');
+        this.tooltip2.appendTo(view.$slider).addClass('slider__second-tooltip');
+
+        if (view.config.isVertical) {
+          this.tooltip1.css('left', buttonWidth);
+          this.tooltip2.css('left', buttonWidth);
+        }
+      }
+
+      moveTooltip = () => {
+        const tooltipValue1 = Math.round(((parseInt(view.$firstButton.css(this.position)) + parseInt(view.$firstButton.css(this.lengthParameter))/2)/(parseInt(view.$slider.css(this.lengthParameter))) * (this.maxValue - this.minValue)) + this.minValue);
+        const tooltipValue2 = Math.round(((parseInt(view.$secondButton.css(this.position)) + parseInt(view.$secondButton.css(this.lengthParameter))/2)/(parseInt(view.$slider.css(this.lengthParameter))) * (this.maxValue - this.minValue)) + this.minValue);
+        const tooltipPosition1 = (parseInt(view.$firstButton.css(this.position)) + parseInt(view.$firstButton.css(this.lengthParameter))/2) - parseInt(this.tooltip1.css(this.lengthParameter))/2;
+        const tooltipPosition2 = (parseInt(view.$secondButton.css(this.position)) + parseInt(view.$secondButton.css(this.lengthParameter))/2) - parseInt(this.tooltip2.css(this.lengthParameter))/2;
+        
+        if (view.config.isInterval) {
+          this.tooltip1.html(`${tooltipValue1}`);
+          this.tooltip1.css(this.position, tooltipPosition1);
+        }
+        else {
+          this.tooltip1.css('display', 'none');
+        }
+
+        this.tooltip2.html(`${tooltipValue2}`);
+        this.tooltip2.css(this.position, tooltipPosition2);
+
+        const areTooltipsClose = parseInt(this.tooltip1.css(this.position)) + parseInt(this.tooltip1.css(this.lengthParameter)) > parseInt(this.tooltip2.css(this.position));
+        const tooltipClosePosition1 = parseInt(view.$firstButton.css(this.position)) - parseInt(this.tooltip1.css(this.lengthParameter));
+        const tooltipClosePosition2 = parseInt(view.$secondButton.css(this.position)) + parseInt(view.$secondButton.css(this.lengthParameter));
+        
+        if (areTooltipsClose) {
+          this.tooltip1.css(this.position, tooltipClosePosition1);
+          this.tooltip2.css(this.position, tooltipClosePosition2);
+        }
+      }
     }
 
     // class Presenter {
@@ -474,7 +479,8 @@ import "./index.css";
     //   }
     // }
 
-    let view = new View();
+    const view = new View();
+    const tooltip = new Tooltip();
 
     view.switchToVerticalView();
     view.initSlider();
@@ -482,8 +488,9 @@ import "./index.css";
     view.addInterval();
     view.addFromAndToValues();
     view.addMinAndMaxValues();
-    view.addTooltip();
-    view.sliderOnClick();
+    tooltip.addTooltip();
+    tooltip.moveTooltip();
+    view.sliderOnDown();
     view.changeColor();
     view.changeTooltipColor();
 
