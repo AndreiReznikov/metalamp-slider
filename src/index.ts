@@ -102,11 +102,11 @@ import "./index.css";
           this.$secondButton.css(position, parseInt(this.$slider.css(lengthParameter)) - secondButtonStartPosition - buttonWidth/2);
         }
         else {
-            if (this.config.isInterval) {
-              this.$firstButton.css(position, Math.round(fromPositonLeft - fromMinValuePositonLeft - buttonWidth/2));
-            }
-
           this.$secondButton.css(position, toPositonLeft - fromMinValuePositonLeft - buttonWidth/2);
+            
+          if (!this.config.isInterval) return;
+                   
+          this.$firstButton.css(position, Math.round(fromPositonLeft - fromMinValuePositonLeft - buttonWidth/2));       
         }
 
         if (this.config.isInterval) {
@@ -163,7 +163,13 @@ import "./index.css";
             }
   
             event.stopPropagation();
-            tooltip.moveTooltip();
+
+            if (this.config.step > 0) {
+              tooltip.moveFirstTooltipWidthStepBehind();
+            }
+            else {
+              tooltip.moveTooltip();
+            }
           })
 
           event.stopPropagation();
@@ -182,7 +188,13 @@ import "./index.css";
             }
   
             event.stopPropagation();
-            tooltip.moveTooltip();
+            
+            if (this.config.step > 0) {
+              tooltip.moveSecondTooltipWidthStepAhead();
+            }
+            else {
+              tooltip.moveTooltip();
+            }
           })
 
           event.stopPropagation();
@@ -286,17 +298,15 @@ import "./index.css";
           const step = this.config.step;
           const stepWidth = Math.round((step/(this.config.maxValue - this.config.minValue)) * parseInt(this.$slider.css(lengthParameter)));
 
-          const isCursorNearStepAhead = clientAxis2 - sliderPosition + parseInt(this.$slider.css('margin')) > parseInt(this.$secondButton.css(position)) + buttonWidth + stepWidth/2;
-          const isCursorNearStepBehind = clientAxis2 - sliderPosition + parseInt(this.$slider.css('margin')) < parseInt(this.$secondButton.css(position)) - stepWidth/2;
+          const isCursorNearStepAhead = Math.round(clientAxis2 - sliderPosition + parseInt(this.$slider.css('margin'))) > parseInt(this.$secondButton.css(position)) + buttonWidth + stepWidth/2;
+          const isCursorNearStepBehind = Math.round(clientAxis2 - sliderPosition + parseInt(this.$slider.css('margin'))) < parseInt(this.$secondButton.css(position)) - stepWidth/2;
           
           if (step > 0) {
             if (isCursorNearStepAhead) {
               this.$secondButton.css(position, parseInt(this.$secondButton.css(position)) + stepWidth);
-              tooltip.moveSecondTooltipWidthStepAhead();
             }
             else if (isCursorNearStepBehind) {
               this.$secondButton.css(position, parseInt(this.$secondButton.css(position)) - stepWidth);
-              tooltip.moveSecondTooltipWidthStepBehind();
             }
           }
           else {
@@ -305,6 +315,7 @@ import "./index.css";
 
           const firstButtonLengthParameter = parseInt(this.$firstButton.css(position));;
           const secondButtonLengthParameter = parseInt(this.$secondButton.css(position));
+          
 
           if (this.config.isInterval) {
             this.$firstButton.css('z-index', 0);
@@ -333,11 +344,17 @@ import "./index.css";
             }
           }
 
-          tooltip.separateCloseTooltips();
-          
-          if (this.config.step > 0) return;
-          
-          tooltip.moveTooltip();
+          if (this.config.step > 0) {
+            if (isCursorNearStepAhead) {
+              tooltip.moveSecondTooltipWidthStepAhead();
+            }
+            else if (isCursorNearStepBehind) {
+              tooltip.moveSecondTooltipWidthStepBehind();
+            }
+          }
+          else {
+            tooltip.moveTooltip();
+          }
         }
 
         $(document).on('mousemove', moveSecondSlider);
@@ -370,11 +387,9 @@ import "./index.css";
           if (step > 0) {
             if (isCursorNearStepAhead) {
               this.$firstButton.css(position, parseInt(this.$firstButton.css(position)) + stepWidth);
-              tooltip.moveFirstTooltipWidthStepAhead();
             }
             else if (isCursorNearStepBehind) {
               this.$firstButton.css(position, parseInt(this.$firstButton.css(position)) - stepWidth);
-              tooltip.moveFirstTooltipWidthStepBehind();
             }
           }
           else {
@@ -398,12 +413,18 @@ import "./index.css";
           else if (firstButtonLengthParameter > secondButtonLengthParameter) {
             this.$firstButton.css(position, secondButtonLengthParameter);
           }
-
-          tooltip.separateCloseTooltips();
-
-          if (this.config.step > 0) return;
           
-          tooltip.moveTooltip();
+          if (this.config.step > 0) {
+            if (isCursorNearStepAhead) {
+              tooltip.moveFirstTooltipWidthStepAhead();
+            }
+            else if (isCursorNearStepBehind) {
+              tooltip.moveFirstTooltipWidthStepBehind();
+            }
+          }
+          else {
+            tooltip.moveTooltip();
+          }
         }
 
         $(document).on('mousemove', moveFirstSlider);
@@ -469,13 +490,13 @@ import "./index.css";
 
       moveFirstTooltipWidthStepAhead = () => {
         const tooltipPosition1 = (parseInt(view.$firstButton.css(this.position)) + parseInt(view.$firstButton.css(this.lengthParameter))/2) - parseInt(this.$tooltip1.css(this.lengthParameter))/2;
+        const tooltipPosition2 = (parseInt(view.$secondButton.css(this.position)) + parseInt(view.$secondButton.css(this.lengthParameter))/2) - parseInt(this.$tooltip2.css(this.lengthParameter))/2;
         const firstButton = view.$firstButton;
         const secondButton = view.$secondButton;
 
         if (parseInt(firstButton.css(this.position)) < parseInt(secondButton.css(this.position))) {
           if (this.config.isInterval) {
             this.$tooltip1.html(`${this.config.from += this.config.step}`);
-            this.$tooltip1.css(this.position, tooltipPosition1);
           }
           else {
             this.$tooltip1.css('display', 'none');
@@ -484,60 +505,87 @@ import "./index.css";
         else {
           this.config.from = this.config.to;
           this.$tooltip1.html(`${this.config.from}`);
-          this.$tooltip1.css(this.position, tooltipPosition1);
-          return;
         }
+
+        this.$tooltip1.css(this.position, tooltipPosition1);
+        this.$tooltip2.css(this.position, tooltipPosition2);
+
+        this.separateCloseTooltips();
       }
 
       moveFirstTooltipWidthStepBehind = () => {
         const tooltipPosition1 = (parseInt(view.$firstButton.css(this.position)) + parseInt(view.$firstButton.css(this.lengthParameter))/2) - parseInt(this.$tooltip1.css(this.lengthParameter))/2;
+        const tooltipPosition2 = (parseInt(view.$secondButton.css(this.position)) + parseInt(view.$secondButton.css(this.lengthParameter))/2) - parseInt(this.$tooltip2.css(this.lengthParameter))/2;
         const firstButton = view.$firstButton;
         const buttonWidth = parseInt(firstButton.css('width'));
 
-        if (parseInt(firstButton.css('left')) + buttonWidth/2 < 0) {
-          this.config.from = this.minValue;
-          this.$tooltip1.html(`${this.config.from}`);
-          this.$tooltip1.css(this.position, tooltipPosition1);
-          return;
-        }
-
         if (this.config.isInterval) {
           this.$tooltip1.html(`${this.config.from -= this.config.step}`);
-          this.$tooltip1.css(this.position, tooltipPosition1);
         }
         else {
           this.$tooltip1.css('display', 'none');
         }
+
+        if (parseInt(firstButton.css('left')) - buttonWidth/2 < 0) {
+          this.config.from = this.minValue;
+          this.$tooltip1.html(`${this.config.from}`);
+        }
+
+        this.$tooltip1.css(this.position, tooltipPosition1);
+        this.$tooltip2.css(this.position, tooltipPosition2);
+
+        this.separateCloseTooltips();
       }
 
       moveSecondTooltipWidthStepAhead = () => {
+        const tooltipPosition1 = (parseInt(view.$firstButton.css(this.position)) + parseInt(view.$firstButton.css(this.lengthParameter))/2) - parseInt(this.$tooltip1.css(this.lengthParameter))/2;
         const tooltipPosition2 = (parseInt(view.$secondButton.css(this.position)) + parseInt(view.$secondButton.css(this.lengthParameter))/2) - parseInt(this.$tooltip2.css(this.lengthParameter))/2;
         const secondButton = view.$secondButton;
         const buttonWidth = parseInt(secondButton.css('width'));
 
-        if (parseInt(view.$secondButton.css(this.position)) - buttonWidth/2 > parseInt(view.$slider.css(this.lengthParameter))) {
+        if (parseInt(view.$secondButton.css(this.position)) + buttonWidth/2 < parseInt(view.$slider.css(this.lengthParameter))) {
+          this.$tooltip2.html(`${this.config.to += this.config.step}`);
+        }
+        else {
           this.config.to = this.maxValue;
           this.$tooltip2.html(`${this.config.to}`);
-          this.$tooltip2.css(this.position, tooltipPosition2);
-          return;
         }
-        
-        this.$tooltip2.html(`${this.config.to += this.config.step}`);
+
+        this.$tooltip1.css(this.position, tooltipPosition1);
         this.$tooltip2.css(this.position, tooltipPosition2);
+
+        this.separateCloseTooltips();
       }
 
       moveSecondTooltipWidthStepBehind = () => {
+        const tooltipPosition1 = (parseInt(view.$firstButton.css(this.position)) + parseInt(view.$firstButton.css(this.lengthParameter))/2) - parseInt(this.$tooltip1.css(this.lengthParameter))/2;
         const tooltipPosition2 = (parseInt(view.$secondButton.css(this.position)) + parseInt(view.$secondButton.css(this.lengthParameter))/2) - parseInt(this.$tooltip2.css(this.lengthParameter))/2;
+        const firstButton = view.$firstButton;
+        const secondButton = view.$secondButton;
 
-        if (this.config.to <= this.config.from) {
-          this.config.to = this.config.from;
-          this.$tooltip2.html(`${this.config.to}`);
-          this.$tooltip2.css(this.position, tooltipPosition2);
-          return;
+        if (this.config.isInterval) {
+          if (parseInt(firstButton.css(this.position)) < parseInt(secondButton.css(this.position))) {
+            this.$tooltip2.html(`${this.config.to -= this.config.step}`);
+          }
+          else {
+            this.config.to = this.config.from;
+            this.$tooltip2.html(`${this.config.to}`);
+          }
         }
-        
-        this.$tooltip2.html(`${this.config.to -= this.config.step}`);
+        else {
+          if (0 < parseInt(secondButton.css(this.position))) {
+            this.$tooltip2.html(`${this.config.to -= this.config.step}`);
+          }
+          else {
+            this.config.to = this.config.minValue;
+            this.$tooltip2.html(`${this.config.to}`);
+          }
+        }
+
+        this.$tooltip1.css(this.position, tooltipPosition1);
         this.$tooltip2.css(this.position, tooltipPosition2);
+
+        this.separateCloseTooltips();
       }
 
       moveTooltip = () => {
@@ -556,6 +604,8 @@ import "./index.css";
 
         this.$tooltip2.html(`${tooltipValue2}`);
         this.$tooltip2.css(this.position, tooltipPosition2);
+
+        this.separateCloseTooltips();
       }
 
       separateCloseTooltips = () => {
