@@ -80,9 +80,8 @@ import "./index.css";
         const buttonWidth = parseInt(this.$secondButton.css('width'));
         const position = this.config.isVertical ? 'top' : 'left';
         const lengthParameter = this.config.isVertical ? 'height' : 'width';
-        const fromPositonLeft = fromRatio * parseInt(this.$slider.css(lengthParameter));
-        const toPositonLeft = toRatio * parseInt(this.$slider.css(lengthParameter));
-        const fromMinValuePositonLeft = minValueRatio * parseInt(this.$slider.css(lengthParameter));
+        const fromPositonLeft = (fromRatio - minValueRatio) * parseInt(this.$slider.css(lengthParameter));
+        const toPositonLeft = (toRatio - minValueRatio) * parseInt(this.$slider.css(lengthParameter));
 
         if (minValue < 0 && maxValue < 0) {
           const minuxMaxValueRatio = maxValue/(minValue - maxValue);
@@ -102,11 +101,11 @@ import "./index.css";
           this.$secondButton.css(position, parseInt(this.$slider.css(lengthParameter)) - secondButtonStartPosition - buttonWidth/2);
         }
         else {
-          this.$secondButton.css(position, toPositonLeft - fromMinValuePositonLeft - buttonWidth/2);
+          this.$secondButton.css(position, toPositonLeft - buttonWidth/2);
             
           if (!this.config.isInterval) return;
                    
-          this.$firstButton.css(position, Math.round(fromPositonLeft - fromMinValuePositonLeft - buttonWidth/2));       
+          this.$firstButton.css(position, Math.round(fromPositonLeft - buttonWidth/2));       
         }
 
         if (this.config.isInterval) {
@@ -236,8 +235,8 @@ import "./index.css";
           const stepWidth = (step/(this.config.maxValue - this.config.minValue)) * parseInt(this.$slider.css(lengthParameter));
           const intervalForFirstButtonStep = firstButtonLeft + buttonWidth/2 - (clientAxis - sliderPosition);
           const intervalForSecondButtonStep = secondButtonLeft + buttonWidth/2 - (clientAxis - sliderPosition);
-          const firstButtonStepsNumber = intervalForFirstButtonStep/stepWidth;
-          const secondButtonStepsNumber = intervalForSecondButtonStep/stepWidth;
+          const firstButtonStepsNumber = Math.round(intervalForFirstButtonStep/stepWidth);
+          const secondButtonStepsNumber = Math.round(intervalForSecondButtonStep/stepWidth);
 
           const clickAheadOfFirstSlider = clientAxis - sliderPosition > firstButtonLeft + buttonWidth && clientAxis - sliderPosition < firstButtonLeft + buttonWidth + rangeBetweenWidth/2;
           const clickBehindOfFirstSlider = clientAxis - sliderPosition < firstButtonLeft;
@@ -247,7 +246,7 @@ import "./index.css";
           if (this.config.isInterval) {
             if (clickBehindOfSecondSlider || clickAheadOfSecondSlider) {
               if (this.config.step > 0) {
-                this.$secondButton.css(position, parseInt(this.$secondButton.css(position)) - Math.round(secondButtonStepsNumber) * stepWidth);
+                this.$secondButton.css(position, parseInt(this.$secondButton.css(position)) - secondButtonStepsNumber * stepWidth);  
               }
               else {
                 this.$secondButton.css(position, clientAxis - sliderPosition - buttonWidth/2);
@@ -255,7 +254,7 @@ import "./index.css";
             }
             else if (clickBehindOfFirstSlider || clickAheadOfFirstSlider) {
               if (this.config.step > 0) {
-                this.$firstButton.css(position, parseInt(this.$firstButton.css(position)) - Math.round(firstButtonStepsNumber) * stepWidth);
+                this.$firstButton.css(position, parseInt(this.$firstButton.css(position)) - firstButtonStepsNumber * stepWidth);
               }
               else {
                 this.$firstButton.css(position, clientAxis - sliderPosition - buttonWidth/2);
@@ -274,8 +273,21 @@ import "./index.css";
             }
             this.$rangeBetween.css(lengthParameter, parseInt(this.$secondButton.css(position)) + buttonWidth/2);
           }
-              
+
           // tooltip.moveTooltip();
+
+          if (clickAheadOfFirstSlider) {
+            tooltip.moveFirstTooltipWidthStepAfterClickAhead(-firstButtonStepsNumber);
+          }
+          else if (clickBehindOfFirstSlider) {
+            tooltip.moveFirstTooltipWidthStepAfterClickBehind(firstButtonStepsNumber);
+          }
+          else if (clickAheadOfSecondSlider) {
+            tooltip.moveSecondTooltipWidthStepAfterClickAhead(-secondButtonStepsNumber);
+          }
+          else if (clickBehindOfSecondSlider) {
+            tooltip.moveSecondTooltipWidthStepAfterClickBehind(secondButtonStepsNumber);
+          }
         });
       }
 
@@ -471,21 +483,35 @@ import "./index.css";
           this.$tooltip2.css('left', buttonWidth);
         }
 
-        const tooltipValue1 = Math.round(((parseInt(view.$firstButton.css(this.position)) + parseInt(view.$firstButton.css(this.lengthParameter))/2)/(parseInt(view.$slider.css(this.lengthParameter))) * (this.maxValue - this.minValue)) + this.minValue);
-        const tooltipValue2 = Math.round(((parseInt(view.$secondButton.css(this.position)) + parseInt(view.$secondButton.css(this.lengthParameter))/2)/(parseInt(view.$slider.css(this.lengthParameter))) * (this.maxValue - this.minValue)) + this.minValue);
         const tooltipPosition1 = (parseInt(view.$firstButton.css(this.position)) + parseInt(view.$firstButton.css(this.lengthParameter))/2) - parseInt(this.$tooltip1.css(this.lengthParameter))/2;
         const tooltipPosition2 = (parseInt(view.$secondButton.css(this.position)) + parseInt(view.$secondButton.css(this.lengthParameter))/2) - parseInt(this.$tooltip2.css(this.lengthParameter))/2;
 
         if (view.config.isInterval) {
-          this.$tooltip1.html(`${tooltipValue1}`);
+          this.$tooltip1.html(`${this.config.from}`);
           this.$tooltip1.css(this.position, tooltipPosition1);
         }
         else {
           this.$tooltip1.css('display', 'none');
         }
 
-        this.$tooltip2.html(`${tooltipValue2}`);
+        this.$tooltip2.html(`${this.config.to}`);
         this.$tooltip2.css(this.position, tooltipPosition2);
+      }
+
+      moveFirstTooltipWidthStepAfterClickAhead = (stepsNumber: number) => {
+        this.$tooltip1.html(`${this.config.from += stepsNumber*this.config.step}`)
+      }
+
+      moveFirstTooltipWidthStepAfterClickBehind = (stepsNumber: number) => {
+        this.$tooltip1.html(`${this.config.from -= stepsNumber*this.config.step}`)
+      }
+
+      moveSecondTooltipWidthStepAfterClickAhead = (stepsNumber: number) => {
+        this.$tooltip2.html(`${this.config.to += stepsNumber*this.config.step}`)
+      }
+
+      moveSecondTooltipWidthStepAfterClickBehind = (stepsNumber: number) => {
+        this.$tooltip2.html(`${this.config.to -= stepsNumber*this.config.step}`)
       }
 
       moveFirstTooltipWidthStepAhead = () => {
@@ -660,7 +686,7 @@ $('.slider').mySlider({
   maxValue: 250,
   step: 25,
   from: 35,
-  to: 120,
+  to: 130,
   isTooltip: true,
   isVertical: false
 });
