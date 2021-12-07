@@ -12,6 +12,7 @@ html, body {
 .slider {
   width: 500px;
   height: 8px;
+  box-sizing: border-box;
 }
 
 .slider__line {

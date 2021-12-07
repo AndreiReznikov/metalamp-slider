@@ -32,6 +32,31 @@ import "./index.css";
       };
 
       config: Config = $.extend({}, this.data, options);
+
+      position: string;
+      lengthParameter: string;
+      firstButtonInitialPositon: number;
+      secondButtonInitialPositon: number;
+
+      constructor() {
+        this.position = this.config.isVertical ? 'top' : 'left';
+        this.lengthParameter = this.config.isVertical ? 'height' : 'width';
+        this.firstButtonInitialPositon = 0;
+        this.secondButtonInitialPositon = 0;
+      }
+
+      calculateInitialButtonsPositon = (sliderLengthParameter: number, buttonLengthParameter: number) => {
+        const minRatio = this.config.minValue/(this.config.maxValue - this.config.minValue);
+        const fromRatio = this.config.from/(this.config.maxValue - this.config.minValue);
+        const toRatio = this.config.to/(this.config.maxValue - this.config.minValue);
+        
+        this.secondButtonInitialPositon = Math.round((fromRatio - minRatio) * sliderLengthParameter - buttonLengthParameter/2);
+
+        if (!this.config.isInterval) return;
+
+        this.firstButtonInitialPositon = Math.round((fromRatio - minRatio) * sliderLengthParameter - buttonLengthParameter/2);
+        this.secondButtonInitialPositon = Math.round((toRatio - minRatio) * sliderLengthParameter - buttonLengthParameter/2);
+      }
     }
 
     class View {
@@ -82,10 +107,18 @@ import "./index.css";
 
     class FirstSliderButton extends View {
       $firstButton = $('<button/>');
+
+      setInitialFirstButtonPosition = (position: string, firstButtonInitialPositon: number) => {
+        this.$firstButton.css(position, firstButtonInitialPositon);
+      }
     }
 
     class SecondSliderButton extends View {
       $secondButton = $('<button/>');
+
+      setInitialSecondButtonPosition = (position: string, secondButtonInitialPositon: number) => {
+        this.$secondButton.css(position, secondButtonInitialPositon);
+      }
     }
 
     class Tooltip extends View {
@@ -103,6 +136,9 @@ import "./index.css";
       constructor() {
         view.init(model.config.isInterval, model.config.isTooltip);
         view.setPlane(model.config.isVertical);
+        model.calculateInitialButtonsPositon(parseInt(slider.$slider.css(model.lengthParameter)), parseInt(secondSliderButton.$secondButton.css(model.lengthParameter)));
+        firstSliderButton.setInitialFirstButtonPosition(model.position, model.firstButtonInitialPositon);
+        secondSliderButton.setInitialSecondButtonPosition(model.position, model.secondButtonInitialPositon);
       }
     }
 
@@ -131,8 +167,8 @@ $('.slider').mySlider({
   minValue: 15,
   maxValue: 250,
   // step: 25,
-  from: 40,
-  to: 120,
+  from: 35,
+  to: 250,
   isTooltip: true,
   isVertical: false
 });
