@@ -35,27 +35,42 @@ import "./index.css";
 
       position: string;
       lengthParameter: string;
-      firstButtonInitialPositon: number;
-      secondButtonInitialPositon: number;
+      firstButtonPositon: number;
+      secondButtonPositon: number;
+      rangeBetweenPosition: number;
+      rangeBetweenLength: number;
 
       constructor() {
         this.position = this.config.isVertical ? 'top' : 'left';
         this.lengthParameter = this.config.isVertical ? 'height' : 'width';
-        this.firstButtonInitialPositon = 0;
-        this.secondButtonInitialPositon = 0;
+        this.firstButtonPositon = 0;
+        this.secondButtonPositon = 0;
+        this.rangeBetweenPosition = 0;
+        this.rangeBetweenLength = 0;
       }
 
-      calculateInitialButtonsPositon = (sliderLengthParameter: number, buttonLengthParameter: number) => {
+      calculateInitialButtonsPositon = (sliderLength: number, buttonLength: number) => {
         const minRatio = this.config.minValue/(this.config.maxValue - this.config.minValue);
         const fromRatio = this.config.from/(this.config.maxValue - this.config.minValue);
         const toRatio = this.config.to/(this.config.maxValue - this.config.minValue);
         
-        this.secondButtonInitialPositon = Math.round((fromRatio - minRatio) * sliderLengthParameter - buttonLengthParameter/2);
+        this.firstButtonPositon = Math.round((fromRatio - minRatio) * sliderLength - buttonLength/2);
 
         if (!this.config.isInterval) return;
 
-        this.firstButtonInitialPositon = Math.round((fromRatio - minRatio) * sliderLengthParameter - buttonLengthParameter/2);
-        this.secondButtonInitialPositon = Math.round((toRatio - minRatio) * sliderLengthParameter - buttonLengthParameter/2);
+        this.secondButtonPositon = Math.round((toRatio - minRatio) * sliderLength - buttonLength/2);
+      }
+
+      calculateRangeBetweenPosition = (buttonLength: number) => {
+        if (this.config.isInterval) this.rangeBetweenPosition = this.firstButtonPositon + buttonLength/2;
+      }
+
+      calculateRangeBetweenLength = (buttonLength: number) => {
+        this.rangeBetweenLength = this.firstButtonPositon + buttonLength/2;
+
+        if (!this.config.isInterval) return;
+
+        this.rangeBetweenLength = this.secondButtonPositon - this.firstButtonPositon + buttonLength/2;
       }
     }
 
@@ -64,12 +79,12 @@ import "./index.css";
       init = (isInterval: boolean, isTooltip: boolean) => {
         slider.$slider.appendTo($this).addClass('slider__line');
         rangeBetween.$rangeBetween.appendTo(slider.$slider).addClass('slider__between');
-        secondSliderButton.$secondButton.appendTo(slider.$slider).addClass('slider__second-button');
-        minAndMaxValues.minValueElement.appendTo(slider.$slider).addClass('slider__min-value');
-        minAndMaxValues.maxValueElement.appendTo(slider.$slider).addClass('slider__max-value');
+        firstSliderButton.$firstButton.appendTo(slider.$slider).addClass('slider__first-button');
+        minAndMaxValues.$minValueElement.appendTo(slider.$slider).addClass('slider__min-value');
+        minAndMaxValues.$maxValueElement.appendTo(slider.$slider).addClass('slider__max-value');
 
         if (isInterval) {
-          firstSliderButton.$firstButton.appendTo(slider.$slider).addClass('slider__first-button');
+          secondSliderButton.$secondButton.appendTo(slider.$slider).addClass('slider__second-button');
         }
 
         if (isTooltip) {
@@ -103,21 +118,29 @@ import "./index.css";
 
     class RangeBetween extends View {
       $rangeBetween = $('<div/>');
+
+      setRangeBetweenPosition = (position: string, rangeBetweenPositon: number) => {
+        this.$rangeBetween.css(position, rangeBetweenPositon);
+      }
+
+      setRangeBetweenLength = (lengthParameter: string, rangeBetweenLength: number) => {
+        this.$rangeBetween.css(lengthParameter, rangeBetweenLength);
+      }
     }
 
     class FirstSliderButton extends View {
       $firstButton = $('<button/>');
 
-      setInitialFirstButtonPosition = (position: string, firstButtonInitialPositon: number) => {
-        this.$firstButton.css(position, firstButtonInitialPositon);
+      setFirstButtonPosition = (position: string, firstButtonPositon: number) => {
+        this.$firstButton.css(position, firstButtonPositon);
       }
     }
 
     class SecondSliderButton extends View {
       $secondButton = $('<button/>');
 
-      setInitialSecondButtonPosition = (position: string, secondButtonInitialPositon: number) => {
-        this.$secondButton.css(position, secondButtonInitialPositon);
+      setSecondButtonPosition = (position: string, secondButtonPositon: number) => {
+        this.$secondButton.css(position, secondButtonPositon);
       }
     }
 
@@ -127,8 +150,8 @@ import "./index.css";
     }
 
     class MinAndMaxValues extends View {
-      minValueElement = $('<div/>');
-      maxValueElement = $('<div/>');
+      $minValueElement = $('<div/>');
+      $maxValueElement = $('<div/>');
     }
 
     class Presenter {
@@ -136,9 +159,13 @@ import "./index.css";
       constructor() {
         view.init(model.config.isInterval, model.config.isTooltip);
         view.setPlane(model.config.isVertical);
-        model.calculateInitialButtonsPositon(parseInt(slider.$slider.css(model.lengthParameter)), parseInt(secondSliderButton.$secondButton.css(model.lengthParameter)));
-        firstSliderButton.setInitialFirstButtonPosition(model.position, model.firstButtonInitialPositon);
-        secondSliderButton.setInitialSecondButtonPosition(model.position, model.secondButtonInitialPositon);
+        model.calculateInitialButtonsPositon(parseInt(slider.$slider.css(model.lengthParameter)), parseInt(firstSliderButton.$firstButton.css(model.lengthParameter)));
+        model.calculateRangeBetweenPosition(parseInt(firstSliderButton.$firstButton.css(model.lengthParameter)));
+        model.calculateRangeBetweenLength(parseInt(firstSliderButton.$firstButton.css(model.lengthParameter)));
+        firstSliderButton.setFirstButtonPosition(model.position, model.firstButtonPositon);
+        secondSliderButton.setSecondButtonPosition(model.position, model.secondButtonPositon);
+        rangeBetween.setRangeBetweenPosition(model.position, model.rangeBetweenPosition);
+        rangeBetween.setRangeBetweenLength(model.lengthParameter, model.rangeBetweenLength);
       }
     }
 
@@ -168,7 +195,7 @@ $('.slider').mySlider({
   maxValue: 250,
   // step: 25,
   from: 35,
-  to: 250,
-  isTooltip: true,
+  to: 120,
+  isTooltip: false,
   isVertical: false
 });
