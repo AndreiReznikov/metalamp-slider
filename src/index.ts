@@ -91,7 +91,7 @@ import "./index.css";
         this.rangeBetweenLength = this.firstButtonPositon + this.buttonLength/2;
 
         if (this.config.isInterval) {
-          this.rangeBetweenLength = this.secondButtonPositon - this.firstButtonPositon + this.buttonLength/2;
+          this.rangeBetweenLength = this.secondButtonPositon - this.firstButtonPositon;
         }
       }
 
@@ -113,6 +113,16 @@ import "./index.css";
 
           this.firstButtonPositon = clientAxis1 - shiftAxis1 - this.sliderPosition;
 
+          if (this.firstButtonPositon < 0 - this.buttonLength/2) {
+            this.firstButtonPositon = 0 - this.buttonLength/2;
+          }
+          else if (this.config.isInterval && this.firstButtonPositon > this.secondButtonPositon) {
+            this.firstButtonPositon = this.secondButtonPositon;
+          }
+          else if (this.firstButtonPositon > this.sliderLength - this.buttonLength/2) {
+            this.firstButtonPositon = this.sliderLength - this.buttonLength/2;
+          }
+
           observer.notifyObservers({
             positionParameter: this.positionParameter,
             lengthParameter: this.lengthParameter,
@@ -124,6 +134,41 @@ import "./index.css";
 
         $(document).on('mousemove', calculateWhileFirstButtonMoving);
         $(document).on('mouseup', () => $(document).off('mousemove', calculateWhileFirstButtonMoving));
+      }
+
+      calculateSecondButtonPosition = (event: JQuery.MouseDownEvent) => {
+        event.stopPropagation();
+
+        const shiftX2 = event.clientX - this.secondButtonGlobalPositon;
+        const shiftY2 = event.clientY - this.secondButtonGlobalPositon;
+        const shiftAxis2 = this.config.isVertical ? shiftY2 : shiftX2;
+
+        const calculateWhileSecondButtonMoving = (event: JQuery.MouseMoveEvent) => {
+          const clientX2 = event.clientX;
+          const clientY2 = event.clientY;
+          const clientAxis2 = model.config.isVertical ? clientY2 : clientX2;
+
+          this.secondButtonPositon = clientAxis2 - shiftAxis2 - this.sliderPosition;
+
+          if (this.secondButtonPositon < this.firstButtonPositon) {
+            this.secondButtonPositon = this.firstButtonPositon;
+          }
+          else if (this.secondButtonPositon > this.sliderLength - this.buttonLength/2) {
+            this.secondButtonPositon = this.sliderLength - this.buttonLength/2;
+          }
+
+          observer.notifyObservers({
+            positionParameter: this.positionParameter,
+            lengthParameter: this.lengthParameter,
+            firstButtonPosition: this.firstButtonPositon,
+            secondButtonPositon: model.secondButtonPositon,
+            rangeBetweenPosition: this.rangeBetweenPosition,
+            rangeBetweenLength: this.rangeBetweenLength
+          });
+        }
+
+        $(document).on('mousemove', calculateWhileSecondButtonMoving);
+        $(document).on('mouseup', () => $(document).off('mousemove', calculateWhileSecondButtonMoving));
       }
     }
 
@@ -198,8 +243,8 @@ import "./index.css";
     class SecondSliderButton extends View {
       $secondButton = $('<button/>');
 
-      setSecondButtonPosition = (position: string, secondButtonPositon: number) => {
-        this.$secondButton.css(position, secondButtonPositon);
+      setSecondButtonPosition = (options: any) => {
+        this.$secondButton.css(options.positionParameter, options.secondButtonPositon);
       }
     }
 
@@ -224,14 +269,47 @@ import "./index.css";
           parseInt(firstSliderButton.$firstButton.css(model.lengthParameter))
         );
         model.calculateInitialButtonsPositon();
+        firstSliderButton.setFirstButtonPosition({
+          positionParameter: model.positionParameter,
+          lengthParameter: model.lengthParameter,
+          firstButtonPosition: model.firstButtonPositon,
+          rangeBetweenPosition: model.rangeBetweenPosition,
+          rangeBetweenLength: model.rangeBetweenLength
+        });
+        secondSliderButton.setSecondButtonPosition({
+          positionParameter: model.positionParameter,
+          lengthParameter: model.lengthParameter,
+          firstButtonPosition: model.firstButtonPositon,
+          secondButtonPositon: model.secondButtonPositon,
+          rangeBetweenPosition: model.rangeBetweenPosition,
+          rangeBetweenLength: model.rangeBetweenLength
+        });
         model.calculateRangeBetweenPosition();
         model.calculateRangeBetweenLength();
+        rangeBetween.setRangeBetweenPosition({
+          positionParameter: model.positionParameter,
+          lengthParameter: model.lengthParameter,
+          firstButtonPosition: model.firstButtonPositon,
+          rangeBetweenPosition: model.rangeBetweenPosition,
+          rangeBetweenLength: model.rangeBetweenLength
+        });
+        rangeBetween.setRangeBetweenLength({
+          positionParameter: model.positionParameter,
+          lengthParameter: model.lengthParameter,
+          firstButtonPosition: model.firstButtonPositon,
+          rangeBetweenPosition: model.rangeBetweenPosition,
+          rangeBetweenLength: model.rangeBetweenLength
+        });
         observer.addObserver(firstSliderButton.setFirstButtonPosition);
+        observer.addObserver(secondSliderButton.setSecondButtonPosition);
+        observer.addObserver(model.calculateRangeBetweenPosition);
         observer.addObserver(model.calculateRangeBetweenLength);
         observer.addObserver(rangeBetween.setRangeBetweenPosition);
         observer.addObserver(rangeBetween.setRangeBetweenLength);
         firstSliderButton.$firstButton.on('mousedown', () => model.setButtonsGlobalPosition(view.getCoords(firstSliderButton.$firstButton, model.config.isVertical), view.getCoords(secondSliderButton.$secondButton, model.config.isVertical)));
+        secondSliderButton.$secondButton.on('mousedown', () => model.setButtonsGlobalPosition(view.getCoords(firstSliderButton.$firstButton, model.config.isVertical), view.getCoords(secondSliderButton.$secondButton, model.config.isVertical)));
         firstSliderButton.$firstButton.on('mousedown', model.calculateFirstButtonPosition);
+        secondSliderButton.$secondButton.on('mousedown', model.calculateSecondButtonPosition);
       }
     }
 
