@@ -18,6 +18,21 @@ import "./index.css";
       tooltipColor?: string;
     }
 
+    interface Options {
+      positionParameter: string;
+      lengthParameter: string;
+      sliderPosition: number;
+      sliderLength: number;
+      buttonLength: number;
+      stepLength: number;
+      firstButtonPosition: number;
+      secondButtonPosition: number;
+      firstButtonGlobalPositon: number;
+      secondButtonGlobalPositon: number;
+      rangeBetweenPosition: number;
+      rangeBetweenLength: number;
+    }
+
     class Observer {
       observers: Function[] = [];
 
@@ -25,9 +40,9 @@ import "./index.css";
         this.observers.push(observer);
       }
 
-      notifyObservers = (data: {}) => {
+      notifyObservers = (options: Options) => {
         for (let i = 0; i < this.observers.length; i++) {
-          this.observers[i](data);
+          this.observers[i](options);
         }
       }
     }
@@ -48,15 +63,15 @@ import "./index.css";
       config: Config = $.extend({}, this.data, options);
 
       positionParameter: string = this.config.isVertical ? 'top' : 'left';
-      lengthParameter: string  = this.config.isVertical ? 'height' : 'width';
+      lengthParameter: string = this.config.isVertical ? 'height' : 'width';
       sliderPosition: number = 0;
       sliderLength: number = 0;
       buttonLength: number = 0;
       stepLength: number = 0;
-      firstButtonPositon: number = 0;
-      secondButtonPositon: number = 0;
-      firstButtonGlobalPositon: number = 0;
-      secondButtonGlobalPositon: number = 0;
+      firstButtonPosition: number = 0;
+      secondButtonPosition: number = 0;
+      firstButtonGlobalPosition: number = 0;
+      secondButtonGlobalPosition: number = 0;
       rangeBetweenPosition: number = 0;
       rangeBetweenLength: number = 0;
 
@@ -67,8 +82,8 @@ import "./index.css";
       }
 
       setButtonsGlobalPosition = (firstButtonGlobalPosition: number, secondButtonGlobalPosition: number) => {
-        this.firstButtonGlobalPositon = firstButtonGlobalPosition;
-        this.secondButtonGlobalPositon = secondButtonGlobalPosition;
+        this.firstButtonGlobalPosition = firstButtonGlobalPosition;
+        this.secondButtonGlobalPosition = secondButtonGlobalPosition;
       }
 
       calculateInitialButtonsPositon = () => {
@@ -76,22 +91,22 @@ import "./index.css";
         const fromRatio = this.config.from/(this.config.maxValue - this.config.minValue);
         const toRatio = this.config.to/(this.config.maxValue - this.config.minValue);
         
-        this.firstButtonPositon = Math.round((fromRatio - minRatio) * this.sliderLength - this.buttonLength/2);
+        this.firstButtonPosition = Math.round((fromRatio - minRatio) * this.sliderLength - this.buttonLength/2);
 
         if (this.config.isInterval) {
-          this.secondButtonPositon = Math.round((toRatio - minRatio) * this.sliderLength -this. buttonLength/2);
+          this.secondButtonPosition = Math.round((toRatio - minRatio) * this.sliderLength -this. buttonLength/2);
         }
       }
 
       calculateRangeBetweenPosition = () => {
-        if (this.config.isInterval) this.rangeBetweenPosition = this.firstButtonPositon + this.buttonLength/2;
+        if (this.config.isInterval) this.rangeBetweenPosition = this.firstButtonPosition + this.buttonLength/2;
       }
 
       calculateRangeBetweenLength = () => {
-        this.rangeBetweenLength = this.firstButtonPositon + this.buttonLength/2;
+        this.rangeBetweenLength = this.firstButtonPosition + this.buttonLength/2;
 
         if (this.config.isInterval) {
-          this.rangeBetweenLength = this.secondButtonPositon - this.firstButtonPositon;
+          this.rangeBetweenLength = this.secondButtonPosition - this.firstButtonPosition;
         }
       }
 
@@ -102,8 +117,8 @@ import "./index.css";
       calculateFirstButtonPosition = (event: JQuery.MouseDownEvent) => {
         event.stopPropagation();
 
-        const shiftX1 = event.clientX - this.firstButtonGlobalPositon;
-        const shiftY1 = event.clientY - this.firstButtonGlobalPositon;
+        const shiftX1 = event.clientX - this.firstButtonGlobalPosition;
+        const shiftY1 = event.clientY - this.firstButtonGlobalPosition;
         const shiftAxis1 = this.config.isVertical ? shiftY1 : shiftX1;
 
         const calculateWhileFirstButtonMoving = (event: JQuery.MouseMoveEvent) => {
@@ -111,36 +126,52 @@ import "./index.css";
           const clientY1 = event.clientY;
           const clientAxis1 = this.config.isVertical ? clientY1 : clientX1;
 
-          this.firstButtonPositon = clientAxis1 - shiftAxis1 - this.sliderPosition;
+          this.firstButtonPosition = clientAxis1 - shiftAxis1 - this.sliderPosition;
 
-          if (this.firstButtonPositon < 0 - this.buttonLength/2) {
-            this.firstButtonPositon = 0 - this.buttonLength/2;
-          }
-          else if (this.config.isInterval && this.firstButtonPositon > this.secondButtonPositon) {
-            this.firstButtonPositon = this.secondButtonPositon;
-          }
-          else if (this.firstButtonPositon > this.sliderLength - this.buttonLength/2) {
-            this.firstButtonPositon = this.sliderLength - this.buttonLength/2;
-          }
+          this.restrictFirstButtonPosition();
 
-          observer.notifyObservers({
-            positionParameter: this.positionParameter,
-            lengthParameter: this.lengthParameter,
-            firstButtonPosition: this.firstButtonPositon,
-            rangeBetweenPosition: this.rangeBetweenPosition,
-            rangeBetweenLength: this.rangeBetweenLength
-          });
+          observer.notifyObservers(this.getOptions());
         }
 
         $(document).on('mousemove', calculateWhileFirstButtonMoving);
         $(document).on('mouseup', () => $(document).off('mousemove', calculateWhileFirstButtonMoving));
       }
 
+      calculateFirstButtonPositionAfterFocusing = (event: JQuery.FocusEvent) => {
+
+        const calculateFirstButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent) => {
+          if (event.keyCode === 39) {
+            this.firstButtonPosition += 1;
+          }
+          else if (event.keyCode === 37) {
+            this.firstButtonPosition -= 1;
+          }
+
+          this.restrictFirstButtonPosition();
+
+          observer.notifyObservers(this.getOptions());
+        }
+
+        $(event.target).on('keydown', calculateFirstButtonPositionAfterKeydown);
+      }
+
+      restrictFirstButtonPosition = () => {
+        if (this.firstButtonPosition < 0 - this.buttonLength/2) {
+          this.firstButtonPosition = 0 - this.buttonLength/2;
+        }
+        else if (this.firstButtonPosition > this.sliderLength - this.buttonLength/2) {
+          this.firstButtonPosition = this.sliderLength - this.buttonLength/2;
+        }
+        if (this.config.isInterval && this.firstButtonPosition > this.secondButtonPosition) {
+          this.firstButtonPosition = this.secondButtonPosition;
+        }
+      }
+
       calculateSecondButtonPosition = (event: JQuery.MouseDownEvent) => {
         event.stopPropagation();
 
-        const shiftX2 = event.clientX - this.secondButtonGlobalPositon;
-        const shiftY2 = event.clientY - this.secondButtonGlobalPositon;
+        const shiftX2 = event.clientX - this.secondButtonGlobalPosition;
+        const shiftY2 = event.clientY - this.secondButtonGlobalPosition;
         const shiftAxis2 = this.config.isVertical ? shiftY2 : shiftX2;
 
         const calculateWhileSecondButtonMoving = (event: JQuery.MouseMoveEvent) => {
@@ -148,34 +179,50 @@ import "./index.css";
           const clientY2 = event.clientY;
           const clientAxis2 = model.config.isVertical ? clientY2 : clientX2;
 
-          this.secondButtonPositon = clientAxis2 - shiftAxis2 - this.sliderPosition;
+          this.secondButtonPosition = clientAxis2 - shiftAxis2 - this.sliderPosition;
 
-          if (this.secondButtonPositon < this.firstButtonPositon) {
-            this.secondButtonPositon = this.firstButtonPositon;
-          }
-          else if (this.secondButtonPositon > this.sliderLength - this.buttonLength/2) {
-            this.secondButtonPositon = this.sliderLength - this.buttonLength/2;
-          }
+          this.restrictSecondButtonPosition();
 
-          observer.notifyObservers({
-            positionParameter: this.positionParameter,
-            lengthParameter: this.lengthParameter,
-            firstButtonPosition: this.firstButtonPositon,
-            secondButtonPositon: model.secondButtonPositon,
-            rangeBetweenPosition: this.rangeBetweenPosition,
-            rangeBetweenLength: this.rangeBetweenLength
-          });
+          observer.notifyObservers(this.getOptions());
         }
 
         $(document).on('mousemove', calculateWhileSecondButtonMoving);
         $(document).on('mouseup', () => $(document).off('mousemove', calculateWhileSecondButtonMoving));
+      }
+
+      restrictSecondButtonPosition = () => {
+        if (this.secondButtonPosition < this.firstButtonPosition) {
+          this.secondButtonPosition = this.firstButtonPosition;
+        }
+        else if (this.secondButtonPosition > this.sliderLength - this.buttonLength/2) {
+          this.secondButtonPosition = this.sliderLength - this.buttonLength/2;
+        }
+      }
+
+      getOptions = () => {
+        const options: Options = {
+          positionParameter: model.positionParameter,
+          lengthParameter: model.lengthParameter,
+          sliderPosition: model.sliderPosition,
+          sliderLength: model.sliderLength,
+          buttonLength: model.buttonLength,
+          stepLength: model.stepLength,
+          firstButtonPosition: model.firstButtonPosition,
+          secondButtonPosition: model.secondButtonPosition,
+          firstButtonGlobalPositon: model.firstButtonGlobalPosition,
+          secondButtonGlobalPositon: model.secondButtonGlobalPosition,
+          rangeBetweenPosition: model.rangeBetweenPosition,
+          rangeBetweenLength: model.rangeBetweenLength
+        }
+
+        return options;
       }
     }
 
     class View {
 
       init = (isInterval: boolean, isTooltip: boolean) => {
-        slider.$slider.appendTo($this).addClass('slider__line');
+        slider.$slider.appendTo($this).addClass('slider__stripe');
         rangeBetween.$rangeBetween.appendTo(slider.$slider).addClass('slider__between');
         firstSliderButton.$firstButton.appendTo(slider.$slider).addClass('slider__first-button');
         minAndMaxValues.$minValueElement.appendTo(slider.$slider).addClass('slider__min-value');
@@ -186,24 +233,27 @@ import "./index.css";
         }
 
         if (isTooltip) {
-          tooltip.$tooltip2.appendTo(slider.$slider).addClass('slider__second-tooltip');
+          tooltip.$firstTooltip.appendTo(slider.$slider).addClass('slider__second-tooltip');
 
           if (!isInterval) return;
-          tooltip.$tooltip1.appendTo(slider.$slider).addClass('slider__first-tooltip');
+          tooltip.$secondTooltip.appendTo(slider.$slider).addClass('slider__first-tooltip');
         }
       }
 
       setPlane = (isVertical: boolean) => {
+        const width = $this.css('width');
+        const height = $this.css('height');
+
         if (isVertical) {
-          $this.css('width', '8px');
-          $this.css('height', '500px');
+          $this.css('width', height);
+          $this.css('height', width);
           firstSliderButton.$firstButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
           secondSliderButton.$secondButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
           return;
         }
 
-        $this.css('width', '500px');
-        $this.css('height', '8px');
+        $this.css('width', width);
+        $this.css('height', height);
         firstSliderButton.$firstButton.css({'top': '50%', 'transform': 'translateY(-50%)'});
         secondSliderButton.$secondButton.css({'top': '50%', 'transform': 'translateY(-50%)'});     
       }
@@ -243,14 +293,14 @@ import "./index.css";
     class SecondSliderButton extends View {
       $secondButton = $('<button/>');
 
-      setSecondButtonPosition = (options: any) => {
-        this.$secondButton.css(options.positionParameter, options.secondButtonPositon);
+      setSecondButtonPosition = (options: Options) => {
+        this.$secondButton.css(options.positionParameter, options.secondButtonPosition);
       }
     }
 
     class Tooltip extends View {
-      $tooltip1 = $('<div/>');
-      $tooltip2 = $('<div/>');
+      $firstTooltip = $('<div/>');
+      $secondTooltip = $('<div/>');
     }
 
     class MinAndMaxValues extends View {
@@ -269,43 +319,22 @@ import "./index.css";
           parseInt(firstSliderButton.$firstButton.css(model.lengthParameter))
         );
         model.calculateInitialButtonsPositon();
-        firstSliderButton.setFirstButtonPosition({
-          positionParameter: model.positionParameter,
-          lengthParameter: model.lengthParameter,
-          firstButtonPosition: model.firstButtonPositon,
-          rangeBetweenPosition: model.rangeBetweenPosition,
-          rangeBetweenLength: model.rangeBetweenLength
-        });
-        secondSliderButton.setSecondButtonPosition({
-          positionParameter: model.positionParameter,
-          lengthParameter: model.lengthParameter,
-          firstButtonPosition: model.firstButtonPositon,
-          secondButtonPositon: model.secondButtonPositon,
-          rangeBetweenPosition: model.rangeBetweenPosition,
-          rangeBetweenLength: model.rangeBetweenLength
-        });
         model.calculateRangeBetweenPosition();
         model.calculateRangeBetweenLength();
-        rangeBetween.setRangeBetweenPosition({
-          positionParameter: model.positionParameter,
-          lengthParameter: model.lengthParameter,
-          firstButtonPosition: model.firstButtonPositon,
-          rangeBetweenPosition: model.rangeBetweenPosition,
-          rangeBetweenLength: model.rangeBetweenLength
-        });
-        rangeBetween.setRangeBetweenLength({
-          positionParameter: model.positionParameter,
-          lengthParameter: model.lengthParameter,
-          firstButtonPosition: model.firstButtonPositon,
-          rangeBetweenPosition: model.rangeBetweenPosition,
-          rangeBetweenLength: model.rangeBetweenLength
-        });
+
+        const options: Options = model.getOptions();
+
+        firstSliderButton.setFirstButtonPosition(options);
+        secondSliderButton.setSecondButtonPosition(options);
+        rangeBetween.setRangeBetweenPosition(options);
+        rangeBetween.setRangeBetweenLength(options);
         observer.addObserver(firstSliderButton.setFirstButtonPosition);
         observer.addObserver(secondSliderButton.setSecondButtonPosition);
         observer.addObserver(model.calculateRangeBetweenPosition);
         observer.addObserver(model.calculateRangeBetweenLength);
         observer.addObserver(rangeBetween.setRangeBetweenPosition);
         observer.addObserver(rangeBetween.setRangeBetweenLength);
+        firstSliderButton.$firstButton.on('focus', model.calculateFirstButtonPositionAfterFocusing);
         firstSliderButton.$firstButton.on('mousedown', () => model.setButtonsGlobalPosition(view.getCoords(firstSliderButton.$firstButton, model.config.isVertical), view.getCoords(secondSliderButton.$secondButton, model.config.isVertical)));
         secondSliderButton.$secondButton.on('mousedown', () => model.setButtonsGlobalPosition(view.getCoords(firstSliderButton.$firstButton, model.config.isVertical), view.getCoords(secondSliderButton.$secondButton, model.config.isVertical)));
         firstSliderButton.$firstButton.on('mousedown', model.calculateFirstButtonPosition);
@@ -339,7 +368,7 @@ $('.slider').mySlider({
   minValue: 15,
   maxValue: 250,
   // step: 25,
-  from: 35,
+  from: 55,
   to: 120,
   isTooltip: false,
   isVertical: false
