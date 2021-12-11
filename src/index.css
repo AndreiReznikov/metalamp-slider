@@ -9,13 +9,13 @@ html, body {
   box-sizing: border-box;
 }
 
-.slider {
+.js-slider {
   width: 500px;
   height: 8px;
   box-sizing: border-box;
 }
 
-.slider__stripe {
+.js-slider__stripe {
   position: relative;
   width: 100%;
   height: 100%;
@@ -25,7 +25,7 @@ html, body {
   cursor: pointer;
 }
 
-.slider__between {
+.js-slider__between {
   display: flex;
   position: absolute;
   width: 100%;
@@ -34,7 +34,7 @@ html, body {
   background-color: rgb(24, 51, 83);
 }
 
-.slider__first-button, .slider__second-button {
+.js-slider__first-button, .js-slider__second-button {
   position: absolute;
   height: 20px;
   width: 20px;
@@ -44,7 +44,7 @@ html, body {
   background-color: rgb(24, 51, 83);
 }
 
-.slider__min-value, .slider__max-value {
+.js-slider__min-value, .js-slider__max-value {
   position: absolute;
   top: 20px;
   font-family: Arial, Helvetica, sans-serif;
@@ -53,7 +53,7 @@ html, body {
   cursor: pointer;
 }
 
-.slider__first-tooltip, .slider__second-tooltip {
+.js-slider__first-tooltip, .js-slider__second-tooltip {
   position: absolute;
   bottom: 20px;
   min-width: 28px;
