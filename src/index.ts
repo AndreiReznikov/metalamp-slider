@@ -87,9 +87,9 @@ import "./index.css";
       }
 
       calculateInitialButtonsPositon = () => {
-        const minRatio = this.config.minValue/(this.config.maxValue - this.config.minValue);
-        const fromRatio = this.config.from/(this.config.maxValue - this.config.minValue);
-        const toRatio = this.config.to/(this.config.maxValue - this.config.minValue);
+        const minRatio: number = this.config.minValue/(this.config.maxValue - this.config.minValue);
+        const fromRatio: number = this.config.from/(this.config.maxValue - this.config.minValue);
+        const toRatio: number = this.config.to/(this.config.maxValue - this.config.minValue);
         
         this.firstButtonPosition = Math.round((fromRatio - minRatio) * this.sliderLength - this.buttonLength/2);
 
@@ -101,14 +101,14 @@ import "./index.css";
       calculateFirstButtonPosition = (event: JQuery.MouseDownEvent) => {
         event.stopPropagation();
 
-        const shiftX1 = event.clientX - this.firstButtonGlobalPosition;
-        const shiftY1 = event.clientY - this.firstButtonGlobalPosition;
-        const shiftAxis1 = this.config.isVertical ? shiftY1 : shiftX1;
+        const shiftX1: number = event.clientX - this.firstButtonGlobalPosition;
+        const shiftY1: number = event.clientY - this.firstButtonGlobalPosition;
+        const shiftAxis1: number = this.config.isVertical ? shiftY1 : shiftX1;
 
         const calculateWhileFirstButtonMoving = (event: JQuery.MouseMoveEvent) => {
-          const clientX1 = event.clientX;
-          const clientY1 = event.clientY;
-          const clientAxis1 = this.config.isVertical ? clientY1 : clientX1;
+          const clientX1: number = event.clientX;
+          const clientY1: number = event.clientY;
+          const clientAxis1: number = this.config.isVertical ? clientY1 : clientX1;
 
           this.firstButtonPosition = clientAxis1 - shiftAxis1 - this.sliderPosition;
 
@@ -124,14 +124,15 @@ import "./index.css";
       changeFirstButtonPositionAfterFocusing = (event: JQuery.FocusEvent) => {
         if (!this.config.keyboard) return;
 
-        const keyCodeToIncrease = this.config.isVertical ? 40 : 39;
-        const keyCodeToReduce = this.config.isVertical ? 38 : 37;
+        const keyCodeToIncrease: number[] = this.config.isVertical ? [40, 83] : [39, 68];
+        const keyCodeToReduce: number[] = this.config.isVertical ? [38, 87] : [37, 65];
 
         const changeFirstButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent) => {
-          if (event.keyCode === keyCodeToIncrease) {
+          
+          if (keyCodeToIncrease.includes(event.keyCode)) {
             this.firstButtonPosition += 1;
           }
-          else if (event.keyCode === keyCodeToReduce) {
+          else if (keyCodeToReduce.includes(event.keyCode)) {
             this.firstButtonPosition -= 1;
           }
 
@@ -158,14 +159,14 @@ import "./index.css";
       calculateSecondButtonPosition = (event: JQuery.MouseDownEvent) => {
         event.stopPropagation();
 
-        const shiftX2 = event.clientX - this.secondButtonGlobalPosition;
-        const shiftY2 = event.clientY - this.secondButtonGlobalPosition;
-        const shiftAxis2 = this.config.isVertical ? shiftY2 : shiftX2;
+        const shiftX2: number = event.clientX - this.secondButtonGlobalPosition;
+        const shiftY2: number = event.clientY - this.secondButtonGlobalPosition;
+        const shiftAxis2: number = this.config.isVertical ? shiftY2 : shiftX2;
 
         const calculateWhileSecondButtonMoving = (event: JQuery.MouseMoveEvent) => {
-          const clientX2 = event.clientX;
-          const clientY2 = event.clientY;
-          const clientAxis2 = model.config.isVertical ? clientY2 : clientX2;
+          const clientX2: number = event.clientX;
+          const clientY2: number = event.clientY;
+          const clientAxis2: number = model.config.isVertical ? clientY2 : clientX2;
 
           this.secondButtonPosition = clientAxis2 - shiftAxis2 - this.sliderPosition;
 
@@ -181,14 +182,14 @@ import "./index.css";
       changeSecondButtonPositionAfterFocusing = (event: JQuery.FocusEvent) => {
         if (!this.config.keyboard) return;
 
-        const keyCodeToIncrease = this.config.isVertical ? 40 : 39;
-        const keyCodeToReduce = this.config.isVertical ? 38 : 37;
+        const keyCodeToIncrease: number[] = this.config.isVertical ? [40, 83] : [39, 68];
+        const keyCodeToReduce: number[] = this.config.isVertical ? [38, 87] : [37, 65];
 
         const changeSecondButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent) => {
-          if (event.keyCode === keyCodeToIncrease) {
+          if (keyCodeToIncrease.includes(event.keyCode)) {
             this.secondButtonPosition += 1;
           }
-          else if (event.keyCode === keyCodeToReduce) {
+          else if (keyCodeToReduce.includes(event.keyCode)) {
             this.secondButtonPosition -= 1;
           }
 
@@ -271,8 +272,8 @@ import "./index.css";
       }
 
       setPlane = (isVertical: boolean) => {
-        const width = $this.css('width');
-        const height = $this.css('height');
+        const width: string = $this.css('width');
+        const height: string = $this.css('height');
 
         if (isVertical) {
           $this.css('width', height);
@@ -297,11 +298,11 @@ import "./index.css";
     
 
     class Slider extends View {
-      $slider = $('<div/>');
+      $slider: JQuery<HTMLElement> = $('<div/>');
     }
 
     class RangeBetween extends View {
-      $rangeBetween = $('<div/>');
+      $rangeBetween: JQuery<HTMLElement> = $('<div/>');
 
       setRangeBetweenPosition = (options: any) => {
         this.$rangeBetween.css(options.positionParameter, options.rangeBetweenPosition);
@@ -313,7 +314,7 @@ import "./index.css";
     }
 
     class FirstSliderButton extends View {
-      $firstButton = $('<button/>');
+      $firstButton: JQuery<HTMLElement> = $('<button/>');
 
       setFirstButtonPosition = (options: any) => {
         this.$firstButton.css(options.positionParameter, options.firstButtonPosition);
@@ -321,7 +322,7 @@ import "./index.css";
     }
 
     class SecondSliderButton extends View {
-      $secondButton = $('<button/>');
+      $secondButton: JQuery<HTMLElement> = $('<button/>');
 
       setSecondButtonPosition = (options: Options) => {
         this.$secondButton.css(options.positionParameter, options.secondButtonPosition);
@@ -329,13 +330,13 @@ import "./index.css";
     }
 
     class Tooltip extends View {
-      $firstTooltip = $('<div/>');
-      $secondTooltip = $('<div/>');
+      $firstTooltip: JQuery<HTMLElement> = $('<div/>');
+      $secondTooltip: JQuery<HTMLElement> = $('<div/>');
     }
 
     class MinAndMaxValues extends View {
-      $minValueElement = $('<div/>');
-      $maxValueElement = $('<div/>');
+      $minValueElement: JQuery<HTMLElement> = $('<div/>');
+      $maxValueElement: JQuery<HTMLElement> = $('<div/>');
     }
 
     class Presenter {
