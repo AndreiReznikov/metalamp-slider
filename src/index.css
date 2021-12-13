@@ -22,6 +22,7 @@ html, body {
   border: 1px solid rgb(202, 205, 209);
   border-radius: 8px;
   background-color: #fff;
+  box-sizing: border-box;
   cursor: pointer;
 }
 
@@ -55,7 +56,6 @@ html, body {
 
 .js-slider__first-tooltip, .js-slider__second-tooltip {
   position: absolute;
-  bottom: 20px;
   min-width: 28px;
   height: 16px;
   font-family: Arial, Helvetica, sans-serif;
