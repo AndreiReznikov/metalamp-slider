@@ -133,6 +133,7 @@ import "./index.css";
           if (this.config.step <= 0) {
             this.firstButtonPosition = clientAxis1 - shiftAxis1 - this.sliderPosition;
             this.calculateTooltipsValues();
+            this.restrictFirstTooltipValue();
           }
           else {
             this.calculateFirstButtonPositionWidthSetStep(clientAxis1);
@@ -156,11 +157,11 @@ import "./index.css";
 
         if (isCursorNearStepAhead) {
           this.firstButtonPosition += this.stepLength;
-          this.firstTooltipValue = this.calculateTooltipValueWidthStepAhead(this.firstTooltipValue);
+          this.calculateFirstTooltipValueWidthStepAhead();
         }
         else if (isCursorNearStepBehind) {
           this.firstButtonPosition -= this.stepLength;
-          this.firstTooltipValue = this.calculateTooltipValueWidthStepBehind(this.firstTooltipValue);
+          this.calculateFirstTooltipValueWidthStepBehind();
         }
       }
 
@@ -178,16 +179,18 @@ import "./index.css";
 
           if (keyCodeToIncrease.includes(event.keyCode)) {
             this.firstButtonPosition += movementLength;
+            if (this.config.step > 0) this.calculateFirstTooltipValueWidthStepAhead();
           }
           else if (keyCodeToReduce.includes(event.keyCode)) {
             this.firstButtonPosition -= movementLength;
+            if (this.config.step > 0) this.calculateFirstTooltipValueWidthStepBehind();
           }
 
           this.restrictFirstButtonPosition();
           this.calculateRangeBetweenPosition();
           this.calculateRangeBetweenLength();
           this.calculateTooltipsPositions();
-          this.calculateTooltipsValues();
+          if (this.config.step <= 0) this.calculateTooltipsValues();
 
           observer.notifyObservers(this.getOptions());
         }
@@ -223,6 +226,7 @@ import "./index.css";
           if (this.config.step <= 0) {
             this.secondButtonPosition = clientAxis2 - shiftAxis2 - this.sliderPosition;
             this.calculateTooltipsValues();
+            this.restrictSecondTooltipValue();
           }
           else {
             this.calculateSecondButtonPositionWidthSetStep(clientAxis2);
@@ -246,11 +250,11 @@ import "./index.css";
 
         if (isCursorNearStepAhead) {
           this.secondButtonPosition += this.stepLength;
-          this.secondTooltipValue = this.calculateTooltipValueWidthStepAhead(this.secondTooltipValue);
+          this.calculateSecondTooltipValueWidthStepAhead();
         }
         else if (isCursorNearStepBehind) {
           this.secondButtonPosition -= this.stepLength;
-          this.secondTooltipValue = this.calculateTooltipValueWidthStepBehind(this.secondTooltipValue);
+          this.calculateSecondTooltipValueWidthStepBehind();
         }
       }
 
@@ -268,16 +272,18 @@ import "./index.css";
 
           if (keyCodeToIncrease.includes(event.keyCode)) {
             this.secondButtonPosition += movementLength;
+            if (this.config.step > 0) this.calculateSecondTooltipValueWidthStepAhead();
           }
           else if (keyCodeToReduce.includes(event.keyCode)) {
             this.secondButtonPosition -= movementLength;
+            if (this.config.step > 0) this.calculateSecondTooltipValueWidthStepBehind();
           }
 
           this.restrictSecondButtonPosition();
           this.calculateRangeBetweenPosition();
           this.calculateRangeBetweenLength();
           this.calculateTooltipsPositions();
-          this.calculateTooltipsValues();
+          if (this.config.step <= 0) this.calculateTooltipsValues();
 
           observer.notifyObservers(this.getOptions());
         }
@@ -319,20 +325,49 @@ import "./index.css";
       }
 
       calculateTooltipsValues = () => {
-        this.firstTooltipValue = `${Math.round((this.firstButtonPosition + this.buttonLength/2)/this.sliderLength * (this.config.maxValue - this.config.minValue) + this.config.minValue)}`;
-        this.secondTooltipValue = `${Math.round((this.secondButtonPosition + this.buttonLength/2)/this.sliderLength * (this.config.maxValue - this.config.minValue) + this.config.minValue)}`;
+        this.firstTooltipValue = Math.round((this.firstButtonPosition + this.buttonLength/2)/this.sliderLength * (this.config.maxValue - this.config.minValue) + this.config.minValue);
+        this.secondTooltipValue = Math.round((this.secondButtonPosition + this.buttonLength/2)/this.sliderLength * (this.config.maxValue - this.config.minValue) + this.config.minValue);
       }
 
-      calculateTooltipValueWidthStepAhead = (tooltipValue: string | number) => {
-        tooltipValue = parseInt(`${tooltipValue}`) + this.config.step;
-
-        return tooltipValue;
+      calculateFirstTooltipValueWidthStepAhead = () => {
+        this.firstTooltipValue = parseInt(`${this.firstTooltipValue}`) + this.config.step;
+        this.restrictFirstTooltipValue();
       }
 
-      calculateTooltipValueWidthStepBehind = (tooltipValue: string | number) => {
-        tooltipValue = parseInt(`${tooltipValue}`) - this.config.step;
+      calculateFirstTooltipValueWidthStepBehind = () => {
+        this.firstTooltipValue = parseInt(`${this.firstTooltipValue}`) - this.config.step;
+        this.restrictFirstTooltipValue();
+      }
 
-        return tooltipValue;
+      calculateSecondTooltipValueWidthStepAhead = () => {
+        this.secondTooltipValue = parseInt(`${this.secondTooltipValue}`) + this.config.step;
+        this.restrictSecondTooltipValue();
+      }
+
+      calculateSecondTooltipValueWidthStepBehind = () => {
+        this.secondTooltipValue = parseInt(`${this.secondTooltipValue}`) - this.config.step;
+        this.restrictSecondTooltipValue();
+      }
+
+      restrictFirstTooltipValue = () => {
+        if (this.firstTooltipValue < this.config.minValue) {
+          this.firstTooltipValue = this.config.minValue;
+        }
+        else if (this.config.isInterval && this.firstTooltipValue > this.secondTooltipValue) {
+          this.firstTooltipValue = this.secondTooltipValue;
+        }
+        else if (this.firstTooltipValue > this.config.maxValue) {
+          this.firstTooltipValue = this.config.maxValue;
+        }
+      }
+
+      restrictSecondTooltipValue = () => {
+        if (this.secondTooltipValue < this.firstTooltipValue) {
+          this.secondTooltipValue = this.firstTooltipValue;
+        }
+        else if (this.secondTooltipValue > this.config.maxValue) {
+          this.secondTooltipValue = this.config.maxValue;
+        }
       }
 
       separateTooltips = () => {
@@ -498,7 +533,6 @@ import "./index.css";
         });
         model.calculateStepLength();
         model.calculateInitialButtonsPositon();
-        model.calculateTooltipsValues();
         model.calculateTooltipsPositions();
         model.calculateRangeBetweenPosition();
         model.calculateRangeBetweenLength();
@@ -555,7 +589,7 @@ $('.js-slider').mySlider({
   isInterval: true,
   minValue: 15,
   maxValue: 250,
-  step: 25,
+  step: 0,
   from: 35,
   to: 120,
   keyboard: true,
