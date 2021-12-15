@@ -192,18 +192,32 @@ import "./index.css";
           }
         }
         else {
-          this.firstButtonPosition = clientAxis1 - this.sliderPosition - this.buttonLength/2;
-          this.calculateTooltipsValues();
+          if (clickAheadOfFirstButton || clickBehindOfFirstButton) {
+            this.firstButtonPosition = clientAxis1 - this.sliderPosition - this.buttonLength/2;
+            this.calculateTooltipsValues();
+          }
+        }
+
+        //Вынести в отдельный метод?
+        if (this.isStepSet) {
+          if (clickBehindOfFirstButton && clientAxis1 - this.sliderPosition < this.stepLength) {
+            this.firstButtonPosition = 0 - this.buttonLength/2;
+            this.firstTooltipValue = this.config.minValue;
+          }
+          if (clickAheadOfFirstButton && this.sliderLength - (clientAxis1 - this.sliderPosition) < this.stepLength) {
+            this.firstButtonPosition = this.sliderLength;
+            this.firstTooltipValue = this.config.maxValue;
+          }
+          else if (clickAheadOfFirstButton && this.secondButtonPosition - this.firstButtonPosition < this.stepLength && this.config.isInterval) {
+            this.firstButtonPosition = this.secondButtonPosition;
+            this.firstTooltipValue = this.secondTooltipValue;
+          }
         }
 
         this.restrictFirstButtonPosition();
         this.calculateRangeBetweenPosition();
         this.calculateRangeBetweenLength();
         this.calculateTooltipsPositions();
-
-        if (this.rangeBetweenLength < this.stepLength && this.config.isInterval) {
-          this.firstButtonPosition = this.secondButtonPosition;
-        }
 
         observer.notifyObservers(this.getOptions());
       }
@@ -330,18 +344,28 @@ import "./index.css";
           }
         }
         else {
-          this.secondButtonPosition = clientAxis2 - this.sliderPosition - this.buttonLength/2;
-          this.calculateTooltipsValues();
+          if (clickAheadOfSecondButton || clickBehindOfSecondButton) {
+            this.secondButtonPosition = clientAxis2 - this.sliderPosition - this.buttonLength/2;
+            this.calculateTooltipsValues();
+          }
+        }
+
+        //Вынести в отдельный метод?
+        if (this.isStepSet) {
+          if (clickAheadOfSecondButton && this.sliderLength - (clientAxis2 - this.sliderPosition) < this.stepLength) {
+            this.secondButtonPosition = this.sliderLength - this.buttonLength/2;
+            this.secondTooltipValue = this.config.maxValue;
+          }
+          else if (clickBehindOfSecondButton && this.secondButtonPosition - this.firstButtonPosition < this.stepLength) {
+            this.secondButtonPosition = this.firstButtonPosition;
+            this.secondTooltipValue = this.firstTooltipValue;
+          }
         }
 
         this.restrictSecondButtonPosition();
         this.calculateRangeBetweenPosition();
         this.calculateRangeBetweenLength();
         this.calculateTooltipsPositions();
-
-        if (this.rangeBetweenLength < this.stepLength) {
-          this.secondButtonPosition = this.firstButtonPosition;
-        }
 
         observer.notifyObservers(this.getOptions());
       }
@@ -695,9 +719,9 @@ $('.js-slider').mySlider({
   isInterval: false,
   minValue: 15,
   maxValue: 250,
-  step: 20,
-  from: 35,
-  to: 120,
+  step: 0,
+  from: 55,
+  to: 80,
   keyboard: true,
   isTooltip: true,
   isVertical: false
