@@ -46,23 +46,27 @@ html, body {
   background-color: rgb(24, 51, 83);
 }
 
-.js-slider__min-value, .js-slider__max-value {
+/* .js-slider__min-value, .js-slider__max-value {
   position: absolute;
   top: 20px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-}
+} */
 
 .js-slider__first-tooltip, .js-slider__second-tooltip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   min-width: 28px;
-  height: 16px;
+  height: 18px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: bold;
   text-align: center;
+  border-radius: 4px;
   color: #fff;
   background-color: rgb(24, 51, 83);
 }
