@@ -42,6 +42,9 @@ import "./index.css";
       secondTooltipValue: number | string;
       rangeBetweenPosition: number;
       rangeBetweenLength: number;
+      scaleNumbers: number;
+      scaleElements: number[];
+      lengthBetweenScaleElements: number;
     }
 
     interface ElementsParameters {
@@ -111,6 +114,9 @@ import "./index.css";
       secondTooltipValue: number | string = this.config.to;
       rangeBetweenPosition: number = 0;
       rangeBetweenLength: number = 0;
+      scaleNumbers: number = 5;
+      scaleElements: number[] = [];
+      lengthBetweenScaleElements: number = 0;
 
       setSliderElementsParameters = (elementsParameters: ElementsParameters) => {
         this.sliderPosition = elementsParameters.sliderPosition;
@@ -607,7 +613,7 @@ import "./index.css";
 
       caclulateMinAndMaxPositions = () => {
         this.minValuePosition = 0;
-        this.maxValuePosition = this.sliderLength - this.maxValueLength
+        this.maxValuePosition = this.sliderLength - this.maxValueLength;
       }
 
       //Доработать
@@ -628,6 +634,21 @@ import "./index.css";
         else {
           this.showMaxValue = true;
         }
+      }
+
+      calculateScaleElementsValues = () => {
+        const intervalForScalesElements: number = (this.maxValue - this.minValue)/(this.scaleNumbers - 1);
+        let scaleElementValue = this.minValue;
+
+        this.scaleElements.push(scaleElementValue);
+        
+        for (let i = 0; i < this.scaleNumbers - 1; i++) {      
+          this.scaleElements.push(Math.round(scaleElementValue += intervalForScalesElements));
+        }
+      }
+
+      calculateLengthBetweenScaleElements = () => {
+        this.lengthBetweenScaleElements = this.sliderLength/(this.scaleNumbers - 1);
       }
 
       calculateStepLength = () => {
@@ -659,7 +680,10 @@ import "./index.css";
           firstTooltipValue: this.firstTooltipValue,
           secondTooltipValue: this.secondTooltipValue,
           rangeBetweenPosition: this.rangeBetweenPosition,
-          rangeBetweenLength: this.rangeBetweenLength
+          rangeBetweenLength: this.rangeBetweenLength,
+          scaleNumbers: this.scaleNumbers,
+          scaleElements: this.scaleElements,
+          lengthBetweenScaleElements: this.lengthBetweenScaleElements
         }
 
         return options;
@@ -674,6 +698,7 @@ import "./index.css";
         firstButton.$firstButton.appendTo(slider.$slider).addClass('js-slider__first-button');
         minAndMaxValues.$minValue.appendTo(slider.$slider).addClass('js-slider__min-value');
         minAndMaxValues.$maxValue.appendTo(slider.$slider).addClass('js-slider__max-value');
+        scale.$scaleContainer.appendTo(slider.$slider).addClass('js-scale-container');
 
         if (isInterval) {
           secondButton.$secondButton.appendTo(slider.$slider).addClass('js-slider__second-button');
@@ -712,6 +737,7 @@ import "./index.css";
         tooltips.$secondTooltip.css({'bottom': `${secondButton.$secondButton.css('height')}`});
         minAndMaxValues.$minValue.css({'bottom': `${firstButton.$firstButton.css('height')}`});
         minAndMaxValues.$maxValue.css({'bottom': `${firstButton.$firstButton.css('height')}`});
+        scale.$scaleContainer.css({'left': '50%', 'transform': 'translateX(-50%)'});
       }
 
       getCoords = (el: JQuery<HTMLElement>, isVertical: boolean) => {
@@ -807,6 +833,36 @@ import "./index.css";
       }
     }
 
+    class Scale extends View {
+      $scaleContainer: JQuery<HTMLElement> = $('<div>');
+
+      setScaleElementsValues = (options: Options) => {
+        for (let i = 0; i < options.scaleElements.length; i++) {
+          const $scaleElement: JQuery<HTMLElement> = $('<div>').addClass(`js-scale-element js-scale-element_${i}`);
+          $scaleElement.html(`${options.scaleElements[i]}`);
+          $scaleElement.appendTo(this.$scaleContainer);
+        }
+      }
+
+      //!!! Исправить
+      setSclaleElementsPositions = (options: Options) => {
+        let scaleElementPosition = 0 + options.buttonLength/2;
+
+        for (let i = 0; i < options.scaleElements.length; i++) {
+          const $scaleElement = this.$scaleContainer.find(`.js-scale-element_${i}`);
+          const scaleElementLength = parseInt($scaleElement.css(options.lengthParameter));
+
+          $scaleElement.css(options.positionParameter, scaleElementPosition - scaleElementLength/2);
+
+          scaleElementPosition += options.lengthBetweenScaleElements
+        }
+      }
+
+      setScaleLength = (options: Options) => {
+        this.$scaleContainer.css(options.lengthParameter, options.sliderLength + options.buttonLength);
+      }
+    }
+
     class Presenter {
 
       constructor() {
@@ -832,6 +888,8 @@ import "./index.css";
         model.calculateTooltipsPositions();
         model.calculateRangeBetweenPosition();
         model.calculateRangeBetweenLength();
+        model.calculateScaleElementsValues();
+        model.calculateLengthBetweenScaleElements();
 
         options = model.getOptions();
 
@@ -845,6 +903,9 @@ import "./index.css";
         tooltips.setSecondTooltipValue(options);
         rangeBetween.setRangeBetweenPosition(options);
         rangeBetween.setRangeBetweenLength(options);
+        scale.setScaleElementsValues(options);
+        scale.setScaleLength(options);
+        scale.setSclaleElementsPositions(options);
         observer.addObserver(firstButton.setFirstButtonPosition);
         observer.addObserver(secondButton.setSecondButtonPosition);
         observer.addObserver(tooltips.setFirstTooltipPosition);
@@ -877,6 +938,7 @@ import "./index.css";
     const rangeBetween = new RangeBetween();
     const slider = new Slider();
     const minAndMaxValues = new MinAndMaxValues();
+    const scale = new Scale();
     const presenter = new Presenter();
 
     return input;
@@ -891,10 +953,10 @@ import "./index.css";
 
 $('.js-slider').mySlider({
   isInterval: false,
-  minValue: 15,
+  minValue: -250,
   maxValue: 250,
   step: 0,
-  from: 35,
+  from: 0,
   to: 120,
   keyboard: true,
   isTooltip: true,

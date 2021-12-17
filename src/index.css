@@ -47,10 +47,19 @@ html, body {
 }
 
 .js-slider__min-value, .js-slider__max-value {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   font-family: Arial, Helvetica, sans-serif;
+  min-width: 28px;
+  height: 18px;
   font-size: 14px;
   font-weight: bold;
+  background-color: rgb(202, 205, 209);
+  color: #fff;
+  box-sizing: border-box;
+  border-radius: 4px;
   cursor: pointer;
 }
 
@@ -68,4 +77,16 @@ html, body {
   border-radius: 4px;
   color: #fff;
   background-color: rgb(24, 51, 83);
+}
+
+.js-scale-container {
+  position: relative;
+  display: flex;
+  top: 30px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+.js-scale-element {
+ position: absolute;
 }
