@@ -51,6 +51,7 @@ html, body {
   justify-content: center;
   align-items: center;
   position: absolute;
+  padding: 3px;
   font-family: Arial, Helvetica, sans-serif;
   min-width: 28px;
   height: 18px;
@@ -70,11 +71,13 @@ html, body {
   position: absolute;
   min-width: 28px;
   height: 18px;
+  padding: 3px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: bold;
   text-align: center;
   border-radius: 4px;
+  box-sizing: border-box;
   color: #fff;
   background-color: rgb(24, 51, 83);
 }
@@ -82,7 +85,6 @@ html, body {
 .js-scale-container {
   position: relative;
   display: flex;
-  top: 30px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
 }

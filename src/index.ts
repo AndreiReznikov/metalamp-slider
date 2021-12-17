@@ -256,6 +256,45 @@ import "./index.css";
         }
       }
 
+      //Доработать
+      calculateButtonPositionAfterScaleOnDown = (event: JQuery.MouseDownEvent) => {
+        event.stopPropagation();
+
+        const isScaleElementOnDown = $(event.target).hasClass('js-scale-element');
+
+        if (!isScaleElementOnDown) return;
+
+        const clientX1: number = event.clientX;
+        const clientY1: number = event.clientY;
+        const clientAxis1: number = this.config.isVertical ? clientY1 : clientX1;
+
+        const minRatio: number = this.config.minValue/(this.config.maxValue - this.config.minValue);
+        const scaleElementRatio = parseInt($(event.target).html())/(this.maxValue - this.minValue);
+
+        const clickAheadOfFirstButtonWidthInterval = clientAxis1 - this.sliderPosition > this.firstButtonPosition + this.buttonLength && clientAxis1 - this.sliderPosition < this.firstButtonPosition + this.buttonLength + this.rangeBetweenLength/2;
+        const clickAheadOfFirstButtonWidthoutInterval = clientAxis1 - this.sliderPosition > this.firstButtonPosition + this.buttonLength;
+
+        const clickAheadOfFirstButton: boolean = this.config.isInterval ? clickAheadOfFirstButtonWidthInterval : clickAheadOfFirstButtonWidthoutInterval;
+        const clickBehindOfFirstButton: boolean = clientAxis1 - this.sliderPosition < this.firstButtonPosition;
+        const clickAheadOfSecondButton: boolean = clientAxis1 - this.sliderPosition > this.secondButtonPosition + this.buttonLength;
+        const clickBehindOfSecondButton: boolean = clientAxis1 - this.sliderPosition < this.secondButtonPosition && clientAxis1 - this.sliderPosition >= this.firstButtonPosition + this.buttonLength + this.rangeBetweenLength/2;
+
+        if (clickAheadOfFirstButton || clickBehindOfFirstButton) {
+          this.firstButtonPosition = Math.round((scaleElementRatio - minRatio) * this.sliderLength - this.buttonLength/2);
+        }
+        else if (clickAheadOfSecondButton || clickBehindOfSecondButton) {
+          this.secondButtonPosition = Math.round((scaleElementRatio - minRatio) * this.sliderLength - this.buttonLength/2);
+        }
+
+        this.restrictFirstButtonPosition();
+        this.calculateRangeBetweenPosition();
+        this.calculateRangeBetweenLength();
+        this.calculateTooltipsPositions();
+        this.calculateTooltipsValues();
+
+        observer.notifyObservers(this.getOptions());
+      }
+
       calculateFirstButtonPositionAfterMinValueOnDown = (event: JQuery.MouseDownEvent) => {
         event.stopPropagation();
 
@@ -717,6 +756,7 @@ import "./index.css";
         const width: string = $this.css('width');
         const height: string = $this.css('height');
 
+        //Доработать
         if (isVertical) {
           $this.css('width', height);
           $this.css('height', width);
@@ -726,6 +766,7 @@ import "./index.css";
           tooltips.$secondTooltip.css({'left': `${secondButton.$secondButton.css('width')}`}); 
           minAndMaxValues.$minValue.css({'left': `${firstButton.$firstButton.css('width')}`});
           minAndMaxValues.$maxValue.css({'left': `${firstButton.$firstButton.css('width')}`});
+          scale.$scaleContainer.css({'right': 35})
           return;
         }
 
@@ -737,7 +778,7 @@ import "./index.css";
         tooltips.$secondTooltip.css({'bottom': `${secondButton.$secondButton.css('height')}`});
         minAndMaxValues.$minValue.css({'bottom': `${firstButton.$firstButton.css('height')}`});
         minAndMaxValues.$maxValue.css({'bottom': `${firstButton.$firstButton.css('height')}`});
-        scale.$scaleContainer.css({'left': '50%', 'transform': 'translateX(-50%)'});
+        scale.$scaleContainer.css({'top': 35})
       }
 
       getCoords = (el: JQuery<HTMLElement>, isVertical: boolean) => {
@@ -844,9 +885,9 @@ import "./index.css";
         }
       }
 
-      //!!! Исправить
+      //!!! Исправить - перенести расчёты в модель?
       setSclaleElementsPositions = (options: Options) => {
-        let scaleElementPosition = 0 + options.buttonLength/2;
+        let scaleElementPosition = 0;
 
         for (let i = 0; i < options.scaleElements.length; i++) {
           const $scaleElement = this.$scaleContainer.find(`.js-scale-element_${i}`);
@@ -859,7 +900,7 @@ import "./index.css";
       }
 
       setScaleLength = (options: Options) => {
-        this.$scaleContainer.css(options.lengthParameter, options.sliderLength + options.buttonLength);
+        this.$scaleContainer.css(options.lengthParameter, options.sliderLength);
       }
     }
 
@@ -926,6 +967,7 @@ import "./index.css";
         minAndMaxValues.$minValue.on('mousedown', model.calculateFirstButtonPositionAfterMinValueOnDown);
         minAndMaxValues.$maxValue.on('mousedown', model.calculateFirstButtonPositionAfterMaxValueOnDown);
         minAndMaxValues.$maxValue.on('mousedown', model.calculateSecondButtonPositionAfterMaxValueOnDown);
+        scale.$scaleContainer.on('mousedown', model.calculateButtonPositionAfterScaleOnDown);
       }
     }
 
@@ -952,12 +994,12 @@ import "./index.css";
 })(jQuery);
 
 $('.js-slider').mySlider({
-  isInterval: false,
+  isInterval: true,
   minValue: -250,
   maxValue: 250,
   step: 0,
   from: 0,
-  to: 120,
+  to: 125,
   keyboard: true,
   isTooltip: true,
   isVertical: false
