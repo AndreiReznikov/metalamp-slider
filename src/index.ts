@@ -127,13 +127,14 @@ import "./index.css";
       secondButtonGlobalPosition: number = 0;
       firstTooltipPosition: number = 0;
       secondTooltipPosition: number = 0;
-      firstTooltipValue: number | string = this.config.from;
-      secondTooltipValue: number | string = this.config.to;
+      firstTooltipValue: number = this.config.from;
+      secondTooltipValue: number = this.config.to;
       rangeBetweenPosition: number = 0;
       rangeBetweenLength: number = 0;
       scaleNumbers: number = this.config.scaleNumbers;
       scaleElements: number[] = [];
       lengthBetweenScaleElements: number = 0;
+      numberOfDecimalPlaces: number = 0;
 
       //Рефакторинг
       validateInitialValues = () => {
@@ -168,6 +169,19 @@ import "./index.css";
           this.config.from = this.config.to;
           this.firstTooltipValue = this.secondTooltipValue;
         }
+      }
+
+      countNumberOfDecimalPlaces = () => {
+        const minValueParts: string[] = `${this.config.minValue}`.split('.');
+        const maxValueParts: string[] = `${this.config.maxValue}`.split('.');
+
+        let minValueNumberOfDecimalPlaces: string = minValueParts[1];
+        let maxValueNumberOfDecimalPlaces: string = maxValueParts[1];
+        
+        if (minValueNumberOfDecimalPlaces === undefined) minValueNumberOfDecimalPlaces = '';
+        if (maxValueNumberOfDecimalPlaces === undefined) maxValueNumberOfDecimalPlaces = '';
+
+        this.numberOfDecimalPlaces = minValueNumberOfDecimalPlaces.length > maxValueNumberOfDecimalPlaces.length  ? minValueNumberOfDecimalPlaces.length  : maxValueNumberOfDecimalPlaces.length;
       }
 
       setSliderElementsParameters = (elementsParameters: ElementsParameters) => {
@@ -320,7 +334,7 @@ import "./index.css";
         const clientAxis1: number = this.config.isVertical ? clientY1 : clientX1;
 
         const minRatio: number = this.config.minValue/(this.config.maxValue - this.config.minValue);
-        const scaleElementValue: number = parseInt($(event.target).html());
+        const scaleElementValue: number = parseFloat($(event.target).html());
         const scaleElementRatio: number = scaleElementValue/(this.maxValue - this.minValue);
 
         const clickAheadOfFirstButtonWidthInterval = clientAxis1 - this.sliderPosition > this.firstButtonPosition + this.buttonLength && clientAxis1 - this.sliderPosition < this.firstButtonPosition + this.buttonLength + (this.secondButtonPosition - this.firstButtonPosition)/2;
@@ -612,45 +626,46 @@ import "./index.css";
         this.separateTooltips();
         this.showMinAndMaxValues();
       }
-
+      
+      //Исправить
       calculateTooltipsValues = () => {
-        this.firstTooltipValue = Math.round((this.firstButtonPosition + this.buttonLength/2)/this.sliderLength * (this.config.maxValue - this.config.minValue) + this.config.minValue);
-        this.secondTooltipValue = Math.round((this.secondButtonPosition + this.buttonLength/2)/this.sliderLength * (this.config.maxValue - this.config.minValue) + this.config.minValue);
+        this.firstTooltipValue = parseFloat(((this.firstButtonPosition + this.buttonLength/2)/this.sliderLength * (this.config.maxValue - this.config.minValue) + this.config.minValue).toFixed(this.numberOfDecimalPlaces));
+        this.secondTooltipValue = parseFloat(((this.secondButtonPosition + this.buttonLength/2)/this.sliderLength * (this.config.maxValue - this.config.minValue) + this.config.minValue).toFixed(this.numberOfDecimalPlaces));
       }
 
       calculateFirstTooltipValueAfterSliderOnDownAhead = (stepNumber: number) => {
-        this.firstTooltipValue = parseInt(`${this.firstTooltipValue}`) + stepNumber * this.config.step;
+        this.firstTooltipValue = parseFloat((this.firstTooltipValue + (stepNumber * this.config.step)).toFixed(this.numberOfDecimalPlaces));
       }
 
       calculateFirstTooltipValueAfterSliderOnDownBehind = (stepNumber: number) => {
-        this.firstTooltipValue = parseInt(`${this.firstTooltipValue}`) - stepNumber * this.config.step;
+        this.firstTooltipValue = parseFloat((this.firstTooltipValue - (stepNumber * this.config.step)).toFixed(this.numberOfDecimalPlaces));
       }
 
       calculateSecondTooltipValueAfterSliderOnDownAhead = (stepNumber: number) => {
-        this.secondTooltipValue = parseInt(`${this.secondTooltipValue}`) + stepNumber * this.config.step;
+        this.secondTooltipValue = parseFloat((this.secondTooltipValue + (stepNumber * this.config.step)).toFixed(this.numberOfDecimalPlaces));
       }
 
       calculateSecondTooltipValueAfterSliderOnDownBehind = (stepNumber: number) => {
-        this.secondTooltipValue = parseInt(`${this.secondTooltipValue}`) - stepNumber * this.config.step;
+        this.secondTooltipValue = parseFloat((this.secondTooltipValue - (stepNumber * this.config.step)).toFixed(this.numberOfDecimalPlaces));
       }
 
       calculateFirstTooltipValueWidthStepAhead = () => {
-        this.firstTooltipValue = parseInt(`${this.firstTooltipValue}`) + this.config.step;
+        this.firstTooltipValue = parseFloat((this.firstTooltipValue + this.config.step).toFixed(this.numberOfDecimalPlaces));
         this.restrictFirstTooltipValue();
       }
 
       calculateFirstTooltipValueWidthStepBehind = () => {
-        this.firstTooltipValue = parseInt(`${this.firstTooltipValue}`) - this.config.step;
+        this.firstTooltipValue = parseFloat((this.firstTooltipValue - this.config.step).toFixed(this.numberOfDecimalPlaces));
         this.restrictFirstTooltipValue();
       }
 
       calculateSecondTooltipValueWidthStepAhead = () => {
-        this.secondTooltipValue = parseInt(`${this.secondTooltipValue}`) + this.config.step;
+        this.secondTooltipValue = parseFloat((this.secondTooltipValue + this.config.step).toFixed(this.numberOfDecimalPlaces));
         this.restrictSecondTooltipValue();
       }
 
       calculateSecondTooltipValueWidthStepBehind = () => {
-        this.secondTooltipValue = parseInt(`${this.secondTooltipValue}`) - this.config.step;
+        this.secondTooltipValue = parseFloat((this.secondTooltipValue - this.config.step).toFixed(this.numberOfDecimalPlaces));
         this.restrictSecondTooltipValue();
       }
 
@@ -658,7 +673,7 @@ import "./index.css";
         this.firstTooltipValue = this.config.minValue;
       }
 
-      calculateMaxFirstTooltipValue = (value: number | string) => {
+      calculateMaxFirstTooltipValue = (value: number) => {
         this.firstTooltipValue = value;
       }
 
@@ -727,10 +742,10 @@ import "./index.css";
         const intervalForScalesElements: number = (this.maxValue - this.minValue)/(this.scaleNumbers - 1);
         let scaleElementValue = this.minValue;
 
-        this.scaleElements.push(scaleElementValue);
+        this.scaleElements.push(parseFloat(scaleElementValue.toFixed(this.numberOfDecimalPlaces)));
         
         for (let i = 0; i < this.scaleNumbers - 1; i++) {      
-          this.scaleElements.push(Math.round(scaleElementValue += intervalForScalesElements));
+          this.scaleElements.push(parseFloat((scaleElementValue += intervalForScalesElements).toFixed(this.numberOfDecimalPlaces)));
         }
       }
 
@@ -780,6 +795,10 @@ import "./index.css";
     class View {
 
       init = (initialOptions: InitialOptions) => {
+        if (initialOptions.isRangeBetween) {
+          rangeBetween.$rangeBetween.appendTo(slider.$slider).addClass('js-slider__between');
+        }
+
         slider.$slider.appendTo($this).addClass('js-slider__stripe');
         firstButton.$firstButton.appendTo(slider.$slider).addClass('js-slider__first-button');
 
@@ -794,10 +813,6 @@ import "./index.css";
 
         if (initialOptions.isScale) {
           scale.$scaleContainer.appendTo(slider.$slider).addClass('js-scale-container');
-        }
-
-        if (initialOptions.isRangeBetween) {
-          rangeBetween.$rangeBetween.appendTo(slider.$slider).addClass('js-slider__between');
         }
 
         if (initialOptions.isTooltip) {
@@ -962,6 +977,7 @@ import "./index.css";
 
         //All for initialization of the slider
         model.validateInitialValues();
+        model.countNumberOfDecimalPlaces();
         view.init({
           isInterval: model.config.isInterval,
           isTooltip: model.config.isTooltip,
@@ -1061,11 +1077,11 @@ import "./index.css";
 
 $('.js-slider').mySlider({
   isInterval: true,
-  minValue: 0,
-  maxValue: 250,
-  step: 25,
-  from: 25,
-  to: 75,
+  minValue: -2.5,
+  maxValue: 2.5,
+  step: 0.2,
+  from: -1.5,
+  to: 1.5,
   keyboard: true,
   isTooltip: true,
   isVertical: false,
