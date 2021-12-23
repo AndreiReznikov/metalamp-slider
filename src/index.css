@@ -32,7 +32,7 @@ html, body {
   width: 100%;
   height: 100%;
   border-radius: 8px;
-  background-color: rgb(24, 51, 83);
+  background-color: rgb(47, 50, 53);
 }
 
 .js-slider__first-button, .js-slider__second-button {
@@ -43,7 +43,7 @@ html, body {
   box-sizing: border-box;
   border: 2px solid #fff;
   border-radius: 50%;
-  background-color: rgb(24, 51, 83);
+  background-color: rgb(47, 50, 53);
 }
 
 .js-slider__min-value, .js-slider__max-value {
@@ -79,16 +79,17 @@ html, body {
   border-radius: 4px;
   box-sizing: border-box;
   color: #fff;
-  background-color: rgb(24, 51, 83);
+  background-color: rgb(47, 50, 53);
 }
 
-.js-scale-container {
+.js-slider__scale-container {
   position: relative;
   display: flex;
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
+  color: rgb(47, 50, 53);
 }
 
-.js-scale-element {
+.js-slider__scale-element {
  position: absolute;
 }

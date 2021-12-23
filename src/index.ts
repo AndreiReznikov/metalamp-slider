@@ -88,6 +88,12 @@ import "./index.css";
     }
     
     class Model {
+
+      observer;
+
+      constructor() {
+        this.observer = new Observer();
+      }
       
       data: Config = {
         isInterval: false,
@@ -186,7 +192,7 @@ import "./index.css";
         this.numberOfDecimalPlaces = minValueNumberOfDecimalPlaces.length > maxValueNumberOfDecimalPlaces.length  ? minValueNumberOfDecimalPlaces.length  : maxValueNumberOfDecimalPlaces.length;
       }
 
-      setSliderElementsParameters = (elementsParameters: ElementsParameters) => {
+      setElementsParameters = (elementsParameters: ElementsParameters) => {
         this.sliderPosition = elementsParameters.sliderPosition;
         this.sliderLength = elementsParameters.sliderLength;
         this.buttonLength = elementsParameters.buttonLength;
@@ -238,7 +244,7 @@ import "./index.css";
           this.calculateRangeBetweenLength();
           this.calculateTooltipsPositions();
 
-          observer.notifyObservers(this.getOptions());
+          this.observer.notifyObservers(this.getOptions());
         }
 
         $(document).on('mousemove', calculateWhileFirstButtonMoving);
@@ -298,7 +304,7 @@ import "./index.css";
         this.calculateRangeBetweenLength();
         this.calculateTooltipsPositions();
 
-        observer.notifyObservers(this.getOptions());
+        this.observer.notifyObservers(this.getOptions());
       }
 
       calculateMinFirstButtonPositionAfterSliderOnDown = (clickBehind: boolean, clientAxis: number) => {
@@ -359,7 +365,7 @@ import "./index.css";
         this.calculateTooltipsPositions();
         this.calculateTooltipsValues();
 
-        observer.notifyObservers(this.getOptions());
+        this.observer.notifyObservers(this.getOptions());
       }
 
       calculateFirstButtonPositionAfterMinValueOnDown = (event: JQuery.MouseDownEvent) => {
@@ -372,7 +378,7 @@ import "./index.css";
         this.calculateTooltipsPositions();
         this.calculateMinFirstTooltipValue();
 
-        observer.notifyObservers(this.getOptions());
+        this.observer.notifyObservers(this.getOptions());
       }
 
       calculateFirstButtonPositionAfterMaxValueOnDown = (event: JQuery.MouseDownEvent) => {
@@ -387,7 +393,7 @@ import "./index.css";
         this.calculateTooltipsPositions();
         this.calculateMaxFirstTooltipValue(this.maxValue);
 
-        observer.notifyObservers(this.getOptions());
+        this.observer.notifyObservers(this.getOptions());
       }
 
       calculateFirstButtonPositionAfterFocusing = (event: JQuery.FocusInEvent) => {
@@ -417,7 +423,7 @@ import "./index.css";
           this.calculateTooltipsPositions();
           if (!this.isStepSet) this.calculateTooltipsValues();
 
-          observer.notifyObservers(this.getOptions());
+          this.observer.notifyObservers(this.getOptions());
         }
 
         $(event.target).on('keydown', calculateFirstButtonPositionAfterKeydown);
@@ -464,7 +470,7 @@ import "./index.css";
           this.calculateRangeBetweenLength();
           this.calculateTooltipsPositions();
 
-          observer.notifyObservers(this.getOptions());
+          this.observer.notifyObservers(this.getOptions());
         }
 
         $(document).on('mousemove', calculateWhileSecondButtonMoving);
@@ -525,7 +531,7 @@ import "./index.css";
         this.calculateRangeBetweenLength();
         this.calculateTooltipsPositions();
 
-        observer.notifyObservers(this.getOptions());
+        this.observer.notifyObservers(this.getOptions());
       }
 
       calculateMinSecondButtonPositionAfterSliderOnDown = (clickBehind: boolean, clientAxis: number) => {
@@ -558,7 +564,7 @@ import "./index.css";
         this.calculateTooltipsPositions();
         this.calculateMaxSecondTooltipValue();
 
-        observer.notifyObservers(this.getOptions());
+        this.observer.notifyObservers(this.getOptions());
       }
 
       calculateSecondButtonPositionAfterFocusing = (event: JQuery.FocusInEvent) => {
@@ -588,7 +594,7 @@ import "./index.css";
           this.calculateTooltipsPositions();
           if (!this.isStepSet) this.calculateTooltipsValues();
 
-          observer.notifyObservers(this.getOptions());
+          this.observer.notifyObservers(this.getOptions());
         }
 
         $(event.target).on('keydown', calculateSecondButtonPositionAfterKeydown);
@@ -826,6 +832,7 @@ import "./index.css";
       slider;
       minAndMaxValues;
       scale;
+      panel;
       $slider: JQuery<HTMLElement>;
       $firstButton: JQuery<HTMLElement>;
       $secondButton: JQuery<HTMLElement>;
@@ -835,6 +842,7 @@ import "./index.css";
       $scaleContainer: JQuery<HTMLElement>;
       $firstTooltip: JQuery<HTMLElement>;
       $secondTooltip: JQuery<HTMLElement>;
+      $panelContainer: JQuery<HTMLElement>;
       
       constructor () {
         this.tooltips = new Tooltips();
@@ -844,6 +852,7 @@ import "./index.css";
         this.slider = new Slider();
         this.minAndMaxValues = new MinAndMaxValues();
         this.scale = new Scale();
+        this.panel = new Panel();
 
         this.$slider = this.slider.$slider;
         this.$firstButton = this.firstButton.$firstButton;
@@ -854,37 +863,38 @@ import "./index.css";
         this.$scaleContainer = this.scale.$scaleContainer;
         this.$firstTooltip = this.tooltips.$firstTooltip;
         this.$secondTooltip = this.tooltips.$secondTooltip;
+        this.$panelContainer = this.panel.$panelContainer;
       }
 
       init = (initialOptions: InitialOptions) => {
         if (initialOptions.isRangeBetween) {
-          this.$rangeBetween.appendTo(this.slider.$slider).addClass('js-slider__between');
+          this.$rangeBetween.appendTo(this.$slider).addClass('js-slider__between');
         }
 
         if (initialOptions.isMinAndMax) {
-          this.$minValue.appendTo(this.slider.$slider).addClass('js-slider__min-value');
-          this.$maxValue.appendTo(this.slider.$slider).addClass('js-slider__max-value');
+          this.$minValue.appendTo(this.$slider).addClass('js-slider__min-value');
+          this.$maxValue.appendTo(this.$slider).addClass('js-slider__max-value');
         }
 
         if (initialOptions.isScale) {
-          this.$scaleContainer.appendTo(this.slider.$slider).addClass('js-scale-container');
+          this.$scaleContainer.appendTo(this.$slider).addClass('js-slider__scale-container');
         }
 
         this.$slider.appendTo($this).addClass('js-slider__stripe');
-        this.$firstButton.appendTo(this.slider.$slider).addClass('js-slider__first-button');
+        this.$firstButton.appendTo(this.$slider).addClass('js-slider__first-button');
 
         if (initialOptions.isInterval) {
-          this.$secondButton.appendTo(this.slider.$slider).addClass('js-slider__second-button');
+          this.$secondButton.appendTo(this.$slider).addClass('js-slider__second-button');
         }
 
         if (initialOptions.isTooltip) {
-          this.$firstTooltip.appendTo(this.slider.$slider).addClass('js-slider__first-tooltip');
+          this.$firstTooltip.appendTo(this.$slider).addClass('js-slider__first-tooltip');
 
           if (!initialOptions.isInterval) return;
 
-          this.$secondTooltip.appendTo(this.slider.$slider).addClass('js-slider__second-tooltip');
+          this.$secondTooltip.appendTo(this.$slider).addClass('js-slider__second-tooltip');
         }
-
+        
         this.setPlane(initialOptions.isVertical);
       }
 
@@ -1026,19 +1036,21 @@ import "./index.css";
       $scaleContainer: JQuery<HTMLElement> = $('<div>');
 
       setScaleElementsValues = (options: Options) => {
+        this.$scaleContainer.empty();
+
         for (let i = 0; i < options.scaleElements.length; i++) {
-          const $scaleElement: JQuery<HTMLElement> = $('<div>').addClass(`js-scale-element js-scale-element_${i}`);
+          const $scaleElement: JQuery<HTMLElement> = $('<span>').addClass(`js-slider__scale-element js-slider__scale-element_${i}`);
           $scaleElement.html(`${options.scaleElements[i]}`);
           $scaleElement.appendTo(this.$scaleContainer);
         }
       }
 
-      setSclaleElementsPositions = (options: Options) => {
-        let scaleElementPosition = 0;
+      setScaleElementsPositions = (options: Options) => {
+        let scaleElementPosition: number = 0;
 
         for (let i = 0; i < options.scaleElements.length; i++) {
-          const $scaleElement = this.$scaleContainer.find(`.js-scale-element_${i}`);
-          const scaleElementLength = parseInt($scaleElement.css(options.lengthParameter));
+          const $scaleElement: JQuery<HTMLElement> = this.$scaleContainer.find(`.js-slider__scale-element_${i}`);
+          const scaleElementLength: number = parseInt($scaleElement.css(options.lengthParameter));
 
           $scaleElement.css(options.positionParameter, scaleElementPosition - scaleElementLength/2);
 
@@ -1051,24 +1063,18 @@ import "./index.css";
       }
     }
 
+    class Panel {
+      
+      $panelContainer: JQuery<HTMLElement> = $('div');
+    }
+
     class Presenter {
 
       constructor() {
-
-        //All for initialization of the slider
         this.init();
-        this.updateView(model.getOptions());
 
-        //Переделать и добавить в updateView
-        view.scale.setScaleElementsValues(model.getOptions());
-        view.scale.setScaleLength(model.getOptions());
-        view.scale.setSclaleElementsPositions(model.getOptions());
-        
+        model.observer.addObserver(this.updateView);  
 
-        //Add subscribers to the observer
-        observer.addObserver(this.updateView);  
-
-        //Binding events
         view.$firstButton.on('mousedown', model.calculateFirstButtonPosition);
         view.$secondButton.on('mousedown', model.calculateSecondButtonPosition);
         view.$firstButton.on('focusin', model.calculateFirstButtonPositionAfterFocusing);
@@ -1083,8 +1089,9 @@ import "./index.css";
 
       private init = () => {
         view.init(model.getSliderState());
-        model.setSliderElementsParameters(view.getElementsParameters(model.config.isVertical, model.getOptions()));
+        model.setElementsParameters(view.getElementsParameters(model.config.isVertical, model.getOptions()));
         model.calculateInitialValues();
+        this.updateView(model.getOptions());
       }
 
       private updateView = (options: Options) => {
@@ -1099,11 +1106,13 @@ import "./index.css";
         view.minAndMaxValues.setMinAndMaxValues(options);
         view.minAndMaxValues.setMinAndMaxPosition(options);
         view.minAndMaxValues.showMinAndMax(options);
-        model.setSliderElementsParameters(view.getElementsParameters(model.config.isVertical, model.getOptions()));
+        view.scale.setScaleElementsValues(options);
+        view.scale.setScaleLength(options);
+        view.scale.setScaleElementsPositions(options);
+        model.setElementsParameters(view.getElementsParameters(model.config.isVertical, model.getOptions()));
       }
     }
 
-    const observer = new Observer();
     const model = new Model();
     const view = new View();
     const presenter = new Presenter();
