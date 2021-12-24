@@ -113,6 +113,7 @@ import "./index.css";
 
       config: Config = $.extend({}, this.data, options);
 
+      isInterval: boolean = this.config.isInterval;
       positionParameter: string = this.config.isVertical ? 'top' : 'left';
       lengthParameter: string = this.config.isVertical ? 'height' : 'width';
       isStepSet: boolean = false;
@@ -176,7 +177,7 @@ import "./index.css";
           this.secondTooltipValue = this.maxValue;
         }
 
-        if (this.from > this.to && this.config.isInterval) {
+        if (this.from > this.to && this.isInterval) {
           this.from = this.to;
           this.firstTooltipValue = this.secondTooltipValue;
         }
@@ -214,9 +215,9 @@ import "./index.css";
         
         this.firstButtonPosition = Math.round((fromRatio - minRatio) * this.sliderLength - this.buttonLength/2);
 
-        if (this.config.isInterval) {
-          this.secondButtonPosition = Math.round((toRatio - minRatio) * this.sliderLength -this.buttonLength/2);
-        }
+        if (!this.isInterval) return;
+        
+        this.secondButtonPosition = Math.round((toRatio - minRatio) * this.sliderLength - this.buttonLength/2);
       }
 
       calculateFirstButtonPosition = (event: JQuery.MouseDownEvent) => {
@@ -278,7 +279,7 @@ import "./index.css";
         const clickAheadOfFirstButtonWidthInterval = clientAxis1 - this.sliderPosition > this.firstButtonPosition + this.buttonLength && clientAxis1 - this.sliderPosition < this.firstButtonPosition + this.buttonLength + (this.secondButtonPosition - this.firstButtonPosition)/2;
         const clickAheadOfFirstButtonWidthoutInterval = clientAxis1 - this.sliderPosition > this.firstButtonPosition + this.buttonLength;
 
-        const clickAheadOfFirstButton = this.config.isInterval ? clickAheadOfFirstButtonWidthInterval : clickAheadOfFirstButtonWidthoutInterval;
+        const clickAheadOfFirstButton = this.isInterval ? clickAheadOfFirstButtonWidthInterval : clickAheadOfFirstButtonWidthoutInterval;
         const clickBehindOfFirstButton = clientAxis1 - this.sliderPosition < this.firstButtonPosition;
 
         if (this.isStepSet) {
@@ -324,7 +325,7 @@ import "./index.css";
           this.firstButtonPosition = this.sliderLength - this.buttonLength/2;
           this.calculateMaxFirstTooltipValue(this.maxValue);
         }
-        else if (clickAhead && this.secondButtonPosition - this.firstButtonPosition < this.stepLength && this.config.isInterval) {
+        else if (clickAhead && this.secondButtonPosition - this.firstButtonPosition < this.stepLength && this.isInterval) {
           this.firstButtonPosition = this.secondButtonPosition;
           this.calculateMaxFirstTooltipValue(this.secondTooltipValue);
         }
@@ -348,7 +349,7 @@ import "./index.css";
         const clickAheadOfFirstButtonWidthInterval = clientAxis1 - this.sliderPosition > this.firstButtonPosition + this.buttonLength && clientAxis1 - this.sliderPosition < this.firstButtonPosition + this.buttonLength + (this.secondButtonPosition - this.firstButtonPosition)/2;
         const clickAheadOfFirstButtonWidthoutInterval = clientAxis1 - this.sliderPosition > this.firstButtonPosition + this.buttonLength;
 
-        const clickAheadOfFirstButton: boolean = this.config.isInterval ? clickAheadOfFirstButtonWidthInterval : clickAheadOfFirstButtonWidthoutInterval;
+        const clickAheadOfFirstButton: boolean = this.isInterval ? clickAheadOfFirstButtonWidthInterval : clickAheadOfFirstButtonWidthoutInterval;
         const clickBehindOfFirstButton: boolean = clientAxis1 - this.sliderPosition < this.firstButtonPosition;
         const clickAheadOfSecondButton: boolean = clientAxis1 - this.sliderPosition > this.secondButtonPosition + this.buttonLength;
         const clickBehindOfSecondButton: boolean = clientAxis1 - this.sliderPosition < this.secondButtonPosition && clientAxis1 - this.sliderPosition >= this.firstButtonPosition + this.buttonLength + (this.secondButtonPosition - this.firstButtonPosition)/2;
@@ -383,7 +384,7 @@ import "./index.css";
       }
 
       calculateFirstButtonPositionAfterMaxValueOnDown = (event: JQuery.MouseDownEvent) => {
-        if (this.config.isInterval) return;
+        if (this.isInterval) return;
 
         event.stopPropagation();
 
@@ -438,13 +439,13 @@ import "./index.css";
         else if (this.firstButtonPosition > this.sliderLength - this.buttonLength/2) {
           this.firstButtonPosition = this.sliderLength - this.buttonLength/2;
         }
-        if (this.config.isInterval && this.firstButtonPosition > this.secondButtonPosition) {
+        if (this.isInterval && this.firstButtonPosition > this.secondButtonPosition) {
           this.firstButtonPosition = this.secondButtonPosition;
         }
       }
 
       calculateSecondButtonPosition = (event: JQuery.MouseDownEvent) => {
-        if (!this.config.isInterval) return;
+        if (!this.isInterval) return;
 
         event.stopPropagation();
 
@@ -479,7 +480,7 @@ import "./index.css";
       }
 
       calculateSecondButtonPositionWidthSetStep = (clientAxis: number) => {
-        if (!this.config.isInterval) return;
+        if (!this.isInterval) return;
 
         const isCursorNearStepAhead = clientAxis - this.sliderPosition > this.secondButtonPosition + this.buttonLength/2 + this.stepLength/2;
         const isCursorNearStepBehind = clientAxis - this.sliderPosition < this.secondButtonPosition  + this.buttonLength/2 - this.stepLength/2;
@@ -495,7 +496,7 @@ import "./index.css";
       }
 
       calculateSecondButtonPositionAfterSliderOnDown = (event: JQuery.MouseDownEvent) => {
-        if (!this.config.isInterval) return;
+        if (!this.isInterval) return;
 
         const clientX2: number = event.clientX;
         const clientY2: number = event.clientY;
@@ -554,7 +555,7 @@ import "./index.css";
       }
 
       calculateSecondButtonPositionAfterMaxValueOnDown = (event: JQuery.MouseDownEvent) => {
-        if (!this.config.isInterval) return;
+        if (!this.isInterval) return;
 
         event.stopPropagation();
 
@@ -569,7 +570,7 @@ import "./index.css";
       }
 
       calculateSecondButtonPositionAfterFocusing = (event: JQuery.FocusInEvent) => {
-        if (!this.config.keyboard || !this.config.isInterval) return;
+        if (!this.config.keyboard || !this.isInterval) return;
 
         const keyCodeToIncrease: number[] = this.config.isVertical ? [40, 83] : [39, 68];
         const keyCodeToReduce: number[] = this.config.isVertical ? [38, 87] : [37, 65];
@@ -614,7 +615,7 @@ import "./index.css";
       calculateRangeBetweenPosition = () => {
         this.rangeBetweenPosition = 0;
 
-        if (!this.config.isInterval) return;
+        if (!this.isInterval) return;
         
         this.rangeBetweenPosition = this.firstButtonPosition + this.buttonLength/2;
       }
@@ -622,7 +623,7 @@ import "./index.css";
       calculateRangeBetweenLength = () => {
         this.rangeBetweenLength = this.firstButtonPosition + this.buttonLength/2;
 
-        if (!this.config.isInterval) return;
+        if (!this.isInterval) return;
           
         this.rangeBetweenLength = this.secondButtonPosition - this.firstButtonPosition;
       }
@@ -637,87 +638,111 @@ import "./index.css";
       
       calculateTooltipsValues = () => {
         this.from = parseFloat(((this.firstButtonPosition + this.buttonLength/2)/this.sliderLength * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfDecimalPlaces));
-        this.to = parseFloat(((this.secondButtonPosition + this.buttonLength/2)/this.sliderLength * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfDecimalPlaces));
-      
         this.firstTooltipValue = this.from;
+
+        if (!this.isInterval) return;
+        
+        this.to = parseFloat(((this.secondButtonPosition + this.buttonLength/2)/this.sliderLength * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfDecimalPlaces));
         this.secondTooltipValue = this.to;
       }
 
       calculateFirstTooltipValueAfterSliderOnDownAhead = (stepNumber: number) => {
-        this.firstTooltipValue = parseFloat((this.firstTooltipValue + (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
+        this.from = parseFloat((this.from + (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));   
+        this.firstTooltipValue = this.from;
       }
 
       calculateFirstTooltipValueAfterSliderOnDownBehind = (stepNumber: number) => {
-        this.firstTooltipValue = parseFloat((this.firstTooltipValue - (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
+        this.from = parseFloat((this.from - (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
+        this.firstTooltipValue = this.from;
       }
 
       calculateSecondTooltipValueAfterSliderOnDownAhead = (stepNumber: number) => {
-        this.secondTooltipValue = parseFloat((this.secondTooltipValue + (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
+        this.to = parseFloat((this.to + (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
+        this.secondTooltipValue = this.to;
       }
 
       calculateSecondTooltipValueAfterSliderOnDownBehind = (stepNumber: number) => {
-        this.secondTooltipValue = parseFloat((this.secondTooltipValue - (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
+        this.to = parseFloat((this.to - (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
+        this.secondTooltipValue = this.to;
       }
 
       calculateFirstTooltipValueWidthStepAhead = () => {
-        this.firstTooltipValue = parseFloat((this.firstTooltipValue + this.step).toFixed(this.numberOfDecimalPlaces));
+        this.from = parseFloat((this.from + this.step).toFixed(this.numberOfDecimalPlaces));
+        this.firstTooltipValue = this.from;
+
         this.restrictFirstTooltipValue();
       }
 
       calculateFirstTooltipValueWidthStepBehind = () => {
-        this.firstTooltipValue = parseFloat((this.firstTooltipValue - this.step).toFixed(this.numberOfDecimalPlaces));
+        this.from = parseFloat((this.from - this.step).toFixed(this.numberOfDecimalPlaces));
+        this.firstTooltipValue = this.from;
+
         this.restrictFirstTooltipValue();
       }
 
       calculateSecondTooltipValueWidthStepAhead = () => {
-        this.secondTooltipValue = parseFloat((this.secondTooltipValue + this.step).toFixed(this.numberOfDecimalPlaces));
+        this.to = parseFloat((this.to + this.step).toFixed(this.numberOfDecimalPlaces));
+        this.secondTooltipValue = this.to;
+
         this.restrictSecondTooltipValue();
       }
 
       calculateSecondTooltipValueWidthStepBehind = () => {
-        this.secondTooltipValue = parseFloat((this.secondTooltipValue - this.step).toFixed(this.numberOfDecimalPlaces));
+        this.to = parseFloat((this.to - this.step).toFixed(this.numberOfDecimalPlaces));
+        this.secondTooltipValue = this.to;
+
         this.restrictSecondTooltipValue();
       }
 
       calculateMinFirstTooltipValue = () => {
-        this.firstTooltipValue = this.minValue;
+        this.from = this.minValue;
+        this.firstTooltipValue = this.from;
       }
 
       calculateMaxFirstTooltipValue = (value: number) => {
-        this.firstTooltipValue = value;
+        this.from = value;
+        this.firstTooltipValue = this.from;       
       }
 
       restrictFirstTooltipValue = () => {
-        if (this.firstTooltipValue < this.minValue) {
-          this.firstTooltipValue = this.minValue;
+        if (this.from < this.minValue) {
+          this.from = this.minValue;
         }
-        else if (this.config.isInterval && this.firstTooltipValue > this.secondTooltipValue) {
-          this.firstTooltipValue = this.secondTooltipValue;
+        else if (this.isInterval && this.from > this.to) {
+          this.from = this.to;
         }
-        else if (this.firstTooltipValue > this.maxValue) {
-          this.firstTooltipValue = this.maxValue;
+        else if (this.from > this.maxValue) {
+          this.from = this.maxValue;
         }
+
+        this.firstTooltipValue = this.from; 
       }
 
       calculateMinSecondTooltipValue = () => {
-        this.secondTooltipValue = this.firstTooltipValue;
+        this.to = this.from;
+
+        this.secondTooltipValue = this.to;
       }
 
       calculateMaxSecondTooltipValue = () => {
-        this.secondTooltipValue = this.maxValue;
+        this.to = this.maxValue;
+
+        this.secondTooltipValue = this.to;
       }
 
       restrictSecondTooltipValue = () => {
-        if (this.secondTooltipValue < this.firstTooltipValue) {
-          this.secondTooltipValue = this.firstTooltipValue;
+        if (this.to < this.from) {
+          this.to = this.from;
         }
-        else if (this.secondTooltipValue > this.maxValue) {
-          this.secondTooltipValue = this.maxValue;
+        else if (this.to > this.maxValue) {
+          this.to = this.maxValue;
         }
+
+        this.secondTooltipValue = this.to;
       }
 
       separateTooltips = () => {
-        if (!this.config.isInterval) return;
+        if (!this.isInterval) return;
 
         const areTooltipsClose = this.firstTooltipPosition + this.firstTooltipLength > this.secondTooltipPosition;
 
@@ -740,7 +765,7 @@ import "./index.css";
           this.showMinValue = false;
         }
 
-        if (this.config.isInterval && this.secondTooltipPosition + this.secondTooltipLength > this.maxValuePosition) {
+        if (this.isInterval && this.secondTooltipPosition + this.secondTooltipLength > this.maxValuePosition) {
           this.showMaxValue = false;
         }
         else if (this.firstTooltipPosition + this.firstTooltipLength > this.maxValuePosition) {
@@ -771,10 +796,10 @@ import "./index.css";
 
       calculateInitialValues = () => {
         this.validateInitialValues();
+        this.calculateInitialButtonsPosition();
         this.countNumberOfDecimalPlaces();
         this.calculateStepLength();
         this.caclulateMinAndMaxPositions();
-        this.calculateInitialButtonsPosition();
         this.calculateTooltipsPositions();
         this.calculateTooltipsValues();
         this.calculateRangeBetweenPosition();
@@ -785,7 +810,7 @@ import "./index.css";
 
       getSliderState = () => {
         const sliderState = {
-          isInterval: this.config.isInterval,
+          isInterval: this.isInterval,
           isTooltip: this.config.isTooltip,
           isMinAndMax: this.config.isMinAndMax, 
           isRangeBetween: this.config.isRangeBetween, 
@@ -890,18 +915,25 @@ import "./index.css";
 
         this.$slider.appendTo($this).addClass('js-slider__stripe');
         this.$firstButton.appendTo(this.$slider).addClass('js-slider__first-button');
+        this.$secondButton.appendTo(this.$slider).addClass('js-slider__second-button');
         this.$panelContainer.appendTo(this.$slider).addClass('js-slider__panel-container');
 
         if (initialOptions.isInterval) {
-          this.$secondButton.appendTo(this.$slider).addClass('js-slider__second-button');
+          this.$secondButton.css('display', 'block');
+        }
+        else {
+          this.$secondButton.css('display', 'none');
         }
 
         if (initialOptions.isTooltip) {
           this.$firstTooltip.appendTo(this.$slider).addClass('js-slider__first-tooltip');
 
-          if (!initialOptions.isInterval) return;
-
-          this.$secondTooltip.appendTo(this.$slider).addClass('js-slider__second-tooltip');
+          if (initialOptions.isInterval) {
+            this.$secondTooltip.appendTo(this.$slider).addClass('js-slider__second-tooltip');
+          }
+          else {
+            this.$slider.find(this.$secondTooltip)?.remove();
+          }
         }
         
         this.setPlane(initialOptions.isVertical);
@@ -1078,6 +1110,7 @@ import "./index.css";
       $fromInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__from-input').attr('type', 'number').appendTo(this.$panelContainer);
       $toInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__to-input').attr('type', 'number').appendTo(this.$panelContainer);
       $stepInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__step-input').attr('type', 'number').appendTo(this.$panelContainer);
+      $intervalToggle: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__interval-input').attr('type', 'checkbox').appendTo(this.$panelContainer);
 
       setInitialPanelValues = () => {
         this.$minInput.val(`${model.minValue}`);
@@ -1085,6 +1118,7 @@ import "./index.css";
         this.$toInput.val(`${model.to}`);
         this.$fromInput.val(`${model.from}`);
         this.$stepInput.val(`${model.step}`);
+        this.$intervalToggle.prop('checked', model.isInterval ? true : false);
       }
 
       toggleOnDown = (event: JQuery.MouseDownEvent) => {
@@ -1136,6 +1170,20 @@ import "./index.css";
         
         model.step = parseFloat(`${step}`);
 
+        model.validateInitialValues();
+        model.calculateStepLength();
+
+        model.observer.notifyObservers(model.getOptions());
+      }
+
+      toggleInterval = (event: JQuery.ClickEvent) => {
+        if ($(event.target).is(':checked')) {
+          model.isInterval = true;
+        }
+        else {
+          model.isInterval = false;
+        }
+
         model.calculateInitialValues();
 
         model.observer.notifyObservers(model.getOptions());
@@ -1157,6 +1205,7 @@ import "./index.css";
         view.panel.$fromInput.on('change', view.panel.setFrom);
         view.panel.$toInput.on('change', view.panel.setTo);
         view.panel.$stepInput.on('change', view.panel.setStep);
+        view.panel.$intervalToggle.on('click', view.panel.toggleInterval);
 
         view.$firstButton.on('mousedown', model.calculateFirstButtonPosition);
         view.$secondButton.on('mousedown', model.calculateSecondButtonPosition);
@@ -1178,6 +1227,7 @@ import "./index.css";
       }
 
       private updateView = (options: Options) => {
+        view.initView(model.getSliderState());
         view.firstButton.setFirstButtonPosition(options);
         view.secondButton.setSecondButtonPosition(options);
         view.tooltips.setFirstTooltipPosition(options);
@@ -1211,7 +1261,7 @@ import "./index.css";
 })(jQuery);
 
 $('.js-slider').mySlider({
-  isInterval: true,
+  isInterval: false,
   minValue: -4.5,
   maxValue: 4.5,
   step: 0,

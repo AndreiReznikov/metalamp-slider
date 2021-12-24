@@ -104,6 +104,6 @@ html, body {
   cursor: default;
 }
 
-.js-slider__min-input, .js-slider__max-input, .js-slider__from-input, .js-slider__to-input, .js-slider__step-input {
+.js-slider__min-input, .js-slider__max-input, .js-slider__from-input, .js-slider__to-input, .js-slider__step-input, .js-slider__interval-input {
   margin: 10px;
 }
