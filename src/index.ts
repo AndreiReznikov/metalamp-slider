@@ -129,15 +129,18 @@ import "./index.css";
       maxValueLength = 0;
       firstTooltipLength: number = 0;
       secondTooltipLength: number = 0;
+      step: number = this.config.step;
       stepLength: number = 0;
+      from: number = this.config.from;
+      to: number = this.config.to;
       firstButtonPosition: number = 0;
       secondButtonPosition: number = 0;
       firstButtonGlobalPosition: number = 0;
       secondButtonGlobalPosition: number = 0;
       firstTooltipPosition: number = 0;
       secondTooltipPosition: number = 0;
-      firstTooltipValue: number = this.config.from;
-      secondTooltipValue: number = this.config.to;
+      firstTooltipValue: number = 0;
+      secondTooltipValue: number = 0;
       rangeBetweenPosition: number = 0;
       rangeBetweenLength: number = 0;
       scaleNumbers: number = this.config.scaleNumbers;
@@ -148,33 +151,33 @@ import "./index.css";
       validateInitialValues = () => {
         const areMinAndMaxNegative: boolean = this.minValue < 0 && this.maxValue < 0;
 
-        if (!areMinAndMaxNegative && this.minValue > this.maxValue) {
+        if (this.minValue > this.maxValue) {
           this.minValue = this.data.minValue;
           this.maxValue = this.data.maxValue;
         }
 
-        if (!areMinAndMaxNegative && this.config.step > this.maxValue - this.minValue) {
-          this.config.step = 0;
+        if (!areMinAndMaxNegative && this.step > this.maxValue - this.minValue) {
+          this.step = 0;
         }
 
-        if (areMinAndMaxNegative && this.config.step > -(this.minValue - this.maxValue)) {
-          this.config.step = 0;
+        if (areMinAndMaxNegative && this.step > -(this.minValue - this.maxValue)) {
+          this.step = 0;
         }
 
-        this.isStepSet = this.config.step > 0;
+        this.isStepSet = this.step > 0;
 
-        if (this.config.from < this.minValue || this.config.from > this.maxValue) {
-          this.config.from = this.minValue;
+        if (this.from < this.minValue || this.from > this.maxValue) {
+          this.from = this.minValue;
           this.firstTooltipValue = this.minValue;
         }
 
-        if (this.config.to < this.minValue || this.config.to > this.maxValue) {
-          this.config.to = this.maxValue;
-          this.secondTooltipValue = this.config.maxValue;
+        if (this.to < this.minValue || this.to > this.maxValue) {
+          this.to = this.maxValue;
+          this.secondTooltipValue = this.maxValue;
         }
 
-        if (this.config.from > this.config.to && this.config.isInterval) {
-          this.config.from = this.config.to;
+        if (this.from > this.to && this.config.isInterval) {
+          this.from = this.to;
           this.firstTooltipValue = this.secondTooltipValue;
         }
       }
@@ -205,11 +208,9 @@ import "./index.css";
       }
 
       calculateInitialButtonsPosition = () => {
-        this.validateInitialValues();
-
         const minRatio: number = this.minValue/(this.maxValue - this.minValue);
-        const fromRatio: number = this.config.from/(this.maxValue - this.minValue);
-        const toRatio: number = this.config.to/(this.maxValue - this.minValue);
+        const fromRatio: number = this.from/(this.maxValue - this.minValue);
+        const toRatio: number = this.to/(this.maxValue - this.minValue);
         
         this.firstButtonPosition = Math.round((fromRatio - minRatio) * this.sliderLength - this.buttonLength/2);
 
@@ -321,7 +322,7 @@ import "./index.css";
 
         if (clickAhead && this.sliderLength - (clientAxis - this.sliderPosition) < this.stepLength) {
           this.firstButtonPosition = this.sliderLength - this.buttonLength/2;
-          this.calculateMaxFirstTooltipValue(this.config.maxValue);
+          this.calculateMaxFirstTooltipValue(this.maxValue);
         }
         else if (clickAhead && this.secondButtonPosition - this.firstButtonPosition < this.stepLength && this.config.isInterval) {
           this.firstButtonPosition = this.secondButtonPosition;
@@ -340,7 +341,7 @@ import "./index.css";
         const clientY1: number = event.clientY;
         const clientAxis1: number = this.config.isVertical ? clientY1 : clientX1;
 
-        const minRatio: number = this.minValue/(this.config.maxValue - this.minValue);
+        const minRatio: number = this.minValue/(this.maxValue - this.minValue);
         const scaleElementValue: number = parseFloat($(event.target).html());
         const scaleElementRatio: number = scaleElementValue/(this.maxValue - this.minValue);
 
@@ -635,43 +636,46 @@ import "./index.css";
       }
       
       calculateTooltipsValues = () => {
-        this.firstTooltipValue = parseFloat(((this.firstButtonPosition + this.buttonLength/2)/this.sliderLength * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfDecimalPlaces));
-        this.secondTooltipValue = parseFloat(((this.secondButtonPosition + this.buttonLength/2)/this.sliderLength * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfDecimalPlaces));
+        this.from = parseFloat(((this.firstButtonPosition + this.buttonLength/2)/this.sliderLength * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfDecimalPlaces));
+        this.to = parseFloat(((this.secondButtonPosition + this.buttonLength/2)/this.sliderLength * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfDecimalPlaces));
+      
+        this.firstTooltipValue = this.from;
+        this.secondTooltipValue = this.to;
       }
 
       calculateFirstTooltipValueAfterSliderOnDownAhead = (stepNumber: number) => {
-        this.firstTooltipValue = parseFloat((this.firstTooltipValue + (stepNumber * this.config.step)).toFixed(this.numberOfDecimalPlaces));
+        this.firstTooltipValue = parseFloat((this.firstTooltipValue + (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
       }
 
       calculateFirstTooltipValueAfterSliderOnDownBehind = (stepNumber: number) => {
-        this.firstTooltipValue = parseFloat((this.firstTooltipValue - (stepNumber * this.config.step)).toFixed(this.numberOfDecimalPlaces));
+        this.firstTooltipValue = parseFloat((this.firstTooltipValue - (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
       }
 
       calculateSecondTooltipValueAfterSliderOnDownAhead = (stepNumber: number) => {
-        this.secondTooltipValue = parseFloat((this.secondTooltipValue + (stepNumber * this.config.step)).toFixed(this.numberOfDecimalPlaces));
+        this.secondTooltipValue = parseFloat((this.secondTooltipValue + (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
       }
 
       calculateSecondTooltipValueAfterSliderOnDownBehind = (stepNumber: number) => {
-        this.secondTooltipValue = parseFloat((this.secondTooltipValue - (stepNumber * this.config.step)).toFixed(this.numberOfDecimalPlaces));
+        this.secondTooltipValue = parseFloat((this.secondTooltipValue - (stepNumber * this.step)).toFixed(this.numberOfDecimalPlaces));
       }
 
       calculateFirstTooltipValueWidthStepAhead = () => {
-        this.firstTooltipValue = parseFloat((this.firstTooltipValue + this.config.step).toFixed(this.numberOfDecimalPlaces));
+        this.firstTooltipValue = parseFloat((this.firstTooltipValue + this.step).toFixed(this.numberOfDecimalPlaces));
         this.restrictFirstTooltipValue();
       }
 
       calculateFirstTooltipValueWidthStepBehind = () => {
-        this.firstTooltipValue = parseFloat((this.firstTooltipValue - this.config.step).toFixed(this.numberOfDecimalPlaces));
+        this.firstTooltipValue = parseFloat((this.firstTooltipValue - this.step).toFixed(this.numberOfDecimalPlaces));
         this.restrictFirstTooltipValue();
       }
 
       calculateSecondTooltipValueWidthStepAhead = () => {
-        this.secondTooltipValue = parseFloat((this.secondTooltipValue + this.config.step).toFixed(this.numberOfDecimalPlaces));
+        this.secondTooltipValue = parseFloat((this.secondTooltipValue + this.step).toFixed(this.numberOfDecimalPlaces));
         this.restrictSecondTooltipValue();
       }
 
       calculateSecondTooltipValueWidthStepBehind = () => {
-        this.secondTooltipValue = parseFloat((this.secondTooltipValue - this.config.step).toFixed(this.numberOfDecimalPlaces));
+        this.secondTooltipValue = parseFloat((this.secondTooltipValue - this.step).toFixed(this.numberOfDecimalPlaces));
         this.restrictSecondTooltipValue();
       }
 
@@ -762,7 +766,7 @@ import "./index.css";
       }
 
       calculateStepLength = () => {
-        this.stepLength = Math.round((this.config.step/(this.maxValue - this.minValue)) * this.sliderLength);
+        this.stepLength = Math.round((this.step/(this.maxValue - this.minValue)) * this.sliderLength);
       }
 
       calculateInitialValues = () => {
@@ -772,6 +776,7 @@ import "./index.css";
         this.caclulateMinAndMaxPositions();
         this.calculateInitialButtonsPosition();
         this.calculateTooltipsPositions();
+        this.calculateTooltipsValues();
         this.calculateRangeBetweenPosition();
         this.calculateRangeBetweenLength();
         this.calculateScaleElementsValues();
@@ -1068,17 +1073,68 @@ import "./index.css";
 
     class Panel {
       $panelContainer: JQuery<HTMLElement> = $('<div/>');
-      $minInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__min-input').appendTo(this.$panelContainer);
-      $maxInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__max-input').appendTo(this.$panelContainer);
+      $minInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__min-input').attr('type', 'number').appendTo(this.$panelContainer);
+      $maxInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__max-input').attr('type', 'number').appendTo(this.$panelContainer);
+      $fromInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__from-input').attr('type', 'number').appendTo(this.$panelContainer);
+      $toInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__to-input').attr('type', 'number').appendTo(this.$panelContainer);
+      $stepInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__step-input').attr('type', 'number').appendTo(this.$panelContainer);
+
+      setInitialPanelValues = () => {
+        this.$minInput.val(`${model.minValue}`);
+        this.$maxInput.val(`${model.maxValue}`);
+        this.$toInput.val(`${model.to}`);
+        this.$fromInput.val(`${model.from}`);
+        this.$stepInput.val(`${model.step}`);
+      }
 
       toggleOnDown = (event: JQuery.MouseDownEvent) => {
         event.stopPropagation();
       }
 
-      setMinValue = (event: JQuery.ChangeEvent) => {
+      setMin = (event: JQuery.ChangeEvent) => {
         const minValue = $(event.target).val();
         
         model.minValue = parseFloat(`${minValue}`);
+
+        model.calculateInitialValues();
+
+        model.observer.notifyObservers(model.getOptions());
+      }
+
+      setMax = (event: JQuery.ChangeEvent) => {
+        const maxValue = $(event.target).val();
+        
+        model.maxValue = parseFloat(`${maxValue}`);
+
+        model.calculateInitialValues();
+
+        model.observer.notifyObservers(model.getOptions());
+      }
+
+      setFrom = (event: JQuery.ChangeEvent) => {
+        const from = $(event.target).val();
+        
+        model.from = parseFloat(`${from}`);
+
+        model.calculateInitialValues();
+
+        model.observer.notifyObservers(model.getOptions());
+      }
+
+      setTo = (event: JQuery.ChangeEvent) => {
+        const to = $(event.target).val();
+        
+        model.to = parseFloat(`${to}`);
+
+        model.calculateInitialValues();
+
+        model.observer.notifyObservers(model.getOptions());
+      }
+
+      setStep = (event: JQuery.ChangeEvent) => {
+        const step = $(event.target).val();
+        
+        model.step = parseFloat(`${step}`);
 
         model.calculateInitialValues();
 
@@ -1095,7 +1151,12 @@ import "./index.css";
         model.observer.addObserver(this.updateView);  
 
         view.$panelContainer.on('mousedown', view.panel.toggleOnDown);
-        view.panel.$minInput.on('change', view.panel.setMinValue);
+        view.panel.setInitialPanelValues();
+        view.panel.$minInput.on('change', view.panel.setMin);
+        view.panel.$maxInput.on('change', view.panel.setMax);
+        view.panel.$fromInput.on('change', view.panel.setFrom);
+        view.panel.$toInput.on('change', view.panel.setTo);
+        view.panel.$stepInput.on('change', view.panel.setStep);
 
         view.$firstButton.on('mousedown', model.calculateFirstButtonPosition);
         view.$secondButton.on('mousedown', model.calculateSecondButtonPosition);
