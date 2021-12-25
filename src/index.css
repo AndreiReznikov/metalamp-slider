@@ -51,7 +51,6 @@ html, body {
   justify-content: center;
   align-items: center;
   position: absolute;
-  padding: 3px;
   font-family: Helvetica, Arial, sans-serif;
   min-width: 28px;
   height: 18px;
@@ -69,9 +68,8 @@ html, body {
   justify-content: center;
   align-items: center;
   position: absolute;
-  min-width: 28px;
+  min-width: 30px;
   height: 18px;
-  padding: 3px;
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
