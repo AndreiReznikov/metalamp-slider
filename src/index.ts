@@ -20,6 +20,7 @@ import "./index.css";
       isRangeBetween: boolean;
       isScale: boolean;
       scaleNumbers: number;
+      isPanel: boolean;
     }
 
     interface InitialOptions {
@@ -29,6 +30,7 @@ import "./index.css";
       isRangeBetween: boolean;
       isScale: boolean;
       isVertical: boolean;
+      isPanel: boolean;
     }
 
     interface Options {
@@ -107,6 +109,7 @@ import "./index.css";
         isTooltip: true,
         isMinAndMax: true,
         isRangeBetween: true,
+        isPanel: false,
         isScale: false,
         scaleNumbers: 5
       };
@@ -114,8 +117,10 @@ import "./index.css";
       config: Config = $.extend({}, this.data, options);
 
       isInterval: boolean = this.config.isInterval;
-      positionParameter: string = this.config.isVertical ? 'top' : 'left';
-      lengthParameter: string = this.config.isVertical ? 'height' : 'width';
+      isVertical: boolean = this.config.isVertical;
+      isPanel: boolean = this.config.isPanel;
+      positionParameter: string = this.isVertical ? 'top' : 'left';
+      lengthParameter: string = this.isVertical ? 'height' : 'width';
       isStepSet: boolean = false;
       sliderPosition: number = 0;
       sliderLength: number = 0;
@@ -225,12 +230,12 @@ import "./index.css";
 
         const shiftX1: number = event.clientX - this.firstButtonGlobalPosition - this.sliderPosition;
         const shiftY1: number = event.clientY - this.firstButtonGlobalPosition - this.sliderPosition;
-        const shiftAxis1: number = this.config.isVertical ? shiftY1 : shiftX1;
+        const shiftAxis1: number = this.isVertical ? shiftY1 : shiftX1;
 
         const calculateWhileFirstButtonMoving = (event: JQuery.MouseMoveEvent) => {
           const clientX1: number = event.clientX;
           const clientY1: number = event.clientY;
-          const clientAxis1: number = this.config.isVertical ? clientY1 : clientX1;
+          const clientAxis1: number = this.isVertical ? clientY1 : clientX1;
 
           if (this.isStepSet) {
             this.calculateFirstButtonPositionWidthSetStep(clientAxis1);
@@ -270,7 +275,7 @@ import "./index.css";
       calculateFirstButtonPositionAfterSliderOnDown = (event: JQuery.MouseDownEvent) => {
         const clientX1: number = event.clientX;
         const clientY1: number = event.clientY;
-        const clientAxis1: number = this.config.isVertical ? clientY1 : clientX1;
+        const clientAxis1: number = this.isVertical ? clientY1 : clientX1;
         const intervalForFirstButtonSteps = this.firstButtonPosition + this.buttonLength/2 - (clientAxis1 - this.sliderPosition);
         let firstButtonStepsNumber = Math.round(intervalForFirstButtonSteps/this.stepLength);
 
@@ -340,7 +345,7 @@ import "./index.css";
 
         const clientX1: number = event.clientX;
         const clientY1: number = event.clientY;
-        const clientAxis1: number = this.config.isVertical ? clientY1 : clientX1;
+        const clientAxis1: number = this.isVertical ? clientY1 : clientX1;
 
         const minRatio: number = this.minValue/(this.maxValue - this.minValue);
         const scaleElementValue: number = parseFloat($(event.target).html());
@@ -401,8 +406,8 @@ import "./index.css";
       calculateFirstButtonPositionAfterFocusing = (event: JQuery.FocusInEvent) => {
         if (!this.config.keyboard) return;
 
-        const keyCodeToIncrease: number[] = this.config.isVertical ? [40, 83] : [39, 68];
-        const keyCodeToReduce: number[] = this.config.isVertical ? [38, 87] : [37, 65];
+        const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
+        const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
         const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
 
         const calculateFirstButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent) => {
@@ -451,12 +456,12 @@ import "./index.css";
 
         const shiftX2: number = event.clientX - this.secondButtonGlobalPosition - this.sliderPosition;
         const shiftY2: number = event.clientY - this.secondButtonGlobalPosition - this.sliderPosition;
-        const shiftAxis2: number = this.config.isVertical ? shiftY2 : shiftX2;
+        const shiftAxis2: number = this.isVertical ? shiftY2 : shiftX2;
 
         const calculateWhileSecondButtonMoving = (event: JQuery.MouseMoveEvent) => {
           const clientX2: number = event.clientX;
           const clientY2: number = event.clientY;
-          const clientAxis2: number = model.config.isVertical ? clientY2 : clientX2;
+          const clientAxis2: number = this.isVertical ? clientY2 : clientX2;
 
           if (this.isStepSet) {
             this.calculateSecondButtonPositionWidthSetStep(clientAxis2);
@@ -500,7 +505,7 @@ import "./index.css";
 
         const clientX2: number = event.clientX;
         const clientY2: number = event.clientY;
-        const clientAxis2: number = this.config.isVertical ? clientY2 : clientX2;
+        const clientAxis2: number = this.isVertical ? clientY2 : clientX2;
         const intervalForSecondButtonSteps = this.secondButtonPosition + this.buttonLength/2 - (clientAxis2 - this.sliderPosition);
         let secondButtonStepsNumber = Math.round(intervalForSecondButtonSteps/this.stepLength);
 
@@ -572,8 +577,8 @@ import "./index.css";
       calculateSecondButtonPositionAfterFocusing = (event: JQuery.FocusInEvent) => {
         if (!this.config.keyboard || !this.isInterval) return;
 
-        const keyCodeToIncrease: number[] = this.config.isVertical ? [40, 83] : [39, 68];
-        const keyCodeToReduce: number[] = this.config.isVertical ? [38, 87] : [37, 65];
+        const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
+        const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
         const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
 
         const calculateSecondButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent) => {
@@ -631,6 +636,7 @@ import "./index.css";
       calculateTooltipsPositions = () => {
         this.firstTooltipPosition = (this.firstButtonPosition + this.buttonLength/2) - this.firstTooltipLength/2;
         this.secondTooltipPosition = (this.secondButtonPosition + this.buttonLength/2) - this.secondTooltipLength/2;
+
 
         this.separateTooltips();
         this.showMinAndMaxValues();
@@ -797,13 +803,13 @@ import "./index.css";
       calculateInitialValues = () => {
         this.validateInitialValues();
         this.calculateInitialButtonsPosition();
+        this.calculateRangeBetweenPosition();
+        this.calculateRangeBetweenLength();
         this.countNumberOfDecimalPlaces();
         this.calculateStepLength();
         this.caclulateMinAndMaxPositions();
         this.calculateTooltipsPositions();
         this.calculateTooltipsValues();
-        this.calculateRangeBetweenPosition();
-        this.calculateRangeBetweenLength();
         this.calculateScaleElementsValues();
         this.calculateLengthBetweenScaleElements();
       }
@@ -815,7 +821,8 @@ import "./index.css";
           isMinAndMax: this.config.isMinAndMax, 
           isRangeBetween: this.config.isRangeBetween, 
           isScale: this.config.isScale,
-          isVertical: this.config.isVertical
+          isVertical: this.isVertical,
+          isPanel: this.isPanel
         }
 
         return sliderState;
@@ -900,23 +907,39 @@ import "./index.css";
       }
 
       public initView = (initialOptions: InitialOptions) => {
-        if (initialOptions.isRangeBetween) {
-          this.$rangeBetween.appendTo(this.$slider).addClass('js-slider__between');
-        }
-
-        if (initialOptions.isMinAndMax) {
-          this.$minValue.appendTo(this.$slider).addClass('js-slider__min-value');
-          this.$maxValue.appendTo(this.$slider).addClass('js-slider__max-value');
-        }
-
-        if (initialOptions.isScale) {
-          this.$scaleContainer.appendTo(this.$slider).addClass('js-slider__scale-container');
-        }
-
         this.$slider.appendTo($this).addClass('js-slider__stripe');
+        this.$rangeBetween.appendTo(this.$slider).addClass('js-slider__between');
         this.$firstButton.appendTo(this.$slider).addClass('js-slider__first-button');
         this.$secondButton.appendTo(this.$slider).addClass('js-slider__second-button');
         this.$panelContainer.appendTo(this.$slider).addClass('js-slider__panel-container');
+        this.$firstTooltip.appendTo(this.$slider).addClass('js-slider__first-tooltip');
+        this.$secondTooltip.appendTo(this.$slider).addClass('js-slider__second-tooltip');
+        this.$minValue.appendTo(this.$slider).addClass('js-slider__min-value');
+        this.$maxValue.appendTo(this.$slider).addClass('js-slider__max-value');
+        this.$scaleContainer.appendTo(this.$slider).addClass('js-slider__scale-container');
+
+        if (initialOptions.isRangeBetween) {
+          this.$rangeBetween.css('display', 'block');
+        }
+        else {
+          this.$rangeBetween.css('display', 'none');
+        }
+
+        if (initialOptions.isMinAndMax) {
+          this.$minValue.css('display', 'flex');
+          this.$maxValue.css('display', 'flex');
+        }
+        else {
+          this.$minValue.css('display', 'none');
+          this.$maxValue.css('display', 'none');
+        }
+
+        if (initialOptions.isScale) {
+          this.$scaleContainer.css('display', 'flex');
+        }
+        else {
+          this.$scaleContainer.css('display', 'none');
+        }       
 
         if (initialOptions.isInterval) {
           this.$secondButton.css('display', 'block');
@@ -926,14 +949,21 @@ import "./index.css";
         }
 
         if (initialOptions.isTooltip) {
-          this.$firstTooltip.appendTo(this.$slider).addClass('js-slider__first-tooltip');
+          this.$firstTooltip.css('display', 'flex');
 
           if (initialOptions.isInterval) {
-            this.$secondTooltip.appendTo(this.$slider).addClass('js-slider__second-tooltip');
+            this.$secondTooltip.css('display', 'flex');
           }
           else {
-            this.$slider.find(this.$secondTooltip)?.remove();
+            this.$secondTooltip.css('display', 'none');
           }
+        }
+
+        if (initialOptions.isPanel) {
+          this.$panelContainer.css('display', 'flex');
+        }
+        else {
+          this.$panelContainer.css('display', 'none');
         }
         
         this.setPlane(initialOptions.isVertical);
@@ -943,28 +973,41 @@ import "./index.css";
         const width: number = parseInt($this.css('width'));
         const height: number = parseInt($this.css('height'));
 
+        $this.css({'width': 0, 'height': 0});
+        this.$firstButton.css({'top': 0, 'left': 0, 'transform': 'translate(0, 0)'});
+        this.$secondButton.css({'top': 0, 'left': 0, 'transform': 'translate(0, 0)'}); 
+        this.$rangeBetween.css({'width': 0, 'height': 0, 'top': 0, 'left': 0});
+        this.$firstTooltip.css({'left': 0, 'bottom': 0, 'top': 0});
+        this.$secondTooltip.css({'left': 0, 'bottom': 0, 'top': 0});
+        this.$minValue.css({'left': 0, 'bottom': 0, 'top': 0});
+        this.$maxValue.css({'left': 0, 'bottom': 0, 'top': 0});
+        this.$scaleContainer.css({'right': 0, 'top': 0, 'width': 0, 'height': 0});
+        this.panel.$panelContainer.css({'top': 0, 'right': 0, 'width': 'auto', 'height': 'auto'});
+
         if (isVertical) {
-          $this.css('width', height);
-          $this.css('height', width);
+          $this.css({'width': 8, 'height': 500});
           this.$firstButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
           this.$secondButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
-          this.$firstTooltip.css({'left': `${this.$firstButton.css('width')}`});
-          this.$secondTooltip.css({'left': `${this.$secondButton.css('width')}`}); 
-          this.$minValue.css({'left': `${this.$firstButton.css('width')}`});
-          this.$maxValue.css({'left': `${this.$firstButton.css('width')}`});
+          this.$rangeBetween.css({'width': '100%'});
+          this.$firstTooltip.css({'left': this.$firstButton.css('width')});
+          this.$secondTooltip.css({'left': this.$secondButton.css('width')}); 
+          this.$minValue.css({'left': this.$firstButton.css('width')});
+          this.$maxValue.css({'left': this.$firstButton.css('width')});
           this.$scaleContainer.css({'right': 2 * parseInt($this.css('width')) + parseInt(this.$firstButton.css('width'))});
+          this.panel.$panelContainer.css({'right': 2 * (parseInt($this.css('width')) + parseInt(this.$firstButton.css('width')) + parseInt(this.$scaleContainer.css('width'))), 'height': '100%'});
           return;
         }
 
-        $this.css('width', width);
-        $this.css('height', height);
+        $this.css({'width': 500, 'height': 8});
         this.$firstButton.css({'top': '50%', 'transform': 'translateY(-50%)'});
-        this.$secondButton.css({'top': '50%', 'transform': 'translateY(-50%)'});   
-        this.$firstTooltip.css({'bottom': `${this.$firstButton.css('height')}`});
-        this.$secondTooltip.css({'bottom': `${this.$secondButton.css('height')}`});
-        this.$minValue.css({'bottom': `${this.$firstButton.css('height')}`});
-        this.$maxValue.css({'bottom': `${this.$firstButton.css('height')}`});
-        this.$scaleContainer.css({'top': parseInt($this.css('height')) + parseInt(`${this.$firstButton.css('height')}`)})
+        this.$secondButton.css({'top': '50%', 'transform': 'translateY(-50%)'}); 
+        this.$rangeBetween.css({'height': '100%'});  
+        this.$firstTooltip.css({'bottom': this.$firstButton.css('height'), 'top': ''});
+        this.$secondTooltip.css({'bottom': this.$secondButton.css('height'), 'top': ''});
+        this.$minValue.css({'bottom': this.$firstButton.css('height'), 'top': ''});
+        this.$maxValue.css({'bottom': this.$firstButton.css('height'), 'top': ''});
+        this.$scaleContainer.css({'top': parseInt($this.css('height')) + parseInt(this.$firstButton.css('height'))});
+        this.panel.$panelContainer.css({'top': 2 * (parseInt($this.css('height')) + parseInt(this.$firstButton.css('height'))), 'width': '100%'});
       }
 
       private getCoords = (element: JQuery<HTMLElement>, isVertical: boolean) => {
@@ -1111,6 +1154,7 @@ import "./index.css";
       $toInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__to-input').attr('type', 'number').appendTo(this.$panelContainer);
       $stepInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__step-input').attr('type', 'number').appendTo(this.$panelContainer);
       $intervalToggle: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__interval-input').attr('type', 'checkbox').appendTo(this.$panelContainer);
+      $verticalToggle: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__vertical-input').attr('type', 'checkbox').appendTo(this.$panelContainer);
 
       setInitialPanelValues = () => {
         this.$minInput.val(`${model.minValue}`);
@@ -1119,6 +1163,7 @@ import "./index.css";
         this.$fromInput.val(`${model.from}`);
         this.$stepInput.val(`${model.step}`);
         this.$intervalToggle.prop('checked', model.isInterval ? true : false);
+        this.$verticalToggle.prop('checked', model.isVertical ? true : false);
       }
 
       toggleOnDown = (event: JQuery.MouseDownEvent) => {
@@ -1184,7 +1229,30 @@ import "./index.css";
           model.isInterval = false;
         }
 
+        view.initView(model.getSliderState());
         model.calculateInitialValues();
+
+        model.observer.notifyObservers(model.getOptions());
+      }
+
+      toggleVertical = (event: JQuery.ClickEvent) => {
+        if ($(event.target).is(':checked')) {
+          model.isVertical = true;
+
+          model.positionParameter = model.isVertical ? 'top' : 'left';
+          model.lengthParameter = model.isVertical ? 'height' : 'width';
+        }
+        else {
+          model.isVertical = false;
+
+          model.positionParameter = model.isVertical ? 'top' : 'left';
+          model.lengthParameter = model.isVertical ? 'height' : 'width';
+        }
+        
+        view.initView(model.getSliderState());
+        model.setElementsParameters(view.getElementsParameters(model.isVertical, model.getOptions()));
+        model.calculateInitialValues();
+        presenter.updateView(model.getOptions());
 
         model.observer.notifyObservers(model.getOptions());
       }
@@ -1206,6 +1274,7 @@ import "./index.css";
         view.panel.$toInput.on('change', view.panel.setTo);
         view.panel.$stepInput.on('change', view.panel.setStep);
         view.panel.$intervalToggle.on('click', view.panel.toggleInterval);
+        view.panel.$verticalToggle.on('click', view.panel.toggleVertical);
 
         view.$firstButton.on('mousedown', model.calculateFirstButtonPosition);
         view.$secondButton.on('mousedown', model.calculateSecondButtonPosition);
@@ -1221,13 +1290,12 @@ import "./index.css";
 
       private init = () => {
         view.initView(model.getSliderState());
-        model.setElementsParameters(view.getElementsParameters(model.config.isVertical, model.getOptions()));
+        model.setElementsParameters(view.getElementsParameters(model.isVertical, model.getOptions()));
         model.calculateInitialValues();
         this.updateView(model.getOptions());
       }
 
-      private updateView = (options: Options) => {
-        view.initView(model.getSliderState());
+      updateView = (options: Options) => {
         view.firstButton.setFirstButtonPosition(options);
         view.secondButton.setSecondButtonPosition(options);
         view.tooltips.setFirstTooltipPosition(options);
@@ -1242,7 +1310,7 @@ import "./index.css";
         view.scale.setScaleElementsValues(options);
         view.scale.setScaleLength(options);
         view.scale.setScaleElementsPositions(options);
-        model.setElementsParameters(view.getElementsParameters(model.config.isVertical, model.getOptions()));
+        model.setElementsParameters(view.getElementsParameters(model.isVertical, model.getOptions()));
       }
     }
 
@@ -1272,6 +1340,7 @@ $('.js-slider').mySlider({
   isVertical: false,
   isMinAndMax: true,
   isRangeBetween: true,
+  isPanel: true,
   isScale: true,
   scaleNumbers: 8
 });
