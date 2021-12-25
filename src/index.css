@@ -109,6 +109,10 @@ html, body {
 .js-slider__to-input, 
 .js-slider__step-input, 
 .js-slider__interval-input, 
-.js-slider__vertical-input {
+.js-slider__vertical-input,
+.js-slider__tooltip-input,
+.js-slider__range-between-input,
+.js-slider__scale-input
+{
   margin: 10px;
 }

@@ -119,6 +119,9 @@ import "./index.css";
       isInterval: boolean = this.config.isInterval;
       isVertical: boolean = this.config.isVertical;
       isPanel: boolean = this.config.isPanel;
+      isTooltip: boolean = this.config.isTooltip;
+      isRangeBetween: boolean = this.config.isRangeBetween;
+      isScale: boolean = this.config.isScale;
       positionParameter: string = this.isVertical ? 'top' : 'left';
       lengthParameter: string = this.isVertical ? 'height' : 'width';
       isStepSet: boolean = false;
@@ -817,10 +820,10 @@ import "./index.css";
       getSliderState = () => {
         const sliderState = {
           isInterval: this.isInterval,
-          isTooltip: this.config.isTooltip,
+          isTooltip: this.isTooltip,
           isMinAndMax: this.config.isMinAndMax, 
-          isRangeBetween: this.config.isRangeBetween, 
-          isScale: this.config.isScale,
+          isRangeBetween: this.isRangeBetween, 
+          isScale: this.isScale,
           isVertical: this.isVertical,
           isPanel: this.isPanel
         }
@@ -957,6 +960,10 @@ import "./index.css";
           else {
             this.$secondTooltip.css('display', 'none');
           }
+        }
+        else {
+          this.$firstTooltip.css('display', 'none');
+          this.$secondTooltip.css('display', 'none');
         }
 
         if (initialOptions.isPanel) {
@@ -1155,6 +1162,9 @@ import "./index.css";
       $stepInput: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__step-input').attr('type', 'number').appendTo(this.$panelContainer);
       $intervalToggle: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__interval-input').attr('type', 'checkbox').appendTo(this.$panelContainer);
       $verticalToggle: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__vertical-input').attr('type', 'checkbox').appendTo(this.$panelContainer);
+      $tooltipsToggle: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__tooltip-input').attr('type', 'checkbox').appendTo(this.$panelContainer);
+      $rangeBetweenToggle: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__range-between-input').attr('type', 'checkbox').appendTo(this.$panelContainer);
+      $scaleToogle: JQuery<HTMLElement> = $('<input/>').addClass('js-slider__scale-input').attr('type', 'checkbox').appendTo(this.$panelContainer);
 
       setInitialPanelValues = () => {
         this.$minInput.val(`${model.minValue}`);
@@ -1164,6 +1174,9 @@ import "./index.css";
         this.$stepInput.val(`${model.step}`);
         this.$intervalToggle.prop('checked', model.isInterval ? true : false);
         this.$verticalToggle.prop('checked', model.isVertical ? true : false);
+        this.$tooltipsToggle.prop('checked', model.isTooltip ? true : false);
+        this.$rangeBetweenToggle.prop('checked', model.isRangeBetween ? true : false);
+        this.$scaleToogle.prop('checked', model.isScale ? true : false);
       }
 
       toggleOnDown = (event: JQuery.MouseDownEvent) => {
@@ -1235,6 +1248,48 @@ import "./index.css";
         model.observer.notifyObservers(model.getOptions());
       }
 
+      toggleTooltip = (event: JQuery.ClickEvent) => {
+        if ($(event.target).is(':checked')) {
+          model.isTooltip = true;
+        }
+        else {
+          model.isTooltip = false;
+        }
+
+        view.initView(model.getSliderState());
+        model.calculateInitialValues();
+
+        model.observer.notifyObservers(model.getOptions());
+      }
+
+      toggleRangeBetween = (event: JQuery.ClickEvent) => {
+        if ($(event.target).is(':checked')) {
+          model.isRangeBetween = true;
+        }
+        else {
+          model.isRangeBetween  = false;
+        }
+
+        view.initView(model.getSliderState());
+        model.calculateInitialValues();
+
+        model.observer.notifyObservers(model.getOptions());
+      }
+
+      toggleScale = (event: JQuery.ClickEvent) => {
+        if ($(event.target).is(':checked')) {
+          model.isScale = true;
+        }
+        else {
+          model.isScale  = false;
+        }
+
+        view.initView(model.getSliderState());
+        model.calculateInitialValues();
+
+        model.observer.notifyObservers(model.getOptions());
+      }
+
       toggleVertical = (event: JQuery.ClickEvent) => {
         if ($(event.target).is(':checked')) {
           model.isVertical = true;
@@ -1275,6 +1330,9 @@ import "./index.css";
         view.panel.$stepInput.on('change', view.panel.setStep);
         view.panel.$intervalToggle.on('click', view.panel.toggleInterval);
         view.panel.$verticalToggle.on('click', view.panel.toggleVertical);
+        view.panel.$tooltipsToggle.on('click', view.panel.toggleTooltip);
+        view.panel.$rangeBetweenToggle.on('click', view.panel.toggleRangeBetween);
+        view.panel.$scaleToogle.on('click', view.panel.toggleScale);
 
         view.$firstButton.on('mousedown', model.calculateFirstButtonPosition);
         view.$secondButton.on('mousedown', model.calculateSecondButtonPosition);
