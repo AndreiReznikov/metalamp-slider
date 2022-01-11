@@ -21,10 +21,17 @@ class Presenter {
   $stepInputContainer: JQuery<HTMLElement>;
   $stepButton: JQuery<HTMLElement>;
   $stepInput: JQuery<HTMLElement>;
+  $intervalToggleContainer: JQuery<HTMLElement>; 
+  $intervalToggleText: JQuery<HTMLElement>;
+  $customIntervalToggle: JQuery<HTMLElement>; 
   $intervalToggle: JQuery<HTMLElement>;
+  $tooltipsToggleContainer: JQuery<HTMLElement>;
   $tooltipsToggle: JQuery<HTMLElement>;
+  $rangeBetweenToggleContainer: JQuery<HTMLElement>;
   $rangeBetweenToggle: JQuery<HTMLElement>;
+  $scaleToggleContainer: JQuery<HTMLElement>;
   $scaleToogle: JQuery<HTMLElement>;
+  $verticalToggleContainer: JQuery<HTMLElement>;
   $verticalToggle: JQuery<HTMLElement>;
 
   constructor(model: any, view: any) {
@@ -54,11 +61,30 @@ class Presenter {
     this.$stepButton = $('<button/>').html('STEP').addClass('js-slider__step-button').appendTo(this.$stepInputContainer);
     this.$stepInput = $('<input/>').addClass('js-slider__step-input').attr('type', 'number').appendTo(this.$stepInputContainer);
 
-    this.$intervalToggle = $('<input/>').addClass('js-slider__interval-input').attr('type', 'checkbox').appendTo(this.$toggleInputsContainer);
-    this.$tooltipsToggle = $('<input/>').addClass('js-slider__tooltip-input').attr('type', 'checkbox').appendTo(this.$toggleInputsContainer);
-    this.$rangeBetweenToggle = $('<input/>').addClass('js-slider__range-between-input').attr('type', 'checkbox').appendTo(this.$toggleInputsContainer);
-    this.$scaleToogle = $('<input/>').addClass('js-slider__scale-input').attr('type', 'checkbox').appendTo(this.$toggleInputsContainer);
-    this.$verticalToggle = $('<input/>').addClass('js-slider__vertical-input').attr('type', 'checkbox').appendTo(this.$toggleInputsContainer);
+    this.$intervalToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
+    this.$intervalToggleText = $('<span/>').html('INTERVAL').addClass('js-slider__toggle-text').appendTo(this.$intervalToggleContainer);
+    this.$intervalToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$intervalToggleContainer);
+    this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$intervalToggleContainer);
+
+    this.$tooltipsToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
+    this.$intervalToggleText = $('<span/>').html('TOOLTIPS').addClass('js-slider__toggle-text').appendTo(this.$tooltipsToggleContainer);
+    this.$tooltipsToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$tooltipsToggleContainer);
+    this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$tooltipsToggleContainer);
+
+    this.$rangeBetweenToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
+    this.$intervalToggleText = $('<span/>').html('RANGE').addClass('js-slider__toggle-text').appendTo(this.$rangeBetweenToggleContainer);
+    this.$rangeBetweenToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$rangeBetweenToggleContainer);
+    this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$rangeBetweenToggleContainer);
+
+    this.$scaleToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
+    this.$intervalToggleText = $('<span/>').html('SCALE').addClass('js-slider__toggle-text').appendTo(this.$scaleToggleContainer);
+    this.$scaleToogle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$scaleToggleContainer);
+    this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$scaleToggleContainer);
+
+    this.$verticalToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
+    this.$intervalToggleText = $('<span/>').html('VERTICAL').addClass('js-slider__toggle-text').appendTo(this.$verticalToggleContainer);
+    this.$verticalToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$verticalToggleContainer);
+    this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$verticalToggleContainer);
     
     this.init();
     this.model.observer.addObserver(this.updateView); 
