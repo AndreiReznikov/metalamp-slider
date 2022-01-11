@@ -1,77 +1,4 @@
-interface Config {
-  isInterval: boolean;
-  minValue: number;
-  maxValue: number;
-  from: number;
-  to: number;
-  step: number;
-  keyboard: boolean;
-  isVertical: boolean;
-  isTooltip: boolean;
-  isMinAndMax: boolean;
-  isRangeBetween: boolean;
-  isScale: boolean;
-  scaleNumbers: number;
-  isPanel: boolean;
-}
-
-interface Options {
-  positionParameter: string;
-  lengthParameter: string;
-  sliderPosition: number;
-  sliderLength: number;
-  buttonLength: number;
-  stepLength: number;
-  minValuePosition: number;
-  maxValuePosition: number;
-  minValue: number;
-  maxValue: number;
-  showMinValue: boolean;
-  showMaxValue: boolean;
-  minValueLength: number;
-  maxValueLength: number;
-  firstButtonPosition: number;
-  secondButtonPosition: number;
-  firstButtonGlobalPositon: number;
-  secondButtonGlobalPositon: number;
-  firstTooltipPosition: number;
-  secondTooltipPosition: number;
-  firstTooltipValue: number | string;
-  secondTooltipValue: number | string;
-  rangeBetweenPosition: number;
-  rangeBetweenLength: number;
-  scaleNumbers: number;
-  scaleElements: number[];
-  lengthBetweenScaleElements: number;
-}
-
-interface ElementsParameters {
-  sliderPosition: number;
-  sliderLength: number;
-  buttonLength: number;
-  firstTooltipLength: number;
-  secondTooltipLength: number;
-  minValueLength: number;
-  maxValueLength: number;
-  firstButtonGlobalPosition: number;
-  secondButtonGlobalPosition: number;
-}
-
-interface SliderState {
-  isInterval: boolean;
-  isTooltip: boolean;
-  isMinAndMax: boolean;
-  isRangeBetween: boolean;
-  isScale: boolean;
-  isVertical: boolean;
-  isPanel: boolean;
-}
-
-interface Observer {
-  observers: Function[]; 
-  addObserver: (observer: Function) => void; 
-  notifyObservers: (options: Options) => void;
-}
+import { Options, Config, SliderState, ElementsParameters } from '../interfaces/interfaces';
 
 class Observer {
   observers: Function[] = [];
@@ -107,6 +34,7 @@ export class Model {
   step: number;
   from: number;
   to: number;
+  scalePositionParameter: string;
   scaleNumbers: number;
 
   constructor(options: Config) {
@@ -146,6 +74,7 @@ export class Model {
     this.step = this.config.step;
     this.from = this.config.from;
     this.to = this.config.to;
+    this.scalePositionParameter = this.isVertical ? 'right' : 'top';
     this.scaleNumbers = this.config.scaleNumbers;
   }
   
@@ -193,6 +122,18 @@ export class Model {
     this.calculateLengthBetweenScaleElements();
   }
 
+  public setElementsParameters = (elementsParameters: ElementsParameters) => {
+    this.sliderPosition = elementsParameters.sliderPosition;
+    this.sliderLength = elementsParameters.sliderLength;
+    this.buttonLength = elementsParameters.buttonLength;
+    this.firstTooltipLength = elementsParameters.firstTooltipLength;
+    this.secondTooltipLength = elementsParameters.secondTooltipLength;
+    this.minValueLength = elementsParameters.minValueLength;
+    this.maxValueLength = elementsParameters.maxValueLength;
+    this.firstButtonGlobalPosition = elementsParameters.firstButtonGlobalPosition;
+    this.secondButtonGlobalPosition = elementsParameters.secondButtonGlobalPosition;
+  }
+
   public getSliderState = () => {
     const sliderState: SliderState = {
       isInterval: this.isInterval,
@@ -233,6 +174,7 @@ export class Model {
       secondTooltipValue: this.secondTooltipValue,
       rangeBetweenPosition: this.rangeBetweenPosition,
       rangeBetweenLength: this.rangeBetweenLength,
+      scalePositionParameter: this.scalePositionParameter,
       scaleNumbers: this.scaleNumbers,
       scaleElements: this.scaleElements,
       lengthBetweenScaleElements: this.lengthBetweenScaleElements
@@ -273,18 +215,6 @@ export class Model {
       this.from = this.to;
       this.firstTooltipValue = this.secondTooltipValue;
     }
-  }
-
-  public setElementsParameters = (elementsParameters: ElementsParameters) => {
-    this.sliderPosition = elementsParameters.sliderPosition;
-    this.sliderLength = elementsParameters.sliderLength;
-    this.buttonLength = elementsParameters.buttonLength;
-    this.firstTooltipLength = elementsParameters.firstTooltipLength;
-    this.secondTooltipLength = elementsParameters.secondTooltipLength;
-    this.minValueLength = elementsParameters.minValueLength;
-    this.maxValueLength = elementsParameters.maxValueLength;
-    this.firstButtonGlobalPosition = elementsParameters.firstButtonGlobalPosition;
-    this.secondButtonGlobalPosition = elementsParameters.secondButtonGlobalPosition;
   }
 
   public calculateInitialFirstButtonPosition = () => {
