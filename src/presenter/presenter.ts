@@ -4,10 +4,22 @@ class Presenter {
     
   model;
   view;
+  $textInputsContainer: JQuery<HTMLElement>;
+  $toggleInputsContainer: JQuery<HTMLElement>;
+  $minInputContainer: JQuery<HTMLElement>;
+  $minButton: JQuery<HTMLElement>;
   $minInput: JQuery<HTMLElement>;
+  $maxInputContainer: JQuery<HTMLElement>;
+  $maxButton: JQuery<HTMLElement>;
   $maxInput: JQuery<HTMLElement>;
+  $fromInputContainer: JQuery<HTMLElement>;
+  $fromButton: JQuery<HTMLElement>;
   $fromInput: JQuery<HTMLElement>;
+  $toInputContainer: JQuery<HTMLElement>;
+  $toButton: JQuery<HTMLElement>;
   $toInput: JQuery<HTMLElement>;
+  $stepInputContainer: JQuery<HTMLElement>;
+  $stepButton: JQuery<HTMLElement>;
   $stepInput: JQuery<HTMLElement>;
   $intervalToggle: JQuery<HTMLElement>;
   $tooltipsToggle: JQuery<HTMLElement>;
@@ -19,16 +31,34 @@ class Presenter {
     this.model = model;
     this.view = view;
 
-    this.$minInput = $('<input/>').addClass('js-slider__min-input').attr('type', 'number').appendTo(this.view.$panelContainer);
-    this.$maxInput = $('<input/>').addClass('js-slider__max-input').attr('type', 'number').appendTo(this.view.$panelContainer);
-    this.$fromInput = $('<input/>').addClass('js-slider__from-input').attr('type', 'number').appendTo(this.view.$panelContainer);
-    this.$toInput = $('<input/>').addClass('js-slider__to-input').attr('type', 'number').appendTo(this.view.$panelContainer);
-    this.$stepInput = $('<input/>').addClass('js-slider__step-input').attr('type', 'number').appendTo(this.view.$panelContainer);
-    this.$intervalToggle = $('<input/>').addClass('js-slider__interval-input').attr('type', 'checkbox').appendTo(this.view.$panelContainer);
-    this.$tooltipsToggle = $('<input/>').addClass('js-slider__tooltip-input').attr('type', 'checkbox').appendTo(this.view.$panelContainer);
-    this.$rangeBetweenToggle = $('<input/>').addClass('js-slider__range-between-input').attr('type', 'checkbox').appendTo(this.view.$panelContainer);
-    this.$scaleToogle = $('<input/>').addClass('js-slider__scale-input').attr('type', 'checkbox').appendTo(this.view.$panelContainer);
-    this.$verticalToggle = $('<input/>').addClass('js-slider__vertical-input').attr('type', 'checkbox').appendTo(this.view.$panelContainer);
+    this.$textInputsContainer = $('<div/>').addClass('js-slider__text-inputs-container').appendTo(this.view.$panelContainer);
+    this.$toggleInputsContainer = $('<div/>').addClass('js-slider__toggle-inputs-container').appendTo(this.view.$panelContainer);
+
+    this.$minInputContainer = $('<div/>').addClass('js-slider__min-input-container').appendTo(this.$textInputsContainer);
+    this.$minButton = $('<button/>').html('MIN').addClass('js-slider__min-button').appendTo(this.$minInputContainer);
+    this.$minInput = $('<input/>').addClass('js-slider__min-input').attr('type', 'number').appendTo(this.$minInputContainer);
+
+    this.$maxInputContainer = $('<div/>').addClass('js-slider__max-input-container').appendTo(this.$textInputsContainer);
+    this.$maxButton = $('<button/>').html('MAX').addClass('js-slider__max-button').appendTo(this.$maxInputContainer);
+    this.$maxInput = $('<input/>').addClass('js-slider__max-input').attr('type', 'number').appendTo(this.$maxInputContainer);
+
+    this.$fromInputContainer = $('<div/>').addClass('js-slider__from-input-container').appendTo(this.$textInputsContainer);
+    this.$fromButton = $('<button/>').html('FROM').addClass('js-slider__from-button').appendTo(this.$fromInputContainer);
+    this.$fromInput = $('<input/>').addClass('js-slider__from-input').attr('type', 'number').appendTo(this.$fromInputContainer);
+
+    this.$toInputContainer = $('<div/>').addClass('js-slider__to-input-container').appendTo(this.$textInputsContainer);
+    this.$toButton = $('<button/>').html('TO').addClass('js-slider__to-button').appendTo(this.$toInputContainer);
+    this.$toInput = $('<input/>').addClass('js-slider__to-input').attr('type', 'number').appendTo(this.$toInputContainer);
+
+    this.$stepInputContainer = $('<div/>').addClass('js-slider__step-input-container').appendTo(this.$textInputsContainer);
+    this.$stepButton = $('<button/>').html('STEP').addClass('js-slider__step-button').appendTo(this.$stepInputContainer);
+    this.$stepInput = $('<input/>').addClass('js-slider__step-input').attr('type', 'number').appendTo(this.$stepInputContainer);
+
+    this.$intervalToggle = $('<input/>').addClass('js-slider__interval-input').attr('type', 'checkbox').appendTo(this.$toggleInputsContainer);
+    this.$tooltipsToggle = $('<input/>').addClass('js-slider__tooltip-input').attr('type', 'checkbox').appendTo(this.$toggleInputsContainer);
+    this.$rangeBetweenToggle = $('<input/>').addClass('js-slider__range-between-input').attr('type', 'checkbox').appendTo(this.$toggleInputsContainer);
+    this.$scaleToogle = $('<input/>').addClass('js-slider__scale-input').attr('type', 'checkbox').appendTo(this.$toggleInputsContainer);
+    this.$verticalToggle = $('<input/>').addClass('js-slider__vertical-input').attr('type', 'checkbox').appendTo(this.$toggleInputsContainer);
     
     this.init();
     this.model.observer.addObserver(this.updateView); 

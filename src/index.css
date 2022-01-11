@@ -1,12 +1,17 @@
 html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+.slider-container {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
 
 .js-slider {
@@ -95,22 +100,67 @@ html, body {
 .js-slider__panel-container {
   position: absolute;
   display: flex;
+  width: 100%;
   flex-wrap: wrap;
   justify-content: center;
   align-content: center;
   cursor: default;
 }
 
-.js-slider__min-input, 
-.js-slider__max-input, 
-.js-slider__from-input, 
-.js-slider__to-input, 
-.js-slider__step-input, 
+.js-slider__text-inputs-container,
+.js-slider__toggle-inputs-container {
+  display: flex;
+}
+
 .js-slider__interval-input, 
 .js-slider__vertical-input,
 .js-slider__tooltip-input,
 .js-slider__range-between-input,
 .js-slider__scale-input
 {
-  margin: 10px;
+  margin: 5px;
+  box-sizing: border-box;
+}
+
+.js-slider__min-input-container,
+.js-slider__max-input-container,
+.js-slider__from-input-container,
+.js-slider__to-input-container,
+.js-slider__step-input-container {
+  margin: 5px;
+  display: flex;
+}
+
+.js-slider__min-input, 
+.js-slider__max-input, 
+.js-slider__from-input, 
+.js-slider__to-input, 
+.js-slider__step-input 
+{
+  width: 55px;
+  height: 26px;
+  border: 2px solid rgb(47, 50, 53);
+  border-radius: 0 4px 4px 0;
+  font-size: 18px;
+  box-sizing: border-box;
+  z-index: 1;
+  outline: none;
+}
+
+.js-slider__min-button,
+.js-slider__max-button,
+.js-slider__from-button,
+.js-slider__to-button,
+.js-slider__step-button {
+  width: 45px;
+  height: 26px;
+  background-color: rgb(47, 50, 53);
+  border-radius: 4px 0 0 4px;
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  box-sizing: border-box;
+  cursor: pointer;
+  z-index: 2;
 }
