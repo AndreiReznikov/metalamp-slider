@@ -162,8 +162,6 @@ export class View {
   public getElementsParameters = (isVertical: boolean, lengthParameter: string) => {
     const elementsParameters: ElementsParameters = {
       sliderPosition: this.getCoords(this.$slider, isVertical), 
-      firstButtonGlobalPosition: this.getCoords(this.$firstButton, isVertical),
-      secondButtonGlobalPosition: this.getCoords(this.$secondButton, isVertical),
       sliderLength: parseInt(this.$slider.css(lengthParameter)), 
       buttonLength: parseInt(this.$firstButton.css(lengthParameter)),
       firstTooltipLength: parseInt(this.$firstTooltip.css(lengthParameter)),

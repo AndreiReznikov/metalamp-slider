@@ -51,8 +51,6 @@ export class Model {
   stepLength: number = 0;
   firstButtonPosition: number = 0;
   secondButtonPosition: number = 0;
-  firstButtonGlobalPosition: number = 0;
-  secondButtonGlobalPosition: number = 0;
   firstTooltipPosition: number = 0;
   secondTooltipPosition: number = 0;
   firstTooltipValue: number = 0;
@@ -125,8 +123,6 @@ export class Model {
     this.secondTooltipLength = elementsParameters.secondTooltipLength;
     this.minValueLength = elementsParameters.minValueLength;
     this.maxValueLength = elementsParameters.maxValueLength;
-    this.firstButtonGlobalPosition = elementsParameters.firstButtonGlobalPosition;
-    this.secondButtonGlobalPosition = elementsParameters.secondButtonGlobalPosition;
   }
 
   public calculateStepLength = () => {
@@ -165,8 +161,6 @@ export class Model {
       maxValueLength: this.maxValueLength,
       firstButtonPosition: this.firstButtonPosition,
       secondButtonPosition: this.secondButtonPosition,
-      firstButtonGlobalPositon: this.firstButtonGlobalPosition,
-      secondButtonGlobalPositon: this.secondButtonGlobalPosition,
       firstTooltipPosition: this.firstTooltipPosition,
       secondTooltipPosition: this.secondTooltipPosition,
       firstTooltipValue: this.firstTooltipValue,
@@ -238,34 +232,33 @@ export class Model {
   public calculateFirstButtonPosition = (event: JQuery.MouseDownEvent) => {
     event.stopPropagation();
 
-    const shiftX1: number = event.clientX - this.firstButtonGlobalPosition - this.sliderPosition;
-    const shiftY1: number = event.clientY - this.firstButtonGlobalPosition - this.sliderPosition;
+    const shiftX1: number = event.clientX - this.firstButtonPosition - this.sliderPosition;
+    const shiftY1: number = event.clientY - this.firstButtonPosition - this.sliderPosition;
     const shiftAxis1: number = this.isVertical ? shiftY1 : shiftX1;
 
-    const calculateWhileFirstButtonMoving = (event: JQuery.MouseMoveEvent) => {
-      const clientX1: number = event.clientX;
-      const clientY1: number = event.clientY;
-      const clientAxis1: number = this.isVertical ? clientY1 : clientX1;
+    return shiftAxis1;
+  }
 
-      if (this.isStepSet) {
-        this.calculateFirstButtonPositionWidthSetStep(clientAxis1);
-      }
-      else {
-        this.firstButtonPosition = clientAxis1 - shiftAxis1 - this.sliderPosition;
-        this.calculateTooltipsValues();
-        this.restrictFirstTooltipValue();
-      }
+  public calculateWhileFirstButtonMoving = (event: JQuery.MouseMoveEvent, shiftAxis1: number) => {
+    const clientX1: number = event.clientX;
+    const clientY1: number = event.clientY;
+    const clientAxis1: number = this.isVertical ? clientY1 : clientX1;
 
-      this.restrictFirstButtonPosition();
-      this.calculateRangeBetweenPosition();
-      this.calculateRangeBetweenLength();
-      this.calculateTooltipsPositions();
-
-      this.observer.notifyObservers(this.getOptions());
+    if (this.isStepSet) {
+      this.calculateFirstButtonPositionWidthSetStep(clientAxis1);
+    }
+    else {
+      this.firstButtonPosition = clientAxis1 - shiftAxis1 - this.sliderPosition;
+      this.calculateTooltipsValues();
+      this.restrictFirstTooltipValue();
     }
 
-    $(document).on('mousemove', calculateWhileFirstButtonMoving);
-    $(document).on('mouseup', () => $(document).off('mousemove', calculateWhileFirstButtonMoving));
+    this.restrictFirstButtonPosition();
+    this.calculateRangeBetweenPosition();
+    this.calculateRangeBetweenLength();
+    this.calculateTooltipsPositions();
+
+    this.observer.notifyObservers(this.getOptions());
   }
 
   private calculateFirstButtonPositionWidthSetStep = (clientAxis: number) => {
@@ -379,39 +372,34 @@ export class Model {
     this.observer.notifyObservers(this.getOptions());
   }
 
-  public calculateFirstButtonPositionAfterFocusing = (event: JQuery.FocusInEvent) => {
+  public calculateFirstButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent) => {
     if (!this.config.keyboard) return;
 
     const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
     const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
     const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
 
-    const calculateFirstButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent) => {
-      if (!keyCodes.includes(event.keyCode)) return;
+    if (!keyCodes.includes(event.keyCode)) return;
 
-      const movementLength = this.isStepSet ? this.stepLength : 1;
-
-      if (keyCodeToIncrease.includes(event.keyCode)) {
-        this.firstButtonPosition += movementLength;
-        if (this.isStepSet) this.calculateFirstTooltipValueWidthStepAhead();
-      }
-      else if (keyCodeToReduce.includes(event.keyCode)) {
-        this.firstButtonPosition -= movementLength;
-        if (this.isStepSet) this.calculateFirstTooltipValueWidthStepBehind();
-      }
-
-      this.restrictFirstButtonPosition();
-      this.calculateRangeBetweenPosition();
-      this.calculateRangeBetweenLength();
-      this.calculateTooltipsPositions();
-      if (!this.isStepSet) this.calculateTooltipsValues();
-
-      this.observer.notifyObservers(this.getOptions());
+    const movementLength = this.isStepSet ? this.stepLength : 1;
+    if (keyCodeToIncrease.includes(event.keyCode)) {
+      this.firstButtonPosition += movementLength;
+      if (this.isStepSet) this.calculateFirstTooltipValueWidthStepAhead();
+    }
+    else if (keyCodeToReduce.includes(event.keyCode)) {
+      this.firstButtonPosition -= movementLength;
+      if (this.isStepSet) this.calculateFirstTooltipValueWidthStepBehind();
     }
 
-    $(event.target).on('keydown', calculateFirstButtonPositionAfterKeydown);
-    $(event.target).on('focusout', () => $(event.target).off('keydown', calculateFirstButtonPositionAfterKeydown));
+    this.restrictFirstButtonPosition();
+    this.calculateRangeBetweenPosition();
+    this.calculateRangeBetweenLength();
+    this.calculateTooltipsPositions();
+    if (!this.isStepSet) this.calculateTooltipsValues();
+    
+    this.observer.notifyObservers(this.getOptions());
   }
+
 
   private restrictFirstButtonPosition = () => {
     if (this.firstButtonPosition < 0 - this.buttonLength/2) {
@@ -430,34 +418,33 @@ export class Model {
 
     event.stopPropagation();
 
-    const shiftX2: number = event.clientX - this.secondButtonGlobalPosition - this.sliderPosition;
-    const shiftY2: number = event.clientY - this.secondButtonGlobalPosition - this.sliderPosition;
+    const shiftX2: number = event.clientX - this.secondButtonPosition - this.sliderPosition;
+    const shiftY2: number = event.clientY - this.secondButtonPosition - this.sliderPosition;
     const shiftAxis2: number = this.isVertical ? shiftY2 : shiftX2;
 
-    const calculateWhileSecondButtonMoving = (event: JQuery.MouseMoveEvent) => {
-      const clientX2: number = event.clientX;
-      const clientY2: number = event.clientY;
-      const clientAxis2: number = this.isVertical ? clientY2 : clientX2;
+    return shiftAxis2;
+  }
 
-      if (this.isStepSet) {
-        this.calculateSecondButtonPositionWidthSetStep(clientAxis2);
-      }
-      else {
-        this.secondButtonPosition = clientAxis2 - shiftAxis2 - this.sliderPosition;
-        this.calculateTooltipsValues();
-        this.restrictSecondTooltipValue();
-      }
+  public calculateWhileSecondButtonMoving = (event: JQuery.MouseMoveEvent, shiftAxis2: number) => {
+    const clientX2: number = event.clientX;
+    const clientY2: number = event.clientY;
+    const clientAxis2: number = this.isVertical ? clientY2 : clientX2;
 
-      this.restrictSecondButtonPosition();
-      this.calculateRangeBetweenPosition();
-      this.calculateRangeBetweenLength();
-      this.calculateTooltipsPositions();
-
-      this.observer.notifyObservers(this.getOptions());
+    if (this.isStepSet) {
+      this.calculateSecondButtonPositionWidthSetStep(clientAxis2);
+    }
+    else {
+      this.secondButtonPosition = clientAxis2 - shiftAxis2 - this.sliderPosition;
+      this.calculateTooltipsValues();
+      this.restrictSecondTooltipValue();
     }
 
-    $(document).on('mousemove', calculateWhileSecondButtonMoving);
-    $(document).on('mouseup', () => $(document).off('mousemove', calculateWhileSecondButtonMoving));
+    this.restrictSecondButtonPosition();
+    this.calculateRangeBetweenPosition();
+    this.calculateRangeBetweenLength();
+    this.calculateTooltipsPositions();
+
+    this.observer.notifyObservers(this.getOptions());
   }
 
   private calculateSecondButtonPositionWidthSetStep = (clientAxis: number) => {
@@ -550,38 +537,33 @@ export class Model {
     this.observer.notifyObservers(this.getOptions());
   }
 
-  public calculateSecondButtonPositionAfterFocusing = (event: JQuery.FocusInEvent) => {
+  public calculateSecondButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent) => {
     if (!this.config.keyboard && !this.isInterval) return;
-
+    
     const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
     const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
     const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
 
-    const calculateSecondButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent) => {
-      if (!keyCodes.includes(event.keyCode)) return;
+    if (!keyCodes.includes(event.keyCode)) return;
 
-      const movementLength = this.isStepSet ? this.stepLength : 1;
+    const movementLength = this.isStepSet ? this.stepLength : 1;
 
-      if (keyCodeToIncrease.includes(event.keyCode)) {
-        this.secondButtonPosition += movementLength;
-        if (this.isStepSet) this.calculateSecondTooltipValueWidthStepAhead();
-      }
-      else if (keyCodeToReduce.includes(event.keyCode)) {
-        this.secondButtonPosition -= movementLength;
-        if (this.isStepSet) this.calculateSecondTooltipValueWidthStepBehind();
-      }
-
-      this.restrictSecondButtonPosition();
-      this.calculateRangeBetweenPosition();
-      this.calculateRangeBetweenLength();
-      this.calculateTooltipsPositions();
-      if (!this.isStepSet) this.calculateTooltipsValues();
-
-      this.observer.notifyObservers(this.getOptions());
+    if (keyCodeToIncrease.includes(event.keyCode)) {
+      this.secondButtonPosition += movementLength;
+      if (this.isStepSet) this.calculateSecondTooltipValueWidthStepAhead();
+    }
+    else if (keyCodeToReduce.includes(event.keyCode)) {
+      this.secondButtonPosition -= movementLength;
+      if (this.isStepSet) this.calculateSecondTooltipValueWidthStepBehind();
     }
 
-    $(event.target).on('keydown', calculateSecondButtonPositionAfterKeydown);
-    $(event.target).on('focusout', () => $(event.target).off('keydown', calculateSecondButtonPositionAfterKeydown));
+    this.restrictSecondButtonPosition();
+    this.calculateRangeBetweenPosition();
+    this.calculateRangeBetweenLength();
+    this.calculateTooltipsPositions();
+    if (!this.isStepSet) this.calculateTooltipsValues();
+
+    this.observer.notifyObservers(this.getOptions());
   }
 
   private restrictSecondButtonPosition = () => {

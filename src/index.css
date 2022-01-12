@@ -169,13 +169,14 @@ html, body {
   position: relative;
   display: flex;
   align-items: center;
-  margin-right: 6px;
+  margin-right: 12px;
   line-height: 24px;
 }
 
 .js-slider__toggle-text {
-  padding-left: 45px;
+  padding-left: 40px;
   font-family: Arial, Helvetica, sans-serif;
+  opacity: 0.5;
 }
 
 .js-slider__input {
@@ -192,6 +193,7 @@ html, body {
   height: 18px;
   background-color: #fff;
   border: 1px solid rgb(47, 50, 53);
+  opacity: 0.5;
   border-radius: 10px;
   box-sizing: content-box;
   cursor: pointer;
@@ -210,8 +212,15 @@ html, body {
   transition: .4s;
 }
 
+.js-slider__input:checked ~ .js-slider__custom-toggle {
+  opacity: 1;
+}
+
+.js-slider__input:checked ~ .js-slider__toggle-text {
+  opacity: 1;
+}
+
 .js-slider__input:checked + .js-slider__custom-toggle:after {
-  background: rgb(47, 50, 53);
   -webkit-transform: translateX(20px);
   -ms-transform: translateX(20px);
   transform: translateX(20px);

@@ -15,8 +15,6 @@ interface Options {
   maxValueLength: number;
   firstButtonPosition: number;
   secondButtonPosition: number;
-  firstButtonGlobalPositon: number;
-  secondButtonGlobalPositon: number;
   firstTooltipPosition: number;
   secondTooltipPosition: number;
   firstTooltipValue: number | string;
@@ -64,8 +62,6 @@ interface ElementsParameters {
   secondTooltipLength: number;
   minValueLength: number;
   maxValueLength: number;
-  firstButtonGlobalPosition: number;
-  secondButtonGlobalPosition: number;
 }
 
 export { Options, Config, SliderState, ElementsParameters };

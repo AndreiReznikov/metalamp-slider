@@ -22,7 +22,7 @@ class Presenter {
   $stepButton: JQuery<HTMLElement>;
   $stepInput: JQuery<HTMLElement>;
   $intervalToggleContainer: JQuery<HTMLElement>; 
-  $intervalToggleText: JQuery<HTMLElement>;
+  $toggleText: JQuery<HTMLElement>;
   $customIntervalToggle: JQuery<HTMLElement>; 
   $intervalToggle: JQuery<HTMLElement>;
   $tooltipsToggleContainer: JQuery<HTMLElement>;
@@ -62,34 +62,35 @@ class Presenter {
     this.$stepInput = $('<input/>').addClass('js-slider__step-input').attr('type', 'number').appendTo(this.$stepInputContainer);
 
     this.$intervalToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    this.$intervalToggleText = $('<span/>').html('INTERVAL').addClass('js-slider__toggle-text').appendTo(this.$intervalToggleContainer);
     this.$intervalToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$intervalToggleContainer);
     this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$intervalToggleContainer);
+    this.$toggleText = $('<span/>').html('INTERVAL').addClass('js-slider__toggle-text').appendTo(this.$intervalToggleContainer);
 
     this.$tooltipsToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    this.$intervalToggleText = $('<span/>').html('TOOLTIPS').addClass('js-slider__toggle-text').appendTo(this.$tooltipsToggleContainer);
     this.$tooltipsToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$tooltipsToggleContainer);
     this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$tooltipsToggleContainer);
+    this.$toggleText = $('<span/>').html('TOOLTIPS').addClass('js-slider__toggle-text').appendTo(this.$tooltipsToggleContainer);
 
     this.$rangeBetweenToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    this.$intervalToggleText = $('<span/>').html('RANGE').addClass('js-slider__toggle-text').appendTo(this.$rangeBetweenToggleContainer);
     this.$rangeBetweenToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$rangeBetweenToggleContainer);
     this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$rangeBetweenToggleContainer);
+    this.$toggleText = $('<span/>').html('RANGE').addClass('js-slider__toggle-text').appendTo(this.$rangeBetweenToggleContainer);
 
     this.$scaleToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    this.$intervalToggleText = $('<span/>').html('SCALE').addClass('js-slider__toggle-text').appendTo(this.$scaleToggleContainer);
     this.$scaleToogle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$scaleToggleContainer);
     this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$scaleToggleContainer);
+    this.$toggleText = $('<span/>').html('SCALE').addClass('js-slider__toggle-text').appendTo(this.$scaleToggleContainer);
 
     this.$verticalToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    this.$intervalToggleText = $('<span/>').html('VERTICAL').addClass('js-slider__toggle-text').appendTo(this.$verticalToggleContainer);
     this.$verticalToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$verticalToggleContainer);
     this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$verticalToggleContainer);
+    this.$toggleText = $('<span/>').html('VERTICAL').addClass('js-slider__toggle-text').appendTo(this.$verticalToggleContainer);
     
     this.init();
-    this.model.observer.addObserver(this.updateView); 
+    this.model.observer.addObserver(this.updateView);
+    this.model.observer.addObserver(this.initPanel); 
 
-    this.view.$panelContainer.on('mousedown', this.toggleOnDown);
+    this.view.$panelContainer.on('mousedown', (event: JQuery.MouseDownEvent) => event.stopPropagation());
     this.$minInput.on('change', this.setMin);
     this.$maxInput.on('change', this.setMax);
     this.$fromInput.on('change', this.setFrom);
@@ -101,10 +102,46 @@ class Presenter {
     this.$rangeBetweenToggle.on('click', this.toggleRangeBetween);
     this.$scaleToogle.on('click', this.toggleScale);
 
-    this.view.$firstButton.on('mousedown', this.model.calculateFirstButtonPosition);
-    this.view.$secondButton.on('mousedown', this.model.calculateSecondButtonPosition);
-    this.view.$firstButton.on('focusin', this.model.calculateFirstButtonPositionAfterFocusing);
-    this.view.$secondButton.on('focusin', this.model.calculateSecondButtonPositionAfterFocusing);
+    this.view.$firstButton.on('mousedown', (event: JQuery.MouseDownEvent) => {
+      const shiftAxis1 = this.model.calculateFirstButtonPosition(event);
+      
+      const moveFirstButton = (event: JQuery.MouseMoveEvent) => {
+        this.model.calculateWhileFirstButtonMoving(event, shiftAxis1);
+      };
+
+      $(document).on('mousemove', moveFirstButton);
+      $(document).on('mouseup', () => $(document).off('mousemove', moveFirstButton));
+    });
+
+    this.view.$secondButton.on('mousedown', (event: JQuery.MouseDownEvent) => {
+      const shiftAxis2 = this.model.calculateSecondButtonPosition(event);
+      
+      const moveSecondButton = (event: JQuery.MouseMoveEvent) => {
+        this.model.calculateWhileSecondButtonMoving(event, shiftAxis2);
+      };
+
+      $(document).on('mousemove', moveSecondButton);
+      $(document).on('mouseup', () => $(document).off('mousemove', moveSecondButton));
+    });
+
+    this.view.$firstButton.on('focusin', (event: JQuery.FocusEvent) => {   
+      const moveFirstButtonAfterKeydown = (event: JQuery.KeyDownEvent) => {
+        this.model.calculateFirstButtonPositionAfterKeydown(event);
+      }
+
+      $(event.currentTarget).on('keydown', moveFirstButtonAfterKeydown);
+      $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveFirstButtonAfterKeydown));
+    });
+
+    this.view.$secondButton.on('focusin', (event: JQuery.FocusEvent) => {   
+      const moveSecondButtonAfterKeydown = (event: JQuery.KeyDownEvent) => {
+        this.model.calculateSecondButtonPositionAfterKeydown(event);
+      }
+
+      $(event.currentTarget).on('keydown', moveSecondButtonAfterKeydown);
+      $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveSecondButtonAfterKeydown));
+    });
+
     this.view.$slider.on('mousedown', this.model.calculateFirstButtonPositionAfterSliderOnDown);
     this.view.$slider.on('mousedown', this.model.calculateSecondButtonPositionAfterSliderOnDown);
     this.view.$minValue.on('mousedown', this.model.calculateFirstButtonPositionAfterMinValueOnDown);
@@ -140,7 +177,7 @@ class Presenter {
     this.view.scale.setScaleLength(options);
     this.view.scale.setScaleElementsPositions(options);
     this.view.scale.setScalePosition(options);
-    this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, this.model.getOptions().lengthParameter));
+    this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, options.lengthParameter));
   }
 
   private initPanel = () => {
@@ -158,12 +195,8 @@ class Presenter {
     this.$scaleToogle.prop('checked', this.model.isScale ? true : false);
   }
 
-  private toggleOnDown = (event: JQuery.MouseDownEvent) => {
-    event.stopPropagation();
-  }
-
   private setMin = (event: JQuery.ChangeEvent) => {
-    const minValue = $(event.target).val();
+    const minValue = $(event.currentTarget).val();
     
     this.model.minValue = parseFloat(`${minValue}`);
 
@@ -171,7 +204,7 @@ class Presenter {
   }
 
   private setMax = (event: JQuery.ChangeEvent) => {
-    const maxValue = $(event.target).val();
+    const maxValue = $(event.currentTarget).val();
     
     this.model.maxValue = parseFloat(`${maxValue}`);
 
@@ -179,7 +212,7 @@ class Presenter {
   }
 
   private setFrom = (event: JQuery.ChangeEvent) => {
-    const from = $(event.target).val();
+    const from = $(event.currentTarget).val();
 
     this.model.from = parseFloat(`${from}`);
 
@@ -187,7 +220,7 @@ class Presenter {
   }
 
   private setTo = (event: JQuery.ChangeEvent) => {
-    const to = $(event.target).val();
+    const to = $(event.currentTarget).val();
     
     this.model.to = parseFloat(`${to}`);
 
@@ -195,7 +228,7 @@ class Presenter {
   }
 
   private setStep = (event: JQuery.ChangeEvent) => {
-    const step = $(event.target).val();
+    const step = $(event.currentTarget).val();
     
     this.model.step = parseFloat(`${step}`);
 
@@ -206,7 +239,7 @@ class Presenter {
   }
 
   private toggleInterval = (event: JQuery.ClickEvent) => {
-    if ($(event.target).is(':checked')) {
+    if ($(event.currentTarget).is(':checked')) {
       this.model.isInterval = true;
     }
     else {
@@ -214,6 +247,7 @@ class Presenter {
     }
 
     this.view.initView(this.model.getSliderState());
+    this.model.validateInitialValues();
     this.model.calculateInitialSecondButtonPosition();
     this.model.calculateInitialValues();
 
@@ -221,7 +255,7 @@ class Presenter {
   }
 
   private toggleTooltip = (event: JQuery.ClickEvent) => {
-    if ($(event.target).is(':checked')) {
+    if ($(event.currentTarget).is(':checked')) {
       this.model.isTooltip = true;
     }
     else {
@@ -229,13 +263,11 @@ class Presenter {
     }
 
     this.view.initView(this.model.getSliderState());
-    this.model.calculateInitialValues();
-
     this.updateView(this.model.getOptions());
   }
 
   private toggleRangeBetween = (event: JQuery.ClickEvent) => {
-    if ($(event.target).is(':checked')) {
+    if ($(event.currentTarget).is(':checked')) {
       this.model.isRangeBetween = true;
     }
     else {
@@ -243,13 +275,11 @@ class Presenter {
     }
 
     this.view.initView(this.model.getSliderState());
-    this.model.calculateInitialValues();
-
     this.updateView(this.model.getOptions());
   }
 
   private toggleScale = (event: JQuery.ClickEvent) => {
-    if ($(event.target).is(':checked')) {
+    if ($(event.currentTarget).is(':checked')) {
       this.model.isScale = true;
     }
     else {
@@ -257,13 +287,11 @@ class Presenter {
     }
 
     this.view.initView(this.model.getSliderState());
-    this.model.calculateInitialValues();
-
     this.updateView(this.model.getOptions());
   }
 
   private toggleVertical = (event: JQuery.ClickEvent) => {
-    if ($(event.target).is(':checked')) {
+    if ($(event.currentTarget).is(':checked')) {
       this.model.isVertical = true;
 
       this.model.positionParameter = this.model.isVertical ? 'top' : 'left';
