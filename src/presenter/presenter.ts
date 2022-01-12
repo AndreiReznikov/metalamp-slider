@@ -116,8 +116,9 @@ class Presenter {
   private init = () => {
     this.view.initView(this.model.getSliderState());
     this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, this.model.getOptions().lengthParameter));
-    this.model.calculateInitialSecondButtonPosition();
+    this.model.validateInitialValues();
     this.model.calculateInitialFirstButtonPosition();
+    this.model.calculateInitialSecondButtonPosition();
     this.model.calculateInitialValues();
     this.updateView(this.model.getOptions());
     this.initPanel();
@@ -166,11 +167,7 @@ class Presenter {
     
     this.model.minValue = parseFloat(`${minValue}`);
 
-    this.model.calculateInitialFirstButtonPosition();
-    this.model.calculateInitialSecondButtonPosition();
-    this.model.calculateInitialValues();
-
-    this.model.observer.notifyObservers(this.model.getOptions());
+    this.init();
   }
 
   private setMax = (event: JQuery.ChangeEvent) => {
@@ -178,22 +175,15 @@ class Presenter {
     
     this.model.maxValue = parseFloat(`${maxValue}`);
 
-    this.model.calculateInitialFirstButtonPosition();
-    this.model.calculateInitialSecondButtonPosition();
-    this.model.calculateInitialValues();
-
-    this.model.observer.notifyObservers(this.model.getOptions());
+    this.init();
   }
 
   private setFrom = (event: JQuery.ChangeEvent) => {
     const from = $(event.target).val();
-    
+
     this.model.from = parseFloat(`${from}`);
 
-    this.model.calculateInitialFirstButtonPosition();
-    this.model.calculateInitialValues();
-
-    this.model.observer.notifyObservers(this.model.getOptions());
+    this.init();
   }
 
   private setTo = (event: JQuery.ChangeEvent) => {
@@ -201,10 +191,7 @@ class Presenter {
     
     this.model.to = parseFloat(`${to}`);
 
-    this.model.calculateInitialSecondButtonPosition();
-    this.model.calculateInitialValues();
-
-    this.model.observer.notifyObservers(this.model.getOptions());
+    this.init();
   }
 
   private setStep = (event: JQuery.ChangeEvent) => {
@@ -215,7 +202,7 @@ class Presenter {
     this.model.validateInitialValues();
     this.model.calculateStepLength();
 
-    this.model.observer.notifyObservers(this.model.getOptions());
+    this.updateView(this.model.getOptions());
   }
 
   private toggleInterval = (event: JQuery.ClickEvent) => {
@@ -230,7 +217,7 @@ class Presenter {
     this.model.calculateInitialSecondButtonPosition();
     this.model.calculateInitialValues();
 
-    this.model.observer.notifyObservers(this.model.getOptions());
+    this.updateView(this.model.getOptions());
   }
 
   private toggleTooltip = (event: JQuery.ClickEvent) => {
@@ -244,7 +231,7 @@ class Presenter {
     this.view.initView(this.model.getSliderState());
     this.model.calculateInitialValues();
 
-    this.model.observer.notifyObservers(this.model.getOptions());
+    this.updateView(this.model.getOptions());
   }
 
   private toggleRangeBetween = (event: JQuery.ClickEvent) => {
@@ -258,7 +245,7 @@ class Presenter {
     this.view.initView(this.model.getSliderState());
     this.model.calculateInitialValues();
 
-    this.model.observer.notifyObservers(this.model.getOptions());
+    this.updateView(this.model.getOptions());
   }
 
   private toggleScale = (event: JQuery.ClickEvent) => {
@@ -272,7 +259,7 @@ class Presenter {
     this.view.initView(this.model.getSliderState());
     this.model.calculateInitialValues();
 
-    this.model.observer.notifyObservers(this.model.getOptions());
+    this.updateView(this.model.getOptions());
   }
 
   private toggleVertical = (event: JQuery.ClickEvent) => {
@@ -291,11 +278,7 @@ class Presenter {
       this.model.scalePositionParameter = this.model.isVertical ? 'right' : 'top';
     }
     
-    this.view.initView(this.model.getSliderState());
-    this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, this.model.getOptions().lengthParameter));
-    this.model.calculateInitialValues();
-
-    this.model.observer.notifyObservers(this.model.getOptions());
+    this.init();
   }
 }
 

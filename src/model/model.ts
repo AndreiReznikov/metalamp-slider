@@ -16,26 +16,26 @@ class Observer {
 
 export class Model {
   observer: Observer;
-  options: {};
+  options: Config;
   data: Config;
   config: Config;
 
-  isInterval: boolean;
-  isVertical: boolean;
-  isPanel: boolean;
-  isTooltip: boolean;
-  isRangeBetween: boolean;
-  isScale: boolean;
-  positionParameter: string;
-  lengthParameter: string;
-  isMinAndMax: boolean;
-  minValue: number;
-  maxValue: number;
-  step: number;
-  from: number;
-  to: number;
-  scalePositionParameter: string;
-  scaleNumbers: number;
+  isInterval: boolean = false;
+  isVertical: boolean = false;
+  isPanel: boolean = false;
+  isTooltip: boolean = true;
+  isRangeBetween: boolean = true;
+  isScale: boolean = true;
+  positionParameter: string = this.isVertical ? 'top' : 'left';
+  lengthParameter: string = this.isVertical ? 'height' : 'width';
+  isMinAndMax: boolean = true;
+  minValue: number = 0;
+  maxValue: number = 100;
+  step: number = 0;
+  from: number = 20;
+  to: number = 50;
+  scalePositionParameter: string = this.isVertical ? 'right' : 'top';
+  scaleNumbers: number = 5;
   isStepSet: boolean = false;
   sliderPosition: number = 0;
   sliderLength: number = 0;
@@ -105,18 +105,13 @@ export class Model {
     this.scaleNumbers = this.config.scaleNumbers;
   }
 
-  public calculateStepLength = () => {
-    this.stepLength = Math.round((this.step/(this.maxValue - this.minValue)) * this.sliderLength);
-  }
-
   public calculateInitialValues = () => {
-    this.validateInitialValues();
+    this.calculateRangeBetweenPosition();
+    this.calculateRangeBetweenLength();
     this.countNumberOfDecimalPlaces();
     this.calculateMinAndMaxPositions();
     this.calculateInitialTooltipsValues();
     this.calculateTooltipsPositions();
-    this.calculateRangeBetweenPosition();
-    this.calculateRangeBetweenLength();
     this.calculateStepLength();
     this.calculateScaleElementsValues();
     this.calculateLengthBetweenScaleElements();
@@ -132,6 +127,10 @@ export class Model {
     this.maxValueLength = elementsParameters.maxValueLength;
     this.firstButtonGlobalPosition = elementsParameters.firstButtonGlobalPosition;
     this.secondButtonGlobalPosition = elementsParameters.secondButtonGlobalPosition;
+  }
+
+  public calculateStepLength = () => {
+    this.stepLength = Math.round((this.step/(this.maxValue - this.minValue)) * this.sliderLength);
   }
 
   public getSliderState = () => {
@@ -201,19 +200,24 @@ export class Model {
 
     this.isStepSet = this.step > 0;
 
-    if (this.from < this.minValue || this.from > this.maxValue) {
+    if (this.from < this.minValue) {
       this.from = this.minValue;
-      this.firstTooltipValue = this.minValue;
     }
 
-    if (this.to < this.minValue || this.to > this.maxValue) {
+    if (this.from > this.maxValue) {
+      this.from = this.maxValue;
+    }
+
+    if (this.to > this.maxValue) {
       this.to = this.maxValue;
-      this.secondTooltipValue = this.maxValue;
+    }
+
+    if (this.to < this.minValue) {
+      this.to = this.minValue;
     }
 
     if (this.from > this.to && this.isInterval) {
-      this.from = this.to;
-      this.firstTooltipValue = this.secondTooltipValue;
+      this.to = this.from;
     }
   }
 
@@ -222,8 +226,6 @@ export class Model {
     const fromRatio: number = this.from/(this.maxValue - this.minValue);
     
     this.firstButtonPosition = Math.round((fromRatio - minRatio) * this.sliderLength - this.buttonLength/2);
-
-    this.restrictFirstButtonPosition();
   }
 
   public calculateInitialSecondButtonPosition = () => {
@@ -231,8 +233,6 @@ export class Model {
     const toRatio: number = this.to/(this.maxValue - this.minValue);
 
     this.secondButtonPosition = Math.round((toRatio - minRatio) * this.sliderLength - this.buttonLength/2);
-
-    this.restrictSecondButtonPosition();
   }
 
   public calculateFirstButtonPosition = (event: JQuery.MouseDownEvent) => {
