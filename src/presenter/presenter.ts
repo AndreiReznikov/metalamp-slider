@@ -154,8 +154,7 @@ class Presenter {
     this.view.initView(this.model.getSliderState());
     this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, this.model.getOptions().lengthParameter));
     this.model.validateInitialValues();
-    this.model.calculateInitialFirstButtonPosition();
-    this.model.calculateInitialSecondButtonPosition();
+    this.model.calculateInitialButtonsPosition();
     this.model.calculateInitialValues();
     this.updateView(this.model.getOptions());
     this.initPanel();
@@ -183,10 +182,10 @@ class Presenter {
   private initPanel = () => {
     if (!this.model.isPanel) return;
 
-    this.$minInput.val(`${this.model.minValue}`);
-    this.$maxInput.val(`${this.model.maxValue}`);
-    this.$toInput.val(`${this.model.to}`);
-    this.$fromInput.val(`${this.model.from}`);
+    this.$minInput.val(`${this.model.minValue}`).attr('step', `${this.model.isStepSet ? this.model.stepNumber : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
+    this.$maxInput.val(`${this.model.maxValue}`).attr('step', `${this.model.isStepSet ? this.model.stepNumber : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
+    this.$toInput.val(`${this.model.to}`).attr('step', `${this.model.isStepSet ? this.model.stepNumber : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
+    this.$fromInput.val(`${this.model.from}`).attr('step', `${this.model.isStepSet ? this.model.stepNumber : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
     this.$stepInput.val(`${this.model.step}`);
     this.$intervalToggle.prop('checked', this.model.isInterval ? true : false);
     this.$verticalToggle.prop('checked', this.model.isVertical ? true : false);
@@ -216,7 +215,13 @@ class Presenter {
 
     this.model.from = parseFloat(`${from}`);
 
-    this.init();
+    this.view.initView(this.model.getSliderState());
+    this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, this.model.getOptions().lengthParameter));
+    this.model.validateInitialValues();
+    this.model.calculateInitialFirstButtonPosition();
+    this.model.calculateInitialValues();
+    this.updateView(this.model.getOptions());
+    this.initPanel();
   }
 
   private setTo = (event: JQuery.ChangeEvent) => {
@@ -224,7 +229,13 @@ class Presenter {
     
     this.model.to = parseFloat(`${to}`);
 
-    this.init();
+    this.view.initView(this.model.getSliderState());
+    this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, this.model.getOptions().lengthParameter));
+    this.model.validateInitialValues();
+    this.model.calculateInitialSecondButtonPosition();
+    this.model.calculateInitialValues();
+    this.updateView(this.model.getOptions());
+    this.initPanel();
   }
 
   private setStep = (event: JQuery.ChangeEvent) => {

@@ -209,10 +209,20 @@ export class Model {
     if (this.to < this.minValue) {
       this.to = this.minValue;
     }
+  }
 
-    if (this.from > this.to && this.isInterval) {
-      this.to = this.from;
-    }
+  public calculateInitialButtonsPosition = () => {
+    const minRatio: number = this.minValue/(this.maxValue - this.minValue);
+    const fromRatio: number = this.from/(this.maxValue - this.minValue);
+    const toRatio: number = this.to/(this.maxValue - this.minValue);
+    
+    this.firstButtonPosition = Math.round((fromRatio - minRatio) * this.sliderLength - this.buttonLength/2);
+    this.secondButtonPosition = Math.round((toRatio - minRatio) * this.sliderLength - this.buttonLength/2);
+
+    this.restrictFirstButtonPosition();
+    this.restrictFirstTooltipValue();
+    this.restrictSecondButtonPosition();
+    this.restrictSecondTooltipValue();
   }
 
   public calculateInitialFirstButtonPosition = () => {
@@ -220,6 +230,9 @@ export class Model {
     const fromRatio: number = this.from/(this.maxValue - this.minValue);
     
     this.firstButtonPosition = Math.round((fromRatio - minRatio) * this.sliderLength - this.buttonLength/2);
+
+    this.restrictFirstButtonPosition();
+    this.restrictFirstTooltipValue();
   }
 
   public calculateInitialSecondButtonPosition = () => {
@@ -227,6 +240,9 @@ export class Model {
     const toRatio: number = this.to/(this.maxValue - this.minValue);
 
     this.secondButtonPosition = Math.round((toRatio - minRatio) * this.sliderLength - this.buttonLength/2);
+
+    this.restrictSecondButtonPosition();
+    this.restrictSecondTooltipValue();
   }
 
   public calculateFirstButtonPosition = (event: JQuery.MouseDownEvent) => {
