@@ -126,7 +126,7 @@ export class Model {
   }
 
   public calculateStepLength = () => {
-    this.stepLength = Math.round((this.step/(this.maxValue - this.minValue)) * this.sliderLength);
+    this.stepLength = parseFloat(((this.step/(this.maxValue - this.minValue)) * this.sliderLength).toFixed(this.numberOfDecimalPlaces));
   }
 
   public getSliderState = () => {
@@ -189,6 +189,10 @@ export class Model {
     }
 
     if (areMinAndMaxNegative && this.step > -(this.minValue - this.maxValue)) {
+      this.step = 0;
+    }
+
+    if (this.step < 0) {
       this.step = 0;
     }
 
