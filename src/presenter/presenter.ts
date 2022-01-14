@@ -103,10 +103,10 @@ class Presenter {
     this.$scaleToogle.on('click', this.toggleScale);
 
     this.view.$firstButton.on('mousedown', (event: JQuery.MouseDownEvent) => {
-      const shiftAxis1 = this.model.calculateFirstButtonPosition(event);
+      const shiftAxis1 = this.model.calculateShiftAxis1(event);
       
       const moveFirstButton = (event: JQuery.MouseMoveEvent) => {
-        this.model.calculateWhileFirstButtonMoving(event, shiftAxis1);
+        this.model.calculateFirstButtonPositionWhileMoving(event, shiftAxis1);
       };
 
       $(document).on('mousemove', moveFirstButton);
@@ -114,10 +114,10 @@ class Presenter {
     });
 
     this.view.$secondButton.on('mousedown', (event: JQuery.MouseDownEvent) => {
-      const shiftAxis2 = this.model.calculateSecondButtonPosition(event);
+      const shiftAxis2 = this.model.calculateShiftAxis2(event);
       
       const moveSecondButton = (event: JQuery.MouseMoveEvent) => {
-        this.model.calculateWhileSecondButtonMoving(event, shiftAxis2);
+        this.model.calculateSecondButtonPositionWhileMoving(event, shiftAxis2);
       };
 
       $(document).on('mousemove', moveSecondButton);
@@ -181,9 +181,9 @@ class Presenter {
 
   private initPanel = () => {
     if (!this.model.isPanel) return;
-    console.log(this.model.step)
-    this.$minInput.val(`${this.model.minValue}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
-    this.$maxInput.val(`${this.model.maxValue}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
+    
+    this.$minInput.val(`${this.model.minValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
+    this.$maxInput.val(`${this.model.maxValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
     this.$toInput.val(`${this.model.to}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
     this.$fromInput.val(`${this.model.from}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
     this.$stepInput.val(`${this.model.step}`).attr('step', `${(0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
@@ -218,25 +218,27 @@ class Presenter {
     this.model.validateInitialValues();
     this.model.calculateInitialFirstButtonPosition();
     this.model.calculateInitialValues();
-    this.updateView(this.model.getOptions());
     this.initPanel();
+
+    this.updateView(this.model.getOptions());
   }
 
   private setTo = (event: JQuery.ChangeEvent) => {
     const to = $(event.currentTarget).val();
-    
-    this.model.to = parseFloat(`${to}`);
 
+    this.model.to = parseFloat(`${to}`);
+    
     this.model.validateInitialValues();
     this.model.calculateInitialSecondButtonPosition();
     this.model.calculateInitialValues();
-    this.updateView(this.model.getOptions());
     this.initPanel();
+
+    this.updateView(this.model.getOptions());
   }
 
   private setStep = (event: JQuery.ChangeEvent) => {
     const step = $(event.currentTarget).val();
-    
+
     this.model.step = parseFloat(`${step}`);
 
     this.view.initView(this.model.getSliderState());

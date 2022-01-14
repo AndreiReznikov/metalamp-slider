@@ -5,18 +5,18 @@ import { Presenter } from './presenter/presenter';
 import { Config } from './interfaces/interfaces';
 
 (function($) {
-  const mySlider = (slider: JQuery<HTMLElement>, options: Config): JQuery => {
+  const mySlider = (slider: JQuery<HTMLElement>, config: Config): JQuery => {
 
-    const model = new Model(options);
+    const model = new Model(config);
     const view = new View(slider);
     const presenter = new Presenter(model, view);
 
     return slider;
   };
 
-  $.fn.mySlider = function(options: Config) {
+  $.fn.mySlider = function(config: Config) {
     return this.each(function() {
-      mySlider($(this), options);
+      mySlider($(this), config);
     });
   }
 })(jQuery);
