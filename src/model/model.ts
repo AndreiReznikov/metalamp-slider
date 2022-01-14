@@ -601,12 +601,10 @@ export class Model {
     }
   }
 
-  public calculateButtonPositionAfterScaleOnDown = (event: JQuery.MouseDownEvent) => {
+  public calculateButtonPositionAfterScaleOnDown = (event: JQuery.MouseDownEvent, scaleOptions: {isScaleElementOnDown: boolean, scaleElementPosition: string, scaleElementLength: string, scaleElementValue: string}) => {
     event.stopPropagation();
 
-    const isScaleElementOnDown = $(event.target).hasClass('js-slider__scale-element');
-
-    if (!isScaleElementOnDown) return;
+    if (!scaleOptions.isScaleElementOnDown) return;
 
     const clientX1: number = event.clientX;
     const clientY1: number = event.clientY;
@@ -621,12 +619,12 @@ export class Model {
     const clickBehindOfSecondButton: boolean = clientAxis1 - this.sliderPosition < this.secondButtonPosition && clientAxis1 - this.sliderPosition >= this.firstButtonPosition + this.buttonLength + (this.secondButtonPosition - this.firstButtonPosition)/2;
 
     if (clickAheadOfFirstButton || clickBehindOfFirstButton) {
-      this.firstButtonPosition = parseInt($(event.target).css(this.positionParameter)) + parseInt($(event.target).css(this.lengthParameter))/2 - this.buttonLength/2;
-      this.calculateFirstTooltipValueAfterScaleOnDown(parseFloat($(event.target).html()));
+      this.firstButtonPosition = parseInt(scaleOptions.scaleElementPosition) + parseInt(scaleOptions.scaleElementLength)/2 - this.buttonLength/2;
+      this.calculateFirstTooltipValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
     }
     else if (clickAheadOfSecondButton || clickBehindOfSecondButton) {
-      this.secondButtonPosition = parseInt($(event.target).css(this.positionParameter)) + parseInt($(event.target).css(this.lengthParameter))/2 - this.buttonLength/2;
-      this.calculateSecondTooltipValueAfterScaleOnDown(parseFloat($(event.target).html()));
+      this.secondButtonPosition = parseInt(scaleOptions.scaleElementPosition) + parseInt(scaleOptions.scaleElementLength)/2 - this.buttonLength/2;
+      this.calculateSecondTooltipValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
     }
 
     this.calculateRangeBetweenPosition();

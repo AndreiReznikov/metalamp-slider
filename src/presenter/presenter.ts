@@ -147,7 +147,23 @@ class Presenter {
     this.view.$minValue.on('mousedown', this.model.calculateFirstButtonPositionAfterMinValueOnDown);
     this.view.$maxValue.on('mousedown', this.model.calculateFirstButtonPositionAfterMaxValueOnDown);
     this.view.$maxValue.on('mousedown', this.model.calculateSecondButtonPositionAfterMaxValueOnDown);
-    this.view.$scaleContainer.on('mousedown', this.model.calculateButtonPositionAfterScaleOnDown);
+    
+    this.view.$scaleContainer.on('mousedown', (event: JQuery.MouseDownEvent) => {
+      const $target = $(event.target);
+      const isScaleElementOnDown = $target.hasClass('js-slider__scale-element');
+      const scaleElementPosition = $target.css(this.model.positionParameter);
+      const scaleElementLength = $target.css(this.model.lengthParameter);
+      const scaleElementValue = $target.html();
+      
+      const scaleElementOptions = {
+        isScaleElementOnDown: isScaleElementOnDown,
+        scaleElementPosition: scaleElementPosition,
+        scaleElementLength: scaleElementLength,
+        scaleElementValue: scaleElementValue
+      }
+
+      this.model.calculateButtonPositionAfterScaleOnDown(event, scaleElementOptions);
+    });
   }
 
   private init = () => {
