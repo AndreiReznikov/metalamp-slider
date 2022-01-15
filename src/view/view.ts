@@ -1,5 +1,5 @@
 
-import { Options, SliderState, ElementsParameters } from '../interfaces/interfaces';
+import { Options, State, ElementsParameters } from '../interfaces/interfaces';
 
 export class View {
 
@@ -50,7 +50,7 @@ export class View {
     this.height = parseInt(this.$this.css('height'));
   }
 
-  public initView = (initialOptions: SliderState) => {
+  public initView = (initialOptions: State): void => {
     this.$slider.appendTo(this.$this).addClass('js-slider__stripe');
     this.$rangeBetween.appendTo(this.$slider).addClass('js-slider__between');
     this.$firstButton.appendTo(this.$slider).addClass('js-slider__first-button');
@@ -117,7 +117,7 @@ export class View {
     this.setPlane(initialOptions.isVertical);
   }
 
-  private setPlane = (isVertical: boolean) => {
+  private setPlane = (isVertical: boolean): void => {
     this.$this.css({'width': 0, 'height': 0});
     this.$firstButton.css({'top': 0, 'left': 0, 'transform': 'translate(0, 0)'});
     this.$secondButton.css({'top': 0, 'left': 0, 'transform': 'translate(0, 0)'}); 
@@ -159,7 +159,7 @@ export class View {
     this.$panelContainer.css({'right': '', 'top': 60});
   }
 
-  public getElementsParameters = (isVertical: boolean, lengthParameter: string) => {
+  public getElementsParameters = (isVertical: boolean, lengthParameter: string): ElementsParameters => {
     const elementsParameters: ElementsParameters = {
       sliderPosition: this.getCoords(this.$slider, isVertical), 
       sliderLength: parseInt(this.$slider.css(lengthParameter)), 
@@ -173,7 +173,7 @@ export class View {
     return elementsParameters;
   }
 
-  private getCoords = (element: JQuery<HTMLElement>, isVertical: boolean) => {
+  private getCoords = (element: JQuery<HTMLElement>, isVertical: boolean): number => {
     const coords = element.position();
   
     return isVertical ? coords.top : coords.left;
@@ -187,11 +187,11 @@ class Slider {
 class RangeBetween {
   $rangeBetween: JQuery<HTMLElement> = $('<div/>');
 
-  public setRangeBetweenPosition = (options: Options) => {
+  public setRangeBetweenPosition = (options: Options): void => {
     this.$rangeBetween.css(options.positionParameter, options.rangeBetweenPosition);
   }
 
-  public setRangeBetweenLength = (options: Options) => {
+  public setRangeBetweenLength = (options: Options): void => {
     this.$rangeBetween.css(options.lengthParameter, options.rangeBetweenLength);
   }
 }
@@ -199,7 +199,7 @@ class RangeBetween {
 class FirstButton {
   $firstButton: JQuery<HTMLElement> = $('<button/>');
 
-  setFirstButtonPosition = (options: Options) => {
+  setFirstButtonPosition = (options: Options): void => {
     this.$firstButton.css(options.positionParameter, options.firstButtonPosition);
   }
 }
@@ -207,7 +207,7 @@ class FirstButton {
 class SecondButton {
   $secondButton: JQuery<HTMLElement> = $('<button/>');
 
-  setSecondButtonPosition = (options: Options) => {
+  setSecondButtonPosition = (options: Options): void => {
     this.$secondButton.css(options.positionParameter, options.secondButtonPosition);
   }
 }
@@ -216,19 +216,19 @@ class Tooltips {
   $firstTooltip: JQuery<HTMLElement> = $('<div/>');
   $secondTooltip: JQuery<HTMLElement> = $('<div/>');
 
-  public setFirstTooltipPosition = (options: Options) => {
+  public setFirstTooltipPosition = (options: Options): void => {
     this.$firstTooltip.css(options.positionParameter, options.firstTooltipPosition);
   }
 
-  public setFirstTooltipValue = (options: Options) => {
+  public setFirstTooltipValue = (options: Options): void => {
     this.$firstTooltip.html(`${options.firstTooltipValue}`)
   }
 
-  public setSecondTooltipPosition = (options: Options) => {
+  public setSecondTooltipPosition = (options: Options): void => {
     this.$secondTooltip.css(options.positionParameter, options.secondTooltipPosition);
   }
 
-  public setSecondTooltipValue = (options: Options) => {
+  public setSecondTooltipValue = (options: Options): void => {
     this.$secondTooltip.html(`${options.secondTooltipValue}`)
   }
 }
@@ -237,25 +237,25 @@ class MinAndMaxValues {
   $minValue: JQuery<HTMLElement> = $('<div/>');
   $maxValue: JQuery<HTMLElement> = $('<div/>');
 
-  public setMinAndMaxPosition = (options: Options) => {
+  public setMinAndMaxPosition = (options: Options): void => {
     this.$minValue.css(options.positionParameter, options.minValuePosition);
     this.$maxValue.css(options.positionParameter, options.maxValuePosition);
   }
 
-  public setMinAndMaxValues = (options: Options) => {
+  public setMinAndMaxValues = (options: Options): void => {
     this.$minValue.html(`${options.minValue}`);
     this.$maxValue.html(`${options.maxValue}`);
   }
 
-  public showMinAndMax = (options: Options) => {
+  public showMinAndMax = (options: Options): void => {
     this.$minValue.css({'opacity': '1'});
     this.$maxValue.css({'opacity': '1'});
     
-    if (!options.showMinValue) {
+    if (!options.isMinValueShow) {
       this.$minValue.css({'opacity': '0'});
     }
     
-    if (!options.showMaxValue) {
+    if (!options.isMaxValueShow) {
       this.$maxValue.css({'opacity': '0'});
     }
   }
@@ -265,7 +265,7 @@ class Scale {
 
   $scaleContainer: JQuery<HTMLElement> = $('<div>');
 
-  public setScaleElementsValues = (options: Options) => {
+  public setScaleElementsValues = (options: Options): void => {
     this.$scaleContainer.empty();
 
     for (let i = 0; i < options.scaleElements.length; i++) {
@@ -275,7 +275,7 @@ class Scale {
     }
   }
 
-  public setScaleElementsPositions = (options: Options) => {
+  public setScaleElementsPositions = (options: Options): void => {
     let scaleElementPosition: number = 0;
 
     for (let i = 0; i < options.scaleElements.length; i++) {
@@ -288,7 +288,7 @@ class Scale {
     }
   }
 
-  public setScalePosition = (options: Options) => {
+  public setScalePosition = (options: Options): void => {
     const scaleElementsWidths: number[] = [];
 
     this.$scaleContainer.find('.js-slider__scale-element').each(function() {
@@ -302,7 +302,7 @@ class Scale {
     this.$scaleContainer.css(options.scalePositionParameter, options.scalePositionParameter === 'right' ? maxScaleElementsWidth + options.buttonLength : options.buttonLength);
   }
 
-  public setScaleLength = (options: Options) => {
+  public setScaleLength = (options: Options): void => {
     this.$scaleContainer.css(options.lengthParameter, options.sliderLength);
   }
 }

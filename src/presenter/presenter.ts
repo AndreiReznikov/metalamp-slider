@@ -149,11 +149,11 @@ class Presenter {
     this.view.$maxValue.on('mousedown', this.model.calculateSecondButtonPositionAfterMaxValueOnDown);
     
     this.view.$scaleContainer.on('mousedown', (event: JQuery.MouseDownEvent) => {
-      const $target = $(event.target);
-      const isScaleElementOnDown = $target.hasClass('js-slider__scale-element');
-      const scaleElementPosition = $target.css(this.model.positionParameter);
-      const scaleElementLength = $target.css(this.model.lengthParameter);
-      const scaleElementValue = $target.html();
+      const $target: JQuery<HTMLElement> = $(event.target);
+      const isScaleElementOnDown: boolean = $target.hasClass('js-slider__scale-element');
+      const scaleElementPosition: number = parseInt(`${$target.css(this.model.positionParameter)}`);
+      const scaleElementLength: number =parseInt(`${$target.css(this.model.lengthParameter)}`);
+      const scaleElementValue: string = $target.html();
       
       const scaleElementOptions = {
         isScaleElementOnDown: isScaleElementOnDown,
@@ -166,8 +166,8 @@ class Presenter {
     });
   }
 
-  private init = () => {
-    this.view.initView(this.model.getSliderState());
+  private init = (): void => {
+    this.view.initView(this.model.getState());
     this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, this.model.getOptions().lengthParameter));
     this.model.validateInitialValues();
     this.model.calculateInitialButtonsPosition();
@@ -176,7 +176,7 @@ class Presenter {
     this.initPanel();
   }
 
-  private updateView = (options: Options) => {
+  private updateView = (options: Options): void => {
     this.view.firstButton.setFirstButtonPosition(options);
     this.view.secondButton.setSecondButtonPosition(options);
     this.view.tooltips.setFirstTooltipValue(options);
@@ -195,14 +195,14 @@ class Presenter {
     this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, options.lengthParameter));
   }
 
-  private initPanel = () => {
+  private initPanel = (): void => {
     if (!this.model.isPanel) return;
     
-    this.$minInput.val(`${this.model.minValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
-    this.$maxInput.val(`${this.model.maxValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
-    this.$toInput.val(`${this.model.to}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
-    this.$fromInput.val(`${this.model.from}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
-    this.$stepInput.val(`${this.model.step}`).attr('step', `${(0.1).toFixed(this.model.numberOfDecimalPlaces)}`);
+    this.$minInput.val(`${this.model.minValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
+    this.$maxInput.val(`${this.model.maxValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
+    this.$toInput.val(`${this.model.to}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
+    this.$fromInput.val(`${this.model.from}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
+    this.$stepInput.val(`${this.model.step}`).attr('step', `${(0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
     this.$intervalToggle.prop('checked', this.model.isInterval ? true : false);
     this.$verticalToggle.prop('checked', this.model.isVertical ? true : false);
     this.$tooltipsToggle.prop('checked', this.model.isTooltip ? true : false);
@@ -210,9 +210,10 @@ class Presenter {
     this.$scaleToogle.prop('checked', this.model.isScale ? true : false);
   }
 
-  private setMin = (event: JQuery.ChangeEvent) => {
+  private setMin = (event: JQuery.ChangeEvent): void => {
     const minValue = $(event.currentTarget).val();
 
+    //вынести в переменную
     if (typeof parseFloat(`${minValue}`) !== 'number' || minValue == '') {
       this.initPanel();
       return;
@@ -223,7 +224,7 @@ class Presenter {
     this.init();
   }
 
-  private setMax = (event: JQuery.ChangeEvent) => {
+  private setMax = (event: JQuery.ChangeEvent): void => {
     const maxValue = $(event.currentTarget).val();
     
     if (typeof parseFloat(`${maxValue}`) !== 'number'  || maxValue == '') {
@@ -236,7 +237,7 @@ class Presenter {
     this.init();
   }
 
-  private setFrom = (event: JQuery.ChangeEvent) => {
+  private setFrom = (event: JQuery.ChangeEvent): void => {
     const from = $(event.currentTarget).val();
 
     if (typeof parseFloat(`${from}`) !== 'number'  || from == '') {
@@ -254,7 +255,7 @@ class Presenter {
     this.updateView(this.model.getOptions());
   }
 
-  private setTo = (event: JQuery.ChangeEvent) => {
+  private setTo = (event: JQuery.ChangeEvent): void => {
     const to = $(event.currentTarget).val();
 
     if (typeof parseFloat(`${to}`) !== 'number' || to == '') {
@@ -272,7 +273,7 @@ class Presenter {
     this.updateView(this.model.getOptions());
   }
 
-  private setStep = (event: JQuery.ChangeEvent) => {
+  private setStep = (event: JQuery.ChangeEvent): void => {
     const step = $(event.currentTarget).val();
 
     if (typeof parseFloat(`${step}`) !== 'number' || step == '') {
@@ -282,7 +283,7 @@ class Presenter {
 
     this.model.step = parseFloat(`${step}`);
 
-    this.view.initView(this.model.getSliderState());
+    this.view.initView(this.model.getState());
     this.model.validateInitialValues();
     this.model.calculateStepLength();
     this.initPanel();
@@ -290,7 +291,7 @@ class Presenter {
     this.updateView(this.model.getOptions());
   }
 
-  private toggleInterval = (event: JQuery.ClickEvent) => {
+  private toggleInterval = (event: JQuery.ClickEvent): void => {
     if ($(event.currentTarget).is(':checked')) {
       this.model.isInterval = true;
     }
@@ -298,7 +299,7 @@ class Presenter {
       this.model.isInterval = false;
     }
 
-    this.view.initView(this.model.getSliderState());
+    this.view.initView(this.model.getState());
     this.model.validateInitialValues();
     this.model.calculateInitialSecondButtonPosition();
     this.model.calculateInitialValues();
@@ -306,7 +307,7 @@ class Presenter {
     this.updateView(this.model.getOptions());
   }
 
-  private toggleTooltip = (event: JQuery.ClickEvent) => {
+  private toggleTooltip = (event: JQuery.ClickEvent): void => {
     if ($(event.currentTarget).is(':checked')) {
       this.model.isTooltip = true;
     }
@@ -314,11 +315,11 @@ class Presenter {
       this.model.isTooltip = false;
     }
 
-    this.view.initView(this.model.getSliderState());
+    this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
   }
 
-  private toggleRangeBetween = (event: JQuery.ClickEvent) => {
+  private toggleRangeBetween = (event: JQuery.ClickEvent): void => {
     if ($(event.currentTarget).is(':checked')) {
       this.model.isRangeBetween = true;
     }
@@ -326,11 +327,11 @@ class Presenter {
       this.model.isRangeBetween  = false;
     }
 
-    this.view.initView(this.model.getSliderState());
+    this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
   }
 
-  private toggleScale = (event: JQuery.ClickEvent) => {
+  private toggleScale = (event: JQuery.ClickEvent): void => {
     if ($(event.currentTarget).is(':checked')) {
       this.model.isScale = true;
     }
@@ -338,11 +339,11 @@ class Presenter {
       this.model.isScale  = false;
     }
 
-    this.view.initView(this.model.getSliderState());
+    this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
   }
 
-  private toggleVertical = (event: JQuery.ClickEvent) => {
+  private toggleVertical = (event: JQuery.ClickEvent): void => {
     if ($(event.currentTarget).is(':checked')) {
       this.model.isVertical = true;
 

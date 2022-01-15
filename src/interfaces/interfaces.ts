@@ -9,8 +9,8 @@ interface Options {
   maxValuePosition: number;
   minValue: number;
   maxValue: number;
-  showMinValue: boolean;
-  showMaxValue: boolean;
+  isMinValueShow: boolean;
+  isMaxValueShow: boolean;
   minValueLength: number;
   maxValueLength: number;
   firstButtonPosition: number;
@@ -44,7 +44,7 @@ interface Config {
   isPanel: boolean;
 }
 
-interface SliderState {
+interface State {
   isInterval: boolean;
   isTooltip: boolean;
   isMinAndMax: boolean;
@@ -64,4 +64,4 @@ interface ElementsParameters {
   maxValueLength: number;
 }
 
-export { Options, Config, SliderState, ElementsParameters };
+export { Options, Config, State, ElementsParameters };
