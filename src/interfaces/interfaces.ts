@@ -22,7 +22,7 @@ interface Options {
   rangeBetweenPosition: number;
   rangeBetweenLength: number;
   scalePositionParameter: string;
-  scaleNumbers: number;
+  scaleNumber: number;
   scaleElements: number[];
   lengthBetweenScaleElements: number;
 }
@@ -40,7 +40,7 @@ interface Config {
   isMinAndMax: boolean;
   isRangeBetween: boolean;
   isScale: boolean;
-  scaleNumbers: number;
+  scaleNumber: number;
   isPanel: boolean;
 }
 

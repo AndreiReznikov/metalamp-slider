@@ -30,10 +30,9 @@ $('.js-slider').mySlider({
   isPanel: true,
   isScale: true,
   keyboard: true,
-  minValue: -4.5,
-  maxValue: 4.5,
+  minValue: -12.5,
+  maxValue: 12.5,
   step: 0,
-  from: -2.5,
-  to: 2.5,
-  scaleNumbers: 10
+  from: -5,
+  to: 5,
 });

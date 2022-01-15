@@ -35,7 +35,7 @@ export class Model {
   from: number = 20;
   to: number = 50;
   scalePositionParameter: string = this.isVertical ? 'right' : 'top';
-  scaleNumbers: number = 5;
+  scaleNumber: number = 5;
   isStepSet: boolean = false;
   sliderPosition: number = 0;
   sliderLength: number = 0;
@@ -80,7 +80,7 @@ export class Model {
       to: 50,
       step: 0,
       keyboard: false,
-      scaleNumbers: 5
+      scaleNumber: 5
     };
     
     this.config = $.extend({}, this.data, this.options);
@@ -100,7 +100,7 @@ export class Model {
     this.from = this.config.from;
     this.to = this.config.to;
     this.scalePositionParameter = this.isVertical ? 'right' : 'top';
-    this.scaleNumbers = this.config.scaleNumbers;
+    this.scaleNumber = this.config.scaleNumber;
   }
 
   public calculateInitialValues = () => {
@@ -111,6 +111,7 @@ export class Model {
     this.calculateInitialTooltipsValues();
     this.calculateTooltipsPositions();
     this.calculateStepLength();
+    this.calculateScaleElementsNumber();
     this.calculateScaleElementsValues();
     this.calculateLengthBetweenScaleElements();
   }
@@ -168,7 +169,7 @@ export class Model {
       rangeBetweenPosition: this.rangeBetweenPosition,
       rangeBetweenLength: this.rangeBetweenLength,
       scalePositionParameter: this.scalePositionParameter,
-      scaleNumbers: this.scaleNumbers,
+      scaleNumber: this.scaleNumber,
       scaleElements: this.scaleElements,
       lengthBetweenScaleElements: this.lengthBetweenScaleElements
     }
@@ -833,17 +834,36 @@ export class Model {
   private calculateScaleElementsValues = () => {
     this.scaleElements.length = 0;
 
-    const intervalForScalesElements: number = (this.maxValue - this.minValue)/(this.scaleNumbers - 1);
-    let scaleElementValue = this.minValue;
+    const intervalForScalesElements: number = (this.maxValue - this.minValue)/(this.scaleNumber - 1);
+    let minScaleElementValue: number = this.minValue;
 
-    this.scaleElements.push(parseFloat(scaleElementValue.toFixed(this.numberOfDecimalPlaces)));
+    this.scaleElements.push(parseFloat(minScaleElementValue.toFixed(this.numberOfDecimalPlaces)));
     
-    for (let i = 0; i < this.scaleNumbers - 1; i++) {      
-      this.scaleElements.push(parseFloat((scaleElementValue += intervalForScalesElements).toFixed(this.numberOfDecimalPlaces)));
+    for (let i = 0; i < this.scaleNumber - 1; i++) {
+      const scaleElementValue = minScaleElementValue += intervalForScalesElements;
+
+      this.scaleElements.push(parseFloat((scaleElementValue).toFixed(this.numberOfDecimalPlaces)));
     }
   }
 
   private calculateLengthBetweenScaleElements = () => {
-    this.lengthBetweenScaleElements = this.sliderLength/(this.scaleNumbers - 1);
+    this.lengthBetweenScaleElements = this.sliderLength/(this.scaleNumber - 1);
+  }
+
+  private calculateScaleElementsNumber = () => {
+    if (this.options.scaleNumber) return;
+
+    if (this.maxValue - this.minValue <= 4) {
+      this.scaleNumber = 4;
+    }
+    else if (this.maxValue - this.minValue < 10) {
+      this.scaleNumber = 5;
+    }
+    else if (this.maxValue > 0 && this.minValue < 0) {
+      this.scaleNumber = 11;
+    }
+    else {
+      this.scaleNumber = 6;
+    }
   }
 }
