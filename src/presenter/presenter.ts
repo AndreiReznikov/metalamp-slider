@@ -212,6 +212,11 @@ class Presenter {
 
   private setMin = (event: JQuery.ChangeEvent) => {
     const minValue = $(event.currentTarget).val();
+
+    if (typeof parseFloat(`${minValue}`) !== 'number' || minValue == '') {
+      this.initPanel();
+      return;
+    };
     
     this.model.minValue = parseFloat(`${minValue}`);
 
@@ -221,6 +226,11 @@ class Presenter {
   private setMax = (event: JQuery.ChangeEvent) => {
     const maxValue = $(event.currentTarget).val();
     
+    if (typeof parseFloat(`${maxValue}`) !== 'number'  || maxValue == '') {
+      this.initPanel();
+      return;
+    };
+
     this.model.maxValue = parseFloat(`${maxValue}`);
 
     this.init();
@@ -228,6 +238,11 @@ class Presenter {
 
   private setFrom = (event: JQuery.ChangeEvent) => {
     const from = $(event.currentTarget).val();
+
+    if (typeof parseFloat(`${from}`) !== 'number'  || from == '') {
+      this.initPanel();
+      return;
+    };
 
     this.model.from = parseFloat(`${from}`);   
   
@@ -242,6 +257,11 @@ class Presenter {
   private setTo = (event: JQuery.ChangeEvent) => {
     const to = $(event.currentTarget).val();
 
+    if (typeof parseFloat(`${to}`) !== 'number' || to == '') {
+      this.initPanel();
+      return;
+    };
+
     this.model.to = parseFloat(`${to}`);
     
     this.model.validateInitialValues();
@@ -254,6 +274,11 @@ class Presenter {
 
   private setStep = (event: JQuery.ChangeEvent) => {
     const step = $(event.currentTarget).val();
+
+    if (typeof parseFloat(`${step}`) !== 'number' || step == '') {
+      this.initPanel();
+      return;
+    };
 
     this.model.step = parseFloat(`${step}`);
 
