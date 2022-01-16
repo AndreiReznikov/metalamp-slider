@@ -160,6 +160,7 @@ export class View {
   }
 
   public getElementsParameters = (isVertical: boolean, lengthParameter: string): ElementsParameters => {
+
     const elementsParameters: ElementsParameters = {
       sliderPosition: this.getCoords(this.$slider, isVertical), 
       sliderLength: parseInt(this.$slider.css(lengthParameter)), 
@@ -174,9 +175,12 @@ export class View {
   }
 
   private getCoords = (element: JQuery<HTMLElement>, isVertical: boolean): number => {
-    const coords = element.position();
-  
-    return isVertical ? coords.top : coords.left;
+    const coords = element.offset();
+    let coord = 0;
+
+    if (coords) {coord = isVertical ? coords.top : coords.left}
+
+    return coord;
   }
 }
 
