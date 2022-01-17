@@ -28,6 +28,7 @@ html, body {
   border-radius: 8px;
   background-color: #fff;
   box-sizing: border-box;
+  touch-action: none;
   cursor: pointer;
 }
 
@@ -38,17 +39,19 @@ html, body {
   height: 100%;
   border-radius: 8px;
   background-color: rgb(47, 50, 53);
+  touch-action: none;
 }
 
 .js-slider__first-button, .js-slider__second-button {
   position: absolute;
   height: 20px;
   width: 20px;
-  cursor: pointer;
   box-sizing: border-box;
   border: 2px solid #fff;
   border-radius: 50%;
   background-color: rgb(47, 50, 53);
+  touch-action: none;
+  cursor: pointer;
 }
 
 .js-slider__min-value, .js-slider__max-value {
@@ -65,6 +68,7 @@ html, body {
   color: #fff;
   box-sizing: border-box;
   border-radius: 4px;
+  touch-action: none;
   cursor: pointer;
 }
 
@@ -83,6 +87,7 @@ html, body {
   box-sizing: border-box;
   color: #fff;
   background-color: rgb(47, 50, 53);
+  touch-action: none;
 }
 
 .js-slider__scale-container {
@@ -91,10 +96,12 @@ html, body {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
   color: rgb(47, 50, 53);
+  touch-action: none;
 }
 
 .js-slider__scale-element {
  position: absolute;
+ touch-action: none;
 }
 
 .js-slider__panel-container {
@@ -105,6 +112,7 @@ html, body {
   justify-content: center;
   align-content: center;
   cursor: default;
+  touch-action: none;
 }
 
 .js-slider__text-inputs-container,
@@ -161,8 +169,8 @@ html, body {
   font-size: 12px;
   font-weight: bold;
   box-sizing: border-box;
-  cursor: pointer;
   z-index: 2;
+  cursor: pointer;
 }
 
 .js-slider__toggle-container {
@@ -196,8 +204,8 @@ html, body {
   opacity: 0.5;
   border-radius: 10px;
   box-sizing: content-box;
-  cursor: pointer;
   z-index: 1;
+  cursor: pointer;
 }
 
 .js-slider__custom-toggle:after {
@@ -224,4 +232,20 @@ html, body {
   -webkit-transform: translateX(20px);
   -ms-transform: translateX(20px);
   transform: translateX(20px);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .js-slider__stripe,
+  .js-slider__first-button, 
+  .js-slider__second-button,
+  .js-slider__min-value, 
+  .js-slider__max-value,
+  .js-slider__min-button,
+  .js-slider__max-button,
+  .js-slider__from-button,
+  .js-slider__to-button,
+  .js-slider__step-button,
+  .js-slider__custom-toggle {
+    cursor: auto;
+  }
 }

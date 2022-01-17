@@ -253,7 +253,7 @@ export class Model {
     this.restrictSecondTooltipValue();
   }
 
-  public calculateShiftAxis1 = (event: JQuery.MouseDownEvent): number => {
+  public calculateShiftAxis1 = (event: PointerEvent): number => {
     event.stopPropagation();
 
     const shiftX1: number = event.pageX - this.firstButtonPosition - this.sliderPosition;
@@ -263,7 +263,7 @@ export class Model {
     return shiftAxis1;
   }
 
-  public calculateFirstButtonPositionWhileMoving = (event: JQuery.MouseMoveEvent, shiftAxis1: number): void => {
+  public calculateFirstButtonPositionWhileMoving = (event: PointerEvent, shiftAxis1: number): void => {
     const pageX1: number = event.pageX;
     const pageY1: number = event.pageY;
     const pageAxis1: number = this.isVertical ? pageY1 : pageX1;
@@ -301,7 +301,7 @@ export class Model {
     }
   }
 
-  public calculateFirstButtonPositionAfterSliderOnDown = (event: JQuery.MouseDownEvent): void => {
+  public calculateFirstButtonPositionAfterSliderOnDown = (event: PointerEvent): void => {
     const pageX1: number = event.pageX;
     const pageY1: number = event.pageY;
     const pageAxis1: number = this.isVertical ? pageY1 : pageX1;
@@ -376,7 +376,7 @@ export class Model {
     }
   }
 
-  public calculateFirstButtonPositionAfterMinValueOnDown = (event: JQuery.MouseDownEvent): void => {
+  public calculateFirstButtonPositionAfterMinValueOnDown = (event: PointerEvent): void => {
     event.stopPropagation();
 
     this.firstButtonPosition = 0 - this.buttonLength/2;
@@ -389,7 +389,7 @@ export class Model {
     this.observer.notifyObservers(this.getOptions());
   }
 
-  public calculateFirstButtonPositionAfterMaxValueOnDown = (event: JQuery.MouseDownEvent): void => {
+  public calculateFirstButtonPositionAfterMaxValueOnDown = (event: PointerEvent): void => {
     if (this.isInterval) return;
 
     event.stopPropagation();
@@ -446,7 +446,7 @@ export class Model {
     }
   }
 
-  public calculateShiftAxis2 = (event: JQuery.MouseDownEvent): number | void => {
+  public calculateShiftAxis2 = (event: PointerEvent): number | void => {
     if (!this.isInterval) return;
 
     event.stopPropagation();
@@ -458,7 +458,7 @@ export class Model {
     return shiftAxis2;
   }
 
-  public calculateSecondButtonPositionWhileMoving = (event: JQuery.MouseMoveEvent, shiftAxis2: number): void => {
+  public calculateSecondButtonPositionWhileMoving = (event: PointerEvent, shiftAxis2: number): void => {
     if (!this.isInterval) return;
     
     const pageX2: number = event.pageX;
@@ -498,7 +498,7 @@ export class Model {
     }
   }
 
-  public calculateSecondButtonPositionAfterSliderOnDown = (event: JQuery.MouseDownEvent): void => {
+  public calculateSecondButtonPositionAfterSliderOnDown = (event: PointerEvent): void => {
     if (!this.isInterval) return;
 
     const pageX2: number = event.pageX;
@@ -558,7 +558,7 @@ export class Model {
     }
   }
 
-  public calculateSecondButtonPositionAfterMaxValueOnDown = (event: JQuery.MouseDownEvent): void => {
+  public calculateSecondButtonPositionAfterMaxValueOnDown = (event: PointerEvent): void => {
     if (!this.isInterval) return;
 
     event.stopPropagation();
@@ -611,7 +611,7 @@ export class Model {
     }
   }
 
-  public calculateButtonPositionAfterScaleOnDown = (event: JQuery.MouseDownEvent, scaleOptions: {isScaleElementOnDown: boolean, scaleElementPosition: string, scaleElementLength: string, scaleElementValue: string}): void => {
+  public calculateButtonPositionAfterScaleOnDown = (event: PointerEvent, scaleOptions: {isScaleElementOnDown: boolean, scaleElementPosition: string, scaleElementLength: string, scaleElementValue: string}): void => {
     event.stopPropagation();
 
     if (!scaleOptions.isScaleElementOnDown) return;

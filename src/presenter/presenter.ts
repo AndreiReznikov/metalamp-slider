@@ -90,7 +90,7 @@ class Presenter {
     this.model.observer.addObserver(this.updateView);
     this.model.observer.addObserver(this.initPanel); 
 
-    this.view.$panelContainer.on('mousedown', (event: JQuery.MouseDownEvent) => event.stopPropagation());
+    this.view.$panelContainer.on('pointerdown', (event: PointerEvent) => event.stopPropagation());
     this.$minInput.on('change', this.setMin);
     this.$maxInput.on('change', this.setMax);
     this.$fromInput.on('change', this.setFrom);
@@ -102,26 +102,26 @@ class Presenter {
     this.$rangeBetweenToggle.on('click', this.toggleRangeBetween);
     this.$scaleToogle.on('click', this.toggleScale);
 
-    this.view.$firstButton.on('mousedown', (event: JQuery.MouseDownEvent) => {
+    this.view.$firstButton.on('pointerdown', (event: PointerEvent) => {
       const shiftAxis1 = this.model.calculateShiftAxis1(event);
       
-      const moveFirstButton = (event: JQuery.MouseMoveEvent) => {
+      const moveFirstButton = (event: PointerEvent) => {
         this.model.calculateFirstButtonPositionWhileMoving(event, shiftAxis1);
       };
 
-      $(document).on('mousemove', moveFirstButton);
-      $(document).on('mouseup', () => $(document).off('mousemove', moveFirstButton));
+      document.addEventListener('pointermove', moveFirstButton);
+      document.addEventListener('pointerup', () => document.removeEventListener('pointermove', moveFirstButton));
     });
 
-    this.view.$secondButton.on('mousedown', (event: JQuery.MouseDownEvent) => {
+    this.view.$secondButton.on('pointerdown', (event: PointerEvent) => {
       const shiftAxis2 = this.model.calculateShiftAxis2(event);
       
-      const moveSecondButton = (event: JQuery.MouseMoveEvent) => {
+      const moveSecondButton = (event: PointerEvent) => {
         this.model.calculateSecondButtonPositionWhileMoving(event, shiftAxis2);
       };
 
-      $(document).on('mousemove', moveSecondButton);
-      $(document).on('mouseup', () => $(document).off('mousemove', moveSecondButton));
+      document.addEventListener('pointermove', moveSecondButton);
+      document.addEventListener('pointerup', () => document.removeEventListener('pointermove', moveSecondButton));
     });
 
     this.view.$firstButton.on('focusin', (event: JQuery.FocusEvent) => {   
@@ -142,14 +142,16 @@ class Presenter {
       $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveSecondButtonAfterKeydown));
     });
 
-    this.view.$slider.on('mousedown', this.model.calculateFirstButtonPositionAfterSliderOnDown);
-    this.view.$slider.on('mousedown', this.model.calculateSecondButtonPositionAfterSliderOnDown);
-    this.view.$minValue.on('mousedown', this.model.calculateFirstButtonPositionAfterMinValueOnDown);
-    this.view.$maxValue.on('mousedown', this.model.calculateFirstButtonPositionAfterMaxValueOnDown);
-    this.view.$maxValue.on('mousedown', this.model.calculateSecondButtonPositionAfterMaxValueOnDown);
+    this.view.$slider.on('pointerdown', this.model.calculateFirstButtonPositionAfterSliderOnDown);
+    this.view.$slider.on('pointerdown', this.model.calculateSecondButtonPositionAfterSliderOnDown);
+    this.view.$minValue.on('pointerdown', this.model.calculateFirstButtonPositionAfterMinValueOnDown);
+    this.view.$maxValue.on('pointerdown', this.model.calculateFirstButtonPositionAfterMaxValueOnDown);
+    this.view.$maxValue.on('pointerdown', this.model.calculateSecondButtonPositionAfterMaxValueOnDown);
     
-    this.view.$scaleContainer.on('mousedown', (event: JQuery.MouseDownEvent) => {
-      const $target: JQuery<HTMLElement> = $(event.target);
+    this.view.$scaleContainer.on('pointerdown', (event: PointerEvent) => {
+      if (!event.target) return;
+
+      const $target: JQuery<EventTarget> = $(event.target);
       const isScaleElementOnDown: boolean = $target.hasClass('js-slider__scale-element');
       const scaleElementPosition: number = parseInt(`${$target.css(this.model.positionParameter)}`);
       const scaleElementLength: number =parseInt(`${$target.css(this.model.lengthParameter)}`);
