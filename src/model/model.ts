@@ -89,11 +89,11 @@ export class Model {
     this.isVertical = this.config.isVertical;
     this.isPanel = this.config.isPanel;
     this.isTooltip = this.config.isTooltip;
+    this.isMinAndMax = this.config.isMinAndMax;
     this.isRangeBetween = this.config.isRangeBetween;
     this.isScale = this.config.isScale;
     this.positionParameter = this.isVertical ? 'top' : 'left';
     this.lengthParameter = this.isVertical ? 'height' : 'width';
-    this.isMinAndMax = this.config.isMinAndMax;
     this.minValue = this.config.minValue;
     this.maxValue = this.config.maxValue;
     this.step = this.config.step;
@@ -179,6 +179,8 @@ export class Model {
   
   public validateInitialValues = (): void => {
     const areMinAndMaxNegative: boolean = this.minValue < 0 && this.maxValue < 0;
+    const isMinAndMaxPositiveAndStepMoreThanDifference: boolean = !areMinAndMaxNegative && this.step > this.maxValue - this.minValue;
+    const isMinAndMaxNegativeAndStepMoreThanDifference: boolean = areMinAndMaxNegative && this.step > -(this.minValue - this.maxValue);
 
     if (this.minValue > this.maxValue) {
       const minValue = this.minValue;
@@ -188,11 +190,11 @@ export class Model {
       this.maxValue = minValue;
     }
 
-    if (!areMinAndMaxNegative && this.step > this.maxValue - this.minValue) {
+    if (isMinAndMaxPositiveAndStepMoreThanDifference) {
       this.step = 0;
     }
 
-    if (areMinAndMaxNegative && this.step > -(this.minValue - this.maxValue)) {
+    if (isMinAndMaxNegativeAndStepMoreThanDifference) {
       this.step = 0;
     }
 
@@ -253,7 +255,11 @@ export class Model {
     this.restrictSecondTooltipValue();
   }
 
-  public calculateShiftAxis1 = (event: PointerEvent): number => {
+  public calculateShiftAxis1 = (event: PointerEvent): number | undefined => {
+    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+
+    if (!isLeftMouseButtonPressed) return;
+
     event.stopPropagation();
 
     const shiftX1: number = event.pageX - this.firstButtonPosition - this.sliderPosition;
@@ -264,6 +270,10 @@ export class Model {
   }
 
   public calculateFirstButtonPositionWhileMoving = (event: PointerEvent, shiftAxis1: number): void => {
+    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+
+    if (!isLeftMouseButtonPressed) return;
+
     const pageX1: number = event.pageX;
     const pageY1: number = event.pageY;
     const pageAxis1: number = this.isVertical ? pageY1 : pageX1;
@@ -302,6 +312,10 @@ export class Model {
   }
 
   public calculateFirstButtonPositionAfterSliderOnDown = (event: PointerEvent): void => {
+    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+
+    if (!isLeftMouseButtonPressed) return;
+
     const pageX1: number = event.pageX;
     const pageY1: number = event.pageY;
     const pageAxis1: number = this.isVertical ? pageY1 : pageX1;
@@ -315,6 +329,7 @@ export class Model {
 
     const isClickAheadOfFirstButton: boolean = this.isInterval ? isClickAheadOfFirstButtonWithInterval : isClickAheadOfFirstButtonWithoutInterval;
     const isClickBehindOfFirstButton: boolean = pageAxis1 - this.sliderPosition < this.firstButtonPosition;
+    const isClickForFirstButton: boolean = isClickAheadOfFirstButton || isClickBehindOfFirstButton;
 
     if (this.isStepSet) {
       if (isClickAheadOfFirstButton) {
@@ -333,7 +348,7 @@ export class Model {
       }
     }
     else {
-      if (isClickAheadOfFirstButton || isClickBehindOfFirstButton) {
+      if (isClickForFirstButton) {
         this.firstButtonPosition = pageAxis1 - this.sliderPosition - this.buttonLength/2;
         this.calculateTooltipsValues();
       }
@@ -348,7 +363,9 @@ export class Model {
   }
 
   private alignFirstButtonWithSecondButtonАfterApproaching = (): void => {
-    if (this.isInterval && Math.round(this.secondButtonPosition - this.firstButtonPosition) <= Math.round(this.stepLength)) {
+    const isFirstButtonNearSecondButton: boolean = this.isInterval && Math.round(this.secondButtonPosition - this.firstButtonPosition) <= Math.round(this.stepLength);
+    
+    if (isFirstButtonNearSecondButton) {
       this.firstButtonPosition = this.secondButtonPosition;
       this.calculateMaxFirstTooltipValue(this.secondTooltipValue);
     }
@@ -357,9 +374,9 @@ export class Model {
   private calculateMinFirstButtonPositionAfterSliderOnDown = (pageAxis: number): void => {
     if (!this.isStepSet) return;
 
-    const isClickBehindFirstButton: boolean = pageAxis - this.sliderPosition < this.stepLength/2;
+    const isClickNearMinimum: boolean = pageAxis - this.sliderPosition < this.stepLength/2;
 
-    if (isClickBehindFirstButton) {
+    if (isClickNearMinimum) {
       this.firstButtonPosition = 0 - this.buttonLength/2;
       this.calculateMinFirstTooltipValue();
     }
@@ -368,15 +385,18 @@ export class Model {
   private calculateMaxFirstButtonPositionAfterSliderOnDown = (pageAxis: number): void => {
     if (!this.isStepSet) return;
     
-    const isClickAheadWithoutInterval: boolean = this.sliderLength - (pageAxis - this.sliderPosition) < this.stepLength/2 && !this.isInterval;
+    const isClickNearMaximumWithoutInterval: boolean = this.sliderLength - (pageAxis - this.sliderPosition) < this.stepLength/2 && !this.isInterval;
     
-    if (isClickAheadWithoutInterval) {
+    if (isClickNearMaximumWithoutInterval) {
       this.firstButtonPosition = this.sliderLength - this.buttonLength/2;
       this.calculateMaxFirstTooltipValue(this.maxValue);
     }
   }
 
   public calculateFirstButtonPositionAfterMinValueOnDown = (event: PointerEvent): void => {
+    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+
+    if (!isLeftMouseButtonPressed) return;
     event.stopPropagation();
 
     this.firstButtonPosition = 0 - this.buttonLength/2;
@@ -390,7 +410,10 @@ export class Model {
   }
 
   public calculateFirstButtonPositionAfterMaxValueOnDown = (event: PointerEvent): void => {
-    if (this.isInterval) return;
+    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+    const isWrongButtonPressedAndInterval: boolean = !isLeftMouseButtonPressed || this.isInterval;
+
+    if (isWrongButtonPressedAndInterval) return;
 
     event.stopPropagation();
 
@@ -435,19 +458,26 @@ export class Model {
 
 
   private restrictFirstButtonPosition = (): void => {
-    if (this.firstButtonPosition < 0 - this.buttonLength/2) {
+    const isFirstButtonPositionLessThanMinimum: boolean = this.firstButtonPosition < 0 - this.buttonLength/2;
+    const isFirstButtonPositionMoreThanMaximum: boolean = this.firstButtonPosition > this.sliderLength - this.buttonLength/2;
+    const isFirstButtonPositionMoreThanSecondButtonPosition: boolean = this.isInterval && this.firstButtonPosition > this.secondButtonPosition;
+
+    if (isFirstButtonPositionLessThanMinimum) {
       this.firstButtonPosition = 0 - this.buttonLength/2;
     }
-    else if (this.firstButtonPosition > this.sliderLength - this.buttonLength/2) {
+    else if (isFirstButtonPositionMoreThanMaximum) {
       this.firstButtonPosition = this.sliderLength - this.buttonLength/2;
     }
-    if (this.isInterval && this.firstButtonPosition > this.secondButtonPosition) {
+    if (isFirstButtonPositionMoreThanSecondButtonPosition) {
       this.firstButtonPosition = this.secondButtonPosition;
     }
   }
 
   public calculateShiftAxis2 = (event: PointerEvent): number | void => {
-    if (!this.isInterval) return;
+    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+    const isWrongButtonPressedOrNotInterval: boolean = !isLeftMouseButtonPressed || !this.isInterval;
+
+    if (isWrongButtonPressedOrNotInterval) return;
 
     event.stopPropagation();
 
@@ -459,7 +489,10 @@ export class Model {
   }
 
   public calculateSecondButtonPositionWhileMoving = (event: PointerEvent, shiftAxis2: number): void => {
-    if (!this.isInterval) return;
+    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+    const isWrongButtonPressedOrNotInterval: boolean = !isLeftMouseButtonPressed || !this.isInterval;
+
+    if (isWrongButtonPressedOrNotInterval) return;
     
     const pageX2: number = event.pageX;
     const pageY2: number = event.pageY;
@@ -483,7 +516,9 @@ export class Model {
   }
 
   private calculateSecondButtonPositionWithSetStep = (pageAxis: number): void => {
-    if (!this.isInterval && !this.isStepSet) return;
+    const isIntervalAndStep: boolean = this.isInterval && this.isStepSet;
+
+    if (!isIntervalAndStep) return;
 
     const isCursorNearStepAhead: boolean = pageAxis - this.sliderPosition > this.secondButtonPosition + this.buttonLength/2 + this.stepLength/2;
     const isCursorNearStepBehind: boolean = pageAxis - this.sliderPosition < this.secondButtonPosition  + this.buttonLength/2 - this.stepLength/2;
@@ -499,7 +534,10 @@ export class Model {
   }
 
   public calculateSecondButtonPositionAfterSliderOnDown = (event: PointerEvent): void => {
-    if (!this.isInterval) return;
+    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+    const isWrongButtonPressedOrNotInterval: boolean = !isLeftMouseButtonPressed || !this.isInterval;
+
+    if (isWrongButtonPressedOrNotInterval) return;
 
     const pageX2: number = event.pageX;
     const pageY2: number = event.pageY;
@@ -511,7 +549,8 @@ export class Model {
 
     const isClickAheadOfSecondButton: boolean = pageAxis2 - this.sliderPosition > this.secondButtonPosition + this.buttonLength;
     const isClickBehindOfSecondButton: boolean = pageAxis2 - this.sliderPosition < this.secondButtonPosition && pageAxis2 - this.sliderPosition >= this.firstButtonPosition + this.buttonLength + (this.secondButtonPosition - this.firstButtonPosition - this.buttonLength)/2;
-    console.log()
+    const isClickForSecondButton: boolean = isClickAheadOfSecondButton || isClickBehindOfSecondButton;
+
     if (this.isStepSet) {
       if (isClickAheadOfSecondButton) {
         this.secondButtonPosition += secondButtonStepsNumber * this.stepLength;
@@ -528,7 +567,7 @@ export class Model {
       }
     }
     else {
-      if (isClickAheadOfSecondButton || isClickBehindOfSecondButton) {
+      if (isClickForSecondButton) {
         this.secondButtonPosition = pageAxis2 - this.sliderPosition - this.buttonLength/2;
         this.calculateTooltipsValues();
       }
@@ -543,16 +582,22 @@ export class Model {
   }
 
   private alignSecondButtonWithFirstButtonАfterApproaching = (): void => {
-    if (this.isInterval && Math.round(this.secondButtonPosition - this.firstButtonPosition) <= Math.round(this.stepLength)) {
+    const isFirstButtonNearSecondButton: boolean = this.isInterval && Math.round(this.secondButtonPosition - this.firstButtonPosition) <= Math.round(this.stepLength);
+
+    if (isFirstButtonNearSecondButton) {
       this.secondButtonPosition = this.firstButtonPosition;
       this.calculateMinSecondTooltipValue();
     }
   }
 
   private calculateMaxSecondButtonPositionAfterSliderOnDown = (pageAxis: number): void => {
-    if (!this.isStepSet && !this.isInterval) return;
+    const isIntervalAndStep: boolean = this.isInterval && this.isStepSet;
 
-    if (this.sliderLength - (pageAxis - this.sliderPosition) < this.stepLength/2) {
+    if (!isIntervalAndStep) return;
+
+    const isClickNearMaximum: boolean = this.sliderLength - (pageAxis - this.sliderPosition) < this.stepLength/2;
+
+    if (isClickNearMaximum) {
         this.secondButtonPosition = this.sliderLength - this.buttonLength/2;
         this.calculateMaxSecondTooltipValue();
     }
@@ -574,7 +619,9 @@ export class Model {
   }
 
   public calculateSecondButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-    if (!this.config.keyboard && !this.isInterval) return;
+    const isKeyboardAndInterval: boolean = this.config.keyboard && this.isInterval;
+
+    if (!isKeyboardAndInterval) return;
     
     const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
     const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
@@ -603,15 +650,21 @@ export class Model {
   }
 
   private restrictSecondButtonPosition = (): void => {
-    if (this.secondButtonPosition < this.firstButtonPosition) {
+    const isFirstButtonPositionLessThanSecondButtonPosition: boolean = this.secondButtonPosition < this.firstButtonPosition;
+    const isSecondButtonPositionMoreThanMaximum: boolean = this.secondButtonPosition > this.sliderLength - this.buttonLength/2;
+
+    if (isFirstButtonPositionLessThanSecondButtonPosition) {
       this.secondButtonPosition = this.firstButtonPosition;
     }
-    else if (this.secondButtonPosition > this.sliderLength - this.buttonLength/2) {
+    else if (isSecondButtonPositionMoreThanMaximum) {
       this.secondButtonPosition = this.sliderLength - this.buttonLength/2;
     }
   }
 
   public calculateButtonPositionAfterScaleOnDown = (event: PointerEvent, scaleOptions: {isScaleElementOnDown: boolean, scaleElementPosition: string, scaleElementLength: string, scaleElementValue: string}): void => {
+    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+
+    if (!isLeftMouseButtonPressed) return;
     event.stopPropagation();
 
     if (!scaleOptions.isScaleElementOnDown) return;
@@ -627,12 +680,14 @@ export class Model {
     const isClickBehindOfFirstButton: boolean = pageAxis1 - this.sliderPosition < this.firstButtonPosition;
     const isClickAheadOfSecondButton: boolean = pageAxis1 - this.sliderPosition > this.secondButtonPosition + this.buttonLength;
     const isClickBehindOfSecondButton: boolean = pageAxis1 - this.sliderPosition < this.secondButtonPosition && pageAxis1 - this.sliderPosition >= this.firstButtonPosition + this.buttonLength + (this.secondButtonPosition - this.firstButtonPosition)/2;
+    const isClickForFirstButton: boolean = isClickAheadOfFirstButton || isClickBehindOfFirstButton;
+    const isClickForSecondButton: boolean = isClickAheadOfSecondButton || isClickBehindOfSecondButton;
 
-    if (isClickAheadOfFirstButton || isClickBehindOfFirstButton) {
+    if (isClickForFirstButton) {
       this.firstButtonPosition = parseInt(scaleOptions.scaleElementPosition) + parseInt(scaleOptions.scaleElementLength)/2 - this.buttonLength/2;
       this.calculateFirstTooltipValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
     }
-    else if (isClickAheadOfSecondButton || isClickBehindOfSecondButton) {
+    else if (isClickForSecondButton) {
       this.secondButtonPosition = parseInt(scaleOptions.scaleElementPosition) + parseInt(scaleOptions.scaleElementLength)/2 - this.buttonLength/2;
       this.calculateSecondTooltipValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
     }
@@ -772,13 +827,17 @@ export class Model {
   }
 
   private restrictFirstTooltipValue = (): void => {
-    if (this.from < this.minValue) {
+    const isFromLessThanMinimum: boolean = this.from < this.minValue;
+    const isIntervalAndFromMoreThanTo: boolean = this.isInterval && this.from > this.to;
+    const isFromMoreThanMaximum: boolean = this.from > this.maxValue;
+
+    if (isFromLessThanMinimum) {
       this.from = this.minValue;
     }
-    else if (this.isInterval && this.from > this.to) {
+    else if (isIntervalAndFromMoreThanTo) {
       this.from = this.to;
     }
-    else if (this.from > this.maxValue) {
+    else if (isFromMoreThanMaximum) {
       this.from = this.maxValue;
     }
 
@@ -798,10 +857,13 @@ export class Model {
   }
 
   private restrictSecondTooltipValue = (): void => {
-    if (this.to < this.from) {
+    const isToLessThanFrom: boolean = this.to < this.from;
+    const isToMoreThanMaximum: boolean = this.to > this.maxValue;
+
+    if (isToLessThanFrom) {
       this.to = this.from;
     }
-    else if (this.to > this.maxValue) {
+    else if (isToMoreThanMaximum) {
       this.to = this.maxValue;
     }
 
@@ -811,7 +873,7 @@ export class Model {
   private separateTooltips = (): void => {
     if (!this.isInterval) return;
 
-    const areTooltipsClose = this.firstTooltipPosition + this.firstTooltipLength > this.secondTooltipPosition;
+    const areTooltipsClose: boolean = this.firstTooltipPosition + this.firstTooltipLength > this.secondTooltipPosition;
 
     if (!areTooltipsClose) return;
       
@@ -828,9 +890,9 @@ export class Model {
     this.isMinValueShow = true;
     this.isMaxValueShow = true;
 
-    const isFirstTooltipTouchesMinValue = this.firstTooltipPosition < this.minValuePosition + this.minValueLength;
-    const isFirstTooltipTouchesMaxValue = this.firstTooltipPosition + this.firstTooltipLength > this.maxValuePosition;
-    const isSecondTooltipTouchesMaxValue = this.isInterval && this.secondTooltipPosition + this.secondTooltipLength > this.maxValuePosition;
+    const isFirstTooltipTouchesMinValue: boolean = this.firstTooltipPosition < this.minValuePosition + this.minValueLength;
+    const isFirstTooltipTouchesMaxValue: boolean = this.firstTooltipPosition + this.firstTooltipLength > this.maxValuePosition;
+    const isSecondTooltipTouchesMaxValue: boolean = this.isInterval && this.secondTooltipPosition + this.secondTooltipLength > this.maxValuePosition;
 
     if (isFirstTooltipTouchesMinValue) {
       this.isMinValueShow = false;
