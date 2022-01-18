@@ -154,7 +154,7 @@ class Presenter {
       const $target: JQuery<EventTarget> = $(event.target);
       const isScaleElementOnDown: boolean = $target.hasClass('js-slider__scale-element');
       const scaleElementPosition: number = parseInt(`${$target.css(this.model.positionParameter)}`);
-      const scaleElementLength: number =parseInt(`${$target.css(this.model.lengthParameter)}`);
+      const scaleElementLength: number = parseInt(`${$target.css(this.model.lengthParameter)}`);
       const scaleElementValue: string = $target.html();
       
       const scaleElementOptions = {
@@ -176,6 +176,7 @@ class Presenter {
     this.model.calculateInitialValues();
     this.updateView(this.model.getOptions());
     this.initPanel();
+    this.model.setConfigToLocalStorage();
   }
 
   private updateView = (options: Options): void => {
@@ -255,6 +256,7 @@ class Presenter {
     this.initPanel();
 
     this.updateView(this.model.getOptions());
+    this.model.setConfigToLocalStorage();
   }
 
   private setTo = (event: JQuery.ChangeEvent): void => {
@@ -273,6 +275,7 @@ class Presenter {
     this.initPanel();
 
     this.updateView(this.model.getOptions());
+    this.model.setConfigToLocalStorage();
   }
 
   private setStep = (event: JQuery.ChangeEvent): void => {
@@ -291,6 +294,7 @@ class Presenter {
     this.initPanel();
 
     this.updateView(this.model.getOptions());
+    this.model.setConfigToLocalStorage();
   }
 
   private toggleInterval = (event: JQuery.ClickEvent): void => {
@@ -307,6 +311,7 @@ class Presenter {
     this.model.calculateInitialValues();
 
     this.updateView(this.model.getOptions());
+    this.model.setConfigToLocalStorage();
   }
 
   private toggleTooltip = (event: JQuery.ClickEvent): void => {
@@ -319,6 +324,7 @@ class Presenter {
 
     this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
+    this.model.setConfigToLocalStorage();
   }
 
   private toggleRangeBetween = (event: JQuery.ClickEvent): void => {
@@ -331,6 +337,7 @@ class Presenter {
 
     this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
+    this.model.setConfigToLocalStorage();
   }
 
   private toggleScale = (event: JQuery.ClickEvent): void => {
@@ -343,6 +350,7 @@ class Presenter {
 
     this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
+    this.model.setConfigToLocalStorage();
   }
 
   private toggleVertical = (event: JQuery.ClickEvent): void => {

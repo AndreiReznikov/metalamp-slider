@@ -1,5 +1,5 @@
 interface JQuery {
   mySlider: jQuery;
-  update: (newData: UserConfig) => void;
-  destroy: () => void;
+  update: (newData: UserConfig) => JQuery<HTMLElement>;
+  destroy: () => JQuery<HTMLElement>;
 }

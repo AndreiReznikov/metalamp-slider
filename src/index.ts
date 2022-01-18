@@ -17,19 +17,38 @@ import { UserConfig } from './interfaces/interfaces';
   $.fn.mySlider = function(userConfig: UserConfig): JQuery<HTMLElement> {
     const initSlider = (): void => {
       if (!this.data('mySlider')) {
-        this.data('mySlider', mySlider(this, userConfig))
+        this.data('mySlider', mySlider(this, userConfig));
+        this.data('userConfig', userConfig);
       }
     };
 
     return this.each(initSlider);
   }
 
-  // $.fn.update = function(userConfig: UserConfig): void {
-  //   this.data('mySlider', mySlider(this, userConfig))
-  // }
+  $.fn.update = function(userConfig: UserConfig): JQuery<HTMLElement> {
+    const updateSlider = (): void => {
+      if (this.data('mySlider')) {
+        const initialConfig: UserConfig = this.data('userConfig');
+        const updatedConfig: UserConfig = $.extend({}, initialConfig, userConfig);
 
-  $.fn.destroy = function(): void {
-    this.empty();
+        this.data('mySlider', false);
+        this.empty();
+        this.data('mySlider', mySlider(this, updatedConfig));
+      }
+    };
+
+    return this.each(updateSlider);
+  }
+
+  $.fn.destroy = function(): JQuery<HTMLElement> {
+    const destroySlider = (): void => {
+      if (this.data('mySlider')) {
+        this.data('mySlider', false);
+        this.empty();
+      }
+    };
+    
+    return this.each(destroySlider);
   }
 })(jQuery);
 
@@ -51,4 +70,7 @@ $('.js-slider').mySlider({
 
 const $slider = $('.js-slider').data('mySlider');
 
+$slider.update({
+  isInterval: false
+});
 

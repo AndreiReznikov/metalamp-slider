@@ -17,6 +17,7 @@ class Observer {
 export class Model {
   observer: Observer;
   userConfig: UserConfig;
+  storageConfig: UserConfig;
   data: Config;
   config: Config;
 
@@ -26,6 +27,7 @@ export class Model {
   isTooltip: boolean = true;
   isRangeBetween: boolean = true;
   isScale: boolean = true;
+  keyboard: boolean = false;
   positionParameter: string = this.isVertical ? 'top' : 'left';
   lengthParameter: string = this.isVertical ? 'height' : 'width';
   isMinAndMax: boolean = true;
@@ -65,7 +67,7 @@ export class Model {
     this.observer = new Observer();
     
     this.userConfig = userConfig;
-    
+    this.storageConfig = JSON.parse(`${localStorage.getItem('storageConfig')}`);  
     this.data = {
       isInterval: false,
       isVertical: false,
@@ -83,7 +85,7 @@ export class Model {
       scaleNumber: 5
     };
     
-    this.config = $.extend({}, this.data, this.userConfig);
+    this.config = $.extend({}, this.data, this.userConfig, this.storageConfig);
     
     this.isInterval = this.config.isInterval;
     this.isVertical = this.config.isVertical;
@@ -92,6 +94,7 @@ export class Model {
     this.isMinAndMax = this.config.isMinAndMax;
     this.isRangeBetween = this.config.isRangeBetween;
     this.isScale = this.config.isScale;
+    this.keyboard = this.config.keyboard;
     this.positionParameter = this.isVertical ? 'top' : 'left';
     this.lengthParameter = this.isVertical ? 'height' : 'width';
     this.minValue = this.config.minValue;
@@ -128,6 +131,27 @@ export class Model {
 
   public calculateStepLength = (): void => {
     this.stepLength = parseFloat(((this.step/(this.maxValue - this.minValue)) * this.sliderLength).toFixed(this.numberOfCharactersAfterDot));
+  }
+
+  public setConfigToLocalStorage = (): void => {
+    const storageConfig = {
+      isInterval: this.isInterval,
+      isVertical: this.isVertical,
+      isTooltip: this.isTooltip,
+      isMinAndMax: this.isMinAndMax,
+      isRangeBetween: this.isRangeBetween,
+      isPanel: this.isPanel,
+      isScale: this.isScale,
+      minValue: this.minValue,
+      maxValue: this.maxValue,
+      from: this.from,
+      to: this.to,
+      step: this.step,
+      keyboard: this.keyboard,
+      scaleNumber: this.scaleNumber
+    }
+
+    localStorage.setItem('storageConfig', JSON.stringify(storageConfig));
   }
 
   public getState = (): State => {
@@ -291,6 +315,7 @@ export class Model {
     this.calculateRangeBetweenPosition();
     this.calculateRangeBetweenLength();
     this.calculateTooltipsPositions();
+    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -358,6 +383,7 @@ export class Model {
     this.calculateRangeBetweenPosition();
     this.calculateRangeBetweenLength();
     this.calculateTooltipsPositions();
+    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -405,6 +431,7 @@ export class Model {
     this.calculateRangeBetweenLength();
     this.calculateTooltipsPositions();
     this.calculateMinFirstTooltipValue();
+    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -423,12 +450,13 @@ export class Model {
     this.calculateRangeBetweenLength();
     this.calculateTooltipsPositions();
     this.calculateMaxFirstTooltipValue(this.maxValue);
+    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
 
   public calculateFirstButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-    if (!this.config.keyboard) return;
+    if (!this.keyboard) return;
 
     const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
     const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
@@ -452,6 +480,7 @@ export class Model {
     this.calculateRangeBetweenLength();
     this.calculateTooltipsPositions();
     if (!this.isStepSet) this.calculateTooltipsValues();
+    this.setConfigToLocalStorage();
     
     this.observer.notifyObservers(this.getOptions());
   }
@@ -511,6 +540,7 @@ export class Model {
     this.calculateRangeBetweenPosition();
     this.calculateRangeBetweenLength();
     this.calculateTooltipsPositions();
+    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -577,6 +607,7 @@ export class Model {
     this.calculateRangeBetweenPosition();
     this.calculateRangeBetweenLength();
     this.calculateTooltipsPositions();
+    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -614,12 +645,13 @@ export class Model {
     this.calculateRangeBetweenLength();
     this.calculateTooltipsPositions();
     this.calculateMaxSecondTooltipValue();
+    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
 
   public calculateSecondButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-    const isKeyboardAndInterval: boolean = this.config.keyboard && this.isInterval;
+    const isKeyboardAndInterval: boolean = this.keyboard && this.isInterval;
 
     if (!isKeyboardAndInterval) return;
     
@@ -645,6 +677,7 @@ export class Model {
     this.calculateRangeBetweenLength();
     this.calculateTooltipsPositions();
     if (!this.isStepSet) this.calculateTooltipsValues();
+    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -695,6 +728,7 @@ export class Model {
     this.calculateRangeBetweenPosition();
     this.calculateRangeBetweenLength();
     this.calculateTooltipsPositions();
+    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
