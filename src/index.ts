@@ -2,22 +2,34 @@ import './index.css';
 import { Model } from './model/model';
 import { View } from './view/view';
 import { Presenter } from './presenter/presenter';
-import { Config } from './interfaces/interfaces';
+import { UserConfig } from './interfaces/interfaces';
 
 (function($) {
-  const mySlider = (slider: JQuery<HTMLElement>, config: Config): JQuery => {
+  const mySlider = (slider: JQuery<HTMLElement>, userConfig: UserConfig): JQuery<HTMLElement> => {
 
-    const model = new Model(config);
+    const model = new Model(userConfig);
     const view = new View(slider);
     const presenter = new Presenter(model, view);
 
     return slider;
   };
 
-  $.fn.mySlider = function(config: Config) {
-    return this.each(function() {
-      mySlider($(this), config);
-    });
+  $.fn.mySlider = function(userConfig: UserConfig): JQuery<HTMLElement> {
+    const initSlider = (): void => {
+      if (!this.data('mySlider')) {
+        this.data('mySlider', mySlider(this, userConfig))
+      }
+    };
+
+    return this.each(initSlider);
+  }
+
+  // $.fn.update = function(userConfig: UserConfig): void {
+  //   this.data('mySlider', mySlider(this, userConfig))
+  // }
+
+  $.fn.destroy = function(): void {
+    this.empty();
   }
 })(jQuery);
 
@@ -36,3 +48,7 @@ $('.js-slider').mySlider({
   from: -5,
   to: 5,
 });
+
+const $slider = $('.js-slider').data('mySlider');
+
+

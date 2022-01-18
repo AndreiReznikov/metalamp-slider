@@ -178,7 +178,7 @@ export class View {
     const coords = element.offset();
     let coord = 0;
 
-    if (coords) {coord = isVertical ? coords.top : coords.left}
+    if (coords) coord = isVertical ? coords.top : coords.left;
 
     return coord;
   }

@@ -44,6 +44,23 @@ interface Config {
   isPanel: boolean;
 }
 
+interface UserConfig {
+  isInterval?: boolean;
+  minValue?: number;
+  maxValue?: number;
+  from?: number;
+  to?: number;
+  step?: number;
+  keyboard?: boolean;
+  isVertical?: boolean;
+  isTooltip?: boolean;
+  isMinAndMax?: boolean;
+  isRangeBetween?: boolean;
+  isScale?: boolean;
+  scaleNumber?: number;
+  isPanel?: boolean;
+}
+
 interface State {
   isInterval: boolean;
   isTooltip: boolean;
@@ -64,4 +81,4 @@ interface ElementsParameters {
   maxValueLength: number;
 }
 
-export { Options, Config, State, ElementsParameters };
+export { Options, Config, UserConfig, State, ElementsParameters };

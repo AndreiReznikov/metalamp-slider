@@ -1,4 +1,4 @@
-import { Options, Config, State, ElementsParameters } from '../interfaces/interfaces';
+import { Options, Config, UserConfig, State, ElementsParameters } from '../interfaces/interfaces';
 
 class Observer {
   observers: Function[] = [];
@@ -16,7 +16,7 @@ class Observer {
 
 export class Model {
   observer: Observer;
-  options: Config;
+  userConfig: UserConfig;
   data: Config;
   config: Config;
 
@@ -61,10 +61,10 @@ export class Model {
   lengthBetweenScaleElements: number = 0;
   numberOfCharactersAfterDot: number = 0;
 
-  constructor(config: Config) {
+  constructor(userConfig: UserConfig) {
     this.observer = new Observer();
     
-    this.options = config;
+    this.userConfig = userConfig;
     
     this.data = {
       isInterval: false,
@@ -83,7 +83,7 @@ export class Model {
       scaleNumber: 5
     };
     
-    this.config = $.extend({}, this.data, this.options);
+    this.config = $.extend({}, this.data, this.userConfig);
     
     this.isInterval = this.config.isInterval;
     this.isVertical = this.config.isVertical;
@@ -926,7 +926,7 @@ export class Model {
   }
 
   private calculateScaleElementsNumber = (): void => {
-    if (this.options.scaleNumber) return;
+    if (this.userConfig.scaleNumber) return;
 
     const isDifferenceBetweenMaxAndMinValuesLessOrEqualToOne: boolean = this.maxValue - this.minValue <= 1 && this.numberOfCharactersAfterDot === 0;
     const isDifferenceBetweenMaxAndMinValuesLessOrEqualToTwo: boolean = this.maxValue - this.minValue <= 2 && this.numberOfCharactersAfterDot === 0;
