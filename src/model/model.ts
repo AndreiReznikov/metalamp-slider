@@ -85,7 +85,7 @@ export class Model {
       scaleNumber: 5
     };
     
-    this.config = $.extend({}, this.data, this.userConfig, this.storageConfig);
+    this.config = $.extend({}, this.data, this.storageConfig, this.userConfig);
     
     this.isInterval = this.config.isInterval;
     this.isVertical = this.config.isVertical;
@@ -960,7 +960,7 @@ export class Model {
   }
 
   private calculateScaleElementsNumber = (): void => {
-    if (this.userConfig.scaleNumber) return;
+    if (this.userConfig?.scaleNumber) return;
 
     const isDifferenceBetweenMaxAndMinValuesLessOrEqualToOne: boolean = this.maxValue - this.minValue <= 1 && this.numberOfCharactersAfterDot === 0;
     const isDifferenceBetweenMaxAndMinValuesLessOrEqualToTwo: boolean = this.maxValue - this.minValue <= 2 && this.numberOfCharactersAfterDot === 0;
