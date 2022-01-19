@@ -3,13 +3,13 @@ import { Options, State, ElementsParameters } from '../interfaces/interfaces';
 
 export class View {
 
-  tooltips;
-  firstButton;
-  secondButton;
-  rangeBetween;
-  slider;
-  minAndMaxValues;
-  scale;
+  tooltips: Tooltips;
+  firstButton: FirstButton;
+  secondButton: SecondButton;
+  rangeBetween: RangeBetween;
+  slider: Slider;
+  minAndMaxValues: MinAndMaxValues;
+  scale: Scale;
   $this: JQuery<HTMLElement>;
   $slider: JQuery<HTMLElement>;
   $firstButton: JQuery<HTMLElement>;
@@ -21,8 +21,8 @@ export class View {
   $firstTooltip: JQuery<HTMLElement>;
   $secondTooltip: JQuery<HTMLElement>;
   $panelContainer: JQuery<HTMLElement>;
-  width: number;
-  height: number;
+  sliderWidth: number;
+  sliderHeight: number;
   
   constructor (slider: JQuery<HTMLElement>) {
     this.tooltips = new Tooltips();
@@ -46,8 +46,8 @@ export class View {
     this.$panelContainer = $('<div/>');
     
 
-    this.width = parseInt(this.$this.css('width'));
-    this.height = parseInt(this.$this.css('height'));
+    this.sliderWidth = parseInt(this.$this.css('width'));
+    this.sliderHeight = parseInt(this.$this.css('height'));
   }
 
   public initView = (initialOptions: State): void => {
@@ -127,7 +127,7 @@ export class View {
     this.$minValue.css({'left': 0, 'bottom': 0, 'top': 0});
     this.$maxValue.css({'left': 0, 'bottom': 0, 'top': 0});
     this.$scaleContainer.css({'right': 0, 'top': 0, 'width': 0, 'height': 0});
-    this.$panelContainer.css({'right': 0, 'top': 0});
+    this.$panelContainer.css({'right': '', 'top': ''});
 
     const firstButtonWidth: number = parseInt(this.$firstButton.css('width'));
     const firstButtonHeight: number = parseInt(this.$firstButton.css('height'));
@@ -135,7 +135,7 @@ export class View {
     const secondButtonHeight: number = parseInt(this.$secondButton.css('height'));
 
     if (isVertical) {
-      this.$this.css({'width': this.height, 'height': this.width});
+      this.$this.css({'width': this.sliderHeight, 'height': this.sliderWidth});
       this.$firstButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
       this.$secondButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
       this.$rangeBetween.css({'width': '100%'});
@@ -143,12 +143,11 @@ export class View {
       this.$secondTooltip.css({'left': secondButtonWidth}); 
       this.$minValue.css({'left': firstButtonWidth});
       this.$maxValue.css({'left': firstButtonWidth});
-      this.$panelContainer.css({'right': 60});
-      
+
       return;
     }
 
-    this.$this.css({'width': this.width, 'height': this.height});
+    this.$this.css({'width': this.sliderWidth, 'height': this.sliderHeight});
     this.$firstButton.css({'top': '50%', 'transform': 'translateY(-50%)'});
     this.$secondButton.css({'top': '50%', 'transform': 'translateY(-50%)'}); 
     this.$rangeBetween.css({'height': '100%'});  
@@ -156,7 +155,6 @@ export class View {
     this.$secondTooltip.css({'bottom': secondButtonHeight, 'top': ''});
     this.$minValue.css({'bottom': firstButtonHeight, 'top': ''});
     this.$maxValue.css({'bottom': firstButtonHeight, 'top': ''});
-    this.$panelContainer.css({'right': '', 'top': 60});
   }
 
   public getElementsParameters = (isVertical: boolean, lengthParameter: string): ElementsParameters => {
@@ -175,8 +173,8 @@ export class View {
   }
 
   private getCoords = (element: JQuery<HTMLElement>, isVertical: boolean): number => {
-    const coords = element.offset();
-    let coord = 0;
+    const coords: JQuery.Coordinates | undefined = element.offset();
+    let coord: number = 0;
 
     if (coords) coord = isVertical ? coords.top : coords.left;
 
@@ -203,7 +201,7 @@ class RangeBetween {
 class FirstButton {
   $firstButton: JQuery<HTMLElement> = $('<button/>');
 
-  setFirstButtonPosition = (options: Options): void => {
+  public setFirstButtonPosition = (options: Options): void => {
     this.$firstButton.css(options.positionParameter, options.firstButtonPosition);
   }
 }
@@ -211,7 +209,7 @@ class FirstButton {
 class SecondButton {
   $secondButton: JQuery<HTMLElement> = $('<button/>');
 
-  setSecondButtonPosition = (options: Options): void => {
+  public setSecondButtonPosition = (options: Options): void => {
     this.$secondButton.css(options.positionParameter, options.secondButtonPosition);
   }
 }
@@ -269,6 +267,24 @@ class Scale {
 
   $scaleContainer: JQuery<HTMLElement> = $('<div>');
 
+  public setScaleLength = (options: Options): void => {
+    this.$scaleContainer.css(options.lengthParameter, options.sliderLength);
+  }
+
+  public setScalePosition = (options: Options): void => {
+    const scaleElementsWidths: number[] = [];
+
+    this.$scaleContainer.find('.js-slider__scale-element').each(function() {
+      const scaleElementWidth: number = parseInt($(this).css('width'));
+
+      scaleElementsWidths.push(scaleElementWidth);
+    });
+
+    const maxScaleElementsWidth: number = Math.max(...scaleElementsWidths);
+
+    this.$scaleContainer.css(options.scalePositionParameter, options.scalePositionParameter === 'right' ? maxScaleElementsWidth + options.buttonLength : options.buttonLength);
+  }
+
   public setScaleElementsValues = (options: Options): void => {
     this.$scaleContainer.empty();
 
@@ -290,23 +306,5 @@ class Scale {
 
       scaleElementPosition += options.lengthBetweenScaleElements
     }
-  }
-
-  public setScalePosition = (options: Options): void => {
-    const scaleElementsWidths: number[] = [];
-
-    this.$scaleContainer.find('.js-slider__scale-element').each(function() {
-      const scaleElementWidth = parseInt($(this).css('width'));
-
-      scaleElementsWidths.push(scaleElementWidth);
-    });
-
-    const maxScaleElementsWidth: number = Math.max(...scaleElementsWidths);
-
-    this.$scaleContainer.css(options.scalePositionParameter, options.scalePositionParameter === 'right' ? maxScaleElementsWidth + options.buttonLength : options.buttonLength);
-  }
-
-  public setScaleLength = (options: Options): void => {
-    this.$scaleContainer.css(options.lengthParameter, options.sliderLength);
   }
 }

@@ -211,6 +211,17 @@ class Presenter {
     this.$tooltipsToggle.prop('checked', this.model.isTooltip ? true : false);
     this.$rangeBetweenToggle.prop('checked', this.model.isRangeBetween ? true : false);
     this.$scaleToogle.prop('checked', this.model.isScale ? true : false);
+
+    this.setPanelPosition();
+  }
+
+  private setPanelPosition = (): void => {
+    if (this.model.isVertical) {
+      this.view.$panelContainer.css({'left': parseFloat(this.view.$maxValue.css('width')) + this.model.buttonLength + parseFloat(this.view.$slider.css('width')), 'transform': 'translateX(0)', 'top': 0, 'width': '150px'});
+    }
+    else {
+      this.view.$panelContainer.css({'top': parseFloat($('.js-slider__scale-element').css('height')) + this.model.buttonLength + parseFloat(this.view.$slider.css('height')), 'left': '50%','transform': 'translateX(-50%)', 'width': '650px'});
+    }
   }
 
   private setMin = (event: JQuery.ChangeEvent): void => {
@@ -310,7 +321,9 @@ class Presenter {
     this.model.calculateInitialSecondButtonPosition();
     this.model.calculateInitialValues();
 
+
     this.updateView(this.model.getOptions());
+    this.setPanelPosition();
     this.model.setConfigToLocalStorage();
   }
 
@@ -324,6 +337,7 @@ class Presenter {
 
     this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
+    this.setPanelPosition();
     this.model.setConfigToLocalStorage();
   }
 
@@ -337,6 +351,7 @@ class Presenter {
 
     this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
+    this.setPanelPosition();
     this.model.setConfigToLocalStorage();
   }
 
@@ -350,6 +365,7 @@ class Presenter {
 
     this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
+    this.setPanelPosition();
     this.model.setConfigToLocalStorage();
   }
 

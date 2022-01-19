@@ -1,7 +1,7 @@
 html, body {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: top;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -10,6 +10,7 @@ html, body {
 }
 
 .slider-container {
+  margin-top: 200px;
   width: 500px;
   height: 8px;
 }
@@ -94,7 +95,7 @@ html, body {
   position: relative;
   display: flex;
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 18px;
   color: rgb(47, 50, 53);
   touch-action: none;
 }
@@ -105,12 +106,14 @@ html, body {
 }
 
 .js-slider__panel-container {
-  position: absolute;
+  position: absolute; 
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  width: 100%;
   flex-wrap: wrap;
   justify-content: center;
   align-content: center;
+  width: 650px;
   cursor: default;
   touch-action: none;
 }
@@ -118,6 +121,7 @@ html, body {
 .js-slider__text-inputs-container,
 .js-slider__toggle-inputs-container {
   display: flex;
+  flex-wrap: wrap;
   margin-bottom: 10px;
 }
 

@@ -280,11 +280,11 @@ export class Model {
   }
 
   public calculateShiftAxis1 = (event: PointerEvent): number | undefined => {
-    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
-
-    if (!isLeftMouseButtonPressed) return;
-
     event.stopPropagation();
+
+    const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
+    
+    if (isNotLeftMouseButtonPressed) return;
 
     const shiftX1: number = event.pageX - this.firstButtonPosition - this.sliderPosition;
     const shiftY1: number = event.pageY - this.firstButtonPosition - this.sliderPosition;
@@ -294,9 +294,9 @@ export class Model {
   }
 
   public calculateFirstButtonPositionWhileMoving = (event: PointerEvent, shiftAxis1: number): void => {
-    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+    const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
 
-    if (!isLeftMouseButtonPressed) return;
+    if (isNotLeftMouseButtonPressed) return;
 
     const pageX1: number = event.pageX;
     const pageY1: number = event.pageY;
@@ -337,9 +337,9 @@ export class Model {
   }
 
   public calculateFirstButtonPositionAfterSliderOnDown = (event: PointerEvent): void => {
-    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
+    const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
 
-    if (!isLeftMouseButtonPressed) return;
+    if (isNotLeftMouseButtonPressed) return;
 
     const pageX1: number = event.pageX;
     const pageY1: number = event.pageY;
@@ -420,10 +420,11 @@ export class Model {
   }
 
   public calculateFirstButtonPositionAfterMinValueOnDown = (event: PointerEvent): void => {
-    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
-
-    if (!isLeftMouseButtonPressed) return;
     event.stopPropagation();
+
+    const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
+
+    if (isNotLeftMouseButtonPressed) return;  
 
     this.firstButtonPosition = 0 - this.buttonLength/2;
 
@@ -437,12 +438,12 @@ export class Model {
   }
 
   public calculateFirstButtonPositionAfterMaxValueOnDown = (event: PointerEvent): void => {
-    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
-    const isWrongButtonPressedAndInterval: boolean = !isLeftMouseButtonPressed || this.isInterval;
-
-    if (isWrongButtonPressedAndInterval) return;
-
     event.stopPropagation();
+
+    const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
+    const isWrongButtonPressedOrInterval: boolean = isNotLeftMouseButtonPressed || this.isInterval;
+
+    if (isWrongButtonPressedOrInterval) return;
 
     this.firstButtonPosition = this.sliderLength - this.buttonLength/2;
 
@@ -456,13 +457,13 @@ export class Model {
   }
 
   public calculateFirstButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-    if (!this.keyboard) return;
-
     const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
     const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
     const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
 
-    if (!keyCodes.includes(event.keyCode)) return;
+    const isNotKeyboardOrWrongKeyCode: boolean = !this.keyboard || !keyCodes.includes(event.keyCode);
+    
+    if (isNotKeyboardOrWrongKeyCode) return;
 
     const movementLength: number = this.isStepSet ? this.stepLength : 1;
 
@@ -503,12 +504,12 @@ export class Model {
   }
 
   public calculateShiftAxis2 = (event: PointerEvent): number | void => {
-    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
-    const isWrongButtonPressedOrNotInterval: boolean = !isLeftMouseButtonPressed || !this.isInterval;
-
-    if (isWrongButtonPressedOrNotInterval) return;
-
     event.stopPropagation();
+
+    const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
+    const isNotLeftButtonPressedOrNotInterval: boolean = isNotLeftMouseButtonPressed || !this.isInterval;
+
+    if (isNotLeftButtonPressedOrNotInterval) return;
 
     const shiftX2: number = event.pageX - this.secondButtonPosition - this.sliderPosition;
     const shiftY2: number = event.pageY - this.secondButtonPosition - this.sliderPosition;
@@ -518,10 +519,10 @@ export class Model {
   }
 
   public calculateSecondButtonPositionWhileMoving = (event: PointerEvent, shiftAxis2: number): void => {
-    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
-    const isWrongButtonPressedOrNotInterval: boolean = !isLeftMouseButtonPressed || !this.isInterval;
+    const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
+    const isNotLeftButtonPressedOrNotInterval: boolean = isNotLeftMouseButtonPressed || !this.isInterval;
 
-    if (isWrongButtonPressedOrNotInterval) return;
+    if (isNotLeftButtonPressedOrNotInterval) return;
     
     const pageX2: number = event.pageX;
     const pageY2: number = event.pageY;
@@ -564,10 +565,10 @@ export class Model {
   }
 
   public calculateSecondButtonPositionAfterSliderOnDown = (event: PointerEvent): void => {
-    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
-    const isWrongButtonPressedOrNotInterval: boolean = !isLeftMouseButtonPressed || !this.isInterval;
+    const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
+    const isNotLeftButtonPressedOrNotInterval: boolean = isNotLeftMouseButtonPressed || !this.isInterval;
 
-    if (isWrongButtonPressedOrNotInterval) return;
+    if (isNotLeftButtonPressedOrNotInterval) return;
 
     const pageX2: number = event.pageX;
     const pageY2: number = event.pageY;
@@ -635,9 +636,9 @@ export class Model {
   }
 
   public calculateSecondButtonPositionAfterMaxValueOnDown = (event: PointerEvent): void => {
-    if (!this.isInterval) return;
-
     event.stopPropagation();
+
+    if (!this.isInterval) return;
 
     this.secondButtonPosition = this.sliderLength - this.buttonLength/2;
 
@@ -653,13 +654,13 @@ export class Model {
   public calculateSecondButtonPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
     const isKeyboardAndInterval: boolean = this.keyboard && this.isInterval;
 
-    if (!isKeyboardAndInterval) return;
-    
     const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
     const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
     const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
 
-    if (!keyCodes.includes(event.keyCode)) return;
+    const isNotKeyboardOrWrongKeyCode: boolean = !isKeyboardAndInterval || !keyCodes.includes(event.keyCode);
+
+    if (isNotKeyboardOrWrongKeyCode) return;
 
     const movementLength: number = this.isStepSet ? this.stepLength : 1;
 
@@ -695,13 +696,13 @@ export class Model {
   }
 
   public calculateButtonPositionAfterScaleOnDown = (event: PointerEvent, scaleOptions: {isScaleElementOnDown: boolean, scaleElementPosition: string, scaleElementLength: string, scaleElementValue: string}): void => {
-    const isLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons == 1;
-
-    if (!isLeftMouseButtonPressed) return;
     event.stopPropagation();
 
-    if (!scaleOptions.isScaleElementOnDown) return;
-
+    const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
+    const isNotLeftMouseButtonPressedOrNotScaleElementOnDown = isNotLeftMouseButtonPressed || !scaleOptions.isScaleElementOnDown;
+    
+    if (isNotLeftMouseButtonPressedOrNotScaleElementOnDown) return;
+    
     const pageX1: number = event.pageX;
     const pageY1: number = event.pageY;
     const pageAxis1: number = this.isVertical ? pageY1 : pageX1;
@@ -905,11 +906,10 @@ export class Model {
   }
 
   private separateTooltips = (): void => {
-    if (!this.isInterval) return;
-
     const areTooltipsClose: boolean = this.firstTooltipPosition + this.firstTooltipLength > this.secondTooltipPosition;
-
-    if (!areTooltipsClose) return;
+    const areTooltipsNotCloseOrNotInterval: boolean = !areTooltipsClose || !this.isInterval;
+    
+    if (areTooltipsNotCloseOrNotInterval) return;
       
     this.firstTooltipPosition = this.firstButtonPosition - this.firstTooltipLength;
     this.secondTooltipPosition = this.secondButtonPosition + this.buttonLength;
