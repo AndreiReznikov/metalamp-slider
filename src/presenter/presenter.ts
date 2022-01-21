@@ -1,131 +1,60 @@
 import { Options } from '../interfaces/interfaces';
+import { Model } from '../model/model';
+import { View } from '../view/view';
 
 class Presenter {
     
   model;
   view;
-  $textInputsContainer: JQuery<HTMLElement>;
-  $toggleInputsContainer: JQuery<HTMLElement>;
-  $minInputContainer: JQuery<HTMLElement>;
-  $minButton: JQuery<HTMLElement>;
-  $minInput: JQuery<HTMLElement>;
-  $maxInputContainer: JQuery<HTMLElement>;
-  $maxButton: JQuery<HTMLElement>;
-  $maxInput: JQuery<HTMLElement>;
-  $fromInputContainer: JQuery<HTMLElement>;
-  $fromButton: JQuery<HTMLElement>;
-  $fromInput: JQuery<HTMLElement>;
-  $toInputContainer: JQuery<HTMLElement>;
-  $toButton: JQuery<HTMLElement>;
-  $toInput: JQuery<HTMLElement>;
-  $stepInputContainer: JQuery<HTMLElement>;
-  $stepButton: JQuery<HTMLElement>;
-  $stepInput: JQuery<HTMLElement>;
-  $intervalToggleContainer: JQuery<HTMLElement>; 
-  $toggleText: JQuery<HTMLElement>;
-  $customIntervalToggle: JQuery<HTMLElement>; 
-  $intervalToggle: JQuery<HTMLElement>;
-  $tooltipsToggleContainer: JQuery<HTMLElement>;
-  $tooltipsToggle: JQuery<HTMLElement>;
-  $rangeBetweenToggleContainer: JQuery<HTMLElement>;
-  $rangeBetweenToggle: JQuery<HTMLElement>;
-  $scaleToggleContainer: JQuery<HTMLElement>;
-  $scaleToogle: JQuery<HTMLElement>;
-  $verticalToggleContainer: JQuery<HTMLElement>;
-  $verticalToggle: JQuery<HTMLElement>;
 
-  constructor(model: any, view: any) {
+  constructor(model: Model, view: View) {
     this.model = model;
     this.view = view;
-
-    this.$textInputsContainer = $('<div/>').addClass('js-slider__text-inputs-container').appendTo(this.view.$panelContainer);
-    this.$toggleInputsContainer = $('<div/>').addClass('js-slider__toggle-inputs-container').appendTo(this.view.$panelContainer);
-
-    this.$minInputContainer = $('<div/>').addClass('js-slider__min-input-container').appendTo(this.$textInputsContainer);
-    this.$minButton = $('<button/>').html('MIN').addClass('js-slider__min-button').appendTo(this.$minInputContainer);
-    this.$minInput = $('<input/>').addClass('js-slider__min-input').attr('type', 'number').appendTo(this.$minInputContainer);
-
-    this.$maxInputContainer = $('<div/>').addClass('js-slider__max-input-container').appendTo(this.$textInputsContainer);
-    this.$maxButton = $('<button/>').html('MAX').addClass('js-slider__max-button').appendTo(this.$maxInputContainer);
-    this.$maxInput = $('<input/>').addClass('js-slider__max-input').attr('type', 'number').appendTo(this.$maxInputContainer);
-
-    this.$fromInputContainer = $('<div/>').addClass('js-slider__from-input-container').appendTo(this.$textInputsContainer);
-    this.$fromButton = $('<button/>').html('FROM').addClass('js-slider__from-button').appendTo(this.$fromInputContainer);
-    this.$fromInput = $('<input/>').addClass('js-slider__from-input').attr('type', 'number').appendTo(this.$fromInputContainer);
-
-    this.$toInputContainer = $('<div/>').addClass('js-slider__to-input-container').appendTo(this.$textInputsContainer);
-    this.$toButton = $('<button/>').html('TO').addClass('js-slider__to-button').appendTo(this.$toInputContainer);
-    this.$toInput = $('<input/>').addClass('js-slider__to-input').attr('type', 'number').appendTo(this.$toInputContainer);
-
-    this.$stepInputContainer = $('<div/>').addClass('js-slider__step-input-container').appendTo(this.$textInputsContainer);
-    this.$stepButton = $('<button/>').html('STEP').addClass('js-slider__step-button').appendTo(this.$stepInputContainer);
-    this.$stepInput = $('<input/>').addClass('js-slider__step-input').attr('type', 'number').appendTo(this.$stepInputContainer);
-
-    this.$intervalToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    this.$intervalToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$intervalToggleContainer);
-    this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$intervalToggleContainer);
-    this.$toggleText = $('<span/>').html('INTERVAL').addClass('js-slider__toggle-text').appendTo(this.$intervalToggleContainer);
-
-    this.$tooltipsToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    this.$tooltipsToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$tooltipsToggleContainer);
-    this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$tooltipsToggleContainer);
-    this.$toggleText = $('<span/>').html('TOOLTIPS').addClass('js-slider__toggle-text').appendTo(this.$tooltipsToggleContainer);
-
-    this.$rangeBetweenToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    this.$rangeBetweenToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$rangeBetweenToggleContainer);
-    this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$rangeBetweenToggleContainer);
-    this.$toggleText = $('<span/>').html('RANGE').addClass('js-slider__toggle-text').appendTo(this.$rangeBetweenToggleContainer);
-
-    this.$scaleToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    this.$scaleToogle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$scaleToggleContainer);
-    this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$scaleToggleContainer);
-    this.$toggleText = $('<span/>').html('SCALE').addClass('js-slider__toggle-text').appendTo(this.$scaleToggleContainer);
-
-    this.$verticalToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    this.$verticalToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$verticalToggleContainer);
-    this.$customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$verticalToggleContainer);
-    this.$toggleText = $('<span/>').html('VERTICAL').addClass('js-slider__toggle-text').appendTo(this.$verticalToggleContainer);
     
     this.init();
     this.model.observer.addObserver(this.updateView);
-    this.model.observer.addObserver(this.initPanel); 
+    this.model.observer.addObserver(this.initPanel);
 
-    this.view.$panelContainer.on('pointerdown', (event: PointerEvent) => event.stopPropagation());
-    this.$minInput.on('change', this.setMin);
-    this.$maxInput.on('change', this.setMax);
-    this.$fromInput.on('change', this.setFrom);
-    this.$toInput.on('change', this.setTo);
-    this.$stepInput.on('change', this.setStep);
-    this.$intervalToggle.on('click', this.toggleInterval);
-    this.$verticalToggle.on('click', this.toggleVertical);
-    this.$tooltipsToggle.on('click', this.toggleTooltip);
-    this.$rangeBetweenToggle.on('click', this.toggleRangeBetween);
-    this.$scaleToogle.on('click', this.toggleScale);
+    this.view.panel.$panelContainer.on('pointerdown', (event: JQuery.TriggeredEvent) => event.stopPropagation());
+    this.view.panel.$minInput.on('change', this.setMin);
+    this.view.panel.$maxInput.on('change', this.setMax);
+    this.view.panel.$fromInput.on('change', this.setFrom);
+    this.view.panel.$toInput.on('change', this.setTo);
+    this.view.panel.$stepInput.on('change', this.setStep);
+    this.view.panel.$intervalToggle.on('click', this.toggleInterval);
+    this.view.panel.$verticalToggle.on('click', this.toggleVertical);
+    this.view.panel.$tooltipsToggle.on('click', this.toggleTooltip);
+    this.view.panel.$rangeBetweenToggle.on('click', this.toggleRangeBetween);
+    this.view.panel.$scaleToogle.on('click', this.toggleScale);
 
-    this.view.$firstButton.on('pointerdown', (event: PointerEvent) => {
+    this.view.$firstButton.on('pointerdown', (event: JQuery.TriggeredEvent) => {
       const shiftAxis1 = this.model.calculateShiftAxis1(event);
       
-      const moveFirstButton = (event: PointerEvent) => {
+      const moveFirstButton = (event: JQuery.TriggeredEvent): void => {
+        if (shiftAxis1 === undefined) return;
+
         this.model.calculateFirstButtonPositionWhileMoving(event, shiftAxis1);
       };
 
-      document.addEventListener('pointermove', moveFirstButton);
-      document.addEventListener('pointerup', () => document.removeEventListener('pointermove', moveFirstButton));
+      $(document).on('pointermove', moveFirstButton);
+      $(document).on('pointerup', () => $(document).off('pointermove', moveFirstButton));
     });
 
-    this.view.$secondButton.on('pointerdown', (event: PointerEvent) => {
+    this.view.$secondButton.on('pointerdown', (event: JQuery.TriggeredEvent) => {
       const shiftAxis2 = this.model.calculateShiftAxis2(event);
       
-      const moveSecondButton = (event: PointerEvent) => {
+      const moveSecondButton = (event: JQuery.TriggeredEvent): void => {
+        if (shiftAxis2 === undefined) return;
+
         this.model.calculateSecondButtonPositionWhileMoving(event, shiftAxis2);
       };
 
-      document.addEventListener('pointermove', moveSecondButton);
-      document.addEventListener('pointerup', () => document.removeEventListener('pointermove', moveSecondButton));
+      $(document).on('pointermove', moveSecondButton);
+      $(document).on('pointerup', () => $(document).off('pointermove', moveSecondButton));
     });
 
-    this.view.$firstButton.on('focusin', (event: JQuery.FocusEvent) => {   
-      const moveFirstButtonAfterKeydown = (event: JQuery.KeyDownEvent) => {
+    this.view.$firstButton.on('focusin', (event: JQuery.FocusInEvent) => {   
+      const moveFirstButtonAfterKeydown = (event: JQuery.KeyDownEvent): void => {
         this.model.calculateFirstButtonPositionAfterKeydown(event);
       }
 
@@ -133,7 +62,7 @@ class Presenter {
       $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveFirstButtonAfterKeydown));
     });
 
-    this.view.$secondButton.on('focusin', (event: JQuery.FocusEvent) => {   
+    this.view.$secondButton.on('focusin', (event: JQuery.FocusInEvent) => {   
       const moveSecondButtonAfterKeydown = (event: JQuery.KeyDownEvent) => {
         this.model.calculateSecondButtonPositionAfterKeydown(event);
       }
@@ -148,7 +77,8 @@ class Presenter {
     this.view.$maxValue.on('pointerdown', this.model.calculateFirstButtonPositionAfterMaxValueOnDown);
     this.view.$maxValue.on('pointerdown', this.model.calculateSecondButtonPositionAfterMaxValueOnDown);
     
-    this.view.$scaleContainer.on('pointerdown', (event: PointerEvent) => {
+    this.view.$scaleContainer.on('pointerdown', (event: JQuery.TriggeredEvent) => {
+      if (!('target' in event)) return;
       if (!event.target) return;
 
       const $target: JQuery<EventTarget> = $(event.target);
@@ -175,6 +105,8 @@ class Presenter {
     this.model.calculateInitialButtonsPosition();
     this.model.calculateInitialValues();
     this.updateView(this.model.getOptions());
+    this.model.calculatePanelPosition();
+    this.view.panel.setPanelPosition(this.model.getOptions());
     this.initPanel();
     this.model.setConfigToLocalStorage();
   }
@@ -195,33 +127,23 @@ class Presenter {
     this.view.scale.setScaleLength(options);
     this.view.scale.setScaleElementsPositions(options);
     this.view.scale.setScalePosition(options);
+    this.view.panel.setPanelPosition(options);
     this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, options.lengthParameter));
   }
 
   private initPanel = (): void => {
     if (!this.model.isPanel) return;
     
-    this.$minInput.val(`${this.model.minValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
-    this.$maxInput.val(`${this.model.maxValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
-    this.$toInput.val(`${this.model.to}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
-    this.$fromInput.val(`${this.model.from}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
-    this.$stepInput.val(`${this.model.step}`).attr('step', `${(0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
-    this.$intervalToggle.prop('checked', this.model.isInterval ? true : false);
-    this.$verticalToggle.prop('checked', this.model.isVertical ? true : false);
-    this.$tooltipsToggle.prop('checked', this.model.isTooltip ? true : false);
-    this.$rangeBetweenToggle.prop('checked', this.model.isRangeBetween ? true : false);
-    this.$scaleToogle.prop('checked', this.model.isScale ? true : false);
-
-    this.setPanelPosition();
-  }
-
-  private setPanelPosition = (): void => {
-    if (this.model.isVertical) {
-      this.view.$panelContainer.css({'left': parseFloat(this.view.$maxValue.css('width')) + this.model.buttonLength + parseFloat(this.view.$slider.css('width')), 'transform': 'translateX(0)', 'top': 0, 'width': '150px'});
-    }
-    else {
-      this.view.$panelContainer.css({'top': parseFloat($('.js-slider__scale-element').css('height')) + this.model.buttonLength + parseFloat(this.view.$slider.css('height')), 'left': '50%','transform': 'translateX(-50%)', 'width': '650px'});
-    }
+    this.view.panel.$minInput.val(`${this.model.minValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
+    this.view.panel.$maxInput.val(`${this.model.maxValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
+    this.view.panel.$toInput.val(`${this.model.to}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
+    this.view.panel.$fromInput.val(`${this.model.from}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
+    this.view.panel.$stepInput.val(`${this.model.step}`).attr('step', `${(0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
+    this.view.panel.$intervalToggle.prop('checked', this.model.isInterval ? true : false);
+    this.view.panel.$verticalToggle.prop('checked', this.model.isVertical ? true : false);
+    this.view.panel.$tooltipsToggle.prop('checked', this.model.isTooltip ? true : false);
+    this.view.panel.$rangeBetweenToggle.prop('checked', this.model.isRangeBetween ? true : false);
+    this.view.panel.$scaleToogle.prop('checked', this.model.isScale ? true : false);
   }
 
   private setMin = (event: JQuery.ChangeEvent): void => {
@@ -323,7 +245,6 @@ class Presenter {
 
 
     this.updateView(this.model.getOptions());
-    this.setPanelPosition();
     this.model.setConfigToLocalStorage();
   }
 
@@ -337,7 +258,6 @@ class Presenter {
 
     this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
-    this.setPanelPosition();
     this.model.setConfigToLocalStorage();
   }
 
@@ -351,7 +271,6 @@ class Presenter {
 
     this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
-    this.setPanelPosition();
     this.model.setConfigToLocalStorage();
   }
 
@@ -365,25 +284,22 @@ class Presenter {
 
     this.view.initView(this.model.getState());
     this.updateView(this.model.getOptions());
-    this.setPanelPosition();
+    this.view.panel.setPanelPosition(this.model.getOptions());
     this.model.setConfigToLocalStorage();
   }
 
   private toggleVertical = (event: JQuery.ClickEvent): void => {
     if ($(event.currentTarget).is(':checked')) {
       this.model.isVertical = true;
-
-      this.model.positionParameter = this.model.isVertical ? 'top' : 'left';
-      this.model.lengthParameter = this.model.isVertical ? 'height' : 'width';
-      this.model.scalePositionParameter = this.model.isVertical ? 'right' : 'top';
     }
     else {
       this.model.isVertical = false;
-
-      this.model.positionParameter = this.model.isVertical ? 'top' : 'left';
-      this.model.lengthParameter = this.model.isVertical ? 'height' : 'width';
-      this.model.scalePositionParameter = this.model.isVertical ? 'right' : 'top';
     }
+
+    this.model.positionParameter = this.model.isVertical ? 'top' : 'left';
+    this.model.lengthParameter = this.model.isVertical ? 'height' : 'width';
+    this.model.scalePositionParameter = this.model.isVertical ? 'right' : 'top';
+    this.model.panelPositionParameter = this.model.isVertical ? 'left' : 'top';
     
     this.init();
   }

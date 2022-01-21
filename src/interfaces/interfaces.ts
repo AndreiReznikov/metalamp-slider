@@ -25,6 +25,8 @@ interface Options {
   scaleNumber: number;
   scaleElements: number[];
   lengthBetweenScaleElements: number;
+  panelPosition: number;
+  panelPositionParameter: string;
 }
 
 interface Config {
@@ -79,6 +81,9 @@ interface ElementsParameters {
   secondTooltipLength: number;
   minValueLength: number;
   maxValueLength: number;
+  minValueWidth: number;
+  maxValueWidth: number;
+  scaleElementHeight: number;
 }
 
 export { Options, Config, UserConfig, State, ElementsParameters };

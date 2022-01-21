@@ -37,6 +37,8 @@ export class Model {
   from: number = 20;
   to: number = 50;
   scalePositionParameter: string = this.isVertical ? 'right' : 'top';
+  panelPosition: number = 0;
+  panelPositionParameter: string = this.isVertical ? 'left' : 'top';
   scaleNumber: number = 5;
   isStepSet: boolean = false;
   sliderPosition: number = 0;
@@ -48,6 +50,8 @@ export class Model {
   maxValuePosition: number = 0;
   minValueLength: number = 0;
   maxValueLength: number = 0;
+  minValueWidth: number = 0;
+  maxValueWidth: number = 0;
   firstTooltipLength: number = 0;
   secondTooltipLength: number = 0;
   stepLength: number = 0;
@@ -60,6 +64,7 @@ export class Model {
   rangeBetweenPosition: number = 0;
   rangeBetweenLength: number = 0;
   scaleElements: number[] = [];
+  scaleElementHeight: number = 0;
   lengthBetweenScaleElements: number = 0;
   numberOfCharactersAfterDot: number = 0;
 
@@ -104,6 +109,7 @@ export class Model {
     this.to = this.config.to;
     this.scalePositionParameter = this.isVertical ? 'right' : 'top';
     this.scaleNumber = this.config.scaleNumber;
+    this.panelPositionParameter = this.isVertical ? 'left' : 'top';
   }
 
   public calculateInitialValues = (): void => {
@@ -127,6 +133,9 @@ export class Model {
     this.secondTooltipLength = elementsParameters.secondTooltipLength;
     this.minValueLength = elementsParameters.minValueLength;
     this.maxValueLength = elementsParameters.maxValueLength;
+    this.minValueWidth = elementsParameters.minValueWidth;
+    this.maxValueWidth = elementsParameters.maxValueWidth;
+    this.scaleElementHeight = elementsParameters.scaleElementHeight;
   }
 
   public calculateStepLength = (): void => {
@@ -148,7 +157,7 @@ export class Model {
       to: this.to,
       step: this.step,
       keyboard: this.keyboard,
-      scaleNumber: this.scaleNumber
+      scaleNumber: this.scaleNumber,
     }
 
     localStorage.setItem('storageConfig', JSON.stringify(storageConfig));
@@ -162,7 +171,7 @@ export class Model {
       isRangeBetween: this.isRangeBetween, 
       isScale: this.isScale,
       isVertical: this.isVertical,
-      isPanel: this.isPanel
+      isPanel: this.isPanel,
     }
 
     return state;
@@ -195,7 +204,9 @@ export class Model {
       scalePositionParameter: this.scalePositionParameter,
       scaleNumber: this.scaleNumber,
       scaleElements: this.scaleElements,
-      lengthBetweenScaleElements: this.lengthBetweenScaleElements
+      lengthBetweenScaleElements: this.lengthBetweenScaleElements,
+      panelPosition: this.panelPosition,
+      panelPositionParameter: this.panelPositionParameter,
     }
 
     return options;
@@ -279,12 +290,14 @@ export class Model {
     this.restrictSecondTooltipValue();
   }
 
-  public calculateShiftAxis1 = (event: PointerEvent): number | undefined => {
+  public calculateShiftAxis1 = (event: JQuery.TriggeredEvent): number | undefined => {
     event.stopPropagation();
 
     const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
     
     if (isNotLeftMouseButtonPressed) return;
+
+    if (event.pageX === undefined || event.pageY === undefined) return;
 
     const shiftX1: number = event.pageX - this.firstButtonPosition - this.sliderPosition;
     const shiftY1: number = event.pageY - this.firstButtonPosition - this.sliderPosition;
@@ -293,10 +306,12 @@ export class Model {
     return shiftAxis1;
   }
 
-  public calculateFirstButtonPositionWhileMoving = (event: PointerEvent, shiftAxis1: number): void => {
+  public calculateFirstButtonPositionWhileMoving = (event: JQuery.TriggeredEvent, shiftAxis1: number): void => {
     const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
 
     if (isNotLeftMouseButtonPressed) return;
+    
+    if (event.pageX === undefined || event.pageY === undefined) return;
 
     const pageX1: number = event.pageX;
     const pageY1: number = event.pageY;
@@ -336,10 +351,12 @@ export class Model {
     }
   }
 
-  public calculateFirstButtonPositionAfterSliderOnDown = (event: PointerEvent): void => {
+  public calculateFirstButtonPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent): void => {
     const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
 
     if (isNotLeftMouseButtonPressed) return;
+
+    if (event.pageX === undefined || event.pageY === undefined) return;
 
     const pageX1: number = event.pageX;
     const pageY1: number = event.pageY;
@@ -419,7 +436,7 @@ export class Model {
     }
   }
 
-  public calculateFirstButtonPositionAfterMinValueOnDown = (event: PointerEvent): void => {
+  public calculateFirstButtonPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
 
     const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
@@ -437,7 +454,7 @@ export class Model {
     this.observer.notifyObservers(this.getOptions());
   }
 
-  public calculateFirstButtonPositionAfterMaxValueOnDown = (event: PointerEvent): void => {
+  public calculateFirstButtonPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
 
     const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
@@ -503,13 +520,15 @@ export class Model {
     }
   }
 
-  public calculateShiftAxis2 = (event: PointerEvent): number | void => {
+  public calculateShiftAxis2 = (event: JQuery.TriggeredEvent): number | void => {
     event.stopPropagation();
 
     const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
     const isNotLeftButtonPressedOrNotInterval: boolean = isNotLeftMouseButtonPressed || !this.isInterval;
 
     if (isNotLeftButtonPressedOrNotInterval) return;
+
+    if (event.pageX === undefined || event.pageY === undefined) return;
 
     const shiftX2: number = event.pageX - this.secondButtonPosition - this.sliderPosition;
     const shiftY2: number = event.pageY - this.secondButtonPosition - this.sliderPosition;
@@ -518,11 +537,13 @@ export class Model {
     return shiftAxis2;
   }
 
-  public calculateSecondButtonPositionWhileMoving = (event: PointerEvent, shiftAxis2: number): void => {
+  public calculateSecondButtonPositionWhileMoving = (event: JQuery.TriggeredEvent, shiftAxis2: number): void => {
     const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
     const isNotLeftButtonPressedOrNotInterval: boolean = isNotLeftMouseButtonPressed || !this.isInterval;
 
     if (isNotLeftButtonPressedOrNotInterval) return;
+
+    if (event.pageX === undefined || event.pageY === undefined) return;
     
     const pageX2: number = event.pageX;
     const pageY2: number = event.pageY;
@@ -564,11 +585,13 @@ export class Model {
     }
   }
 
-  public calculateSecondButtonPositionAfterSliderOnDown = (event: PointerEvent): void => {
+  public calculateSecondButtonPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent): void => {
     const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
     const isNotLeftButtonPressedOrNotInterval: boolean = isNotLeftMouseButtonPressed || !this.isInterval;
 
     if (isNotLeftButtonPressedOrNotInterval) return;
+
+    if (event.pageX === undefined || event.pageY === undefined) return;
 
     const pageX2: number = event.pageX;
     const pageY2: number = event.pageY;
@@ -635,7 +658,7 @@ export class Model {
     }
   }
 
-  public calculateSecondButtonPositionAfterMaxValueOnDown = (event: PointerEvent): void => {
+  public calculateSecondButtonPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
 
     if (!this.isInterval) return;
@@ -695,14 +718,17 @@ export class Model {
     }
   }
 
-  public calculateButtonPositionAfterScaleOnDown = (event: PointerEvent, scaleOptions: {isScaleElementOnDown: boolean, scaleElementPosition: string, scaleElementLength: string, scaleElementValue: string}): void => {
+  public calculateButtonPositionAfterScaleOnDown = (event: JQuery.TriggeredEvent, scaleOptions: {isScaleElementOnDown: boolean, scaleElementPosition: number, scaleElementLength: number, scaleElementValue: string}): void => {
     event.stopPropagation();
-
+ 
     const isNotLeftMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
-    const isNotLeftMouseButtonPressedOrNotScaleElementOnDown = isNotLeftMouseButtonPressed || !scaleOptions.isScaleElementOnDown;
+    const isNotLeftMouseButtonPressedOrNotScaleElementOnDown: boolean = isNotLeftMouseButtonPressed || !scaleOptions.isScaleElementOnDown;
     
     if (isNotLeftMouseButtonPressedOrNotScaleElementOnDown) return;
     
+
+    if (event.pageX === undefined || event.pageY === undefined) return;
+
     const pageX1: number = event.pageX;
     const pageY1: number = event.pageY;
     const pageAxis1: number = this.isVertical ? pageY1 : pageX1;
@@ -718,11 +744,11 @@ export class Model {
     const isClickForSecondButton: boolean = isClickAheadOfSecondButton || isClickBehindOfSecondButton;
 
     if (isClickForFirstButton) {
-      this.firstButtonPosition = parseInt(scaleOptions.scaleElementPosition) + parseInt(scaleOptions.scaleElementLength)/2 - this.buttonLength/2;
+      this.firstButtonPosition = scaleOptions.scaleElementPosition + scaleOptions.scaleElementLength/2 - this.buttonLength/2;
       this.calculateFirstTooltipValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
     }
     else if (isClickForSecondButton) {
-      this.secondButtonPosition = parseInt(scaleOptions.scaleElementPosition) + parseInt(scaleOptions.scaleElementLength)/2 - this.buttonLength/2;
+      this.secondButtonPosition = scaleOptions.scaleElementPosition + scaleOptions.scaleElementLength/2 - this.buttonLength/2;
       this.calculateSecondTooltipValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
     }
 
@@ -734,7 +760,18 @@ export class Model {
     this.observer.notifyObservers(this.getOptions());
   }
 
-  private countNumberOfCharactersAfterDot= (): void => {
+  public calculatePanelPosition = (): void => {
+    const maxWidth: number = Math.max(this.minValueWidth, this.maxValueWidth);
+    
+    if (this.isVertical) {
+      this.panelPosition = maxWidth + this.buttonLength;
+    }
+    else {
+      this.panelPosition = this.scaleElementHeight + this.buttonLength;
+    }
+  }
+
+  private countNumberOfCharactersAfterDot = (): void => {
     const minValuesBeforeAndAfterDot: string[] = `${this.minValue}`.split('.');
     const maxValuesBeforeAndAfterDot: string[] = `${this.maxValue}`.split('.');
 

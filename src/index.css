@@ -1,7 +1,4 @@
 html, body {
-  display: flex;
-  justify-content: center;
-  align-items: top;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -10,7 +7,7 @@ html, body {
 }
 
 .slider-container {
-  margin-top: 200px;
+  margin: 200px 0 0 200px;
   width: 500px;
   height: 8px;
 }
@@ -41,6 +38,7 @@ html, body {
   border-radius: 8px;
   background-color: rgb(47, 50, 53);
   touch-action: none;
+  z-index: 1;
 }
 
 .js-slider__first-button, .js-slider__second-button {
@@ -53,6 +51,7 @@ html, body {
   background-color: rgb(47, 50, 53);
   touch-action: none;
   cursor: pointer;
+  z-index: 2;
 }
 
 .js-slider__min-value, .js-slider__max-value {
@@ -149,7 +148,7 @@ html, body {
 .js-slider__to-input, 
 .js-slider__step-input 
 {
-  width: 55px;
+  width: 65px;
   height: 26px;
   border: 2px solid rgb(47, 50, 53);
   border-radius: 0 4px 4px 0;
