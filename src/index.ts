@@ -6,7 +6,6 @@ import { UserConfig } from './interfaces/interfaces';
 
 (function($) {
   const mySlider = (slider: JQuery<HTMLElement>, userConfig: UserConfig): JQuery<HTMLElement> => {
-
     const model = new Model(userConfig);
     const view = new View(slider);
     const presenter = new Presenter(model, view);
@@ -14,7 +13,7 @@ import { UserConfig } from './interfaces/interfaces';
     return slider;
   };
 
-  $.fn.mySlider = function(userConfig: UserConfig): JQuery<HTMLElement> {
+  $.fn.mySlider = function (userConfig: UserConfig): JQuery<HTMLElement> {
     const initSlider = (): void => {
       if (!this.data('mySlider')) {
         this.data('mySlider', mySlider(this, userConfig));
@@ -23,9 +22,9 @@ import { UserConfig } from './interfaces/interfaces';
     };
 
     return this.each(initSlider);
-  }
+  };
 
-  $.fn.update = function(userConfig: UserConfig): JQuery<HTMLElement> {
+  $.fn.update = function (userConfig: UserConfig): JQuery<HTMLElement> {
     const updateSlider = (): void => {
       if (this.data('mySlider')) {
         const initialConfig: UserConfig = this.data('userConfig');
@@ -38,19 +37,19 @@ import { UserConfig } from './interfaces/interfaces';
     };
 
     return this.each(updateSlider);
-  }
+  };
 
-  $.fn.destroy = function(): JQuery<HTMLElement> {
+  $.fn.destroy = function (): JQuery<HTMLElement> {
     const destroySlider = (): void => {
       if (this.data('mySlider')) {
         this.data('mySlider', false);
         this.empty();
       }
     };
-    
+
     return this.each(destroySlider);
-  }
-})(jQuery);
+  };
+}(jQuery));
 
 $('.js-slider').mySlider({
   isInterval: true,
@@ -71,6 +70,5 @@ $('.js-slider').mySlider({
 const $slider = $('.js-slider').data('mySlider');
 
 $slider.update({
-  isInterval: false
+  isInterval: false,
 });
-

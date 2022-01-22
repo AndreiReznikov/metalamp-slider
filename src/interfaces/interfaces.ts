@@ -88,4 +88,6 @@ interface ElementsParameters {
   scaleElementHeight: number;
 }
 
-export { Options, Config, UserConfig, ElementsParameters };
+export {
+  Options, Config, UserConfig, ElementsParameters,
+};
