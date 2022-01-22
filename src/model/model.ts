@@ -1,4 +1,4 @@
-import { Options, Config, UserConfig, State, ElementsParameters } from '../interfaces/interfaces';
+import { Options, Config, UserConfig, ElementsParameters } from '../interfaces/interfaces';
 
 class Observer {
   observers: Function[] = [];
@@ -8,16 +8,13 @@ class Observer {
   }
 
   notifyObservers = (options: Options): void => {
-    for (let i = 0; i < this.observers.length; i++) {
-      this.observers[i](options);
-    }
+    this.observers.forEach(observer => observer(options));
   }
 }
 
 export class Model {
   observer: Observer;
   userConfig: UserConfig;
-  storageConfig: UserConfig;
   data: Config;
   config: Config;
 
@@ -72,7 +69,6 @@ export class Model {
     this.observer = new Observer();
     
     this.userConfig = userConfig;
-    this.storageConfig = JSON.parse(`${localStorage.getItem('storageConfig')}`);  
     this.data = {
       isInterval: false,
       isVertical: false,
@@ -90,8 +86,12 @@ export class Model {
       scaleNumber: 5
     };
     
-    this.config = $.extend({}, this.data, this.storageConfig, this.userConfig);
+    this.config = $.extend({}, this.data, this.userConfig);
     
+    this.setConfigParameters();
+  }
+
+  private setConfigParameters = (): void => {
     this.isInterval = this.config.isInterval;
     this.isVertical = this.config.isVertical;
     this.isPanel = this.config.isPanel;
@@ -142,29 +142,8 @@ export class Model {
     this.stepLength = parseFloat(((this.step/(this.maxValue - this.minValue)) * this.sliderLength).toFixed(this.numberOfCharactersAfterDot));
   }
 
-  public setConfigToLocalStorage = (): void => {
-    const storageConfig = {
-      isInterval: this.isInterval,
-      isVertical: this.isVertical,
-      isTooltip: this.isTooltip,
-      isMinAndMax: this.isMinAndMax,
-      isRangen: this.isRange,
-      isPanel: this.isPanel,
-      isScale: this.isScale,
-      minValue: this.minValue,
-      maxValue: this.maxValue,
-      from: this.from,
-      to: this.to,
-      step: this.step,
-      keyboard: this.keyboard,
-      scaleNumber: this.scaleNumber,
-    }
-
-    localStorage.setItem('storageConfig', JSON.stringify(storageConfig));
-  }
-
-  public getState = (): State => {
-    const state: State = {
+  public getOptions = (): Options => {
+    const options: Options = {
       isInterval: this.isInterval,
       isTooltip: this.isTooltip,
       isMinAndMax: this.isMinAndMax, 
@@ -172,17 +151,14 @@ export class Model {
       isScale: this.isScale,
       isVertical: this.isVertical,
       isPanel: this.isPanel,
-    }
-
-    return state;
-  }
-
-  public getOptions = (): Options => {
-    const options: Options = {
+      isStepSet: this.isStepSet,
       positionParameter: this.positionParameter,
       lengthParameter: this.lengthParameter,
       sliderPosition: this.sliderPosition,
       sliderLength: this.sliderLength,
+      to: this.to,
+      from: this.from,
+      step: this.step,
       handleLength: this.handleLength,
       stepLength: this.stepLength,
       minValue: this.minValue,
@@ -207,6 +183,7 @@ export class Model {
       lengthBetweenScaleElements: this.lengthBetweenScaleElements,
       panelPosition: this.panelPosition,
       panelPositionParameter: this.panelPositionParameter,
+      numberOfCharactersAfterDot: this.numberOfCharactersAfterDot
     }
 
     return options;
@@ -293,9 +270,7 @@ export class Model {
   public calculateShiftAxis1 = (event: JQuery.TriggeredEvent): number | undefined => {
     event.stopPropagation();
 
-    const isWrongMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
-
-    if (isWrongMouseButtonPressed) return;
+    if (this.isWrongMouseButtonPressed(event)) return;
 
     let shiftX1: number = 0;
     let shiftY1: number = 0;
@@ -316,9 +291,7 @@ export class Model {
   public calculateHandleFromPositionWhileMoving = (event: JQuery.TriggeredEvent, shiftAxis1: number): void => {
     event.preventDefault();
 
-    const isWrongMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
-
-    if (isWrongMouseButtonPressed) return;
+    if (this.isWrongMouseButtonPressed(event)) return;
 
     let pageX1: number = 0
     let pageY1: number = 0;
@@ -346,7 +319,6 @@ export class Model {
     this.calculateRangePosition();
     this.calculateRangeLength();
     this.calculateTooltipsPositions();
-    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -368,9 +340,7 @@ export class Model {
   }
 
   public calculateHandleFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent): void => {
-    const isWrongMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
-
-    if (isWrongMouseButtonPressed) return;
+    if (this.isWrongMouseButtonPressed(event)) return;
 
     let pageX1: number = 0
     let pageY1: number = 0;
@@ -424,7 +394,6 @@ export class Model {
     this.calculateRangePosition();
     this.calculateRangeLength();
     this.calculateTooltipsPositions();
-    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -463,9 +432,7 @@ export class Model {
   public calculateHandleFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
 
-    const isWrongMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
-
-    if (isWrongMouseButtonPressed) return;  
+    if (this.isWrongMouseButtonPressed(event)) return;  
 
     this.handleFromPosition = 0 - this.handleLength/2;
 
@@ -473,7 +440,6 @@ export class Model {
     this.calculateRangeLength();
     this.calculateTooltipsPositions();
     this.calculateMinTooltipFromValue();
-    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -481,8 +447,7 @@ export class Model {
   public calculateHandleFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
 
-    const isWrongMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
-    const isWrongButtonPressedOrInterval: boolean = isWrongMouseButtonPressed || this.isInterval;
+    const isWrongButtonPressedOrInterval: boolean = this.isWrongMouseButtonPressed(event) || this.isInterval;
 
     if (isWrongButtonPressedOrInterval) return;
 
@@ -492,7 +457,6 @@ export class Model {
     this.calculateRangeLength();
     this.calculateTooltipsPositions();
     this.calculateMaxTooltipFromValue(this.maxValue);
-    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -522,7 +486,6 @@ export class Model {
     this.calculateRangeLength();
     this.calculateTooltipsPositions();
     if (!this.isStepSet) this.calculateTooltipsValues();
-    this.setConfigToLocalStorage();
     
     this.observer.notifyObservers(this.getOptions());
   }
@@ -547,8 +510,7 @@ export class Model {
   public calculateShiftAxis2 = (event: JQuery.TriggeredEvent): number | void => {
     event.stopPropagation();
 
-    const isWrongMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
-    const isWrongButtonPressedOrSingleHandle: boolean = isWrongMouseButtonPressed || !this.isInterval;
+    const isWrongButtonPressedOrSingleHandle: boolean = this.isWrongMouseButtonPressed(event) || !this.isInterval;
 
     if (isWrongButtonPressedOrSingleHandle) return;
 
@@ -571,8 +533,7 @@ export class Model {
   public calculateHandleToPositionWhileMoving = (event: JQuery.TriggeredEvent, shiftAxis2: number): void => {
     event.preventDefault();
     
-    const isWrongMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
-    const isWrongButtonPressedOrSingleHandle: boolean = isWrongMouseButtonPressed || !this.isInterval;
+    const isWrongButtonPressedOrSingleHandle: boolean = this.isWrongMouseButtonPressed(event) || !this.isInterval;
 
     if (isWrongButtonPressedOrSingleHandle) return;
 
@@ -602,7 +563,6 @@ export class Model {
     this.calculateRangePosition();
     this.calculateRangeLength();
     this.calculateTooltipsPositions();
-    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -626,8 +586,7 @@ export class Model {
   }
 
   public calculateHandleToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent): void => {
-    const isWrongMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
-    const isWrongButtonPressedOrSingleHandle: boolean = isWrongMouseButtonPressed || !this.isInterval;
+    const isWrongButtonPressedOrSingleHandle: boolean = this.isWrongMouseButtonPressed(event) || !this.isInterval;
 
     if (isWrongButtonPressedOrSingleHandle) return;
 
@@ -678,7 +637,6 @@ export class Model {
     this.calculateRangePosition();
     this.calculateRangeLength();
     this.calculateTooltipsPositions();
-    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -716,7 +674,6 @@ export class Model {
     this.calculateRangeLength();
     this.calculateTooltipsPositions();
     this.calculateMaxTooltipToValue();
-    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -748,7 +705,6 @@ export class Model {
     this.calculateRangeLength();
     this.calculateTooltipsPositions();
     if (!this.isStepSet) this.calculateTooltipsValues();
-    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -767,9 +723,8 @@ export class Model {
 
   public calculateHandlePositionAfterScaleOnDown = (event: JQuery.TriggeredEvent, scaleOptions: {isScaleElementOnDown: boolean, scaleElementPosition: number, scaleElementLength: number, scaleElementValue: string}): void => {
     event.stopPropagation();
- 
-    const isWrongMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
-    const isWrongMouseButtonPressedOrWrongElementOnDown: boolean = isWrongMouseButtonPressed || !scaleOptions.isScaleElementOnDown;
+
+    const isWrongMouseButtonPressedOrWrongElementOnDown: boolean = this.isWrongMouseButtonPressed(event) || !scaleOptions.isScaleElementOnDown;
     
     if (isWrongMouseButtonPressedOrWrongElementOnDown) return;   
 
@@ -808,7 +763,6 @@ export class Model {
     this.calculateRangePosition();
     this.calculateRangeLength();
     this.calculateTooltipsPositions();
-    this.setConfigToLocalStorage();
 
     this.observer.notifyObservers(this.getOptions());
   }
@@ -1076,5 +1030,11 @@ export class Model {
     else {
       this.scaleNumber = 6;
     }
+  }
+
+  private isWrongMouseButtonPressed (event: JQuery.TriggeredEvent) {
+    const isWrongMouseButtonPressed: boolean = event.pointerType === 'mouse' && event.buttons !== 1;
+
+    return isWrongMouseButtonPressed;
   }
 }

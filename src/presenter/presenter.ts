@@ -13,14 +13,13 @@ class Presenter {
     
     this.init();
     this.model.observer.addObserver(this.updateView);
-    this.model.observer.addObserver(this.initPanel);
 
-    this.eventManager();
-    this.panelEventManager();
+    this.launchEventManager();
+    this.launchPanelEventManager();
   }
 
   private init = (): void => {
-    this.view.initView(this.model.getState());
+    this.view.initView(this.model.getOptions());
     this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, this.model.getOptions().lengthParameter));
     this.model.validateInitialValues();
     this.model.calculateInitialHandlesPosition();
@@ -28,8 +27,6 @@ class Presenter {
     this.updateView(this.model.getOptions());
     this.model.calculatePanelPosition();
     this.view.panel.setPanelPosition(this.model.getOptions());
-    this.initPanel();
-    this.model.setConfigToLocalStorage();
   }
 
   private updateView = (options: Options): void => {
@@ -49,25 +46,11 @@ class Presenter {
     this.view.scale.setScaleElementsPositions(options);
     this.view.scale.setScalePosition(options);
     this.view.panel.setPanelPosition(options);
+    this.view.panel.setPanelValues(options);
     this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, options.lengthParameter));
   }
 
-  private initPanel = (): void => {
-    if (!this.model.isPanel) return;
-    
-    this.view.panel.$minInput.val(`${this.model.minValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
-    this.view.panel.$maxInput.val(`${this.model.maxValue}`).attr('step', `${this.model.isStepSet ? '' : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
-    this.view.panel.$toInput.val(`${this.model.to}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
-    this.view.panel.$fromInput.val(`${this.model.from}`).attr('step', `${this.model.isStepSet ? this.model.step : (0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
-    this.view.panel.$stepInput.val(`${this.model.step}`).attr('step', `${(0.1).toFixed(this.model.numberOfCharactersAfterDot)}`);
-    this.view.panel.$intervalToggle.prop('checked', this.model.isInterval ? true : false);
-    this.view.panel.$verticalToggle.prop('checked', this.model.isVertical ? true : false);
-    this.view.panel.$tooltipsToggle.prop('checked', this.model.isTooltip ? true : false);
-    this.view.panel.$rangeToggle.prop('checked', this.model.isRange ? true : false);
-    this.view.panel.$scaleToogle.prop('checked', this.model.isScale ? true : false);
-  }
-
-  private eventManager = (): void => {
+  private launchEventManager = (): void => {
     this.view.$handleFrom.on('pointerdown', (event: JQuery.TriggeredEvent) => {
       const shiftAxis1 = this.model.calculateShiftAxis1(event);
       
@@ -138,7 +121,7 @@ class Presenter {
     });
   }
 
-  private panelEventManager = (): void => {
+  private launchPanelEventManager = (): void => {
     this.view.panel.$panelContainer.on('pointerdown', (event: JQuery.TriggeredEvent) => event.stopPropagation());
     this.view.panel.$minInput.on('change', this.setMin);
     this.view.panel.$maxInput.on('change', this.setMax);
@@ -157,7 +140,6 @@ class Presenter {
 
     //вынести в переменную
     if (typeof parseFloat(`${minValue}`) !== 'number' || minValue == '') {
-      this.initPanel();
       return;
     };
     
@@ -170,7 +152,6 @@ class Presenter {
     const maxValue = $(event.currentTarget).val();
     
     if (typeof parseFloat(`${maxValue}`) !== 'number'  || maxValue == '') {
-      this.initPanel();
       return;
     };
 
@@ -183,7 +164,6 @@ class Presenter {
     const from = $(event.currentTarget).val();
 
     if (typeof parseFloat(`${from}`) !== 'number'  || from == '') {
-      this.initPanel();
       return;
     };
 
@@ -192,17 +172,14 @@ class Presenter {
     this.model.validateInitialValues();
     this.model.calculateInitialHandleFromPosition();
     this.model.calculateInitialValues();
-    this.initPanel();
 
     this.updateView(this.model.getOptions());
-    this.model.setConfigToLocalStorage();
   }
 
   private setTo = (event: JQuery.ChangeEvent): void => {
     const to = $(event.currentTarget).val();
 
     if (typeof parseFloat(`${to}`) !== 'number' || to == '') {
-      this.initPanel();
       return;
     };
 
@@ -211,29 +188,24 @@ class Presenter {
     this.model.validateInitialValues();
     this.model.calculateInitialHandleToPosition();
     this.model.calculateInitialValues();
-    this.initPanel();
 
     this.updateView(this.model.getOptions());
-    this.model.setConfigToLocalStorage();
   }
 
   private setStep = (event: JQuery.ChangeEvent): void => {
     const step = $(event.currentTarget).val();
 
     if (typeof parseFloat(`${step}`) !== 'number' || step == '') {
-      this.initPanel();
       return;
     };
 
     this.model.step = parseFloat(`${step}`);
 
-    this.view.initView(this.model.getState());
+    this.view.initView(this.model.getOptions());
     this.model.validateInitialValues();
     this.model.calculateStepLength();
-    this.initPanel();
 
     this.updateView(this.model.getOptions());
-    this.model.setConfigToLocalStorage();
   }
 
   private toggleInterval = (event: JQuery.ClickEvent): void => {
@@ -244,14 +216,13 @@ class Presenter {
       this.model.isInterval = false;
     }
 
-    this.view.initView(this.model.getState());
+    this.view.initView(this.model.getOptions());
     this.model.validateInitialValues();
     this.model.calculateInitialHandleToPosition();
     this.model.calculateInitialValues();
 
 
     this.updateView(this.model.getOptions());
-    this.model.setConfigToLocalStorage();
   }
 
   private toggleTooltip = (event: JQuery.ClickEvent): void => {
@@ -262,9 +233,8 @@ class Presenter {
       this.model.isTooltip = false;
     }
 
-    this.view.initView(this.model.getState());
+    this.view.initView(this.model.getOptions());
     this.updateView(this.model.getOptions());
-    this.model.setConfigToLocalStorage();
   }
 
   private toggleRange = (event: JQuery.ClickEvent): void => {
@@ -275,9 +245,8 @@ class Presenter {
       this.model.isRange  = false;
     }
 
-    this.view.initView(this.model.getState());
+    this.view.initView(this.model.getOptions());
     this.updateView(this.model.getOptions());
-    this.model.setConfigToLocalStorage();
   }
 
   private toggleScale = (event: JQuery.ClickEvent): void => {
@@ -288,10 +257,9 @@ class Presenter {
       this.model.isScale  = false;
     }
 
-    this.view.initView(this.model.getState());
+    this.view.initView(this.model.getOptions());
     this.updateView(this.model.getOptions());
     this.view.panel.setPanelPosition(this.model.getOptions());
-    this.model.setConfigToLocalStorage();
   }
 
   private toggleVertical = (event: JQuery.ClickEvent): void => {

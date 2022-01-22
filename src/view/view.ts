@@ -1,5 +1,5 @@
 
-import { Options, State, ElementsParameters } from '../interfaces/interfaces';
+import { Options, ElementsParameters } from '../interfaces/interfaces';
 
 export class View {
 
@@ -36,31 +36,46 @@ export class View {
     this.panel = new Panel();
 
     this.$this = slider;
-    this.$slider = this.slider.$slider.appendTo(this.$this).addClass('js-slider__stripe');;
-    this.$handleFrom = this.handleFrom.$handleFrom.appendTo(this.$slider).addClass('js-slider__handle-from');
-    this.$handleTo = this.handleTo.$handleTo.appendTo(this.$slider).addClass('js-slider__handle-to');
-    this.$range = this.range.$range.appendTo(this.$slider).addClass('js-slider__range');
-    this.$minValue = this.minAndMaxValues.$minValue.appendTo(this.$slider).addClass('js-slider__min-value');
-    this.$maxValue = this.minAndMaxValues.$maxValue.appendTo(this.$slider).addClass('js-slider__max-value');
-    this.$scaleContainer = this.scale.$scaleContainer.appendTo(this.$slider).addClass('js-slider__scale-container');
-    this.$tooltipFrom = this.tooltips.$tooltipFrom.appendTo(this.$slider).addClass('js-slider__tooltip-from');
-    this.$tooltipTo = this.tooltips.$tooltipTo.appendTo(this.$slider).addClass('js-slider__tooltip-to');   
-    this.$panelContainer = this.panel.$panelContainer.appendTo(this.$slider).addClass('js-slider__panel-container');
+    this.$slider = this.slider.$slider;
+    this.$handleFrom = this.handleFrom.$handleFrom;
+    this.$handleTo = this.handleTo.$handleTo;
+    this.$range = this.range.$range;
+    this.$minValue = this.minAndMaxValues.$minValue;
+    this.$maxValue = this.minAndMaxValues.$maxValue;
+    this.$scaleContainer = this.scale.$scaleContainer;
+    this.$tooltipFrom = this.tooltips.$tooltipFrom;
+    this.$tooltipTo = this.tooltips.$tooltipTo;   
+    this.$panelContainer = this.panel.$panelContainer;
        
+    this.renderView();
+    
     this.sliderWidth = parseInt(this.$this.parent().css('width'));
     this.sliderHeight = parseInt(this.$this.parent().css('height'));
   }
 
-  public initView = (initialOptions: State): void => {
+  private renderView = (): void => {
+    this.$slider.appendTo(this.$this).addClass('js-slider__stripe');;
+    this.$handleFrom.appendTo(this.$slider).addClass('js-slider__handle-from');
+    this.$handleTo.appendTo(this.$slider).addClass('js-slider__handle-to');
+    this.$range.appendTo(this.$slider).addClass('js-slider__range');
+    this.$minValue.appendTo(this.$slider).addClass('js-slider__min-value');
+    this.$maxValue.appendTo(this.$slider).addClass('js-slider__max-value');
+    this.$scaleContainer.appendTo(this.$slider).addClass('js-slider__scale-container');
+    this.$tooltipFrom.appendTo(this.$slider).addClass('js-slider__tooltip-from');
+    this.$tooltipTo.appendTo(this.$slider).addClass('js-slider__tooltip-to');   
+    this.$panelContainer.appendTo(this.$slider).addClass('js-slider__panel-container');
+  }
+
+  public initView = (options: Options): void => {
     
-    if (initialOptions.isRange) {
+    if (options.isRange) {
       this.$range.css('display', 'block');
     }
     else {
       this.$range.css('display', 'none');
     }
 
-    if (initialOptions.isMinAndMax) {
+    if (options.isMinAndMax) {
       this.$minValue.css('display', 'flex');
       this.$maxValue.css('display', 'flex');
     }
@@ -69,24 +84,24 @@ export class View {
       this.$maxValue.css('display', 'none');
     }
 
-    if (initialOptions.isScale) {
+    if (options.isScale) {
       this.$scaleContainer.css('display', 'flex');
     }
     else {
       this.$scaleContainer.css('display', 'none');
     }       
 
-    if (initialOptions.isInterval) {
+    if (options.isInterval) {
       this.$handleTo.css('display', 'block');
     }
     else {
       this.$handleTo.css('display', 'none');
     }
 
-    if (initialOptions.isTooltip) {
+    if (options.isTooltip) {
       this.$tooltipFrom.css('display', 'flex');
 
-      if (initialOptions.isInterval) {
+      if (options.isInterval) {
         this.$tooltipTo.css('display', 'flex');
       }
       else {
@@ -98,14 +113,14 @@ export class View {
       this.$tooltipTo.css('display', 'none');
     }
 
-    if (initialOptions.isPanel) {
+    if (options.isPanel) {
       this.$panelContainer.css('display', 'flex');
     }
     else {
       this.$panelContainer.css('display', 'none');
     }
     
-    this.setPlane(initialOptions.isVertical);
+    this.setPlane(options.isVertical);
   }
 
   private setPlane = (isVertical: boolean): void => {
@@ -360,5 +375,20 @@ class Panel {
 
     public setPanelPosition = (options: Options): void => {   
      this.$panelContainer.css(options.panelPositionParameter, options.panelPosition);   
+    }
+
+    public setPanelValues = (options: Options): void => {
+      if (!options.isPanel) return;
+      
+      this.$minInput.val(`${options.minValue}`).attr('step', `${options.isStepSet ? '' : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
+      this.$maxInput.val(`${options.maxValue}`).attr('step', `${options.isStepSet ? '' : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
+      this.$toInput.val(`${options.to}`).attr('step', `${options.isStepSet ? options.step : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
+      this.$fromInput.val(`${options.from}`).attr('step', `${options.isStepSet ? options.step : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
+      this.$stepInput.val(`${options.step}`).attr('step', `${(0.1).toFixed(options.numberOfCharactersAfterDot)}`);
+      this.$intervalToggle.prop('checked', options.isInterval ? true : false);
+      this.$verticalToggle.prop('checked', options.isVertical ? true : false);
+      this.$tooltipsToggle.prop('checked', options.isTooltip ? true : false);
+      this.$rangeToggle.prop('checked', options.isRange ? true : false);
+      this.$scaleToogle.prop('checked', options.isScale ? true : false);
     }
 }

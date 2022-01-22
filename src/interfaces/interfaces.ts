@@ -1,8 +1,19 @@
 interface Options {
+  isInterval: boolean;
+  isTooltip: boolean;
+  isMinAndMax: boolean;
+  isRange: boolean;
+  isScale: boolean;
+  isVertical: boolean;
+  isPanel: boolean;
+  isStepSet: boolean;
   positionParameter: string;
   lengthParameter: string;
   sliderPosition: number;
   sliderLength: number;
+  to: number;
+  from: number;
+  step: number;
   handleLength: number;
   stepLength: number;
   minValuePosition: number;
@@ -27,6 +38,7 @@ interface Options {
   lengthBetweenScaleElements: number;
   panelPosition: number;
   panelPositionParameter: string;
+  numberOfCharactersAfterDot: number;
 }
 
 interface Config {
@@ -63,16 +75,6 @@ interface UserConfig {
   isPanel?: boolean;
 }
 
-interface State {
-  isInterval: boolean;
-  isTooltip: boolean;
-  isMinAndMax: boolean;
-  isRange: boolean;
-  isScale: boolean;
-  isVertical: boolean;
-  isPanel: boolean;
-}
-
 interface ElementsParameters {
   sliderPosition: number;
   sliderLength: number;
@@ -86,4 +88,4 @@ interface ElementsParameters {
   scaleElementHeight: number;
 }
 
-export { Options, Config, UserConfig, State, ElementsParameters };
+export { Options, Config, UserConfig, ElementsParameters };
