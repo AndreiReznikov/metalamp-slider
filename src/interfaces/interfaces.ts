@@ -3,7 +3,7 @@ interface Options {
   lengthParameter: string;
   sliderPosition: number;
   sliderLength: number;
-  buttonLength: number;
+  handleLength: number;
   stepLength: number;
   minValuePosition: number;
   maxValuePosition: number;
@@ -13,14 +13,14 @@ interface Options {
   isMaxValueShow: boolean;
   minValueLength: number;
   maxValueLength: number;
-  firstButtonPosition: number;
-  secondButtonPosition: number;
-  firstTooltipPosition: number;
-  secondTooltipPosition: number;
-  firstTooltipValue: number | string;
-  secondTooltipValue: number | string;
-  rangeBetweenPosition: number;
-  rangeBetweenLength: number;
+  handleFromPosition: number;
+  handleToPosition: number;
+  tooltipFromPosition: number;
+  tooltipToPosition: number;
+  tooltipFromValue: number | string;
+  tooltipToValue: number | string;
+  rangePosition: number;
+  rangeLength: number;
   scalePositionParameter: string;
   scaleNumber: number;
   scaleElements: number[];
@@ -40,7 +40,7 @@ interface Config {
   isVertical: boolean;
   isTooltip: boolean;
   isMinAndMax: boolean;
-  isRangeBetween: boolean;
+  isRange: boolean;
   isScale: boolean;
   scaleNumber: number;
   isPanel: boolean;
@@ -57,7 +57,7 @@ interface UserConfig {
   isVertical?: boolean;
   isTooltip?: boolean;
   isMinAndMax?: boolean;
-  isRangeBetween?: boolean;
+  isRange?: boolean;
   isScale?: boolean;
   scaleNumber?: number;
   isPanel?: boolean;
@@ -67,7 +67,7 @@ interface State {
   isInterval: boolean;
   isTooltip: boolean;
   isMinAndMax: boolean;
-  isRangeBetween: boolean;
+  isRange: boolean;
   isScale: boolean;
   isVertical: boolean;
   isPanel: boolean;
@@ -76,9 +76,9 @@ interface State {
 interface ElementsParameters {
   sliderPosition: number;
   sliderLength: number;
-  buttonLength: number;
-  firstTooltipLength: number;
-  secondTooltipLength: number;
+  handleLength: number;
+  tooltipFromLength: number;
+  tooltipToLength: number;
   minValueLength: number;
   maxValueLength: number;
   minValueWidth: number;

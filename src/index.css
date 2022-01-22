@@ -30,7 +30,7 @@ html, body {
   cursor: pointer;
 }
 
-.js-slider__between {
+.js-slider__range {
   display: flex;
   position: absolute;
   width: 100%;
@@ -41,7 +41,7 @@ html, body {
   z-index: 1;
 }
 
-.js-slider__first-button, .js-slider__second-button {
+.js-slider__handle-from, .js-slider__handle-to {
   position: absolute;
   height: 20px;
   width: 20px;
@@ -72,7 +72,7 @@ html, body {
   cursor: pointer;
 }
 
-.js-slider__first-tooltip, .js-slider__second-tooltip {
+.js-slider__tooltip-from, .js-slider__tooltip-to {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -126,7 +126,7 @@ html, body {
 
 .js-slider__vertical-input,
 .js-slider__tooltip-input,
-.js-slider__range-between-input,
+.js-slider__range-input,
 .js-slider__scale-input
 {
   margin: 5px;
@@ -239,8 +239,8 @@ html, body {
 
 @media (hover: none) and (pointer: coarse) {
   .js-slider__stripe,
-  .js-slider__first-button, 
-  .js-slider__second-button,
+  .js-slider__button-from, 
+  .js-slider__button-to,
   .js-slider__min-value, 
   .js-slider__max-value,
   .js-slider__min-button,

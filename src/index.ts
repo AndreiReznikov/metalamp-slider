@@ -57,7 +57,7 @@ $('.js-slider').mySlider({
   isTooltip: true,
   isVertical: false,
   isMinAndMax: true,
-  isRangeBetween: true,
+  isRange: true,
   isPanel: true,
   isScale: true,
   keyboard: true,

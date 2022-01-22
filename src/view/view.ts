@@ -4,32 +4,32 @@ import { Options, State, ElementsParameters } from '../interfaces/interfaces';
 export class View {
 
   tooltips: Tooltips;
-  firstButton: FirstButton;
-  secondButton: SecondButton;
-  rangeBetween: RangeBetween;
+  handleFrom: HandleFrom;
+  handleTo: HandleTo;
+  range: Range;
   slider: Slider;
   minAndMaxValues: MinAndMaxValues;
   scale: Scale;
   panel: Panel;
   $this: JQuery<HTMLElement>;
   $slider: JQuery<HTMLElement>;
-  $firstButton: JQuery<HTMLElement>;
-  $secondButton: JQuery<HTMLElement>;
-  $rangeBetween: JQuery<HTMLElement>;
+  $handleFrom: JQuery<HTMLElement>;
+  $handleTo: JQuery<HTMLElement>;
+  $range: JQuery<HTMLElement>;
   $minValue: JQuery<HTMLElement>;
   $maxValue: JQuery<HTMLElement>;
   $scaleContainer: JQuery<HTMLElement>;
-  $firstTooltip: JQuery<HTMLElement>;
-  $secondTooltip: JQuery<HTMLElement>;
+  $tooltipFrom: JQuery<HTMLElement>;
+  $tooltipTo: JQuery<HTMLElement>;
   $panelContainer: JQuery<HTMLElement>;
   sliderWidth: number;
   sliderHeight: number;
   
   constructor (slider: JQuery<HTMLElement>) {
     this.tooltips = new Tooltips();
-    this.firstButton = new FirstButton();
-    this.secondButton = new SecondButton();
-    this.rangeBetween = new RangeBetween();
+    this.handleFrom = new HandleFrom();
+    this.handleTo = new HandleTo();
+    this.range = new Range();
     this.slider = new Slider();
     this.minAndMaxValues = new MinAndMaxValues();
     this.scale = new Scale();
@@ -37,14 +37,14 @@ export class View {
 
     this.$this = slider;
     this.$slider = this.slider.$slider.appendTo(this.$this).addClass('js-slider__stripe');;
-    this.$firstButton = this.firstButton.$firstButton.appendTo(this.$slider).addClass('js-slider__first-button');
-    this.$secondButton = this.secondButton.$secondButton.appendTo(this.$slider).addClass('js-slider__second-button');
-    this.$rangeBetween = this.rangeBetween.$rangeBetween.appendTo(this.$slider).addClass('js-slider__between');
+    this.$handleFrom = this.handleFrom.$handleFrom.appendTo(this.$slider).addClass('js-slider__handle-from');
+    this.$handleTo = this.handleTo.$handleTo.appendTo(this.$slider).addClass('js-slider__handle-to');
+    this.$range = this.range.$range.appendTo(this.$slider).addClass('js-slider__range');
     this.$minValue = this.minAndMaxValues.$minValue.appendTo(this.$slider).addClass('js-slider__min-value');
     this.$maxValue = this.minAndMaxValues.$maxValue.appendTo(this.$slider).addClass('js-slider__max-value');
     this.$scaleContainer = this.scale.$scaleContainer.appendTo(this.$slider).addClass('js-slider__scale-container');
-    this.$firstTooltip = this.tooltips.$firstTooltip.appendTo(this.$slider).addClass('js-slider__first-tooltip');
-    this.$secondTooltip = this.tooltips.$secondTooltip.appendTo(this.$slider).addClass('js-slider__second-tooltip');   
+    this.$tooltipFrom = this.tooltips.$tooltipFrom.appendTo(this.$slider).addClass('js-slider__tooltip-from');
+    this.$tooltipTo = this.tooltips.$tooltipTo.appendTo(this.$slider).addClass('js-slider__tooltip-to');   
     this.$panelContainer = this.panel.$panelContainer.appendTo(this.$slider).addClass('js-slider__panel-container');
        
     this.sliderWidth = parseInt(this.$this.parent().css('width'));
@@ -53,11 +53,11 @@ export class View {
 
   public initView = (initialOptions: State): void => {
     
-    if (initialOptions.isRangeBetween) {
-      this.$rangeBetween.css('display', 'block');
+    if (initialOptions.isRange) {
+      this.$range.css('display', 'block');
     }
     else {
-      this.$rangeBetween.css('display', 'none');
+      this.$range.css('display', 'none');
     }
 
     if (initialOptions.isMinAndMax) {
@@ -77,25 +77,25 @@ export class View {
     }       
 
     if (initialOptions.isInterval) {
-      this.$secondButton.css('display', 'block');
+      this.$handleTo.css('display', 'block');
     }
     else {
-      this.$secondButton.css('display', 'none');
+      this.$handleTo.css('display', 'none');
     }
 
     if (initialOptions.isTooltip) {
-      this.$firstTooltip.css('display', 'flex');
+      this.$tooltipFrom.css('display', 'flex');
 
       if (initialOptions.isInterval) {
-        this.$secondTooltip.css('display', 'flex');
+        this.$tooltipTo.css('display', 'flex');
       }
       else {
-        this.$secondTooltip.css('display', 'none');
+        this.$tooltipTo.css('display', 'none');
       }
     }
     else {
-      this.$firstTooltip.css('display', 'none');
-      this.$secondTooltip.css('display', 'none');
+      this.$tooltipFrom.css('display', 'none');
+      this.$tooltipTo.css('display', 'none');
     }
 
     if (initialOptions.isPanel) {
@@ -111,31 +111,31 @@ export class View {
   private setPlane = (isVertical: boolean): void => {
     this.$this.parent().css({'width': 0, 'height': 0});
     this.$this.css({'width': 0, 'height': 0});
-    this.$firstButton.css({'top': 0, 'left': 0, 'transform': 'translate(0, 0)'});
-    this.$secondButton.css({'top': 0, 'left': 0, 'transform': 'translate(0, 0)'}); 
-    this.$rangeBetween.css({'width': 0, 'height': 0, 'top': 0, 'left': 0});
-    this.$firstTooltip.css({'left': 0, 'bottom': 0, 'top': 0});
-    this.$secondTooltip.css({'left': 0, 'bottom': 0, 'top': 0});
+    this.$handleFrom.css({'top': 0, 'left': 0, 'transform': 'translate(0, 0)'});
+    this.$handleTo.css({'top': 0, 'left': 0, 'transform': 'translate(0, 0)'}); 
+    this.$range.css({'width': 0, 'height': 0, 'top': 0, 'left': 0});
+    this.$tooltipFrom.css({'left': 0, 'bottom': 0, 'top': 0});
+    this.$tooltipTo.css({'left': 0, 'bottom': 0, 'top': 0});
     this.$minValue.css({'left': 0, 'bottom': 0, 'top': 0});
     this.$maxValue.css({'left': 0, 'bottom': 0, 'top': 0});
     this.$scaleContainer.css({'right': 0, 'top': 0, 'width': 0, 'height': 0});
     this.$panelContainer.css({'right': '', 'top': ''});
 
-    const firstButtonWidth: number = parseInt(this.$firstButton.css('width'));
-    const firstButtonHeight: number = parseInt(this.$firstButton.css('height'));
-    const secondButtonWidth: number = parseInt(this.$secondButton.css('width'));
-    const secondButtonHeight: number = parseInt(this.$secondButton.css('height'));
+    const handleFromWidth: number = parseInt(this.$handleFrom.css('width'));
+    const handleFromHeight: number = parseInt(this.$handleFrom.css('height'));
+    const handleToWidth: number = parseInt(this.$handleTo.css('width'));
+    const handleToHeight: number = parseInt(this.$handleTo.css('height'));
   
     if (isVertical) {
       this.$this.parent().css({'width': this.sliderHeight, 'height': this.sliderWidth});
       this.$this.css({'width': this.sliderHeight, 'height': this.sliderWidth});
-      this.$firstButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
-      this.$secondButton.css({'left': '50%', 'transform': 'translateX(-50%)'});
-      this.$rangeBetween.css({'width': '100%'});
-      this.$firstTooltip.css({'left': firstButtonWidth});
-      this.$secondTooltip.css({'left': secondButtonWidth}); 
-      this.$minValue.css({'left': firstButtonWidth});
-      this.$maxValue.css({'left': firstButtonWidth});
+      this.$handleFrom.css({'left': '50%', 'transform': 'translateX(-50%)'});
+      this.$handleTo.css({'left': '50%', 'transform': 'translateX(-50%)'});
+      this.$range.css({'width': '100%'});
+      this.$tooltipFrom.css({'left': handleFromWidth});
+      this.$tooltipTo.css({'left': handleToWidth}); 
+      this.$minValue.css({'left': handleFromWidth});
+      this.$maxValue.css({'left': handleFromWidth});
       this.$panelContainer.css({'transform': 'translateX(0)', 'top': 0, 'width': '150px'});
 
       return;
@@ -143,13 +143,13 @@ export class View {
 
     this.$this.parent().css({'width': this.sliderWidth, 'height': this.sliderHeight});
     this.$this.css({'width': this.sliderWidth, 'height': this.sliderHeight});
-    this.$firstButton.css({'top': '50%', 'transform': 'translateY(-50%)'});
-    this.$secondButton.css({'top': '50%', 'transform': 'translateY(-50%)'}); 
-    this.$rangeBetween.css({'height': '100%'});  
-    this.$firstTooltip.css({'bottom': firstButtonHeight, 'top': ''});
-    this.$secondTooltip.css({'bottom': secondButtonHeight, 'top': ''});
-    this.$minValue.css({'bottom': firstButtonHeight, 'top': ''});
-    this.$maxValue.css({'bottom': firstButtonHeight, 'top': ''});
+    this.$handleFrom.css({'top': '50%', 'transform': 'translateY(-50%)'});
+    this.$handleTo.css({'top': '50%', 'transform': 'translateY(-50%)'}); 
+    this.$range.css({'height': '100%'});  
+    this.$tooltipFrom.css({'bottom': handleFromHeight, 'top': ''});
+    this.$tooltipTo.css({'bottom': handleToHeight, 'top': ''});
+    this.$minValue.css({'bottom': handleFromHeight, 'top': ''});
+    this.$maxValue.css({'bottom': handleFromHeight, 'top': ''});
     this.$panelContainer.css({'left': '50%','transform': 'translateX(-50%)', 'width': '650px'});
   }
 
@@ -158,9 +158,9 @@ export class View {
     const elementsParameters: ElementsParameters = {
       sliderPosition: this.getCoords(this.$slider, isVertical), 
       sliderLength: parseInt(this.$slider.css(lengthParameter)), 
-      buttonLength: parseInt(this.$firstButton.css(lengthParameter)),
-      firstTooltipLength: parseInt(this.$firstTooltip.css(lengthParameter)),
-      secondTooltipLength: parseInt(this.$secondTooltip.css(lengthParameter)),
+      handleLength: parseInt(this.$handleFrom.css(lengthParameter)),
+      tooltipFromLength: parseInt(this.$tooltipFrom.css(lengthParameter)),
+      tooltipToLength: parseInt(this.$tooltipTo.css(lengthParameter)),
       minValueLength: parseInt(this.$minValue.css(lengthParameter)),
       maxValueLength: parseInt(this.$maxValue.css(lengthParameter)),
       minValueWidth: parseInt(this.$minValue.css('width')),
@@ -185,52 +185,52 @@ class Slider {
   $slider: JQuery<HTMLElement> = $('<div/>');
 }
 
-class RangeBetween {
-  $rangeBetween: JQuery<HTMLElement> = $('<div/>');
+class Range {
+  $range: JQuery<HTMLElement> = $('<div/>');
 
-  public setRangeBetweenPosition = (options: Options): void => {
-    this.$rangeBetween.css(options.positionParameter, options.rangeBetweenPosition);
+  public setRangePosition = (options: Options): void => {
+    this.$range.css(options.positionParameter, options.rangePosition);
   }
 
-  public setRangeBetweenLength = (options: Options): void => {
-    this.$rangeBetween.css(options.lengthParameter, options.rangeBetweenLength);
-  }
-}
-
-class FirstButton {
-  $firstButton: JQuery<HTMLElement> = $('<button/>');
-
-  public setFirstButtonPosition = (options: Options): void => {
-    this.$firstButton.css(options.positionParameter, options.firstButtonPosition);
+  public setRangeLength = (options: Options): void => {
+    this.$range.css(options.lengthParameter, options.rangeLength);
   }
 }
 
-class SecondButton {
-  $secondButton: JQuery<HTMLElement> = $('<button/>');
+class HandleFrom {
+  $handleFrom: JQuery<HTMLElement> = $('<div/>');
 
-  public setSecondButtonPosition = (options: Options): void => {
-    this.$secondButton.css(options.positionParameter, options.secondButtonPosition);
+  public setHandleFromPosition = (options: Options): void => {
+    this.$handleFrom.css(options.positionParameter, options.handleFromPosition);
+  }
+}
+
+class HandleTo {
+  $handleTo: JQuery<HTMLElement> = $('<div/>');
+
+  public setHandleToPosition = (options: Options): void => {
+    this.$handleTo.css(options.positionParameter, options.handleToPosition);
   }
 }
 
 class Tooltips {
-  $firstTooltip: JQuery<HTMLElement> = $('<div/>');
-  $secondTooltip: JQuery<HTMLElement> = $('<div/>');
+  $tooltipFrom: JQuery<HTMLElement> = $('<div/>');
+  $tooltipTo: JQuery<HTMLElement> = $('<div/>');
 
-  public setFirstTooltipPosition = (options: Options): void => {
-    this.$firstTooltip.css(options.positionParameter, options.firstTooltipPosition);
+  public setTooltipFromPosition = (options: Options): void => {
+    this.$tooltipFrom.css(options.positionParameter, options.tooltipFromPosition);
   }
 
-  public setFirstTooltipValue = (options: Options): void => {
-    this.$firstTooltip.html(`${options.firstTooltipValue}`)
+  public setTooltipFromValue = (options: Options): void => {
+    this.$tooltipFrom.html(`${options.tooltipFromValue}`)
   }
 
-  public setSecondTooltipPosition = (options: Options): void => {
-    this.$secondTooltip.css(options.positionParameter, options.secondTooltipPosition);
+  public setTooltipToPosition = (options: Options): void => {
+    this.$tooltipTo.css(options.positionParameter, options.tooltipToPosition);
   }
 
-  public setSecondTooltipValue = (options: Options): void => {
-    this.$secondTooltip.html(`${options.secondTooltipValue}`)
+  public setTooltipToValue = (options: Options): void => {
+    this.$tooltipTo.html(`${options.tooltipToValue}`)
   }
 }
 
@@ -281,7 +281,7 @@ class Scale {
 
     const maxScaleElementsWidth: number = Math.max(...scaleElementsWidths);
 
-    this.$scaleContainer.css(options.scalePositionParameter, options.scalePositionParameter === 'right' ? maxScaleElementsWidth + options.buttonLength : options.buttonLength);
+    this.$scaleContainer.css(options.scalePositionParameter, options.scalePositionParameter === 'right' ? maxScaleElementsWidth + options.handleLength : options.handleLength);
   }
 
   public setScaleElementsValues = (options: Options): void => {
@@ -343,10 +343,10 @@ class Panel {
     $customTooltipsToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$tooltipsToggleContainer);
     $toggleTooltipsText = $('<span/>').html('TOOLTIPS').addClass('js-slider__toggle-text').appendTo(this.$tooltipsToggleContainer);
 
-    $rangeBetweenToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
-    $rangeBetweenToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$rangeBetweenToggleContainer);
-    $customRangeBetweenToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$rangeBetweenToggleContainer);
-    $toggleRangeBetweenText = $('<span/>').html('RANGE').addClass('js-slider__toggle-text').appendTo(this.$rangeBetweenToggleContainer);
+    $rangeToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
+    $rangeToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$rangeToggleContainer);
+    $customRangeToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$rangeToggleContainer);
+    $toggleRangeText = $('<span/>').html('RANGE').addClass('js-slider__toggle-text').appendTo(this.$rangeToggleContainer);
 
     $scaleToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
     $scaleToogle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$scaleToggleContainer);

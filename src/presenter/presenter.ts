@@ -4,8 +4,8 @@ import { View } from '../view/view';
 
 class Presenter {
     
-  model;
-  view;
+  model: Model;
+  view: View;
 
   constructor(model: Model, view: View) {
     this.model = model;
@@ -15,94 +15,15 @@ class Presenter {
     this.model.observer.addObserver(this.updateView);
     this.model.observer.addObserver(this.initPanel);
 
-    this.view.panel.$panelContainer.on('pointerdown', (event: JQuery.TriggeredEvent) => event.stopPropagation());
-    this.view.panel.$minInput.on('change', this.setMin);
-    this.view.panel.$maxInput.on('change', this.setMax);
-    this.view.panel.$fromInput.on('change', this.setFrom);
-    this.view.panel.$toInput.on('change', this.setTo);
-    this.view.panel.$stepInput.on('change', this.setStep);
-    this.view.panel.$intervalToggle.on('click', this.toggleInterval);
-    this.view.panel.$verticalToggle.on('click', this.toggleVertical);
-    this.view.panel.$tooltipsToggle.on('click', this.toggleTooltip);
-    this.view.panel.$rangeBetweenToggle.on('click', this.toggleRangeBetween);
-    this.view.panel.$scaleToogle.on('click', this.toggleScale);
-
-    this.view.$firstButton.on('pointerdown', (event: JQuery.TriggeredEvent) => {
-      const shiftAxis1 = this.model.calculateShiftAxis1(event);
-      
-      const moveFirstButton = (event: JQuery.TriggeredEvent): void => {
-        if (shiftAxis1 === undefined) return;
-
-        this.model.calculateFirstButtonPositionWhileMoving(event, shiftAxis1);
-      };
-
-      $(document).on('pointermove', moveFirstButton);
-      $(document).on('pointerup', () => $(document).off('pointermove', moveFirstButton));
-    });
-
-    this.view.$secondButton.on('pointerdown', (event: JQuery.TriggeredEvent) => {
-      const shiftAxis2 = this.model.calculateShiftAxis2(event);
-      
-      const moveSecondButton = (event: JQuery.TriggeredEvent): void => {
-        if (shiftAxis2 === undefined) return;
-
-        this.model.calculateSecondButtonPositionWhileMoving(event, shiftAxis2);
-      };
-
-      $(document).on('pointermove', moveSecondButton);
-      $(document).on('pointerup', () => $(document).off('pointermove', moveSecondButton));
-    });
-
-    this.view.$firstButton.on('focusin', (event: JQuery.FocusInEvent) => {   
-      const moveFirstButtonAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-        this.model.calculateFirstButtonPositionAfterKeydown(event);
-      }
-
-      $(event.currentTarget).on('keydown', moveFirstButtonAfterKeydown);
-      $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveFirstButtonAfterKeydown));
-    });
-
-    this.view.$secondButton.on('focusin', (event: JQuery.FocusInEvent) => {   
-      const moveSecondButtonAfterKeydown = (event: JQuery.KeyDownEvent) => {
-        this.model.calculateSecondButtonPositionAfterKeydown(event);
-      }
-
-      $(event.currentTarget).on('keydown', moveSecondButtonAfterKeydown);
-      $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveSecondButtonAfterKeydown));
-    });
-
-    this.view.$slider.on('pointerdown', this.model.calculateFirstButtonPositionAfterSliderOnDown);
-    this.view.$slider.on('pointerdown', this.model.calculateSecondButtonPositionAfterSliderOnDown);
-    this.view.$minValue.on('pointerdown', this.model.calculateFirstButtonPositionAfterMinValueOnDown);
-    this.view.$maxValue.on('pointerdown', this.model.calculateFirstButtonPositionAfterMaxValueOnDown);
-    this.view.$maxValue.on('pointerdown', this.model.calculateSecondButtonPositionAfterMaxValueOnDown);
-    
-    this.view.$scaleContainer.on('pointerdown', (event: JQuery.TriggeredEvent) => {
-      if (!('target' in event)) return;
-      if (!event.target) return;
-
-      const $target: JQuery<EventTarget> = $(event.target);
-      const isScaleElementOnDown: boolean = $target.hasClass('js-slider__scale-element');
-      const scaleElementPosition: number = parseInt(`${$target.css(this.model.positionParameter)}`);
-      const scaleElementLength: number = parseInt(`${$target.css(this.model.lengthParameter)}`);
-      const scaleElementValue: string = $target.html();
-      
-      const scaleElementOptions = {
-        isScaleElementOnDown: isScaleElementOnDown,
-        scaleElementPosition: scaleElementPosition,
-        scaleElementLength: scaleElementLength,
-        scaleElementValue: scaleElementValue
-      }
-
-      this.model.calculateButtonPositionAfterScaleOnDown(event, scaleElementOptions);
-    });
+    this.eventManager();
+    this.panelEventManager();
   }
 
   private init = (): void => {
     this.view.initView(this.model.getState());
     this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, this.model.getOptions().lengthParameter));
     this.model.validateInitialValues();
-    this.model.calculateInitialButtonsPosition();
+    this.model.calculateInitialHandlesPosition();
     this.model.calculateInitialValues();
     this.updateView(this.model.getOptions());
     this.model.calculatePanelPosition();
@@ -112,14 +33,14 @@ class Presenter {
   }
 
   private updateView = (options: Options): void => {
-    this.view.firstButton.setFirstButtonPosition(options);
-    this.view.secondButton.setSecondButtonPosition(options);
-    this.view.tooltips.setFirstTooltipValue(options);
-    this.view.tooltips.setSecondTooltipValue(options);
-    this.view.tooltips.setFirstTooltipPosition(options);
-    this.view.tooltips.setSecondTooltipPosition(options);
-    this.view.rangeBetween.setRangeBetweenPosition(options);
-    this.view.rangeBetween.setRangeBetweenLength(options);
+    this.view.handleFrom.setHandleFromPosition(options);
+    this.view.handleTo.setHandleToPosition(options);
+    this.view.tooltips.setTooltipFromValue(options);
+    this.view.tooltips.setTooltipToValue(options);
+    this.view.tooltips.setTooltipFromPosition(options);
+    this.view.tooltips.setTooltipToPosition(options);
+    this.view.range.setRangePosition(options);
+    this.view.range.setRangeLength(options);
     this.view.minAndMaxValues.setMinAndMaxValues(options);
     this.view.minAndMaxValues.setMinAndMaxPosition(options);
     this.view.minAndMaxValues.showMinAndMax(options);
@@ -142,8 +63,93 @@ class Presenter {
     this.view.panel.$intervalToggle.prop('checked', this.model.isInterval ? true : false);
     this.view.panel.$verticalToggle.prop('checked', this.model.isVertical ? true : false);
     this.view.panel.$tooltipsToggle.prop('checked', this.model.isTooltip ? true : false);
-    this.view.panel.$rangeBetweenToggle.prop('checked', this.model.isRangeBetween ? true : false);
+    this.view.panel.$rangeToggle.prop('checked', this.model.isRange ? true : false);
     this.view.panel.$scaleToogle.prop('checked', this.model.isScale ? true : false);
+  }
+
+  private eventManager = (): void => {
+    this.view.$handleFrom.on('pointerdown', (event: JQuery.TriggeredEvent) => {
+      const shiftAxis1 = this.model.calculateShiftAxis1(event);
+      
+      const moveHandleFrom = (event: JQuery.TriggeredEvent): void => {
+        if (shiftAxis1 === undefined) return;
+
+        this.model.calculateHandleFromPositionWhileMoving(event, shiftAxis1);
+      };
+
+      $(document).on('pointermove', moveHandleFrom);
+      $(document).on('pointerup', () => $(document).off('pointermove', moveHandleFrom));
+    });
+
+    this.view.$handleTo.on('pointerdown', (event: JQuery.TriggeredEvent) => {
+      const shiftAxis2 = this.model.calculateShiftAxis2(event);
+      
+      const moveHandleTo = (event: JQuery.TriggeredEvent): void => {
+        if (shiftAxis2 === undefined) return;
+
+        this.model.calculateHandleToPositionWhileMoving(event, shiftAxis2);
+      };
+
+      $(document).on('pointermove', moveHandleTo);
+      $(document).on('pointerup', () => $(document).off('pointermove', moveHandleTo));
+    });
+
+    this.view.$handleFrom.on('focusin', (event: JQuery.FocusInEvent) => {   
+      const moveHandleFromAfterKeydown = (event: JQuery.KeyDownEvent): void => {
+        this.model.calculateHandleFromPositionAfterKeydown(event);
+      }
+
+      $(event.currentTarget).on('keydown', moveHandleFromAfterKeydown);
+      $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveHandleFromAfterKeydown));
+    });
+
+    this.view.$handleTo.on('focusin', (event: JQuery.FocusInEvent) => {   
+      const moveHandleToAfterKeydown = (event: JQuery.KeyDownEvent) => {
+        this.model.calculateHandleToPositionAfterKeydown(event);
+      }
+
+      $(event.currentTarget).on('keydown', moveHandleToAfterKeydown);
+      $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveHandleToAfterKeydown));
+    });
+
+    this.view.$slider.on('pointerdown', this.model.calculateHandleFromPositionAfterSliderOnDown);
+    this.view.$slider.on('pointerdown', this.model.calculateHandleToPositionAfterSliderOnDown);
+    this.view.$minValue.on('pointerdown', this.model.calculateHandleFromPositionAfterMinValueOnDown);
+    this.view.$maxValue.on('pointerdown', this.model.calculateHandleFromPositionAfterMaxValueOnDown);
+    this.view.$maxValue.on('pointerdown', this.model.calculateHandleToPositionAfterMaxValueOnDown);
+    
+    this.view.$scaleContainer.on('pointerdown', (event: JQuery.TriggeredEvent) => {
+      if (!event.target) return;
+
+      const $target: JQuery<EventTarget> = $(event.target);
+      const isScaleElementOnDown: boolean = $target.hasClass('js-slider__scale-element');
+      const scaleElementPosition: number = parseInt(`${$target.css(this.model.positionParameter)}`);
+      const scaleElementLength: number = parseInt(`${$target.css(this.model.lengthParameter)}`);
+      const scaleElementValue: string = $target.html();
+      
+      const scaleElementOptions = {
+        isScaleElementOnDown: isScaleElementOnDown,
+        scaleElementPosition: scaleElementPosition,
+        scaleElementLength: scaleElementLength,
+        scaleElementValue: scaleElementValue
+      }
+
+      this.model.calculateHandlePositionAfterScaleOnDown(event, scaleElementOptions);
+    });
+  }
+
+  private panelEventManager = (): void => {
+    this.view.panel.$panelContainer.on('pointerdown', (event: JQuery.TriggeredEvent) => event.stopPropagation());
+    this.view.panel.$minInput.on('change', this.setMin);
+    this.view.panel.$maxInput.on('change', this.setMax);
+    this.view.panel.$fromInput.on('change', this.setFrom);
+    this.view.panel.$toInput.on('change', this.setTo);
+    this.view.panel.$stepInput.on('change', this.setStep);
+    this.view.panel.$intervalToggle.on('click', this.toggleInterval);
+    this.view.panel.$verticalToggle.on('click', this.toggleVertical);
+    this.view.panel.$tooltipsToggle.on('click', this.toggleTooltip);
+    this.view.panel.$rangeToggle.on('click', this.toggleRange);
+    this.view.panel.$scaleToogle.on('click', this.toggleScale);
   }
 
   private setMin = (event: JQuery.ChangeEvent): void => {
@@ -184,7 +190,7 @@ class Presenter {
     this.model.from = parseFloat(`${from}`);   
   
     this.model.validateInitialValues();
-    this.model.calculateInitialFirstButtonPosition();
+    this.model.calculateInitialHandleFromPosition();
     this.model.calculateInitialValues();
     this.initPanel();
 
@@ -203,7 +209,7 @@ class Presenter {
     this.model.to = parseFloat(`${to}`);
     
     this.model.validateInitialValues();
-    this.model.calculateInitialSecondButtonPosition();
+    this.model.calculateInitialHandleToPosition();
     this.model.calculateInitialValues();
     this.initPanel();
 
@@ -240,7 +246,7 @@ class Presenter {
 
     this.view.initView(this.model.getState());
     this.model.validateInitialValues();
-    this.model.calculateInitialSecondButtonPosition();
+    this.model.calculateInitialHandleToPosition();
     this.model.calculateInitialValues();
 
 
@@ -261,12 +267,12 @@ class Presenter {
     this.model.setConfigToLocalStorage();
   }
 
-  private toggleRangeBetween = (event: JQuery.ClickEvent): void => {
+  private toggleRange = (event: JQuery.ClickEvent): void => {
     if ($(event.currentTarget).is(':checked')) {
-      this.model.isRangeBetween = true;
+      this.model.isRange = true;
     }
     else {
-      this.model.isRangeBetween  = false;
+      this.model.isRange  = false;
     }
 
     this.view.initView(this.model.getState());
