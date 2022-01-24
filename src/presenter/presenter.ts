@@ -1,26 +1,33 @@
 import { Options } from '../interfaces/interfaces';
-import { Model } from '../model/model';
-import { View } from '../view/view';
+import Model from '../model/model';
+import View from '../view/view';
 
 class Presenter {
   model: Model;
 
   view: View;
 
+  isValueANumberAndFullValue: boolean;
+
   constructor(model: Model, view: View) {
     this.model = model;
     this.view = view;
+    this.isValueANumberAndFullValue = false;
 
-    this.init();
     this.model.observer.addObserver(this.updateView);
 
     this.launchEventManager();
     this.launchPanelEventManager();
   }
 
-  private init = (): void => {
+  public init = (): void => {
     this.view.initView(this.model.getOptions());
-    this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, this.model.getOptions().lengthParameter));
+    this.model.setElementsParameters(
+      this.view.getElementsParameters(
+        this.model.isVertical,
+        this.model.getOptions().lengthParameter,
+      ),
+    );
     this.model.validateInitialValues();
     this.model.calculateInitialHandlesPosition();
     this.model.calculateRangePosition();
@@ -56,7 +63,12 @@ class Presenter {
     this.view.scale.setScalePosition(options);
     this.view.panel.setPanelPosition(options);
     this.view.panel.setPanelValues(options);
-    this.model.setElementsParameters(this.view.getElementsParameters(this.model.isVertical, options.lengthParameter));
+    this.model.setElementsParameters(
+      this.view.getElementsParameters(
+        this.model.isVertical,
+        this.model.getOptions().lengthParameter,
+      ),
+    );
   };
 
   private launchEventManager = (): void => {
@@ -129,8 +141,8 @@ class Presenter {
 
       const $target: JQuery<EventTarget> = $(event.target);
       const isScaleElementOnDown: boolean = $target.hasClass('js-slider__scale-element');
-      const scaleElementPosition: number = parseInt(`${$target.css(this.model.positionParameter)}`);
-      const scaleElementLength: number = parseInt(`${$target.css(this.model.lengthParameter)}`);
+      const scaleElementPosition: number = parseInt(`${$target.css(this.model.positionParameter)}`, 10);
+      const scaleElementLength: number = parseInt(`${$target.css(this.model.lengthParameter)}`, 10);
       const scaleElementValue: string = $target.html();
 
       const scaleElementOptions = {
@@ -147,8 +159,8 @@ class Presenter {
     this.view.$handleTo.on('pointerdown', handleHandleToPosition);
     this.view.$handleFrom.on('focusin', handleHandleFromPositionAfterKeydown);
     this.view.$handleTo.on('focusin', handleHandleToPositionAfterKeydown);
-    this.view.$slider.on('pointerdown', handleHandleFromPositionAfterSliderOnDown);
-    this.view.$slider.on('pointerdown', handleHandleToPositionAfterSliderOnDown);
+    this.view.$stripe.on('pointerdown', handleHandleFromPositionAfterSliderOnDown);
+    this.view.$stripe.on('pointerdown', handleHandleToPositionAfterSliderOnDown);
     this.view.$minValue.on('pointerdown', handleHandleFromPositionAfterMinValueOnDown);
     this.view.$maxValue.on('pointerdown', handleHandleFromPositionAfterMaxValueOnDown);
     this.view.$maxValue.on('pointerdown', handleHandleToPositionAfterMaxValueOnDown);
@@ -173,8 +185,8 @@ class Presenter {
 
   private setMin = (event: JQuery.ChangeEvent): void => {
     const minValue = $(event.currentTarget).val();
-    
-    if (this.isValueANumberAndFullValue(minValue)) {
+
+    if (this.checkIsValueANumberAndFullValue(minValue)) {
       this.view.panel.setPanelValues(this.model.getOptions());
       return;
     }
@@ -187,7 +199,7 @@ class Presenter {
   private setMax = (event: JQuery.ChangeEvent): void => {
     const maxValue = $(event.currentTarget).val();
 
-    if (this.isValueANumberAndFullValue(maxValue)) {
+    if (this.checkIsValueANumberAndFullValue(maxValue)) {
       this.view.panel.setPanelValues(this.model.getOptions());
       return;
     }
@@ -200,7 +212,7 @@ class Presenter {
   private setFrom = (event: JQuery.ChangeEvent): void => {
     const from = $(event.currentTarget).val();
 
-    if (this.isValueANumberAndFullValue(from)) {
+    if (this.checkIsValueANumberAndFullValue(from)) {
       this.view.panel.setPanelValues(this.model.getOptions());
       return;
     }
@@ -220,7 +232,7 @@ class Presenter {
   private setTo = (event: JQuery.ChangeEvent): void => {
     const to = $(event.currentTarget).val();
 
-    if (this.isValueANumberAndFullValue(to)) {
+    if (this.checkIsValueANumberAndFullValue(to)) {
       this.view.panel.setPanelValues(this.model.getOptions());
       return;
     }
@@ -240,7 +252,7 @@ class Presenter {
   private setStep = (event: JQuery.ChangeEvent): void => {
     const step = $(event.currentTarget).val();
 
-    if (this.isValueANumberAndFullValue(step)) {
+    if (this.checkIsValueANumberAndFullValue(step)) {
       this.view.panel.setPanelValues(this.model.getOptions());
       return;
     }
@@ -317,11 +329,13 @@ class Presenter {
     this.init();
   };
 
-  private isValueANumberAndFullValue = (value: string | number | string[] | undefined): boolean => {
-    const isValueANumberAndFullValue: boolean = typeof parseFloat(`${value}`) !== 'number' || value === '';
+  private checkIsValueANumberAndFullValue = (
+    value: string | number | string[] | undefined,
+  ): boolean => {
+    this.isValueANumberAndFullValue = typeof parseFloat(`${value}`) !== 'number' || value === '';
 
-    return isValueANumberAndFullValue;
-  }
+    return this.isValueANumberAndFullValue;
+  };
 }
 
-export { Presenter };
+export default Presenter;

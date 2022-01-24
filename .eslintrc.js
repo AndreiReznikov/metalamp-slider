@@ -1,27 +1,32 @@
+
 module.exports = {
     "env": {
         "browser": true,
-        "commonjs": true,
-        "es2021": true
+        "node": true,
+        "es2021": true,
+        "jquery": true
     },
     "globals": {
         "NodeJS": true,
         "JQuery": true,
-        "$": "readonly"
+        "$": 'readonly'
     },
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "airbnb"
+        'airbnb',
+        'airbnb-typescript/base',
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": "latest"
+        "ecmaVersion": "latest",
+        project: './tsconfig.json'
     },
     "plugins": [
         "@typescript-eslint"
     ],
     "rules": {
-        'linebreak-style': ['error', process.platform === 'win32' ? 'windows' : 'unix']
-    }
+        'linebreak-style': ['error', process.platform === 'win32' ? 'windows' : 'unix'],
+
+    },
 }
