@@ -1,4 +1,3 @@
-
 module.exports = {
     "env": {
         "browser": true,
@@ -20,13 +19,13 @@ module.exports = {
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": "latest",
-        project: './tsconfig.json'
+        "project": "./tsconfig.json"
     },
     "plugins": [
         "@typescript-eslint"
     ],
     "rules": {
         'linebreak-style': ['error', process.platform === 'win32' ? 'windows' : 'unix'],
-
+        "@typescript-eslint/no-shadow": "off",
     },
 }

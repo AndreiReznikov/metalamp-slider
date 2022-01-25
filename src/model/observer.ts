@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { Options } from '../interfaces/interfaces';
 
 class Observer {
