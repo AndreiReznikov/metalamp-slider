@@ -3,12 +3,13 @@ module.exports = {
         "browser": true,
         "node": true,
         "es2021": true,
-        "jquery": true
+        "jquery": true,
+        "jest/globals": true,
     },
     "globals": {
         "NodeJS": true,
         "JQuery": true,
-        "$": 'readonly'
+        "$": 'readonly',
     },
     "extends": [
         "eslint:recommended",
