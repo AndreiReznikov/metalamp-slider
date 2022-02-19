@@ -1,3 +1,9 @@
-test('My first test', () => {
-  expect(Math.max(2, 44, 54, 222)).toBe(222);
+import Model from './model/model';
+
+describe('validateInitalValues', () => {
+  const model = new Model();
+
+  test('defines a function', () => {
+    expect(typeof model.validateInitialValues).toBe('function');
+  });
 });
