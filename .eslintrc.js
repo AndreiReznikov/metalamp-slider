@@ -20,10 +20,11 @@ module.exports = {
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": "latest",
-        "project": "./tsconfig.json"
+        "project": "./tsconfig.json",
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "jest",
     ],
     "rules": {
         'linebreak-style': ['error', process.platform === 'win32' ? 'windows' : 'unix'],

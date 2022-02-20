@@ -310,7 +310,7 @@ class Model {
     event: JQuery.TriggeredEvent,
     shiftAxis1: number,
   ): void => {
-    event.preventDefault();
+    if (event.preventDefault) event.preventDefault();
 
     if (this.checkIsWrongMouseButtonPressed(event)) return;
 
@@ -458,7 +458,7 @@ class Model {
   };
 
   public calculateHandleFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent): void => {
-    event.stopPropagation();
+    if (event.stopPropagation) event.stopPropagation();
 
     if (this.checkIsWrongMouseButtonPressed(event)) return;
 
@@ -473,7 +473,7 @@ class Model {
   };
 
   public calculateHandleFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent): void => {
-    event.stopPropagation();
+    if (event.stopPropagation) event.stopPropagation();
 
     const isWrongButtonPressedOrInterval: boolean = this.checkIsWrongMouseButtonPressed(event)
     || this.isInterval;
@@ -537,7 +537,7 @@ class Model {
   };
 
   public calculateShiftAxis2 = (event: JQuery.TriggeredEvent): number | void => {
-    event.stopPropagation();
+    if (event.stopPropagation) event.stopPropagation();
 
     const isWrongButtonPressedOrSingleHandle: boolean = this.checkIsWrongMouseButtonPressed(event)
       || !this.isInterval;
@@ -564,7 +564,7 @@ class Model {
     event: JQuery.TriggeredEvent,
     shiftAxis2: number,
   ): void => {
-    event.preventDefault();
+    if (event.preventDefault) event.preventDefault();
 
     const isWrongButtonPressedOrSingleHandle: boolean = this.checkIsWrongMouseButtonPressed(event)
       || !this.isInterval;
@@ -703,7 +703,7 @@ class Model {
   };
 
   public calculateHandleToPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent): void => {
-    event.stopPropagation();
+    if (event.stopPropagation) event.stopPropagation();
 
     if (!this.isInterval) return;
 
@@ -770,7 +770,7 @@ class Model {
       scaleElementValue: string
     },
   ): void => {
-    event.stopPropagation();
+    if (event.stopPropagation) event.stopPropagation();
 
     const isWrongMouseButtonOrWrongElement: boolean = this.checkIsWrongMouseButtonPressed(event)
       || !scaleOptions.isScaleElementOnDown;
