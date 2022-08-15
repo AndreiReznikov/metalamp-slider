@@ -310,7 +310,7 @@ class Model {
     event: JQuery.TriggeredEvent,
     shiftAxis1: number,
   ): void => {
-    if (event.preventDefault) event.preventDefault();
+    event.preventDefault();
 
     if (this.checkIsWrongMouseButtonPressed(event)) return;
 
@@ -344,8 +344,6 @@ class Model {
   };
 
   private calculateHandleFromPositionWithSetStep = (pageAxis: number): void => {
-    if (!this.isStepSet) return;
-
     const isCursorNearStepAhead: boolean = pageAxis - this.sliderPosition
       > this.handleFromPosition + this.handleLength / 2 + this.stepLength / 2;
     const isCursorNearStepBehind: boolean = pageAxis - this.sliderPosition
@@ -458,7 +456,7 @@ class Model {
   };
 
   public calculateHandleFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent): void => {
-    if (event.stopPropagation) event.stopPropagation();
+    event.stopPropagation();
 
     if (this.checkIsWrongMouseButtonPressed(event)) return;
 
@@ -473,7 +471,7 @@ class Model {
   };
 
   public calculateHandleFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent): void => {
-    if (event.stopPropagation) event.stopPropagation();
+    event.stopPropagation();
 
     const isWrongButtonPressedOrInterval: boolean = this.checkIsWrongMouseButtonPressed(event)
     || this.isInterval;
@@ -536,8 +534,8 @@ class Model {
     }
   };
 
-  public calculateShiftAxis2 = (event: JQuery.TriggeredEvent): number | void => {
-    if (event.stopPropagation) event.stopPropagation();
+  public calculateShiftAxis2 = (event: JQuery.TriggeredEvent): number | undefined => {
+    event.stopPropagation();
 
     const isWrongButtonPressedOrSingleHandle: boolean = this.checkIsWrongMouseButtonPressed(event)
       || !this.isInterval;
@@ -564,7 +562,7 @@ class Model {
     event: JQuery.TriggeredEvent,
     shiftAxis2: number,
   ): void => {
-    if (event.preventDefault) event.preventDefault();
+    event.preventDefault();
 
     const isWrongButtonPressedOrSingleHandle: boolean = this.checkIsWrongMouseButtonPressed(event)
       || !this.isInterval;
@@ -703,7 +701,7 @@ class Model {
   };
 
   public calculateHandleToPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent): void => {
-    if (event.stopPropagation) event.stopPropagation();
+    event.stopPropagation();
 
     if (!this.isInterval) return;
 
@@ -770,7 +768,7 @@ class Model {
       scaleElementValue: string
     },
   ): void => {
-    if (event.stopPropagation) event.stopPropagation();
+    event.stopPropagation();
 
     const isWrongMouseButtonOrWrongElement: boolean = this.checkIsWrongMouseButtonPressed(event)
       || !scaleOptions.isScaleElementOnDown;

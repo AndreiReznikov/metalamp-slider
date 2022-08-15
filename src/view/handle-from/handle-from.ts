@@ -1,7 +1,7 @@
 import { Options } from '../../interfaces/interfaces';
 
 class HandleFrom {
-  $handleFrom: JQuery<HTMLElement> = $('<div/>');
+  $handleFrom: JQuery<HTMLElement> = $('<button/>');
 
   public setHandleFromPosition = (options: Options): void => {
     this.$handleFrom.css(options.positionParameter, options.handleFromPosition);

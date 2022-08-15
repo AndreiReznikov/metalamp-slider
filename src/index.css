@@ -1,4 +1,7 @@
 html, body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -7,7 +10,6 @@ html, body {
 }
 
 .slider-container {
-  margin: 200px 0 0 200px;
   width: 500px;
   height: 8px;
 }
