@@ -7,9 +7,11 @@ const eventSimulation = {
   pageY: 0,
   stopPropagation: () => true,
   preventDefault: () => true,
+  keyCode: 39,
 };
 
 beforeEach(() => {
+  model.userConfig = null;
   model.isInterval = false;
   model.isVertical = false;
   model.isPanel = false;
@@ -332,6 +334,38 @@ describe('calculateHandleFromPositionAfterKeydown', () => {
   test('should return undefined', () => {
     expect(model.calculateHandleFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
   });
+
+  test('should return undefined', () => {
+    model.keyboard = true;
+    model.isStepSet = true;
+
+    const eventSimulation = {
+      keyCode: 39,
+    };
+
+    expect(model.calculateHandleFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.keyboard = true;
+    model.isStepSet = true;
+
+    const eventSimulation = {
+      keyCode: 37,
+    };
+
+    expect(model.calculateHandleFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.keyboard = true;
+
+    const eventSimulation = {
+      keyCode: 37,
+    };
+
+    expect(model.calculateHandleFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
+  });
 });
 
 describe('calculateShiftAxis2', () => {
@@ -344,6 +378,10 @@ describe('calculateShiftAxis2', () => {
 
     expect(typeof model.calculateShiftAxis2(eventSimulation)).toBe('number');
   });
+
+  test('should return number', () => {
+    expect(typeof model.calculateShiftAxis2(eventSimulation)).toBe('undefined');
+  });
 });
 
 describe('calculateHandleToPositionWhileMoving', () => {
@@ -352,6 +390,35 @@ describe('calculateHandleToPositionWhileMoving', () => {
   });
 
   test('should return undefined', () => {
+    expect(model.calculateHandleToPositionWhileMoving(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+
+    const eventSimulation = {
+      pageX: 0,
+      pageY: 0,
+      preventDefault: () => true,
+      pointerType: 'mouse',
+      buttons: 2,
+    };
+
+    expect(model.calculateHandleToPositionWhileMoving(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+    model.isStepSet = true;
+
+    const eventSimulation = {
+      pageX: 0,
+      pageY: 0,
+      preventDefault: () => true,
+      pointerType: 'mouse',
+      buttons: 2,
+    };
+
     expect(model.calculateHandleToPositionWhileMoving(eventSimulation)).toBeUndefined();
   });
 });
@@ -364,6 +431,90 @@ describe('calculateHandleToPositionAfterSliderOnDown', () => {
   test('should return undefined', () => {
     expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+
+    const eventSimulation = {
+      pageX: 0,
+      pageY: 0,
+      preventDefault: () => true,
+      pointerType: 'mouse',
+      buttons: 2,
+    };
+
+    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+    model.isStepSet = true;
+
+    const eventSimulation = {
+      pageX: 0,
+      pageY: 0,
+      preventDefault: () => true,
+      pointerType: 'mouse',
+      buttons: 2,
+    };
+
+    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+    model.isStepSet = true;
+    model.sliderPosition = 0;
+    model.handleToPosition = -1;
+    model.handleLength = -1;
+
+    const eventSimulation = {
+      pageX: 0,
+      pageY: 0,
+      preventDefault: () => true,
+      pointerType: 'mouse',
+      buttons: 2,
+    };
+
+    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+    model.isStepSet = true;
+    model.sliderPosition = 0;
+    model.handleToPosition = 2;
+    model.handleFromPosition = 0;
+    model.handleLength = 0;
+
+    const eventSimulation = {
+      pageX: 1,
+      pageY: 1,
+      preventDefault: () => true,
+      pointerType: 'mouse',
+      buttons: 2,
+    };
+
+    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+    model.sliderPosition = 0;
+    model.handleToPosition = 2;
+    model.handleFromPosition = 0;
+    model.handleLength = 0;
+
+    const eventSimulation = {
+      pageX: 1,
+      pageY: 1,
+      preventDefault: () => true,
+      pointerType: 'mouse',
+      buttons: 2,
+    };
+
+    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+  });
 });
 
 describe('calculateHandleToPositionAfterMaxValueOnDown', () => {
@@ -374,6 +525,12 @@ describe('calculateHandleToPositionAfterMaxValueOnDown', () => {
   test('should return undefined', () => {
     expect(model.calculateHandleToPositionAfterMaxValueOnDown(eventSimulation)).toBeUndefined();
   });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+
+    expect(model.calculateHandleToPositionAfterMaxValueOnDown(eventSimulation)).toBeUndefined();
+  });
 });
 
 describe('calculateHandleToPositionAfterKeydown', () => {
@@ -382,6 +539,41 @@ describe('calculateHandleToPositionAfterKeydown', () => {
   });
 
   test('should return undefined', () => {
+    expect(model.calculateHandleToPositionAfterKeydown(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+    model.keyboard = true;
+    model.isStepSet = true;
+
+    const eventSimulation = {
+      keyCode: 39,
+    };
+
+    expect(model.calculateHandleToPositionAfterKeydown(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+    model.keyboard = true;
+    model.isStepSet = true;
+
+    const eventSimulation = {
+      keyCode: 37,
+    };
+
+    expect(model.calculateHandleToPositionAfterKeydown(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+    model.keyboard = true;
+
+    const eventSimulation = {
+      keyCode: 37,
+    };
+
     expect(model.calculateHandleToPositionAfterKeydown(eventSimulation)).toBeUndefined();
   });
 });
@@ -399,6 +591,36 @@ describe('calculateHandlePositionAfterScaleOnDown', () => {
   });
 
   test('should return undefined', () => {
+    const eventSimulation = {
+      pageX: 0,
+      pageY: 0,
+      stopPropagation: () => true,
+      preventDefault: () => true,
+    };
+
+    model.sliderPosition = 0;
+    model.handleFromPosition = -1;
+    model.handleLength = -1;
+
+    expect(model.calculateHandlePositionAfterScaleOnDown(
+      eventSimulation,
+      scaleOptions,
+    )).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    const eventSimulation = {
+      pageX: 0,
+      pageY: 0,
+      stopPropagation: () => true,
+      preventDefault: () => true,
+    };
+
+    model.isInterval = true;
+    model.sliderPosition = 0;
+    model.handleToPosition = -1;
+    model.handleLength = -1;
+
     expect(model.calculateHandlePositionAfterScaleOnDown(
       eventSimulation,
       scaleOptions,
@@ -412,6 +634,12 @@ describe('calculatePanelPosition', () => {
   });
 
   test('should return undefined', () => {
+    expect(model.calculatePanelPosition()).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isVertical = true;
+
     expect(model.calculatePanelPosition()).toBeUndefined();
   });
 });
@@ -492,6 +720,48 @@ describe('calculateScaleElementsNumber', () => {
   });
 
   test('should return undefined', () => {
+    model.userConfig = {};
+    model.userConfig.scaleNumber = 1;
+
+    expect(model.calculateScaleElementsNumber()).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    expect(model.calculateScaleElementsNumber()).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.maxValue = 2;
+    model.minValue = 1;
+
+    expect(model.calculateScaleElementsNumber()).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.maxValue = 3;
+    model.minValue = 1;
+
+    expect(model.calculateScaleElementsNumber()).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.maxValue = 5;
+    model.minValue = 1;
+
+    expect(model.calculateScaleElementsNumber()).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.maxValue = 10;
+    model.minValue = 1;
+
+    expect(model.calculateScaleElementsNumber()).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.maxValue = 10;
+    model.minValue = -10;
+
     expect(model.calculateScaleElementsNumber()).toBeUndefined();
   });
 });
