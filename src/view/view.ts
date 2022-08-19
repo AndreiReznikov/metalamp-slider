@@ -47,9 +47,9 @@ class View {
 
   $panelContainer: JQuery<HTMLElement>;
 
-  sliderWidth: number;
+  sliderWidth = 0;
 
-  sliderHeight: number;
+  sliderHeight = 0;
 
   constructor(slider: JQuery<HTMLElement>) {
     this.tooltips = new Tooltips();
@@ -74,9 +74,6 @@ class View {
     this.$panelContainer = this.panel.$panelContainer;
 
     this.renderView();
-
-    this.sliderWidth = parseInt(this.$this.parent().css('width'), 10);
-    this.sliderHeight = parseInt(this.$this.parent().css('height'), 10);
   }
 
   private renderView = (): void => {
@@ -90,6 +87,9 @@ class View {
     this.$tooltipFrom.appendTo(this.$stripe).addClass('js-slider__tooltip-from');
     this.$tooltipTo.appendTo(this.$stripe).addClass('js-slider__tooltip-to');
     this.$panelContainer.appendTo(this.$stripe).addClass('js-slider__panel-container');
+
+    this.sliderWidth = parseInt(this.$this.parent().css('width'), 10);
+    this.sliderHeight = parseInt(this.$this.parent().css('height'), 10);
   };
 
   public initView = (options: Options): void => {
