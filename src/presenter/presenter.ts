@@ -71,7 +71,7 @@ class Presenter {
     );
   };
 
-  private launchEventManager = (): void => {
+  public launchEventManager = (): void => {
     const handleHandleFromPosition = (event: JQuery.TriggeredEvent): void => {
       const shiftAxis1 = this.model.calculateShiftAxis1(event);
 
@@ -167,7 +167,7 @@ class Presenter {
     this.view.$scaleContainer.on('pointerdown', handleHandlesPositionAfterScaleOnDown);
   };
 
-  private launchPanelEventManager = (): void => {
+  public launchPanelEventManager = (): void => {
     const stopPropagation = (event: JQuery.TriggeredEvent) => event.stopPropagation();
 
     this.view.panel.$panelContainer.on('pointerdown', stopPropagation);

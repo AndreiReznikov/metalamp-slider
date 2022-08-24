@@ -1,8 +1,8 @@
 import View from '../src/view/view';
 
-const slider = $('<div/>');
+const $slider = $('<div/>');
 
-const view = new View(slider);
+const view = new View($slider);
 
 describe('initView', () => {
   test('defines a function', () => {
@@ -185,10 +185,6 @@ describe('setScalePosition', () => {
   });
 
   test('should return undefined', () => {
-    // view.scale.$scaleElement = $('<span>').addClass('js-slider__scale-element');
-    // // view.scale.$scaleElement.css({ width: 10 });
-    // view.scale.$scaleElement.appendTo(view.scale.$scaleContainer);
-
     expect(typeof view.scale.setScalePosition({})).toBe('undefined');
   });
 });

@@ -10,7 +10,7 @@ class Scale {
   public setScalePosition = (options: Options): void => {
     const scaleElementsWidths: number[] = [];
 
-    this.$scaleContainer.find('.js-slider__scale-element').each(() => {
+    this.$scaleContainer.find('.js-slider__scale-element').each(function () {
       const scaleElementWidth: number = parseInt($(this).css('width'), 10);
 
       scaleElementsWidths.push(scaleElementWidth);
