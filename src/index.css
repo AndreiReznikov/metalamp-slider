@@ -1,20 +1,46 @@
 html, body {
   display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   margin: 0;
   padding: 0;
   width: 100%;
+  box-sizing: border-box;
+}
+
+.slider-container0 {
+  width: 500px;
+  height: 8px;
+  margin: 200px 0;
+}
+
+.slider-container1 {
+  width: 800px;
+  height: 8px;
+  margin: 200px 0;
+}
+
+.slider-container2 {
+  width: 500px;
+  height: 8px;
+  margin: 200px 0;
+}
+
+.js-slider0 {
+  width: 100%;
   height: 100%;
   box-sizing: border-box;
 }
 
-.slider-container {
-  width: 500px;
-  height: 8px;
+.js-slider1 {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
-.js-slider {
+.js-slider2 {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -215,7 +241,7 @@ html, body {
 
 .js-slider__custom-toggle:after {
   position: absolute;
-  content: "";
+  content: '';
   width: 12px;
   height: 12px;
   margin: 0 3px;

@@ -55,7 +55,7 @@ import { UserConfig } from './interfaces/interfaces';
   };
 }(jQuery));
 
-$('.js-slider').mySlider({
+$('.js-slider0').mySlider({
   isInterval: true,
   isTooltip: true,
   isVertical: false,
@@ -69,6 +69,38 @@ $('.js-slider').mySlider({
   step: 0,
   from: -5,
   to: 5,
+});
+
+$('.js-slider1').mySlider({
+  isInterval: false,
+  isTooltip: true,
+  isVertical: false,
+  isMinAndMax: true,
+  isRange: false,
+  isPanel: true,
+  isScale: true,
+  keyboard: true,
+  minValue: 1000,
+  maxValue: 100000,
+  step: 10000,
+  from: 12000,
+  to: 5000,
+});
+
+$('.js-slider2').mySlider({
+  isInterval: true,
+  isTooltip: false,
+  isVertical: true,
+  isMinAndMax: false,
+  isRange: true,
+  isPanel: true,
+  isScale: true,
+  keyboard: true,
+  minValue: -125,
+  maxValue: -5,
+  step: 0,
+  from: -85,
+  to: -45,
 });
 
 const $slider = $('.js-slider').data('mySlider');

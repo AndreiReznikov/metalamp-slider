@@ -329,16 +329,21 @@ class Model {
 
     if (this.isStepSet) {
       this.calculateHandleFromPositionWithSetStep(pageAxis1);
+
+      this.restrictHandleFromPosition();
+      this.calculateRangePosition();
+      this.calculateRangeLength();
+      this.calculateTooltipsPositions();
     } else {
       this.handleFromPosition = pageAxis1 - shiftAxis1 - this.sliderPosition;
+
       this.calculateTooltipsValues();
       this.restrictTooltipFromValue();
+      this.restrictHandleFromPosition();
+      this.calculateRangePosition();
+      this.calculateRangeLength();
+      this.calculateTooltipsPositions();
     }
-
-    this.restrictHandleFromPosition();
-    this.calculateRangePosition();
-    this.calculateRangeLength();
-    this.calculateTooltipsPositions();
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -584,16 +589,21 @@ class Model {
 
     if (this.isStepSet) {
       this.calculateHandleToPositionWithSetStep(pageAxis2);
+
+      this.restrictHandleToPosition();
+      this.calculateRangePosition();
+      this.calculateRangeLength();
+      this.calculateTooltipsPositions();
     } else {
       this.handleToPosition = pageAxis2 - shiftAxis2 - this.sliderPosition;
+
       this.calculateTooltipsValues();
       this.restrictTooltipToValue();
+      this.restrictHandleToPosition();
+      this.calculateRangePosition();
+      this.calculateRangeLength();
+      this.calculateTooltipsPositions();
     }
-
-    this.restrictHandleToPosition();
-    this.calculateRangePosition();
-    this.calculateRangeLength();
-    this.calculateTooltipsPositions();
 
     this.observer.notifyObservers(this.getOptions());
   };
