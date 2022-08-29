@@ -78,7 +78,7 @@ class Presenter {
   };
 
   public launchEventManager = (): void => {
-    const handleHandleFromPosition = (event: JQuery.TriggeredEvent): void => {
+    const changeHandleFromPosition = (event: JQuery.TriggeredEvent): void => {
       const shiftAxis1 = this.model.calculateShiftAxis1(event);
 
       const moveHandleFrom = (event: JQuery.TriggeredEvent): void => {
@@ -91,7 +91,7 @@ class Presenter {
       $(document).on('pointerup', () => $(document).off('pointermove', moveHandleFrom));
     };
 
-    const handleHandleToPosition = (event: JQuery.TriggeredEvent) => {
+    const changeHandleToPosition = (event: JQuery.TriggeredEvent) => {
       const shiftAxis2 = this.model.calculateShiftAxis2(event);
 
       const moveHandleTo = (event: JQuery.TriggeredEvent): void => {
@@ -104,7 +104,7 @@ class Presenter {
       $(document).on('pointerup', () => $(document).off('pointermove', moveHandleTo));
     };
 
-    const handleHandleFromPositionAfterKeydown = (event: JQuery.FocusInEvent) => {
+    const changeHandleFromPositionAfterKeydown = (event: JQuery.FocusInEvent) => {
       const moveHandleFromAfterKeydown = (event: JQuery.KeyDownEvent): void => {
         this.model.calculateHandleFromPositionAfterKeydown(event);
       };
@@ -113,7 +113,7 @@ class Presenter {
       $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveHandleFromAfterKeydown));
     };
 
-    const handleHandleToPositionAfterKeydown = (event: JQuery.FocusInEvent) => {
+    const changeHandleToPositionAfterKeydown = (event: JQuery.FocusInEvent) => {
       const moveHandleToAfterKeydown = (event: JQuery.KeyDownEvent) => {
         this.model.calculateHandleToPositionAfterKeydown(event);
       };
@@ -122,7 +122,7 @@ class Presenter {
       $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveHandleToAfterKeydown));
     };
 
-    const handleHandleFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
+    const changeHandleFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateHandleFromPositionAfterSliderOnDown(event);
 
       this.model.calculateTooltipsPositions();
@@ -130,7 +130,7 @@ class Presenter {
       this.updateView(this.model.getOptions());
     };
 
-    const handleHandleToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
+    const changeHandleToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateHandleToPositionAfterSliderOnDown(event);
 
       this.model.calculateTooltipsPositions();
@@ -138,7 +138,7 @@ class Presenter {
       this.updateView(this.model.getOptions());
     };
 
-    const handleHandleFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent) => {
+    const changeHandleFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateHandleFromPositionAfterMinValueOnDown(event);
 
       this.model.calculateTooltipsPositions();
@@ -146,7 +146,7 @@ class Presenter {
       this.updateView(this.model.getOptions());
     };
 
-    const handleHandleFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
+    const changeHandleFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateHandleFromPositionAfterMaxValueOnDown(event);
 
       this.model.calculateTooltipsPositions();
@@ -154,7 +154,7 @@ class Presenter {
       this.updateView(this.model.getOptions());
     };
 
-    const handleHandleToPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
+    const changeHandleToPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateHandleToPositionAfterMaxValueOnDown(event);
 
       this.model.calculateTooltipsPositions();
@@ -162,7 +162,7 @@ class Presenter {
       this.updateView(this.model.getOptions());
     };
 
-    const handleHandlesPositionAfterScaleOnDown = (event: JQuery.TriggeredEvent) => {
+    const changeHandlesPositionAfterScaleOnDown = (event: JQuery.TriggeredEvent) => {
       if (!event.target) return;
 
       const $target: JQuery<EventTarget> = $(event.target);
@@ -185,16 +185,16 @@ class Presenter {
       this.updateView(this.model.getOptions());
     };
 
-    this.view.$handleFrom.on('pointerdown', handleHandleFromPosition);
-    this.view.$handleTo.on('pointerdown', handleHandleToPosition);
-    this.view.$handleFrom.on('focusin', handleHandleFromPositionAfterKeydown);
-    this.view.$handleTo.on('focusin', handleHandleToPositionAfterKeydown);
-    this.view.$stripe.on('pointerdown', handleHandleFromPositionAfterSliderOnDown);
-    this.view.$stripe.on('pointerdown', handleHandleToPositionAfterSliderOnDown);
-    this.view.$minValue.on('pointerdown', handleHandleFromPositionAfterMinValueOnDown);
-    this.view.$maxValue.on('pointerdown', handleHandleFromPositionAfterMaxValueOnDown);
-    this.view.$maxValue.on('pointerdown', handleHandleToPositionAfterMaxValueOnDown);
-    this.view.$scaleContainer.on('pointerdown', handleHandlesPositionAfterScaleOnDown);
+    this.view.$handleFrom.on('pointerdown', changeHandleFromPosition);
+    this.view.$handleTo.on('pointerdown', changeHandleToPosition);
+    this.view.$handleFrom.on('focusin', changeHandleFromPositionAfterKeydown);
+    this.view.$handleTo.on('focusin', changeHandleToPositionAfterKeydown);
+    this.view.$stripe.on('pointerdown', changeHandleFromPositionAfterSliderOnDown);
+    this.view.$stripe.on('pointerdown', changeHandleToPositionAfterSliderOnDown);
+    this.view.$minValue.on('pointerdown', changeHandleFromPositionAfterMinValueOnDown);
+    this.view.$maxValue.on('pointerdown', changeHandleFromPositionAfterMaxValueOnDown);
+    this.view.$maxValue.on('pointerdown', changeHandleToPositionAfterMaxValueOnDown);
+    this.view.$scaleContainer.on('pointerdown', changeHandlesPositionAfterScaleOnDown);
 
     this.view.$window.on('resize', this.init);
   };
