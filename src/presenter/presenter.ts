@@ -16,25 +16,30 @@ class Presenter {
 
     this.model.observer.addObserver(this.updateView);
 
+    this.init();
     this.launchEventManager();
     this.launchPanelEventManager();
   }
 
   public init = (): void => {
     this.view.initView(this.model.getOptions());
-    this.model.setElementsParameters(
-      this.view.getElementsParameters(
-        this.model.isVertical,
-        this.model.getOptions().lengthParameter,
-      ),
+
+    this.model.calculateInitialTooltipsValues();
+
+    this.updateView(this.model.getOptions());
+
+    const elementsParameters = this.view.getElementsParameters(
+      this.model.isVertical,
+      this.model.getOptions().lengthParameter,
     );
+
+    this.model.setElementsParameters(elementsParameters);
     this.model.validateInitialValues();
     this.model.calculateInitialHandlesPosition();
     this.model.calculateRangePosition();
     this.model.calculateRangeLength();
     this.model.countNumberOfCharactersAfterDot();
     this.model.calculateMinAndMaxPositions();
-    this.model.calculateInitialTooltipsValues();
     this.model.calculateTooltipsPositions();
     this.model.calculateStepLength();
     this.model.calculateScaleElementsNumber();
@@ -63,12 +68,13 @@ class Presenter {
     this.view.scale.setScalePosition(options);
     this.view.panel.setPanelPosition(options);
     this.view.panel.setPanelValues(options);
-    this.model.setElementsParameters(
-      this.view.getElementsParameters(
-        this.model.isVertical,
-        this.model.getOptions().lengthParameter,
-      ),
+
+    const elementsParameters = this.view.getElementsParameters(
+      this.model.isVertical,
+      this.model.getOptions().lengthParameter,
     );
+
+    this.model.setElementsParameters(elementsParameters);
   };
 
   public launchEventManager = (): void => {
@@ -118,22 +124,42 @@ class Presenter {
 
     const handleHandleFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateHandleFromPositionAfterSliderOnDown(event);
+
+      this.model.calculateTooltipsPositions();
+
+      this.updateView(this.model.getOptions());
     };
 
     const handleHandleToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateHandleToPositionAfterSliderOnDown(event);
+
+      this.model.calculateTooltipsPositions();
+
+      this.updateView(this.model.getOptions());
     };
 
     const handleHandleFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateHandleFromPositionAfterMinValueOnDown(event);
+
+      this.model.calculateTooltipsPositions();
+
+      this.updateView(this.model.getOptions());
     };
 
     const handleHandleFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateHandleFromPositionAfterMaxValueOnDown(event);
+
+      this.model.calculateTooltipsPositions();
+
+      this.updateView(this.model.getOptions());
     };
 
     const handleHandleToPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateHandleToPositionAfterMaxValueOnDown(event);
+
+      this.model.calculateTooltipsPositions();
+
+      this.updateView(this.model.getOptions());
     };
 
     const handleHandlesPositionAfterScaleOnDown = (event: JQuery.TriggeredEvent) => {
@@ -153,6 +179,10 @@ class Presenter {
       };
 
       this.model.calculateHandlePositionAfterScaleOnDown(event, scaleElementOptions);
+
+      this.model.calculateTooltipsPositions();
+
+      this.updateView(this.model.getOptions());
     };
 
     this.view.$handleFrom.on('pointerdown', handleHandleFromPosition);
@@ -165,6 +195,8 @@ class Presenter {
     this.view.$maxValue.on('pointerdown', handleHandleFromPositionAfterMaxValueOnDown);
     this.view.$maxValue.on('pointerdown', handleHandleToPositionAfterMaxValueOnDown);
     this.view.$scaleContainer.on('pointerdown', handleHandlesPositionAfterScaleOnDown);
+
+    this.view.$window.on('resize', this.init);
   };
 
   public launchPanelEventManager = (): void => {

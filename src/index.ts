@@ -12,8 +12,6 @@ import { UserConfig } from './interfaces/interfaces';
     const view = new View(slider);
     const presenter = new Presenter(model, view);
 
-    presenter.init();
-
     return slider;
   };
 
@@ -80,11 +78,12 @@ $('.js-slider1').mySlider({
   isPanel: true,
   isScale: true,
   keyboard: true,
-  minValue: 1000,
-  maxValue: 100000,
-  step: 10000,
-  from: 12000,
-  to: 5000,
+  minValue: 0,
+  maxValue: 10000000,
+  step: 100000,
+  from: 5000000,
+  to: 7500000,
+  scaleNumber: 5,
 });
 
 $('.js-slider2').mySlider({
@@ -101,6 +100,7 @@ $('.js-slider2').mySlider({
   step: 0,
   from: -85,
   to: -45,
+  scaleNumber: 7,
 });
 
 const $slider = $('.js-slider').data('mySlider');

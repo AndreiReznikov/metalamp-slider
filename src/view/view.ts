@@ -25,6 +25,8 @@ class View {
 
   panel: Panel;
 
+  $window: JQuery<Window & typeof globalThis>;
+
   $this: JQuery<HTMLElement>;
 
   $stripe: JQuery<HTMLElement>;
@@ -51,6 +53,8 @@ class View {
 
   sliderHeight = 0;
 
+  sliderRelativeWidth = 0;
+
   constructor(slider: JQuery<HTMLElement>) {
     this.tooltips = new Tooltips();
     this.handleFrom = new HandleFrom();
@@ -61,6 +65,7 @@ class View {
     this.scale = new Scale();
     this.panel = new Panel();
 
+    this.$window = $(window);
     this.$this = slider;
     this.$stripe = this.stripe.$stripe;
     this.$handleFrom = this.handleFrom.$handleFrom;
@@ -77,6 +82,8 @@ class View {
 
     this.sliderWidth = parseInt(this.$this.parent().css('width'), 10);
     this.sliderHeight = parseInt(this.$this.parent().css('height'), 10);
+    this.sliderRelativeWidth = (parseInt(this.$this.parent().css('width'), 10)
+    / parseInt(this.$this.parent().parent().css('width'), 10)) * 100;
   }
 
   private renderView = (): void => {
@@ -142,8 +149,6 @@ class View {
   };
 
   private setPlane = (isVertical: boolean): void => {
-    this.$this.parent().css({ width: 0, height: 0 });
-    this.$this.css({ width: 0, height: 0 });
     this.$handleFrom.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
     this.$handleTo.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
     this.$range.css({
@@ -165,7 +170,6 @@ class View {
 
     if (isVertical) {
       this.$this.parent().css({ width: this.sliderHeight, height: this.sliderWidth });
-      this.$this.css({ width: this.sliderHeight, height: this.sliderWidth });
       this.$handleFrom.css({ left: '50%', transform: 'translateX(-50%)' });
       this.$handleTo.css({ left: '50%', transform: 'translateX(-50%)' });
       this.$range.css({ width: '100%' });
@@ -178,8 +182,7 @@ class View {
       return;
     }
 
-    this.$this.parent().css({ width: this.sliderWidth, height: this.sliderHeight });
-    this.$this.css({ width: this.sliderWidth, height: this.sliderHeight });
+    this.$this.parent().css({ width: `${this.sliderRelativeWidth}%`, height: this.sliderHeight });
     this.$handleFrom.css({ top: '50%', transform: 'translateY(-50%)' });
     this.$handleTo.css({ top: '50%', transform: 'translateY(-50%)' });
     this.$range.css({ height: '100%' });

@@ -12,19 +12,19 @@ html, body {
 
 .slider-container0 {
   width: 500px;
-  height: 8px;
+  height: 6px;
   margin: 200px 0;
 }
 
 .slider-container1 {
-  width: 800px;
-  height: 8px;
+  width: 80%;
+  height: 6px;
   margin: 200px 0;
 }
 
 .slider-container2 {
   width: 500px;
-  height: 8px;
+  height: 6px;
   margin: 200px 0;
 }
 
@@ -53,16 +53,12 @@ html, body {
   border: 1px solid rgb(202, 205, 209);
   border-radius: 8px;
   background-color: #fff;
-  box-sizing: border-box;
   touch-action: none;
   cursor: pointer;
 }
 
 .js-slider__range {
-  display: flex;
   position: absolute;
-  width: 100%;
-  height: 100%;
   border-radius: 8px;
   background-color: rgb(47, 50, 53);
   touch-action: none;
@@ -88,8 +84,8 @@ html, body {
   align-items: center;
   position: absolute;
   font-family: Helvetica, Arial, sans-serif;
-  min-width: 28px;
   height: 18px;
+  padding: 10px;
   font-size: 14px;
   font-weight: bold;
   background-color: rgb(202, 205, 209);
@@ -105,8 +101,8 @@ html, body {
   justify-content: center;
   align-items: center;
   position: absolute;
-  min-width: 30px;
   height: 18px;
+  padding: 10px;
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
@@ -263,6 +259,10 @@ html, body {
   -webkit-transform: translateX(20px);
   -ms-transform: translateX(20px);
   transform: translateX(20px);
+}
+
+.js-slider__input:focus ~ .js-slider__custom-toggle {
+  outline: auto;
 }
 
 @media (hover: none) and (pointer: coarse) {
