@@ -78,6 +78,8 @@ class Presenter {
   };
 
   public launchEventManager = (): void => {
+    const $document = $(document);
+
     const changeHandleFromPosition = (event: JQuery.TriggeredEvent): void => {
       const shiftAxis1 = this.model.calculateShiftAxis1(event);
 
@@ -85,10 +87,14 @@ class Presenter {
         if (shiftAxis1 === undefined) return;
 
         this.model.calculateHandleFromPositionWhileMoving(event, shiftAxis1);
+
+        this.model.calculateTooltipsPositions();
+
+        this.updateView(this.model.getOptions());
       };
 
-      $(document).on('pointermove', moveHandleFrom);
-      $(document).on('pointerup', () => $(document).off('pointermove', moveHandleFrom));
+      $document.on('pointermove', moveHandleFrom);
+      $document.on('pointerup', () => $document.off('pointermove', moveHandleFrom));
     };
 
     const changeHandleToPosition = (event: JQuery.TriggeredEvent) => {
@@ -98,28 +104,44 @@ class Presenter {
         if (shiftAxis2 === undefined) return;
 
         this.model.calculateHandleToPositionWhileMoving(event, shiftAxis2);
+
+        this.model.calculateTooltipsPositions();
+
+        this.updateView(this.model.getOptions());
       };
 
-      $(document).on('pointermove', moveHandleTo);
-      $(document).on('pointerup', () => $(document).off('pointermove', moveHandleTo));
+      $document.on('pointermove', moveHandleTo);
+      $document.on('pointerup', () => $document.off('pointermove', moveHandleTo));
     };
 
     const changeHandleFromPositionAfterKeydown = (event: JQuery.FocusInEvent) => {
       const moveHandleFromAfterKeydown = (event: JQuery.KeyDownEvent): void => {
         this.model.calculateHandleFromPositionAfterKeydown(event);
+
+        this.model.calculateTooltipsPositions();
+
+        this.updateView(this.model.getOptions());
       };
 
-      $(event.currentTarget).on('keydown', moveHandleFromAfterKeydown);
-      $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveHandleFromAfterKeydown));
+      const $currentTarget = $(event.currentTarget);
+
+      $currentTarget.on('keydown', moveHandleFromAfterKeydown);
+      $currentTarget.on('focusout', () => $currentTarget.off('keydown', moveHandleFromAfterKeydown));
     };
 
     const changeHandleToPositionAfterKeydown = (event: JQuery.FocusInEvent) => {
       const moveHandleToAfterKeydown = (event: JQuery.KeyDownEvent) => {
         this.model.calculateHandleToPositionAfterKeydown(event);
+
+        this.model.calculateTooltipsPositions();
+
+        this.updateView(this.model.getOptions());
       };
 
-      $(event.currentTarget).on('keydown', moveHandleToAfterKeydown);
-      $(event.currentTarget).on('focusout', () => $(event.currentTarget).off('keydown', moveHandleToAfterKeydown));
+      const $currentTarget = $(event.currentTarget);
+
+      $currentTarget.on('keydown', moveHandleToAfterKeydown);
+      $currentTarget.on('focusout', () => $currentTarget.off('keydown', moveHandleToAfterKeydown));
     };
 
     const changeHandleFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
@@ -216,7 +238,8 @@ class Presenter {
   };
 
   private setMin = (event: JQuery.ChangeEvent): void => {
-    const minValue = $(event.currentTarget).val();
+    const $currentTarget = $(event.currentTarget);
+    const minValue = $currentTarget.val();
 
     if (this.checkIsValueANumberAndFullValue(minValue)) {
       this.view.panel.setPanelValues(this.model.getOptions());
@@ -229,7 +252,8 @@ class Presenter {
   };
 
   private setMax = (event: JQuery.ChangeEvent): void => {
-    const maxValue = $(event.currentTarget).val();
+    const $currentTarget = $(event.currentTarget);
+    const maxValue = $currentTarget.val();
 
     if (this.checkIsValueANumberAndFullValue(maxValue)) {
       this.view.panel.setPanelValues(this.model.getOptions());
@@ -242,7 +266,8 @@ class Presenter {
   };
 
   private setFrom = (event: JQuery.ChangeEvent): void => {
-    const from = $(event.currentTarget).val();
+    const $currentTarget = $(event.currentTarget);
+    const from = $currentTarget.val();
 
     if (this.checkIsValueANumberAndFullValue(from)) {
       this.view.panel.setPanelValues(this.model.getOptions());
@@ -262,7 +287,8 @@ class Presenter {
   };
 
   private setTo = (event: JQuery.ChangeEvent): void => {
-    const to = $(event.currentTarget).val();
+    const $currentTarget = $(event.currentTarget);
+    const to = $currentTarget.val();
 
     if (this.checkIsValueANumberAndFullValue(to)) {
       this.view.panel.setPanelValues(this.model.getOptions());
@@ -282,7 +308,8 @@ class Presenter {
   };
 
   private setStep = (event: JQuery.ChangeEvent): void => {
-    const step = $(event.currentTarget).val();
+    const $currentTarget = $(event.currentTarget);
+    const step = $currentTarget.val();
 
     if (this.checkIsValueANumberAndFullValue(step)) {
       this.view.panel.setPanelValues(this.model.getOptions());
@@ -296,7 +323,9 @@ class Presenter {
   };
 
   private toggleInterval = (event: JQuery.ClickEvent): void => {
-    if ($(event.currentTarget).is(':checked')) {
+    const $currentTarget = $(event.currentTarget);
+
+    if ($currentTarget.is(':checked')) {
       this.model.isInterval = true;
     } else {
       this.model.isInterval = false;
@@ -314,7 +343,9 @@ class Presenter {
   };
 
   private toggleTooltip = (event: JQuery.ClickEvent): void => {
-    if ($(event.currentTarget).is(':checked')) {
+    const $currentTarget = $(event.currentTarget);
+
+    if ($currentTarget.is(':checked')) {
       this.model.isTooltip = true;
     } else {
       this.model.isTooltip = false;
@@ -325,7 +356,9 @@ class Presenter {
   };
 
   private toggleRange = (event: JQuery.ClickEvent): void => {
-    if ($(event.currentTarget).is(':checked')) {
+    const $currentTarget = $(event.currentTarget);
+
+    if ($currentTarget.is(':checked')) {
       this.model.isRange = true;
     } else {
       this.model.isRange = false;
@@ -336,7 +369,9 @@ class Presenter {
   };
 
   private toggleScale = (event: JQuery.ClickEvent): void => {
-    if ($(event.currentTarget).is(':checked')) {
+    const $currentTarget = $(event.currentTarget);
+
+    if ($currentTarget.is(':checked')) {
       this.model.isScale = true;
     } else {
       this.model.isScale = false;
@@ -347,7 +382,9 @@ class Presenter {
   };
 
   private toggleVertical = (event: JQuery.ClickEvent): void => {
-    if ($(event.currentTarget).is(':checked')) {
+    const $currentTarget = $(event.currentTarget);
+
+    if ($currentTarget.is(':checked')) {
       this.model.isVertical = true;
     } else {
       this.model.isVertical = false;

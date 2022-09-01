@@ -1,8 +1,8 @@
-import './index.css';
 import Model from './model/model';
 import View from './view/view';
 import Presenter from './presenter/presenter';
 import { UserConfig } from './interfaces/interfaces';
+import './index.css';
 
 (function ($) {
   const jquery = $;
@@ -53,7 +53,7 @@ import { UserConfig } from './interfaces/interfaces';
   };
 }(jQuery));
 
-$('.js-slider0').mySlider({
+$('.js-slider_with_double_handles').mySlider({
   isInterval: true,
   isTooltip: true,
   isVertical: false,
@@ -69,8 +69,8 @@ $('.js-slider0').mySlider({
   to: 5,
 });
 
-$('.js-slider1').mySlider({
-  isInterval: false,
+$('.js-slider_with_single_handle').mySlider({
+  isInterval: true,
   isTooltip: true,
   isVertical: false,
   isMinAndMax: true,
@@ -86,7 +86,7 @@ $('.js-slider1').mySlider({
   scaleNumber: 5,
 });
 
-$('.js-slider2').mySlider({
+$('.js-slider_with_vertical_position').mySlider({
   isInterval: true,
   isTooltip: false,
   isVertical: true,
@@ -103,7 +103,7 @@ $('.js-slider2').mySlider({
   scaleNumber: 7,
 });
 
-const $slider = $('.js-slider').data('mySlider');
+const $slider = $('.js-slider_with_single_handle').data('mySlider');
 
 $slider.update({
   isInterval: false,

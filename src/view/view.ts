@@ -80,10 +80,12 @@ class View {
 
     this.renderView();
 
-    this.sliderWidth = parseInt(this.$this.parent().css('width'), 10);
-    this.sliderHeight = parseInt(this.$this.parent().css('height'), 10);
-    this.sliderRelativeWidth = (parseInt(this.$this.parent().css('width'), 10)
-    / parseInt(this.$this.parent().parent().css('width'), 10)) * 100;
+    const $container = this.$this.parent();
+
+    this.sliderWidth = parseInt($container.css('width'), 10);
+    this.sliderHeight = parseInt($container.css('height'), 10);
+    this.sliderRelativeWidth = (parseInt($container.css('width'), 10)
+    / parseInt($container.parent().css('width'), 10)) * 100;
   }
 
   private renderView = (): void => {
@@ -197,6 +199,8 @@ class View {
     isVertical: boolean,
     lengthParameter: string,
   ): ElementsParameters => {
+    const $scaleElement = $('.js-slider__scale-element');
+
     const elementsParameters: ElementsParameters = {
       sliderPosition: View.getCoords(this.$stripe, isVertical),
       sliderLength: parseInt(this.$stripe.css(lengthParameter), 10),
@@ -207,7 +211,7 @@ class View {
       maxValueLength: parseInt(this.$maxValue.css(lengthParameter), 10),
       minValueWidth: parseInt(this.$minValue.css('width'), 10),
       maxValueWidth: parseInt(this.$maxValue.css('width'), 10),
-      scaleElementHeight: parseInt($('.js-slider__scale-element').css('height'), 10),
+      scaleElementHeight: parseInt($scaleElement.css('height'), 10),
     };
 
     return elementsParameters;
