@@ -53,7 +53,7 @@ import './index.css';
   };
 }(jQuery));
 
-$('.js-slider_with_double_handles').mySlider({
+$('.js-slider_double').mySlider({
   isInterval: true,
   isTooltip: true,
   isVertical: false,
@@ -69,7 +69,7 @@ $('.js-slider_with_double_handles').mySlider({
   to: 5,
 });
 
-$('.js-slider_with_single_handle').mySlider({
+$('.js-slider_single').mySlider({
   isInterval: true,
   isTooltip: true,
   isVertical: false,
@@ -86,7 +86,7 @@ $('.js-slider_with_single_handle').mySlider({
   scaleNumber: 5,
 });
 
-$('.js-slider_with_vertical_position').mySlider({
+$('.js-slider_vertical').mySlider({
   isInterval: true,
   isTooltip: false,
   isVertical: true,
@@ -103,7 +103,7 @@ $('.js-slider_with_vertical_position').mySlider({
   scaleNumber: 7,
 });
 
-const $slider = $('.js-slider_with_single_handle').data('mySlider');
+const $slider = $('.js-slider_single').data('mySlider');
 
 $slider.update({
   isInterval: false,
