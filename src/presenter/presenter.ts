@@ -93,8 +93,8 @@ class Presenter {
         this.updateView(this.model.getOptions());
       };
 
-      $document.on('pointermove', moveHandleFrom);
-      $document.on('pointerup', () => $document.off('pointermove', moveHandleFrom));
+      $document.on('pointermove.move-from', moveHandleFrom);
+      $document.on('pointerup.move-from', () => $document.off('pointermove.move-from', moveHandleFrom));
     };
 
     const changeHandleToPosition = (event: JQuery.TriggeredEvent) => {
@@ -110,8 +110,8 @@ class Presenter {
         this.updateView(this.model.getOptions());
       };
 
-      $document.on('pointermove', moveHandleTo);
-      $document.on('pointerup', () => $document.off('pointermove', moveHandleTo));
+      $document.on('pointermove.move-to', moveHandleTo);
+      $document.on('pointerup.move-to', () => $document.off('pointermove.move-to', moveHandleTo));
     };
 
     const changeHandleFromPositionAfterKeydown = (event: JQuery.FocusInEvent) => {
@@ -207,18 +207,18 @@ class Presenter {
       this.updateView(this.model.getOptions());
     };
 
-    this.view.$handleFrom.on('pointerdown', changeHandleFromPosition);
-    this.view.$handleTo.on('pointerdown', changeHandleToPosition);
+    this.view.$handleFrom.on('pointerdown.handle-from', changeHandleFromPosition);
+    this.view.$handleTo.on('pointerdown.handle-to', changeHandleToPosition);
     this.view.$handleFrom.on('focusin', changeHandleFromPositionAfterKeydown);
     this.view.$handleTo.on('focusin', changeHandleToPositionAfterKeydown);
-    this.view.$stripe.on('pointerdown', changeHandleFromPositionAfterSliderOnDown);
-    this.view.$stripe.on('pointerdown', changeHandleToPositionAfterSliderOnDown);
-    this.view.$minValue.on('pointerdown', changeHandleFromPositionAfterMinValueOnDown);
-    this.view.$maxValue.on('pointerdown', changeHandleFromPositionAfterMaxValueOnDown);
-    this.view.$maxValue.on('pointerdown', changeHandleToPositionAfterMaxValueOnDown);
-    this.view.$scaleContainer.on('pointerdown', changeHandlesPositionAfterScaleOnDown);
+    this.view.$stripe.on('pointerdown.stripe-from', changeHandleFromPositionAfterSliderOnDown);
+    this.view.$stripe.on('pointerdown.stripe-to', changeHandleToPositionAfterSliderOnDown);
+    this.view.$minValue.on('pointerdown.min-from', changeHandleFromPositionAfterMinValueOnDown);
+    this.view.$maxValue.on('pointerdown.max-from', changeHandleFromPositionAfterMaxValueOnDown);
+    this.view.$maxValue.on('pointerdown.max-to', changeHandleToPositionAfterMaxValueOnDown);
+    this.view.$scaleContainer.on('pointerdown.scale', changeHandlesPositionAfterScaleOnDown);
 
-    this.view.$window.on('resize', this.init);
+    this.view.$window.on('resize.slider', this.init);
   };
 
   public launchPanelEventManager = (): void => {

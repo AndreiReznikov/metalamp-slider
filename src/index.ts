@@ -16,39 +16,37 @@ import './index.css';
   };
 
   jquery.fn.mySlider = function (userConfig: UserConfig): JQuery<HTMLElement> {
-    const initSlider = (): void => {
-      if (!this.data('mySlider')) {
-        this.data('mySlider', mySlider(this, userConfig));
-        this.data('userConfig', userConfig);
-      }
+    this.update = (userConfig: UserConfig): JQuery<HTMLElement> => {
+      const updateSlider = (): void => {
+        if (this.data('mySlider')) {
+          const initialConfig: UserConfig = this.data('userConfig');
+          const updatedConfig: UserConfig = $.extend({}, initialConfig, userConfig);
+
+          this.data('mySlider', false);
+          this.empty();
+          this.data('mySlider', mySlider(this, updatedConfig));
+        }
+      };
+
+      return this.each(updateSlider);
     };
 
-    return this.each(initSlider);
-  };
+    this.destroy = (): JQuery<HTMLElement> => {
+      const destroySlider = (): void => {
+        if (this.data('mySlider')) {
+          this.data('mySlider', false);
+          this.empty();
+        }
+      };
 
-  jquery.fn.update = function (userConfig: UserConfig): JQuery<HTMLElement> {
-    const updateSlider = (): void => {
-      if (this.data('mySlider')) {
-        const initialConfig: UserConfig = this.data('userConfig');
-        const updatedConfig: UserConfig = $.extend({}, initialConfig, userConfig);
-
-        this.data('mySlider', false);
-        this.empty();
-        this.data('mySlider', mySlider(this, updatedConfig));
-      }
+      return this.each(destroySlider);
     };
 
-    return this.each(updateSlider);
-  };
-
-  jquery.fn.destroy = function (): JQuery<HTMLElement> {
-    const destroySlider = (): void => {
-      if (this.data('mySlider')) {
-        this.data('mySlider', false);
-        this.empty();
-      }
+    const init = (): void => {
+      this.data('mySlider', mySlider(this, userConfig));
+      this.data('userConfig', userConfig);
     };
 
-    return this.each(destroySlider);
+    return this.each(init);
   };
 }(jQuery));
