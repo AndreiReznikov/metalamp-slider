@@ -55,7 +55,7 @@ class View {
 
   sliderRelativeWidth = 0;
 
-  constructor(slider: JQuery<HTMLElement>) {
+  constructor(slider: JQuery<HTMLElement> = $('div')) {
     this.tooltips = new Tooltips();
     this.handleFrom = new HandleFrom();
     this.handleTo = new HandleTo();
@@ -150,7 +150,7 @@ class View {
     this.setPlane(options.isVertical);
   };
 
-  private setPlane = (isVertical: boolean): void => {
+  private setPlane = (isVertical = false): void => {
     this.$handleFrom.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
     this.$handleTo.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
     this.$range.css({
@@ -196,8 +196,8 @@ class View {
   };
 
   public getElementsParameters = (
-    isVertical: boolean,
-    lengthParameter: string,
+    isVertical = false,
+    lengthParameter = '',
   ): ElementsParameters => {
     const $scaleElement = $('.js-slider__scale-element');
 
@@ -217,7 +217,7 @@ class View {
     return elementsParameters;
   };
 
-  static getCoords = (element: JQuery<HTMLElement>, isVertical: boolean): number => {
+  static getCoords = (element: JQuery<HTMLElement> = $('div'), isVertical = false): number => {
     const coords: JQuery.Coordinates | undefined = element.offset();
     let coord = 0;
 

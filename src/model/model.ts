@@ -109,7 +109,7 @@ class Model {
 
   numberOfCharactersAfterDot = 0;
 
-  constructor(userConfig: UserConfig) {
+  constructor(userConfig: UserConfig = {}) {
     this.observer = new Observer();
 
     this.userConfig = userConfig;
@@ -308,7 +308,7 @@ class Model {
 
   public calculateHandleFromPositionWhileMoving = (
     event: JQuery.TriggeredEvent,
-    shiftAxis1: number,
+    shiftAxis1 = 0,
   ): void => {
     event.preventDefault();
 
@@ -348,7 +348,7 @@ class Model {
     this.observer.notifyObservers(this.getOptions());
   };
 
-  private calculateHandleFromPositionWithSetStep = (pageAxis: number): void => {
+  private calculateHandleFromPositionWithSetStep = (pageAxis = 0): void => {
     const isCursorNearStepAhead: boolean = pageAxis - this.sliderPosition
       > this.handleFromPosition + this.handleLength / 2 + this.stepLength / 2;
     const isCursorNearStepBehind: boolean = pageAxis - this.sliderPosition
@@ -436,7 +436,7 @@ class Model {
     }
   };
 
-  private calculateMinHandleFromPositionAfterSliderOnDown = (pageAxis: number): void => {
+  private calculateMinHandleFromPositionAfterSliderOnDown = (pageAxis = 0): void => {
     if (!this.isStepSet) return;
 
     const isClickNearMinimum: boolean = pageAxis - this.sliderPosition < this.stepLength / 2;
@@ -447,7 +447,7 @@ class Model {
     }
   };
 
-  private calculateMaxHandleFromPositionAfterSliderOnDown = (pageAxis: number): void => {
+  private calculateMaxHandleFromPositionAfterSliderOnDown = (pageAxis = 0): void => {
     if (!this.isStepSet) return;
 
     const isClickNearMaximumWithoutInterval: boolean = this.sliderLength
@@ -565,7 +565,7 @@ class Model {
 
   public calculateHandleToPositionWhileMoving = (
     event: JQuery.TriggeredEvent,
-    shiftAxis2: number,
+    shiftAxis2 = 0,
   ): void => {
     event.preventDefault();
 
@@ -608,7 +608,7 @@ class Model {
     this.observer.notifyObservers(this.getOptions());
   };
 
-  private calculateHandleToPositionWithSetStep = (pageAxis: number): void => {
+  private calculateHandleToPositionWithSetStep = (pageAxis = 0): void => {
     const isIntervalAndStep: boolean = this.isInterval && this.isStepSet;
 
     if (!isIntervalAndStep) return;
@@ -696,7 +696,7 @@ class Model {
     }
   };
 
-  private calculateMaxHandleToPositionAfterSliderOnDown = (pageAxis: number): void => {
+  private calculateMaxHandleToPositionAfterSliderOnDown = (pageAxis = 0): void => {
     const isIntervalAndStep: boolean = this.isInterval && this.isStepSet;
 
     if (!isIntervalAndStep) return;
@@ -775,7 +775,12 @@ class Model {
       isScaleElementOnDown: boolean,
       scaleElementPosition: number,
       scaleElementLength: number,
-      scaleElementValue: string
+      scaleElementValue: string,
+    } = {
+      isScaleElementOnDown: true,
+      scaleElementPosition: 0,
+      scaleElementLength: 0,
+      scaleElementValue: '',
     },
   ): void => {
     event.stopPropagation();
@@ -929,35 +934,35 @@ class Model {
     this.restrictTooltipToValue();
   };
 
-  private calculateTooltipFromValueAfterScaleOnDown = (value: number): void => {
+  private calculateTooltipFromValueAfterScaleOnDown = (value = 0): void => {
     this.from = value;
     this.tooltipFromValue = this.from;
   };
 
-  private calculateTooltipToValueAfterScaleOnDown = (value: number): void => {
+  private calculateTooltipToValueAfterScaleOnDown = (value = 0): void => {
     this.to = value;
     this.tooltipToValue = this.to;
   };
 
-  private calculateTooltipFromValueAfterSliderOnDownAhead = (stepNumber: number): void => {
+  private calculateTooltipFromValueAfterSliderOnDownAhead = (stepNumber = 0): void => {
     this.from = parseFloat((this.from + (stepNumber
       * this.step)).toFixed(this.numberOfCharactersAfterDot));
     this.tooltipFromValue = this.from;
   };
 
-  private calculateTooltipFromValueAfterSliderOnDownBehind = (stepNumber: number): void => {
+  private calculateTooltipFromValueAfterSliderOnDownBehind = (stepNumber = 0): void => {
     this.from = parseFloat((this.from - (stepNumber
       * this.step)).toFixed(this.numberOfCharactersAfterDot));
     this.tooltipFromValue = this.from;
   };
 
-  private calculateTooltipToValueAfterSliderOnDownAhead = (stepNumber: number): void => {
+  private calculateTooltipToValueAfterSliderOnDownAhead = (stepNumber = 0): void => {
     this.to = parseFloat((this.to + (stepNumber
       * this.step)).toFixed(this.numberOfCharactersAfterDot));
     this.tooltipToValue = this.to;
   };
 
-  private calculateTooltipToValueAfterSliderOnDownBehind = (stepNumber: number): void => {
+  private calculateTooltipToValueAfterSliderOnDownBehind = (stepNumber = 0): void => {
     this.to = parseFloat((this.to - (stepNumber
       * this.step)).toFixed(this.numberOfCharactersAfterDot));
     this.tooltipToValue = this.to;
@@ -996,7 +1001,7 @@ class Model {
     this.tooltipFromValue = this.from;
   };
 
-  private calculateMaxTooltipFromValue = (value: number): void => {
+  private calculateMaxTooltipFromValue = (value = 0): void => {
     this.from = value;
     this.tooltipFromValue = this.from;
   };

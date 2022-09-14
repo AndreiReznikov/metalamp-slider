@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const { NODE_ENV } = process.env;
 
@@ -24,9 +25,9 @@ module.exports = {
         use: ['ts-loader'],
       },
       {
-        test: /\.css$/,
+        test: /\.css$/i,
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader,
           'css-loader',
         ],
       },
@@ -36,6 +37,7 @@ module.exports = {
     new HTMLWebpackPlugin({
       template: path.resolve(__dirname, './src/index.html'),
     }),
+    new MiniCssExtractPlugin(),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',

@@ -399,7 +399,7 @@ class Presenter {
   };
 
   private checkIsValueANumberAndFullValue = (
-    value: string | number | string[] | undefined,
+    value: string | number | string[] | undefined = 0,
   ): boolean => {
     this.isValueANumberAndFullValue = typeof parseFloat(`${value}`) !== 'number' || value === '';
 
