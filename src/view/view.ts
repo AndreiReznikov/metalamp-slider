@@ -55,7 +55,7 @@ class View {
 
   sliderRelativeWidth = 0;
 
-  constructor(slider: JQuery<HTMLElement> = $('div')) {
+  constructor($slider: JQuery<HTMLElement> = $('div')) {
     this.tooltips = new Tooltips();
     this.handleFrom = new HandleFrom();
     this.handleTo = new HandleTo();
@@ -66,7 +66,7 @@ class View {
     this.panel = new Panel();
 
     this.$window = $(window);
-    this.$this = slider;
+    this.$this = $slider;
     this.$stripe = this.stripe.$stripe;
     this.$handleFrom = this.handleFrom.$handleFrom;
     this.$handleTo = this.handleTo.$handleTo;

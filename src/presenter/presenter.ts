@@ -21,7 +21,7 @@ class Presenter {
     this.launchPanelEventManager();
   }
 
-  public init = (): void => {
+  private init = (): void => {
     this.view.initView(this.model.getOptions());
 
     this.model.calculateInitialTooltipsValues();
@@ -77,7 +77,7 @@ class Presenter {
     this.model.setElementsParameters(elementsParameters);
   };
 
-  public launchEventManager = (): void => {
+  private launchEventManager = (): void => {
     const $document = $(document);
 
     const changeHandleFromPosition = (event: JQuery.TriggeredEvent): void => {
@@ -221,7 +221,7 @@ class Presenter {
     this.view.$window.on('resize.slider', this.init);
   };
 
-  public launchPanelEventManager = (): void => {
+  private launchPanelEventManager = (): void => {
     const stopPropagation = (event: JQuery.TriggeredEvent) => event.stopPropagation();
 
     this.view.panel.$panelContainer.on('pointerdown', stopPropagation);
@@ -234,7 +234,7 @@ class Presenter {
     this.view.panel.$verticalToggle.on('click', this.toggleVertical);
     this.view.panel.$tooltipsToggle.on('click', this.toggleTooltip);
     this.view.panel.$rangeToggle.on('click', this.toggleRange);
-    this.view.panel.$scaleToogle.on('click', this.toggleScale);
+    this.view.panel.$scaleToggle.on('click', this.toggleScale);
   };
 
   private setMin = (event: JQuery.ChangeEvent): void => {

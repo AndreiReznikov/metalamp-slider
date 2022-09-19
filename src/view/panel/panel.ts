@@ -63,7 +63,7 @@ class Panel {
 
   $scaleToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
 
-  $scaleToogle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$scaleToggleContainer);
+  $scaleToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$scaleToggleContainer);
 
   $customScaleToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$scaleToggleContainer);
 
@@ -93,7 +93,7 @@ class Panel {
     this.$verticalToggle.prop('checked', !!options.isVertical);
     this.$tooltipsToggle.prop('checked', !!options.isTooltip);
     this.$rangeToggle.prop('checked', !!options.isRange);
-    this.$scaleToogle.prop('checked', !!options.isScale);
+    this.$scaleToggle.prop('checked', !!options.isScale);
   };
 }
 
