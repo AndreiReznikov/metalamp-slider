@@ -111,6 +111,8 @@ class View {
   };
 
   public initView = (options: Options): void => {
+    this.$this.css({ width: '100%', height: '100%', 'box-sizing': 'border-box' });
+
     if (options.isRange) {
       this.$range.css('display', 'block');
     } else {

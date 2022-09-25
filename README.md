@@ -31,7 +31,13 @@ slider.css
 
 # Initiation
 
-The slider is created based on the div element.
+First you have to create a container for the slider and set its length and height:
+
+`<div class="slider-container"></div>`
+
+The container can have any class name.
+
+The slider is created based on the div element. It needs to be placed in a container.
 
 `<div class="slider js-slider"></div>`
 

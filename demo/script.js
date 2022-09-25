@@ -17,7 +17,7 @@ $(document).ready(() => {
 
   $('.js-slider_single').mySlider({
     isInterval: true,
-    isTooltip: true,
+    isTooltip: false,
     isVertical: false,
     isMinAndMax: true,
     isRange: false,
@@ -26,7 +26,7 @@ $(document).ready(() => {
     keyboard: true,
     minValue: 0,
     maxValue: 10000000,
-    step: 100000,
+    step: 2500000,
     from: 5000000,
     to: 7500000,
     scaleNumber: 5,
@@ -47,6 +47,22 @@ $(document).ready(() => {
     from: -85,
     to: -45,
     scaleNumber: 7,
+  });
+
+  $('.js-slider_empty').mySlider({
+    isInterval: true,
+    isTooltip: false,
+    isVertical: false,
+    isMinAndMax: false,
+    isRange: false,
+    isPanel: true,
+    isScale: false,
+    keyboard: true,
+    minValue: 0,
+    maxValue: 8,
+    step: 0,
+    from: 2,
+    to: 6,
   });
 
   const $slider = $('.js-slider_single').data('mySlider');
