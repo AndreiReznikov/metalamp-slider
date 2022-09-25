@@ -14,7 +14,7 @@ interface Options {
   to: number;
   from: number;
   step: number;
-  handleLength: number;
+  runnerLength: number;
   stepLength: number;
   minValuePosition: number;
   maxValuePosition: number;
@@ -24,8 +24,8 @@ interface Options {
   isMaxValueShow: boolean;
   minValueLength: number;
   maxValueLength: number;
-  handleFromPosition: number;
-  handleToPosition: number;
+  runnerFromPosition: number;
+  runnerToPosition: number;
   tooltipFromPosition: number;
   tooltipToPosition: number;
   tooltipFromValue: number | string;
@@ -78,7 +78,7 @@ interface UserConfig {
 interface ElementsParameters {
   sliderPosition: number;
   sliderLength: number;
-  handleLength: number;
+  runnerLength: number;
   tooltipFromLength: number;
   tooltipToLength: number;
   minValueLength: number;

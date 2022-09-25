@@ -19,67 +19,67 @@ describe('init', () => {
 });
 
 describe('launchEventManager', () => {
-  test('changeHandleFromPosition', () => {
+  test('changeRunnerFromPosition', () => {
     const pointerDownEvent = jQuery.Event('pointerdown');
     const pointerMoveEvent = jQuery.Event('pointermove');
 
-    presenter.view.$handleFrom.trigger(pointerDownEvent);
+    presenter.view.$runnerFrom.trigger(pointerDownEvent);
 
     expect(typeof $(document).trigger(pointerMoveEvent)).toBe('object');
   });
 
-  test('changeHandleToPosition', () => {
+  test('changeRunnerToPosition', () => {
     const pointerDownEvent = jQuery.Event('pointerdown');
     const pointerMoveEvent = jQuery.Event('pointermove');
 
-    presenter.view.$handleTo.trigger(pointerDownEvent);
+    presenter.view.$runnerTo.trigger(pointerDownEvent);
 
     expect(typeof $(document).trigger(pointerMoveEvent)).toBe('object');
   });
 
-  test('changeHandleFromPositionAfterKeydown', () => {
+  test('changeRunnerFromPositionAfterKeydown', () => {
     const focusIn = jQuery.Event('focusin');
     const keyDown = jQuery.Event('keydown');
 
-    presenter.view.$handleFrom.trigger(focusIn);
+    presenter.view.$runnerFrom.trigger(focusIn);
 
     expect(typeof $(focusIn.currentTarget).trigger(keyDown)).toBe('object');
   });
 
-  test('changeHandleToPositionAfterKeydown', () => {
+  test('changeRunnerToPositionAfterKeydown', () => {
     const focusIn = jQuery.Event('focusin');
     const keyDown = jQuery.Event('keydown');
 
-    presenter.view.$handleTo.trigger(focusIn);
+    presenter.view.$runnerTo.trigger(focusIn);
 
     expect(typeof $(focusIn.currentTarget).trigger(keyDown)).toBe('object');
   });
 
-  test('changeHandleFromPositionAfterSliderOnDown and changeHandleToPositionAfterSliderOnDown', () => {
+  test('changeRunnerFromPositionAfterSliderOnDown and changeRunnerToPositionAfterSliderOnDown', () => {
     const pointerDownEvent = jQuery.Event('pointerdown');
 
     expect(typeof presenter.view.$stripe.trigger(pointerDownEvent)).toBe('object');
   });
 
-  test('changeHandleFromPositionAfterMinValueOnDown', () => {
+  test('changeRunnerFromPositionAfterMinValueOnDown', () => {
     const pointerDown = jQuery.Event('pointerdown');
 
     expect(typeof presenter.view.$minValue.trigger(pointerDown)).toBe('object');
   });
 
-  test('changeHandleFromPositionAfterMaxValueOnDown', () => {
+  test('changeRunnerFromPositionAfterMaxValueOnDown', () => {
     const pointerDown = jQuery.Event('pointerdown');
 
     expect(typeof presenter.view.$maxValue.trigger(pointerDown)).toBe('object');
   });
 
-  test('changeHandleToPositionAfterMaxValueOnDown', () => {
+  test('changeRunnerToPositionAfterMaxValueOnDown', () => {
     const pointerDown = jQuery.Event('pointerdown');
 
     expect(typeof presenter.view.$maxValue.trigger(pointerDown)).toBe('object');
   });
 
-  test('changeHandlesPositionAfterScaleOnDown', () => {
+  test('changeRunnersPositionAfterScaleOnDown', () => {
     const pointerDown = jQuery.Event('pointerdown');
 
     expect(typeof presenter.view.$scaleContainer.trigger(pointerDown)).toBe('object');
@@ -148,7 +148,7 @@ describe('launchPanelEventManager', () => {
   test('toggleScale', () => {
     const clickEvent = jQuery.Event('click');
 
-    expect(typeof presenter.view.panel.$scaleToogle.trigger(clickEvent)).toBe('object');
+    expect(typeof presenter.view.panel.$scaleToggle.trigger(clickEvent)).toBe('object');
   });
 
   test('toggleVertical', () => {

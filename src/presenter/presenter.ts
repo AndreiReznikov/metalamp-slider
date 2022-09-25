@@ -35,7 +35,7 @@ class Presenter {
 
     this.model.setElementsParameters(elementsParameters);
     this.model.validateInitialValues();
-    this.model.calculateInitialHandlesPosition();
+    this.model.calculateInitialRunnersPosition();
     this.model.calculateRangePosition();
     this.model.calculateRangeLength();
     this.model.countNumberOfCharactersAfterDot();
@@ -51,8 +51,8 @@ class Presenter {
   };
 
   private updateView = (options: Options): void => {
-    this.view.handleFrom.setHandleFromPosition(options);
-    this.view.handleTo.setHandleToPosition(options);
+    this.view.runnerFrom.setRunnerFromPosition(options);
+    this.view.runnerTo.setRunnerToPosition(options);
     this.view.tooltips.setTooltipFromValue(options);
     this.view.tooltips.setTooltipToValue(options);
     this.view.tooltips.setTooltipFromPosition(options);
@@ -80,58 +80,43 @@ class Presenter {
   private launchEventManager = (): void => {
     const $document = $(document);
 
-    const changeHandleFromPosition = (event: JQuery.TriggeredEvent): void => {
+    const makeRunnerFromPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
       const shiftAxis1 = this.model.calculateShiftAxis1(event);
 
-      const moveHandleFrom = (event: JQuery.TriggeredEvent): void => {
+      const handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
         if (shiftAxis1 === undefined) return;
 
-        this.model.calculateHandleFromPositionWhileMoving(event, shiftAxis1);
+        this.model.calculateRunnerFromPositionWhileMoving(event, shiftAxis1);
 
         this.model.calculateTooltipsPositions();
 
         this.updateView(this.model.getOptions());
       };
 
-      $document.on('pointermove.move-from', moveHandleFrom);
-      $document.on('pointerup.move-from', () => $document.off('pointermove.move-from', moveHandleFrom));
+      $document.on('pointermove.move-from', handleRunnerFromPointermove);
+      $document.on('pointerup.move-from', () => $document.off('pointermove.move-from', handleRunnerFromPointermove));
     };
 
-    const changeHandleToPosition = (event: JQuery.TriggeredEvent) => {
+    const makeRunnerToPointermoveHandler = (event: JQuery.TriggeredEvent) => {
       const shiftAxis2 = this.model.calculateShiftAxis2(event);
 
-      const moveHandleTo = (event: JQuery.TriggeredEvent): void => {
+      const handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
         if (shiftAxis2 === undefined) return;
 
-        this.model.calculateHandleToPositionWhileMoving(event, shiftAxis2);
+        this.model.calculateRunnerToPositionWhileMoving(event, shiftAxis2);
 
         this.model.calculateTooltipsPositions();
 
         this.updateView(this.model.getOptions());
       };
 
-      $document.on('pointermove.move-to', moveHandleTo);
-      $document.on('pointerup.move-to', () => $document.off('pointermove.move-to', moveHandleTo));
+      $document.on('pointermove.move-to', handleRunnerToPointermove);
+      $document.on('pointerup.move-to', () => $document.off('pointermove.move-to', handleRunnerToPointermove));
     };
 
-    const changeHandleFromPositionAfterKeydown = (event: JQuery.FocusInEvent) => {
-      const moveHandleFromAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-        this.model.calculateHandleFromPositionAfterKeydown(event);
-
-        this.model.calculateTooltipsPositions();
-
-        this.updateView(this.model.getOptions());
-      };
-
-      const $currentTarget = $(event.currentTarget);
-
-      $currentTarget.on('keydown', moveHandleFromAfterKeydown);
-      $currentTarget.on('focusout', () => $currentTarget.off('keydown', moveHandleFromAfterKeydown));
-    };
-
-    const changeHandleToPositionAfterKeydown = (event: JQuery.FocusInEvent) => {
-      const moveHandleToAfterKeydown = (event: JQuery.KeyDownEvent) => {
-        this.model.calculateHandleToPositionAfterKeydown(event);
+    const makeRunnerFromKeydownHandler = (event: JQuery.FocusInEvent) => {
+      const handleRunnerFromKeydown = (event: JQuery.KeyDownEvent): void => {
+        this.model.calculateRunnerFromPositionAfterKeydown(event);
 
         this.model.calculateTooltipsPositions();
 
@@ -140,51 +125,66 @@ class Presenter {
 
       const $currentTarget = $(event.currentTarget);
 
-      $currentTarget.on('keydown', moveHandleToAfterKeydown);
-      $currentTarget.on('focusout', () => $currentTarget.off('keydown', moveHandleToAfterKeydown));
+      $currentTarget.on('keydown', handleRunnerFromKeydown);
+      $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerFromKeydown));
     };
 
-    const changeHandleFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateHandleFromPositionAfterSliderOnDown(event);
+    const makeRunnerToKeydownHandler = (event: JQuery.FocusInEvent) => {
+      const handleRunnerToKeydown = (event: JQuery.KeyDownEvent) => {
+        this.model.calculateRunnerToPositionAfterKeydown(event);
+
+        this.model.calculateTooltipsPositions();
+
+        this.updateView(this.model.getOptions());
+      };
+
+      const $currentTarget = $(event.currentTarget);
+
+      $currentTarget.on('keydown', handleRunnerToKeydown);
+      $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerToKeydown));
+    };
+
+    const handleRunnerFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
+      this.model.calculateRunnerFromPositionAfterSliderOnDown(event);
 
       this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
 
-    const changeHandleToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateHandleToPositionAfterSliderOnDown(event);
+    const handleRunnerToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
+      this.model.calculateRunnerToPositionAfterSliderOnDown(event);
 
       this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
 
-    const changeHandleFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateHandleFromPositionAfterMinValueOnDown(event);
+    const handleRunnerFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent) => {
+      this.model.calculateRunnerFromPositionAfterMinValueOnDown(event);
 
       this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
 
-    const changeHandleFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateHandleFromPositionAfterMaxValueOnDown(event);
+    const handleRunnerFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
+      this.model.calculateRunnerFromPositionAfterMaxValueOnDown(event);
 
       this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
 
-    const changeHandleToPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateHandleToPositionAfterMaxValueOnDown(event);
+    const handleRunnerToPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
+      this.model.calculateRunnerToPositionAfterMaxValueOnDown(event);
 
       this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
 
-    const changeHandlesPositionAfterScaleOnDown = (event: JQuery.TriggeredEvent) => {
+    const handleRunnersPositionAfterScaleOnDown = (event: JQuery.TriggeredEvent) => {
       if (!event.target) return;
 
       const $target: JQuery<EventTarget> = $(event.target);
@@ -200,23 +200,23 @@ class Presenter {
         scaleElementValue,
       };
 
-      this.model.calculateHandlePositionAfterScaleOnDown(event, scaleElementOptions);
+      this.model.calculateRunnerPositionAfterScaleOnDown(event, scaleElementOptions);
 
       this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
 
-    this.view.$handleFrom.on('pointerdown.handle-from', changeHandleFromPosition);
-    this.view.$handleTo.on('pointerdown.handle-to', changeHandleToPosition);
-    this.view.$handleFrom.on('focusin', changeHandleFromPositionAfterKeydown);
-    this.view.$handleTo.on('focusin', changeHandleToPositionAfterKeydown);
-    this.view.$stripe.on('pointerdown.stripe-from', changeHandleFromPositionAfterSliderOnDown);
-    this.view.$stripe.on('pointerdown.stripe-to', changeHandleToPositionAfterSliderOnDown);
-    this.view.$minValue.on('pointerdown.min-from', changeHandleFromPositionAfterMinValueOnDown);
-    this.view.$maxValue.on('pointerdown.max-from', changeHandleFromPositionAfterMaxValueOnDown);
-    this.view.$maxValue.on('pointerdown.max-to', changeHandleToPositionAfterMaxValueOnDown);
-    this.view.$scaleContainer.on('pointerdown.scale', changeHandlesPositionAfterScaleOnDown);
+    this.view.$runnerFrom.on('pointerdown.runner-from', makeRunnerFromPointermoveHandler);
+    this.view.$runnerTo.on('pointerdown.runner-to', makeRunnerToPointermoveHandler);
+    this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
+    this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
+    this.view.$stripe.on('pointerdown.stripe-from', handleRunnerFromPositionAfterSliderOnDown);
+    this.view.$stripe.on('pointerdown.stripe-to', handleRunnerToPositionAfterSliderOnDown);
+    this.view.$minValue.on('pointerdown.min-from', handleRunnerFromPositionAfterMinValueOnDown);
+    this.view.$maxValue.on('pointerdown.max-from', handleRunnerFromPositionAfterMaxValueOnDown);
+    this.view.$maxValue.on('pointerdown.max-to', handleRunnerToPositionAfterMaxValueOnDown);
+    this.view.$scaleContainer.on('pointerdown.scale', handleRunnersPositionAfterScaleOnDown);
 
     this.view.$window.on('resize.slider', this.init);
   };
@@ -225,19 +225,19 @@ class Presenter {
     const stopPropagation = (event: JQuery.TriggeredEvent) => event.stopPropagation();
 
     this.view.panel.$panelContainer.on('pointerdown', stopPropagation);
-    this.view.panel.$minInput.on('change', this.setMin);
-    this.view.panel.$maxInput.on('change', this.setMax);
-    this.view.panel.$fromInput.on('change', this.setFrom);
-    this.view.panel.$toInput.on('change', this.setTo);
-    this.view.panel.$stepInput.on('change', this.setStep);
-    this.view.panel.$intervalToggle.on('click', this.toggleInterval);
-    this.view.panel.$verticalToggle.on('click', this.toggleVertical);
-    this.view.panel.$tooltipsToggle.on('click', this.toggleTooltip);
-    this.view.panel.$rangeToggle.on('click', this.toggleRange);
-    this.view.panel.$scaleToggle.on('click', this.toggleScale);
+    this.view.panel.$minInput.on('change', this.handleMinInputSetMin);
+    this.view.panel.$maxInput.on('change', this.handleMaxInputSetMax);
+    this.view.panel.$fromInput.on('change', this.handleFromInputSetFrom);
+    this.view.panel.$toInput.on('change', this.handleToInputSetTo);
+    this.view.panel.$stepInput.on('change', this.handleStepInputSetStep);
+    this.view.panel.$intervalToggler.on('click', this.handleIntervalTogglerToggleInterval);
+    this.view.panel.$verticalToggler.on('click', this.handleVerticalTogglerToggleVertical);
+    this.view.panel.$tooltipsToggler.on('click', this.handleTooltipsTogglerToggleTooltips);
+    this.view.panel.$rangeToggler.on('click', this.handleRangeTogglerToggleRange);
+    this.view.panel.$scaleToggler.on('click', this.handleScaleTogglerToggleScale);
   };
 
-  private setMin = (event: JQuery.ChangeEvent): void => {
+  private handleMinInputSetMin = (event: JQuery.ChangeEvent): void => {
     const $currentTarget = $(event.currentTarget);
     const minValue = $currentTarget.val();
 
@@ -251,7 +251,7 @@ class Presenter {
     this.init();
   };
 
-  private setMax = (event: JQuery.ChangeEvent): void => {
+  private handleMaxInputSetMax = (event: JQuery.ChangeEvent): void => {
     const $currentTarget = $(event.currentTarget);
     const maxValue = $currentTarget.val();
 
@@ -265,7 +265,7 @@ class Presenter {
     this.init();
   };
 
-  private setFrom = (event: JQuery.ChangeEvent): void => {
+  private handleFromInputSetFrom = (event: JQuery.ChangeEvent): void => {
     const $currentTarget = $(event.currentTarget);
     const from = $currentTarget.val();
 
@@ -277,7 +277,7 @@ class Presenter {
     this.model.from = parseFloat(`${from}`);
 
     this.model.validateInitialValues();
-    this.model.calculateInitialHandleFromPosition();
+    this.model.calculateInitialRunnerFromPosition();
     this.model.calculateRangePosition();
     this.model.calculateRangeLength();
     this.model.calculateInitialTooltipsValues();
@@ -286,7 +286,7 @@ class Presenter {
     this.updateView(this.model.getOptions());
   };
 
-  private setTo = (event: JQuery.ChangeEvent): void => {
+  private handleToInputSetTo = (event: JQuery.ChangeEvent): void => {
     const $currentTarget = $(event.currentTarget);
     const to = $currentTarget.val();
 
@@ -298,7 +298,7 @@ class Presenter {
     this.model.to = parseFloat(`${to}`);
 
     this.model.validateInitialValues();
-    this.model.calculateInitialHandleToPosition();
+    this.model.calculateInitialRunnerToPosition();
     this.model.calculateRangePosition();
     this.model.calculateRangeLength();
     this.model.calculateInitialTooltipsValues();
@@ -307,7 +307,7 @@ class Presenter {
     this.updateView(this.model.getOptions());
   };
 
-  private setStep = (event: JQuery.ChangeEvent): void => {
+  private handleStepInputSetStep = (event: JQuery.ChangeEvent): void => {
     const $currentTarget = $(event.currentTarget);
     const step = $currentTarget.val();
 
@@ -322,7 +322,7 @@ class Presenter {
     this.model.calculateStepLength();
   };
 
-  private toggleInterval = (event: JQuery.ClickEvent): void => {
+  private handleIntervalTogglerToggleInterval = (event: JQuery.ClickEvent): void => {
     const $currentTarget = $(event.currentTarget);
 
     if ($currentTarget.is(':checked')) {
@@ -333,7 +333,7 @@ class Presenter {
 
     this.view.initView(this.model.getOptions());
     this.model.validateInitialValues();
-    this.model.calculateInitialHandleToPosition();
+    this.model.calculateInitialRunnerToPosition();
     this.model.calculateRangePosition();
     this.model.calculateRangeLength();
     this.model.calculateInitialTooltipsValues();
@@ -342,7 +342,7 @@ class Presenter {
     this.updateView(this.model.getOptions());
   };
 
-  private toggleTooltip = (event: JQuery.ClickEvent): void => {
+  private handleTooltipsTogglerToggleTooltips = (event: JQuery.ClickEvent): void => {
     const $currentTarget = $(event.currentTarget);
 
     if ($currentTarget.is(':checked')) {
@@ -355,7 +355,7 @@ class Presenter {
     this.updateView(this.model.getOptions());
   };
 
-  private toggleRange = (event: JQuery.ClickEvent): void => {
+  private handleRangeTogglerToggleRange = (event: JQuery.ClickEvent): void => {
     const $currentTarget = $(event.currentTarget);
 
     if ($currentTarget.is(':checked')) {
@@ -368,7 +368,7 @@ class Presenter {
     this.updateView(this.model.getOptions());
   };
 
-  private toggleScale = (event: JQuery.ClickEvent): void => {
+  private handleScaleTogglerToggleScale = (event: JQuery.ClickEvent): void => {
     const $currentTarget = $(event.currentTarget);
 
     if ($currentTarget.is(':checked')) {
@@ -381,7 +381,7 @@ class Presenter {
     this.updateView(this.model.getOptions());
   };
 
-  private toggleVertical = (event: JQuery.ClickEvent): void => {
+  private handleVerticalTogglerToggleVertical = (event: JQuery.ClickEvent): void => {
     const $currentTarget = $(event.currentTarget);
 
     if ($currentTarget.is(':checked')) {

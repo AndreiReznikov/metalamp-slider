@@ -74,7 +74,7 @@ html, body {
   z-index: 1;
 }
 
-.js-slider__handle-from, .js-slider__handle-to {
+.js-slider__runner-from, .js-slider__runner-to {
   position: absolute;
   height: 20px;
   width: 20px;

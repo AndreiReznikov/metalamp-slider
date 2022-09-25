@@ -58,7 +58,7 @@ describe('getElementsParameters', () => {
 
   test('should return undefinded', () => {
     const elementsParameters = {
-      handleLength: 0,
+      runnerLength: 0,
       maxValueLength: 0,
       maxValueWidth: 0,
       minValueLength: 0,
@@ -74,28 +74,28 @@ describe('getElementsParameters', () => {
   });
 });
 
-describe('setHandleFromPosition', () => {
+describe('setRunnerFromPosition', () => {
   test('defines a function', () => {
-    expect(typeof view.handleFrom.setHandleFromPosition).toBe('function');
+    expect(typeof view.runnerFrom.setRunnerFromPosition).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(typeof view.handleFrom.setHandleFromPosition({
+    expect(typeof view.runnerFrom.setRunnerFromPosition({
       positionParameter: 'width',
-      handleFromPosition: 12,
+      runnerFromPosition: 12,
     })).toBe('undefined');
   });
 });
 
-describe('setHandleToPosition', () => {
+describe('setRunnerToPosition', () => {
   test('defines a function', () => {
-    expect(typeof view.handleTo.setHandleToPosition).toBe('function');
+    expect(typeof view.runnerTo.setRunnerToPosition).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(typeof view.handleTo.setHandleToPosition({
+    expect(typeof view.runnerTo.setRunnerToPosition({
       positionParameter: 'width',
-      handleToPosition: 12,
+      runnerToPosition: 12,
     })).toBe('undefined');
   });
 });

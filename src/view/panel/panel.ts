@@ -39,7 +39,7 @@ class Panel {
 
   $intervalToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
 
-  $intervalToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$intervalToggleContainer);
+  $intervalToggler = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$intervalToggleContainer);
 
   $customIntervalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$intervalToggleContainer);
 
@@ -47,7 +47,7 @@ class Panel {
 
   $tooltipsToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
 
-  $tooltipsToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$tooltipsToggleContainer);
+  $tooltipsToggler = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$tooltipsToggleContainer);
 
   $customTooltipsToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$tooltipsToggleContainer);
 
@@ -55,7 +55,7 @@ class Panel {
 
   $rangeToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
 
-  $rangeToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$rangeToggleContainer);
+  $rangeToggler = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$rangeToggleContainer);
 
   $customRangeToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$rangeToggleContainer);
 
@@ -63,7 +63,7 @@ class Panel {
 
   $scaleToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
 
-  $scaleToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$scaleToggleContainer);
+  $scaleToggler = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$scaleToggleContainer);
 
   $customScaleToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$scaleToggleContainer);
 
@@ -71,7 +71,7 @@ class Panel {
 
   $verticalToggleContainer = $('<label/>').addClass('js-slider__toggle-container').appendTo(this.$toggleInputsContainer);
 
-  $verticalToggle = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$verticalToggleContainer);
+  $verticalToggler = $('<input/>').addClass('js-slider__input').attr('type', 'checkbox').appendTo(this.$verticalToggleContainer);
 
   $customVerticalToggle = $('<span/>').addClass('js-slider__custom-toggle').appendTo(this.$verticalToggleContainer);
 
@@ -89,11 +89,11 @@ class Panel {
     this.$toInput.val(`${options.to}`).attr('step', `${options.isStepSet ? options.step : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
     this.$fromInput.val(`${options.from}`).attr('step', `${options.isStepSet ? options.step : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
     this.$stepInput.val(`${options.step}`).attr('step', `${(0.1).toFixed(options.numberOfCharactersAfterDot)}`);
-    this.$intervalToggle.prop('checked', !!options.isInterval);
-    this.$verticalToggle.prop('checked', !!options.isVertical);
-    this.$tooltipsToggle.prop('checked', !!options.isTooltip);
-    this.$rangeToggle.prop('checked', !!options.isRange);
-    this.$scaleToggle.prop('checked', !!options.isScale);
+    this.$intervalToggler.prop('checked', !!options.isInterval);
+    this.$verticalToggler.prop('checked', !!options.isVertical);
+    this.$tooltipsToggler.prop('checked', !!options.isTooltip);
+    this.$rangeToggler.prop('checked', !!options.isRange);
+    this.$scaleToggler.prop('checked', !!options.isScale);
   };
 }
 

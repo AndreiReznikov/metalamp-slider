@@ -35,7 +35,7 @@ beforeEach(() => {
   model.isStepSet = false;
   model.sliderPosition = 0;
   model.sliderLength = 0;
-  model.handleLength = 0;
+  model.runnerLength = 0;
   model.isMinValueShow = true;
   model.isMaxValueShow = true;
   model.minValuePosition = 0;
@@ -47,8 +47,8 @@ beforeEach(() => {
   model.tooltipFromLength = 0;
   model.tooltipToLength = 0;
   model.stepLength = 0;
-  model.handleFromPosition = 0;
-  model.handleToPosition = 0;
+  model.runnerFromPosition = 0;
+  model.runnerToPosition = 0;
   model.tooltipFromPosition = 0;
   model.tooltipToPosition = 0;
   model.tooltipFromValue = 0;
@@ -65,7 +65,7 @@ describe('setElementsParameters', () => {
   const elementsParameters = {
     sliderPosition: 10,
     sliderLength: 10,
-    handleLength: 10,
+    runnerLength: 10,
     tooltipFromLength: 10,
     tooltipToLength: 10,
     minValueLength: 10,
@@ -170,33 +170,33 @@ describe('validateInitalValues', () => {
   });
 });
 
-describe('calculateInitialHandlesPosition', () => {
+describe('calculateInitialRunnersPosition', () => {
   test('defines a function', () => {
-    expect(typeof model.calculateInitialHandlesPosition).toBe('function');
+    expect(typeof model.calculateInitialRunnersPosition).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateInitialHandlesPosition()).toBeUndefined();
+    expect(model.calculateInitialRunnersPosition()).toBeUndefined();
   });
 });
 
-describe('calculateInitialHandleFromPosition', () => {
+describe('calculateInitialRunnerFromPosition', () => {
   test('defines a function', () => {
-    expect(typeof model.calculateInitialHandleFromPosition).toBe('function');
+    expect(typeof model.calculateInitialRunnerFromPosition).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateInitialHandleFromPosition()).toBeUndefined();
+    expect(model.calculateInitialRunnerFromPosition()).toBeUndefined();
   });
 });
 
-describe('calculateInitialHandleToPosition', () => {
+describe('calculateInitialRunnerToPosition', () => {
   test('defines a function', () => {
-    expect(typeof model.calculateInitialHandleToPosition).toBe('function');
+    expect(typeof model.calculateInitialRunnerToPosition).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateInitialHandleToPosition()).toBeUndefined();
+    expect(model.calculateInitialRunnerToPosition()).toBeUndefined();
   });
 });
 
@@ -220,73 +220,73 @@ describe('calculateShiftAxis1', () => {
   });
 });
 
-describe('calculateHandleFromPositionWhileMoving', () => {
+describe('calculateRunnerFromPositionWhileMoving', () => {
   afterAll(() => {
     jest.spyOn(model, 'checkIsWrongMouseButtonPressed').mockImplementation(() => false);
   });
 
   test('defines a function', () => {
-    expect(typeof model.calculateHandleFromPositionWhileMoving).toBe('function');
+    expect(typeof model.calculateRunnerFromPositionWhileMoving).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateHandleFromPositionWhileMoving(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionWhileMoving(eventSimulation)).toBeUndefined();
   });
 
-  test('calculateHandleFromPositionWithSetStep should to be called', () => {
-    const calculateHandleFromPositionWithSetStep = jest.spyOn(model, 'calculateHandleFromPositionWithSetStep');
+  test('calculateRunnerFromPositionWithSetStep should to be called', () => {
+    const calculateRunnerFromPositionWithSetStep = jest.spyOn(model, 'calculateRunnerFromPositionWithSetStep');
 
     model.isStepSet = true;
     model.sliderPosition = -100;
 
-    model.calculateHandleFromPositionWhileMoving(eventSimulation);
+    model.calculateRunnerFromPositionWhileMoving(eventSimulation);
 
     model.sliderPosition = 100;
 
-    model.calculateHandleFromPositionWhileMoving(eventSimulation);
+    model.calculateRunnerFromPositionWhileMoving(eventSimulation);
 
-    expect(calculateHandleFromPositionWithSetStep).toBeCalled();
+    expect(calculateRunnerFromPositionWithSetStep).toBeCalled();
 
-    calculateHandleFromPositionWithSetStep.mockClear();
+    calculateRunnerFromPositionWithSetStep.mockClear();
   });
 
   test('should return undefined', () => {
     jest.spyOn(model, 'checkIsWrongMouseButtonPressed').mockImplementation(() => true);
 
-    expect(model.calculateHandleFromPositionWhileMoving(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionWhileMoving(eventSimulation)).toBeUndefined();
   });
 });
 
-describe('calculateHandleFromPositionAfterSliderOnDown', () => {
+describe('calculateRunnerFromPositionAfterSliderOnDown', () => {
   afterAll(() => {
     jest.spyOn(model, 'checkIsWrongMouseButtonPressed').mockImplementation(() => false);
   });
 
   test('defines a function', () => {
-    expect(typeof model.calculateHandleFromPositionAfterSliderOnDown).toBe('function');
+    expect(typeof model.calculateRunnerFromPositionAfterSliderOnDown).toBe('function');
   });
 
   test('should return undefined', () => {
     model.isStepSet = false;
-    model.handleFromPosition = 10;
+    model.runnerFromPosition = 10;
 
-    expect(model.calculateHandleFromPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
     model.isStepSet = true;
     model.sliderPosition = 0;
-    model.handleFromPosition = 0;
-    model.handleLength = -10;
+    model.runnerFromPosition = 0;
+    model.runnerLength = -10;
 
-    expect(model.calculateHandleFromPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
     model.isStepSet = true;
-    model.handleFromPosition = 10;
+    model.runnerFromPosition = 10;
 
-    expect(model.calculateHandleFromPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
@@ -294,45 +294,45 @@ describe('calculateHandleFromPositionAfterSliderOnDown', () => {
     model.isInterval = true;
     model.sliderPosition = -100;
     model.stepLength = 1000;
-    model.handleToPosition = 500;
+    model.runnerToPosition = 500;
 
-    expect(model.calculateHandleFromPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
     jest.spyOn(model, 'checkIsWrongMouseButtonPressed').mockImplementation(() => true);
 
-    expect(model.calculateHandleFromPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
 });
 
-describe('calculateHandleFromPositionAfterMinValueOnDown', () => {
+describe('calculateRunnerFromPositionAfterMinValueOnDown', () => {
   test('defines a function', () => {
-    expect(typeof model.calculateHandleFromPositionAfterMinValueOnDown).toBe('function');
+    expect(typeof model.calculateRunnerFromPositionAfterMinValueOnDown).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateHandleFromPositionAfterMinValueOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterMinValueOnDown(eventSimulation)).toBeUndefined();
   });
 });
 
-describe('calculateHandleFromPositionAfterMaxValueOnDown', () => {
+describe('calculateRunnerFromPositionAfterMaxValueOnDown', () => {
   test('defines a function', () => {
-    expect(typeof model.calculateHandleFromPositionAfterMaxValueOnDown).toBe('function');
+    expect(typeof model.calculateRunnerFromPositionAfterMaxValueOnDown).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateHandleFromPositionAfterMaxValueOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterMaxValueOnDown(eventSimulation)).toBeUndefined();
   });
 });
 
-describe('calculateHandleFromPositionAfterKeydown', () => {
+describe('calculateRunnerFromPositionAfterKeydown', () => {
   test('defines a function', () => {
-    expect(typeof model.calculateHandleFromPositionAfterKeydown).toBe('function');
+    expect(typeof model.calculateRunnerFromPositionAfterKeydown).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateHandleFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
@@ -343,7 +343,7 @@ describe('calculateHandleFromPositionAfterKeydown', () => {
       keyCode: 39,
     };
 
-    expect(model.calculateHandleFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
@@ -354,7 +354,7 @@ describe('calculateHandleFromPositionAfterKeydown', () => {
       keyCode: 37,
     };
 
-    expect(model.calculateHandleFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
@@ -364,7 +364,7 @@ describe('calculateHandleFromPositionAfterKeydown', () => {
       keyCode: 37,
     };
 
-    expect(model.calculateHandleFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerFromPositionAfterKeydown(eventSimulation)).toBeUndefined();
   });
 });
 
@@ -384,13 +384,13 @@ describe('calculateShiftAxis2', () => {
   });
 });
 
-describe('calculateHandleToPositionWhileMoving', () => {
+describe('calculateRunnerToPositionWhileMoving', () => {
   test('defines a function', () => {
-    expect(typeof model.calculateHandleToPositionWhileMoving).toBe('function');
+    expect(typeof model.calculateRunnerToPositionWhileMoving).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateHandleToPositionWhileMoving(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionWhileMoving(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
@@ -404,7 +404,7 @@ describe('calculateHandleToPositionWhileMoving', () => {
       buttons: 2,
     };
 
-    expect(model.calculateHandleToPositionWhileMoving(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionWhileMoving(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
@@ -419,17 +419,17 @@ describe('calculateHandleToPositionWhileMoving', () => {
       buttons: 2,
     };
 
-    expect(model.calculateHandleToPositionWhileMoving(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionWhileMoving(eventSimulation)).toBeUndefined();
   });
 });
 
-describe('calculateHandleToPositionAfterSliderOnDown', () => {
+describe('calculateRunnerToPositionAfterSliderOnDown', () => {
   test('defines a function', () => {
-    expect(typeof model.calculateHandleToPositionAfterSliderOnDown).toBe('function');
+    expect(typeof model.calculateRunnerToPositionAfterSliderOnDown).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
@@ -443,30 +443,12 @@ describe('calculateHandleToPositionAfterSliderOnDown', () => {
       buttons: 2,
     };
 
-    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
-  });
-
-  test('should return undefined', () => {
-    model.isInterval = true;
-    model.isStepSet = true;
-
-    const eventSimulation = {
-      pageX: 0,
-      pageY: 0,
-      preventDefault: () => true,
-      pointerType: 'mouse',
-      buttons: 2,
-    };
-
-    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
     model.isInterval = true;
     model.isStepSet = true;
-    model.sliderPosition = 0;
-    model.handleToPosition = -1;
-    model.handleLength = -1;
 
     const eventSimulation = {
       pageX: 0,
@@ -476,16 +458,34 @@ describe('calculateHandleToPositionAfterSliderOnDown', () => {
       buttons: 2,
     };
 
-    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
     model.isInterval = true;
     model.isStepSet = true;
     model.sliderPosition = 0;
-    model.handleToPosition = 2;
-    model.handleFromPosition = 0;
-    model.handleLength = 0;
+    model.runnerToPosition = -1;
+    model.runnerLength = -1;
+
+    const eventSimulation = {
+      pageX: 0,
+      pageY: 0,
+      preventDefault: () => true,
+      pointerType: 'mouse',
+      buttons: 2,
+    };
+
+    expect(model.calculateRunnerToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+  });
+
+  test('should return undefined', () => {
+    model.isInterval = true;
+    model.isStepSet = true;
+    model.sliderPosition = 0;
+    model.runnerToPosition = 2;
+    model.runnerFromPosition = 0;
+    model.runnerLength = 0;
 
     const eventSimulation = {
       pageX: 1,
@@ -495,15 +495,15 @@ describe('calculateHandleToPositionAfterSliderOnDown', () => {
       buttons: 2,
     };
 
-    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
     model.isInterval = true;
     model.sliderPosition = 0;
-    model.handleToPosition = 2;
-    model.handleFromPosition = 0;
-    model.handleLength = 0;
+    model.runnerToPosition = 2;
+    model.runnerFromPosition = 0;
+    model.runnerLength = 0;
 
     const eventSimulation = {
       pageX: 1,
@@ -513,33 +513,33 @@ describe('calculateHandleToPositionAfterSliderOnDown', () => {
       buttons: 2,
     };
 
-    expect(model.calculateHandleToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterSliderOnDown(eventSimulation)).toBeUndefined();
   });
 });
 
-describe('calculateHandleToPositionAfterMaxValueOnDown', () => {
+describe('calculateRunnerToPositionAfterMaxValueOnDown', () => {
   test('defines a function', () => {
-    expect(typeof model.calculateHandleToPositionAfterMaxValueOnDown).toBe('function');
+    expect(typeof model.calculateRunnerToPositionAfterMaxValueOnDown).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateHandleToPositionAfterMaxValueOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterMaxValueOnDown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
     model.isInterval = true;
 
-    expect(model.calculateHandleToPositionAfterMaxValueOnDown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterMaxValueOnDown(eventSimulation)).toBeUndefined();
   });
 });
 
-describe('calculateHandleToPositionAfterKeydown', () => {
+describe('calculateRunnerToPositionAfterKeydown', () => {
   test('defines a function', () => {
-    expect(typeof model.calculateHandleToPositionAfterKeydown).toBe('function');
+    expect(typeof model.calculateRunnerToPositionAfterKeydown).toBe('function');
   });
 
   test('should return undefined', () => {
-    expect(model.calculateHandleToPositionAfterKeydown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterKeydown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
@@ -551,7 +551,7 @@ describe('calculateHandleToPositionAfterKeydown', () => {
       keyCode: 39,
     };
 
-    expect(model.calculateHandleToPositionAfterKeydown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterKeydown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
@@ -563,7 +563,7 @@ describe('calculateHandleToPositionAfterKeydown', () => {
       keyCode: 37,
     };
 
-    expect(model.calculateHandleToPositionAfterKeydown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterKeydown(eventSimulation)).toBeUndefined();
   });
 
   test('should return undefined', () => {
@@ -574,11 +574,11 @@ describe('calculateHandleToPositionAfterKeydown', () => {
       keyCode: 37,
     };
 
-    expect(model.calculateHandleToPositionAfterKeydown(eventSimulation)).toBeUndefined();
+    expect(model.calculateRunnerToPositionAfterKeydown(eventSimulation)).toBeUndefined();
   });
 });
 
-describe('calculateHandlePositionAfterScaleOnDown', () => {
+describe('calculateRunnerPositionAfterScaleOnDown', () => {
   const scaleOptions = {
     isScaleElementOnDown: true,
     scaleElementPosition: 10,
@@ -587,7 +587,7 @@ describe('calculateHandlePositionAfterScaleOnDown', () => {
   };
 
   test('defines a function', () => {
-    expect(typeof model.calculateHandlePositionAfterScaleOnDown).toBe('function');
+    expect(typeof model.calculateRunnerPositionAfterScaleOnDown).toBe('function');
   });
 
   test('should return undefined', () => {
@@ -599,10 +599,10 @@ describe('calculateHandlePositionAfterScaleOnDown', () => {
     };
 
     model.sliderPosition = 0;
-    model.handleFromPosition = -1;
-    model.handleLength = -1;
+    model.runnerFromPosition = -1;
+    model.runnerLength = -1;
 
-    expect(model.calculateHandlePositionAfterScaleOnDown(
+    expect(model.calculateRunnerPositionAfterScaleOnDown(
       eventSimulation,
       scaleOptions,
     )).toBeUndefined();
@@ -618,10 +618,10 @@ describe('calculateHandlePositionAfterScaleOnDown', () => {
 
     model.isInterval = true;
     model.sliderPosition = 0;
-    model.handleToPosition = -1;
-    model.handleLength = -1;
+    model.runnerToPosition = -1;
+    model.runnerLength = -1;
 
-    expect(model.calculateHandlePositionAfterScaleOnDown(
+    expect(model.calculateRunnerPositionAfterScaleOnDown(
       eventSimulation,
       scaleOptions,
     )).toBeUndefined();

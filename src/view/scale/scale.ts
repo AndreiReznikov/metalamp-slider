@@ -18,7 +18,7 @@ class Scale {
 
     const maxScaleElementsWidth: number = Math.max(...scaleElementsWidths);
 
-    this.$scaleContainer.css(options.scalePositionParameter, options.scalePositionParameter === 'right' ? maxScaleElementsWidth + options.handleLength : options.handleLength);
+    this.$scaleContainer.css(options.scalePositionParameter, options.scalePositionParameter === 'right' ? maxScaleElementsWidth + options.runnerLength : options.runnerLength);
   };
 
   public setScaleElementsValues = (options: Options): void => {
