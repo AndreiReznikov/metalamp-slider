@@ -16,18 +16,18 @@ All DOM elements are subscribed to events in the Presenter class. Observers are 
 
 # Technologies
 
-The project is compatible with jQuery 3.6.0 and node 16.13.2
+The project is compatible with *jQuery 3.6.0* and *node 16.13.2*
 
 # Usage
 
 Add the following libraries to the page:
 
-jQuery 3.6.0
-slider.min.js
+- jQuery 3.6.0
+- slider.min.js
 
 Add the following stylesheets to the page:
 
-slider.css
+- slider.css
 
 # Initiation
 
@@ -47,47 +47,55 @@ To initialise the slider, call mySlider on the element:
 
 You can initialize the slider with the following parameters:
 
-  - isInterval: boolean - double or single slider
-  - minValue: number - minimum value
-  - maxValue: number - maximum value
-  - from: number - the value of the first handle
-  - to: number - the value of the second handle
-  - step: number - step value
-  - keyboard: boolean - keyboard control
-  - isVertical: boolean - vertical or horizontal
-  - isTooltip: boolean - whether to show tooltips over handles
-  - isMinAndMax: boolean - whether to show the minimum and maximum values
-  - isRange: boolean - whether to show the progress bar
-  - isScale: boolean - whether to show the scale
-  - scaleNumber: number - number of values on the scale
-  - isPanel: boolean - whether to show the panel
+  | Parameter | Type | Defaults | Description |
+  | --- | --- | --- | --- |
+  | isInterval | boolean | false | double or single slider |
+  | minValue | number | 0 | minimum value |
+  | maxValue | number | 100 | maximum value |
+  | from | number | 10 | the value of the first handle |
+  | to | number | 50 | the value of the second handle |
+  | step | number | 0 | step value |
+  | keyboard | boolean | false | keyboard control |
+  | isVertical | boolean | false | vertical or horizontal |
+  | isTooltip | boolean | true | whether to show tooltips over handles |
+  | isMinAndMax | boolean | true | whether to show the minimum and maximum values |
+  | isRange | boolean | true | whether to show the progress bar |
+  | isScale | boolean | false | whether to show the scale |
+  | scaleNumber | number | 5 | number of values on the scale |
+  | isPanel | boolean | false | whether to show the panel |
 
 # Public methods
 
 To use public methods, at first you must save slider instance to variable:
 
-`$('js-slider').mySlider({ 
+```javascript
+$('js-slider').mySlider({ 
    isInterval: true, 
-   minValue: 0,
-   maxValue: 100,
-   from: 20,
-   to: 80,
-   isPanel: true
- });`
+   minValue: 0, 
+   maxValue: 100, 
+   from: 20, 
+   to: 80, 
+   isPanel: true 
+ });
 
- `const $slider = $('.js-slider').data('mySlider');`
+ const $slider = $('.js-slider').data('mySlider');
 
- `$slider.destroy();`
+ $slider.destroy();
+ ```
 
- - update - overrides the set parameters
+ - **update** - overrides the set parameters
  
-    `$slider.update({
+    ```javascript
+    $slider.update({
       isInterval: false
-    });`
+    });
+    ```
 
- - destroy - destroys the slider and leaves the original div empty
-
-    `$slider.destroy();`
+ - **destroy** - destroys the slider and leaves the original div empty
+    
+    ```javascript
+    $slider.destroy();
+    ```
 
 
 
