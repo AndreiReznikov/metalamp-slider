@@ -14,6 +14,8 @@ When the user interacts with the interface (View), the Model methods are called.
 
 All DOM elements are subscribed to events in the Presenter class. Observers are also designated in this class.
 
+# Demo https://andreireznikov.github.io/metalamp-slider/demo/
+
 # Technologies
 
 The project is compatible with *jQuery 3.6.0* and *node 16.13.2*
