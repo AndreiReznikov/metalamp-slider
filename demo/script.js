@@ -50,19 +50,19 @@ $(document).ready(() => {
   });
 
   $('.js-slider_empty').mySlider({
-    isInterval: true,
+    isInterval: false,
     isTooltip: false,
     isVertical: false,
     isMinAndMax: false,
-    isRange: false,
+    isRange: true,
     isPanel: true,
     isScale: false,
     keyboard: true,
     minValue: 0,
-    maxValue: 8,
+    maxValue: 10,
     step: 0,
-    from: 2,
-    to: 6,
+    from: 0,
+    to: 0,
   });
 
   const $slider = $('.js-slider_single').data('mySlider');
