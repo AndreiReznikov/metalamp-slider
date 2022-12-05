@@ -97,6 +97,7 @@ class View {
     const elementsParameters: ElementsParameters = {
       sliderPosition: View.getCoords(this.$stripe, isVertical),
       sliderLength: parseInt(this.$stripe.css(lengthParameter), 10),
+      runnerFromPosition: this.runnerFrom.runnerFromPosition,
       runnerLength: parseInt(this.$runnerFrom.css(lengthParameter), 10),
       tooltipFromLength: parseInt(this.$tooltipFrom.css(lengthParameter), 10),
       tooltipToLength: parseInt(this.$tooltipTo.css(lengthParameter), 10),

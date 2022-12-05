@@ -14,6 +14,7 @@ interface Options {
   to: number;
   from: number;
   step: number;
+  pageAxis1: number;
   runnerLength: number;
   stepLength: number;
   minValuePosition: number;
@@ -78,6 +79,7 @@ interface UserConfig {
 interface ElementsParameters {
   sliderPosition: number;
   sliderLength: number;
+  runnerFromPosition: number;
   runnerLength: number;
   tooltipFromLength: number;
   tooltipToLength: number;

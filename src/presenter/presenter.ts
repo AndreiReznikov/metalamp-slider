@@ -35,7 +35,7 @@ class Presenter {
 
     this.model.setElementsParameters(elementsParameters);
     this.model.validateInitialValues();
-    this.model.calculateInitialRunnersPosition();
+    this.model.calculateInitialRunnerToPosition();
     this.model.calculateRangePosition();
     this.model.calculateRangeLength();
     this.model.countNumberOfCharactersAfterDot();
@@ -48,9 +48,12 @@ class Presenter {
     this.updateView(this.model.getOptions());
     this.model.calculatePanelPosition();
     this.view.panel.setPanelPosition(this.model.getOptions());
+    this.view.runnerFrom.calculateInitialRunnerFromPosition(this.model.getOptions());
+    this.view.runnerFrom.setRunnerFromPosition(this.model.getOptions());
   };
 
   private updateView = (options: Options): void => {
+    this.view.runnerFrom.calculateRunnerFromPositionWhileMoving(options);
     this.view.runnerFrom.setRunnerFromPosition(options);
     this.view.runnerTo.setRunnerToPosition(options);
     this.view.tooltips.setTooltipFromValue(options);

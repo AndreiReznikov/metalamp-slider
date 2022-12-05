@@ -47,6 +47,8 @@ class Model {
 
   to = 50;
 
+  pageAxis1 = 0;
+
   scalePositionParameter: string = this.isVertical ? 'right' : 'top';
 
   panelPosition = 0;
@@ -138,6 +140,7 @@ class Model {
   public setElementsParameters = (elementsParameters: ElementsParameters): void => {
     this.sliderPosition = elementsParameters.sliderPosition;
     this.sliderLength = elementsParameters.sliderLength;
+    this.runnerFromPosition = elementsParameters.runnerFromPosition;
     this.runnerLength = elementsParameters.runnerLength;
     this.tooltipFromLength = elementsParameters.tooltipFromLength;
     this.tooltipToLength = elementsParameters.tooltipToLength;
@@ -171,6 +174,7 @@ class Model {
       to: this.to,
       from: this.from,
       step: this.step,
+      pageAxis1: this.pageAxis1,
       runnerLength: this.runnerLength,
       stepLength: this.stepLength,
       minValue: this.minValue,
@@ -247,31 +251,15 @@ class Model {
     }
   };
 
-  public calculateInitialRunnersPosition = (): void => {
-    const minRatio: number = this.minValue / (this.maxValue - this.minValue);
-    const fromRatio: number = this.from / (this.maxValue - this.minValue);
-    const toRatio: number = this.to / (this.maxValue - this.minValue);
-
-    this.runnerFromPosition = Math.round((fromRatio - minRatio)
-      * this.sliderLength - this.runnerLength / 2);
-    this.runnerToPosition = Math.round((toRatio - minRatio)
-      * this.sliderLength - this.runnerLength / 2);
-
-    this.restrictRunnerFromPosition();
-    this.restrictTooltipFromValue();
-    this.restrictRunnerToPosition();
-    this.restrictTooltipToValue();
-  };
-
   public calculateInitialRunnerFromPosition = (): void => {
-    const minRatio: number = this.minValue / (this.maxValue - this.minValue);
-    const fromRatio: number = this.from / (this.maxValue - this.minValue);
+    // const minRatio: number = this.minValue / (this.maxValue - this.minValue);
+    // const fromRatio: number = this.from / (this.maxValue - this.minValue);
 
-    this.runnerFromPosition = Math.round((fromRatio - minRatio)
-      * this.sliderLength - this.runnerLength / 2);
+    // this.runnerFromPosition = Math.round((fromRatio - minRatio)
+    //   * this.sliderLength - this.runnerLength / 2);
 
-    this.restrictRunnerFromPosition();
-    this.restrictTooltipFromValue();
+    // this.restrictRunnerFromPosition();
+    // this.restrictTooltipFromValue();
   };
 
   public calculateInitialRunnerToPosition = (): void => {
@@ -325,25 +313,25 @@ class Model {
       pageY1 = event.pageY;
     }
 
-    const pageAxis1: number = this.isVertical ? pageY1 : pageX1;
+    this.pageAxis1 = this.isVertical ? pageY1 : pageX1;
 
-    if (this.isStepSet) {
-      this.calculateRunnerFromPositionWithSetStep(pageAxis1);
+    // if (this.isStepSet) {
+    //   this.calculateRunnerFromPositionWithSetStep(pageAxis1);
 
-      this.restrictRunnerFromPosition();
-      this.calculateRangePosition();
-      this.calculateRangeLength();
-      this.calculateTooltipsPositions();
-    } else {
-      this.runnerFromPosition = pageAxis1 - shiftAxis1 - this.sliderPosition;
+    //   this.restrictRunnerFromPosition();
+    //   this.calculateRangePosition();
+    //   this.calculateRangeLength();
+    //   this.calculateTooltipsPositions();
+    // } else {
+    //   this.runnerFromPosition = pageAxis1 - shiftAxis1 - this.sliderPosition;
 
-      this.calculateTooltipsValues();
-      this.restrictTooltipFromValue();
-      this.restrictRunnerFromPosition();
-      this.calculateRangePosition();
-      this.calculateRangeLength();
-      this.calculateTooltipsPositions();
-    }
+    this.calculateTooltipsValues();
+    this.restrictTooltipFromValue();
+    //   this.restrictRunnerFromPosition();
+    //   this.calculateRangePosition();
+    //   this.calculateRangeLength();
+    //   this.calculateTooltipsPositions();
+    // }
 
     this.observer.notifyObservers(this.getOptions());
   };

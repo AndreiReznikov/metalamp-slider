@@ -15,9 +15,9 @@ module.exports = {
     path: path.resolve(__dirname, 'slider'),
     filename: 'slider.min.js',
   },
-  externals: {
-    jquery: 'jQuery',
-  },
+  // externals: {
+  //   jquery: 'jQuery',
+  // },
   module: {
     rules: [
       {
@@ -35,6 +35,10 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin(),
+    new HTMLWebpackPlugin({
+      template: './src/index.html',
+      filename: 'index.html',
+    }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
