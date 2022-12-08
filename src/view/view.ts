@@ -7,8 +7,11 @@ import Tooltips from './tooltips/tooltips';
 import MinAndMaxValues from './min-and-max/min-and-max';
 import Scale from './scale/scale';
 import Panel from './panel/panel';
+import SubView from './SubView';
 
 class View {
+  SubView: SubView;
+
   tooltips: Tooltips;
 
   runnerFrom: RunnerFrom;
@@ -56,6 +59,7 @@ class View {
   sliderRelativeWidth = 0;
 
   constructor($slider: JQuery<HTMLElement> = $('div')) {
+    this.SubView = new SubView();
     this.tooltips = new Tooltips();
     this.runnerFrom = new RunnerFrom();
     this.runnerTo = new RunnerTo();
@@ -67,8 +71,8 @@ class View {
 
     this.$window = $(window);
     this.$this = $slider;
-    this.$stripe = this.stripe.$stripe;
-    this.$runnerFrom = this.runnerFrom.$runnerFrom;
+    this.$stripe = this.SubView.$stripe;
+    this.$runnerFrom = this.SubView.$runnerFrom;
     this.$runnerTo = this.runnerTo.$runnerTo;
     this.$range = this.range.$range;
     this.$minValue = this.minAndMaxValues.$minValue;

@@ -13,16 +13,41 @@ class RunnerFrom {
       * options.sliderLength - options.runnerLength / 2);
   };
 
-  public calculateRunnerFromPositionWhileMoving = (options: Options): void => {
-    if (options.isStepSet) {
-      // this.calculateRunnerFromPositionWithSetStep(pageAxis1);
-    } else {
-      this.runnerFromPosition = options.pageAxis1 - options.sliderPosition;
-    }
+  public calculateRunnerFromPositionWhileMoving = (
+    subViewOptions: {
+      sliderPosition: number,
+      runnerFromPosition: number,
+      runnerLength: number,
+      clickPosition: number,
+      shiftAxis: number,
+    },
+  ): void => {
+    this.runnerFromPosition = subViewOptions.clickPosition - subViewOptions.shiftAxis;
   };
 
-  public setRunnerFromPosition = (options: Options): void => {
-    this.$runnerFrom.css(options.positionParameter, this.runnerFromPosition);
+  public setRunnerFromPosition = (
+    subViewOptions: {
+      sliderPosition: number,
+      runnerFromPosition: number,
+      runnerLength: number,
+      clickPosition: number,
+      shiftAxis: number,
+    },
+  ): void => {
+    this.$runnerFrom.css('left', subViewOptions.runnerFromPosition);
+  };
+
+  public calculateShiftAxis1 = (
+    subViewOptions: {
+      sliderPosition: number,
+      runnerFromPosition: number,
+      runnerLength: number,
+      clickPosition: number,
+    },
+  ): number => {
+    const shiftAxis = subViewOptions.clickPosition - this.runnerFromPosition;
+
+    return shiftAxis;
   };
 }
 

@@ -11,9 +11,12 @@ interface Options {
   lengthParameter: string;
   sliderPosition: number;
   sliderLength: number;
+  event: JQuery.Event;
+  pointerDownEvent: JQuery.Event;
   to: number;
   from: number;
   step: number;
+  shiftAxis1: number;
   pageAxis1: number;
   runnerLength: number;
   stepLength: number;

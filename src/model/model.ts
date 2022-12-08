@@ -47,6 +47,8 @@ class Model {
 
   to = 50;
 
+  shiftAxis1 = 0;
+
   pageAxis1 = 0;
 
   scalePositionParameter: string = this.isVertical ? 'right' : 'top';
@@ -111,6 +113,10 @@ class Model {
 
   numberOfCharactersAfterDot = 0;
 
+  event = new jQuery.Event('click');
+
+  pointerDownEvent = new jQuery.Event('click');
+
   constructor(userConfig: UserConfig = {}) {
     this.observer = new Observer();
 
@@ -171,9 +177,12 @@ class Model {
       lengthParameter: this.lengthParameter,
       sliderPosition: this.sliderPosition,
       sliderLength: this.sliderLength,
+      event: this.event,
+      pointerDownEvent: this.pointerDownEvent,
       to: this.to,
       from: this.from,
       step: this.step,
+      shiftAxis1: this.shiftAxis1,
       pageAxis1: this.pageAxis1,
       runnerLength: this.runnerLength,
       stepLength: this.stepLength,
@@ -251,16 +260,16 @@ class Model {
     }
   };
 
-  public calculateInitialRunnerFromPosition = (): void => {
-    // const minRatio: number = this.minValue / (this.maxValue - this.minValue);
-    // const fromRatio: number = this.from / (this.maxValue - this.minValue);
+  // public calculateInitialRunnerFromPosition = (): void => {
+  //   // const minRatio: number = this.minValue / (this.maxValue - this.minValue);
+  //   // const fromRatio: number = this.from / (this.maxValue - this.minValue);
 
-    // this.runnerFromPosition = Math.round((fromRatio - minRatio)
-    //   * this.sliderLength - this.runnerLength / 2);
+  //   // this.runnerFromPosition = Math.round((fromRatio - minRatio)
+  //   //   * this.sliderLength - this.runnerLength / 2);
 
-    // this.restrictRunnerFromPosition();
-    // this.restrictTooltipFromValue();
-  };
+  //   // this.restrictRunnerFromPosition();
+  //   // this.restrictTooltipFromValue();
+  // };
 
   public calculateInitialRunnerToPosition = (): void => {
     const minRatio: number = this.minValue / (this.maxValue - this.minValue);
@@ -273,34 +282,20 @@ class Model {
     this.restrictTooltipToValue();
   };
 
-  public calculateShiftAxis1 = (event: JQuery.TriggeredEvent): number | undefined => {
+  public startRunnerFromMoving = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
 
-    if (this.checkIsWrongMouseButtonPressed(event)) return undefined;
+    if (this.checkIsWrongMouseButtonPressed(event)) return;
 
-    let shiftX1 = 0;
-    let shiftY1 = 0;
-
-    if (event.pageX !== undefined) {
-      shiftX1 = event.pageX - this.runnerFromPosition - this.sliderPosition;
-    }
-
-    if (event.pageY !== undefined) {
-      shiftY1 = event.pageY - this.runnerFromPosition - this.sliderPosition;
-    }
-
-    const shiftAxis1: number = this.isVertical ? shiftY1 : shiftX1;
-
-    return shiftAxis1;
+    this.pointerDownEvent = event;
   };
 
-  public calculateRunnerFromPositionWhileMoving = (
-    event: JQuery.TriggeredEvent,
-    shiftAxis1 = 0,
-  ): void => {
+  public calculateRunnerFromPositionWhileMoving = (event: JQuery.TriggeredEvent): void => {
     event.preventDefault();
 
     if (this.checkIsWrongMouseButtonPressed(event)) return;
+
+    this.event = event;
 
     let pageX1 = 0;
     let pageY1 = 0;

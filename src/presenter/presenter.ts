@@ -48,13 +48,12 @@ class Presenter {
     this.updateView(this.model.getOptions());
     this.model.calculatePanelPosition();
     this.view.panel.setPanelPosition(this.model.getOptions());
-    this.view.runnerFrom.calculateInitialRunnerFromPosition(this.model.getOptions());
-    this.view.runnerFrom.setRunnerFromPosition(this.model.getOptions());
+    // this.view.runnerFrom.calculateInitialRunnerFromPosition(this.model.getOptions());
+    // this.view.runnerFrom.setRunnerFromPosition(this.model.getOptions());
   };
 
   private updateView = (options: Options): void => {
-    this.view.runnerFrom.calculateRunnerFromPositionWhileMoving(options);
-    this.view.runnerFrom.setRunnerFromPosition(options);
+    // this.view.runnerFrom.setRunnerFromPosition(options);
     this.view.runnerTo.setRunnerToPosition(options);
     this.view.tooltips.setTooltipFromValue(options);
     this.view.tooltips.setTooltipToValue(options);
@@ -84,20 +83,22 @@ class Presenter {
     const $document = $(document);
 
     const makeRunnerFromPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
-      const shiftAxis1 = this.model.calculateShiftAxis1(event);
+      // this.model.shiftAxis1 = this.view.runnerFrom.calculateShiftAxis1(
+      //   this.model.getOptions(),
+      // );
 
-      const handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
-        if (shiftAxis1 === undefined) return;
+      // const handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
+      //   // if (shiftAxis1 === undefined) return;
 
-        this.model.calculateRunnerFromPositionWhileMoving(event, shiftAxis1);
+      //   this.model.calculateRunnerFromPositionWhileMoving(event);
 
-        this.model.calculateTooltipsPositions();
+      //   this.model.calculateTooltipsPositions();
 
-        this.updateView(this.model.getOptions());
-      };
+      //   this.updateView(this.model.getOptions());
+      // };
 
-      $document.on('pointermove.move-from', handleRunnerFromPointermove);
-      $document.on('pointerup.move-from', () => $document.off('pointermove.move-from', handleRunnerFromPointermove));
+      // $document.on('pointermove.move-from', handleRunnerFromPointermove);
+      // $document.on('pointerup.move-from', () => $document.off('pointermove.move-from', handleRunnerFromPointermove));
     };
 
     const makeRunnerToPointermoveHandler = (event: JQuery.TriggeredEvent) => {
@@ -210,7 +211,7 @@ class Presenter {
       this.updateView(this.model.getOptions());
     };
 
-    this.view.$runnerFrom.on('pointerdown.runner-from', makeRunnerFromPointermoveHandler);
+    this.view.$runnerFrom.on('pointerdown.runner-from', this.view.SubView.makeRunnerFromPointermoveHandler);
     this.view.$runnerTo.on('pointerdown.runner-to', makeRunnerToPointermoveHandler);
     this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
     this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
@@ -280,7 +281,7 @@ class Presenter {
     this.model.from = parseFloat(`${from}`);
 
     this.model.validateInitialValues();
-    this.model.calculateInitialRunnerFromPosition();
+    // this.model.calculateInitialRunnerFromPosition();
     this.model.calculateRangePosition();
     this.model.calculateRangeLength();
     this.model.calculateInitialTooltipsValues();
