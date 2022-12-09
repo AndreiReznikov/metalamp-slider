@@ -15,6 +15,7 @@ class Presenter {
     this.isValueANumberAndFullValue = false;
 
     this.model.observer.addObserver(this.updateView);
+    this.view.SubView.observer.addObserver(this.updateModel);
 
     this.init();
     this.launchEventManager();
@@ -24,7 +25,11 @@ class Presenter {
   private init = (): void => {
     this.view.initView(this.model.getOptions());
 
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
     this.model.calculateInitialTooltipsValues();
+
+    this.model.setSubViewOptions(this.view.SubView.getSubViewOptions());
 
     this.updateView(this.model.getOptions());
 
@@ -36,8 +41,9 @@ class Presenter {
     this.model.setElementsParameters(elementsParameters);
     this.model.validateInitialValues();
     this.model.calculateInitialRunnerToPosition();
-    this.model.calculateRangePosition();
-    this.model.calculateRangeLength();
+    this.view.SubView.range.calculateRangeLength(this.model.getOptions());
+    this.view.SubView.range.setRangeLength(this.model.getOptions());
+    this.view.SubView.range.calculateRangePosition(this.model.getOptions());
     this.model.countNumberOfCharactersAfterDot();
     this.model.calculateMinAndMaxPositions();
     this.model.calculateTooltipsPositions();
@@ -48,19 +54,21 @@ class Presenter {
     this.updateView(this.model.getOptions());
     this.model.calculatePanelPosition();
     this.view.panel.setPanelPosition(this.model.getOptions());
-    // this.view.runnerFrom.calculateInitialRunnerFromPosition(this.model.getOptions());
-    // this.view.runnerFrom.setRunnerFromPosition(this.model.getOptions());
+    // this.view.SubView.runnerFrom.calculateInitialRunnerFromPosition(this.model.getOptions());
+    // this.view.SubView.runnerFrom.setRunnerFromPosition(this.model.getOptions());
   };
 
   private updateView = (options: Options): void => {
-    // this.view.runnerFrom.setRunnerFromPosition(options);
-    this.view.runnerTo.setRunnerToPosition(options);
+    this.view.SubView.runnerFrom.setRunnerPosition(options);
+    this.view.SubView.runnerTo.setRunnerPosition(options);
     this.view.tooltips.setTooltipFromValue(options);
     this.view.tooltips.setTooltipToValue(options);
     this.view.tooltips.setTooltipFromPosition(options);
     this.view.tooltips.setTooltipToPosition(options);
-    this.view.range.setRangePosition(options);
-    this.view.range.setRangeLength(options);
+    this.view.SubView.range.calculateRangePosition(options);
+    this.view.SubView.range.setRangePosition(options);
+    this.view.SubView.range.calculateRangeLength(options);
+    this.view.SubView.range.setRangeLength(options);
     this.view.minAndMaxValues.setMinAndMaxValues(options);
     this.view.minAndMaxValues.setMinAndMaxPosition(options);
     this.view.minAndMaxValues.showMinAndMax(options);
@@ -77,6 +85,19 @@ class Presenter {
     );
 
     this.model.setElementsParameters(elementsParameters);
+  };
+
+  private updateModel = (
+    subViewOptions: {
+      sliderPosition: number,
+      sliderLength: number,
+      runnerFromPosition: number,
+      runnerLength: number,
+      clickPosition: number,
+    },
+  ): void => {
+    this.model.setSubViewOptions(subViewOptions);
+    this.model.calculateRunnerFromPositionWhileMoving(subViewOptions);
   };
 
   private launchEventManager = (): void => {
@@ -211,8 +232,8 @@ class Presenter {
       this.updateView(this.model.getOptions());
     };
 
-    this.view.$runnerFrom.on('pointerdown.runner-from', this.view.SubView.makeRunnerFromPointermoveHandler);
-    this.view.$runnerTo.on('pointerdown.runner-to', makeRunnerToPointermoveHandler);
+    this.view.SubView.runnerFrom.$runner.on('pointerdown.runner-from', this.view.SubView.makeRunnerFromPointermoveHandler);
+    this.view.SubView.runnerTo.$runner.on('pointerdown.runner-to', this.view.SubView.makeRunnerToPointermoveHandler);
     this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
     this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
     this.view.$stripe.on('pointerdown.stripe-from', handleRunnerFromPositionAfterSliderOnDown);

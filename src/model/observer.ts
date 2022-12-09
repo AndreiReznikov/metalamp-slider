@@ -1,14 +1,18 @@
 import { Options } from '../interfaces/interfaces';
 
 class Observer {
-  observers: ((options: Options) => void)[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  observers: any = [];
+  // observers: ((options: Options) => void)[] = [];
 
-  addObserver = (observer: (options: Options) => void): void => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  addObserver = (observer: (options: any) => void): void => {
     this.observers.push(observer);
   };
 
-  notifyObservers = (options: Options): void => {
-    this.observers.forEach((observer) => observer(options));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  notifyObservers = (options: any): void => {
+    this.observers.forEach((observer: (arg0: any) => any) => observer(options));
   };
 }
 

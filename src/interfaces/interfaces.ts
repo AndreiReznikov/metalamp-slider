@@ -43,6 +43,7 @@ interface Options {
   panelPosition: number;
   panelPositionParameter: string;
   numberOfCharactersAfterDot: number;
+  subViewOptions: any,
 }
 
 interface Config {

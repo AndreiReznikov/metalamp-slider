@@ -1,8 +1,8 @@
 import { Options, ElementsParameters } from '../interfaces/interfaces';
 import Stripe from './stripe/stripe';
-import Range from './range/range';
-import RunnerFrom from './runner-from/runner-from';
-import RunnerTo from './runner-to/runner-to';
+// import Range from './range/range';
+// import RunnerFrom from './runner-from/runner-from';
+// import RunnerTo from './runner-to/runner-to';
 import Tooltips from './tooltips/tooltips';
 import MinAndMaxValues from './min-and-max/min-and-max';
 import Scale from './scale/scale';
@@ -14,11 +14,11 @@ class View {
 
   tooltips: Tooltips;
 
-  runnerFrom: RunnerFrom;
+  // runnerFrom: RunnerFrom;
 
-  runnerTo: RunnerTo;
+  // runnerTo: RunnerTo;
 
-  range: Range;
+  // range: Range;
 
   stripe: Stripe;
 
@@ -61,9 +61,9 @@ class View {
   constructor($slider: JQuery<HTMLElement> = $('div')) {
     this.SubView = new SubView();
     this.tooltips = new Tooltips();
-    this.runnerFrom = new RunnerFrom();
-    this.runnerTo = new RunnerTo();
-    this.range = new Range();
+    // this.runnerFrom = new RunnerFrom();
+    // this.runnerTo = new RunnerTo();
+    // this.range = new Range();
     this.stripe = new Stripe();
     this.minAndMaxValues = new MinAndMaxValues();
     this.scale = new Scale();
@@ -72,9 +72,9 @@ class View {
     this.$window = $(window);
     this.$this = $slider;
     this.$stripe = this.SubView.$stripe;
-    this.$runnerFrom = this.SubView.$runnerFrom;
-    this.$runnerTo = this.runnerTo.$runnerTo;
-    this.$range = this.range.$range;
+    this.$runnerFrom = this.SubView.runnerFrom.$runner;
+    this.$runnerTo = this.SubView.runnerTo.$runner;
+    this.$range = this.SubView.range.$range;
     this.$minValue = this.minAndMaxValues.$minValue;
     this.$maxValue = this.minAndMaxValues.$maxValue;
     this.$scaleContainer = this.scale.$scaleContainer;
@@ -83,6 +83,7 @@ class View {
     this.$panelContainer = this.panel.$panelContainer;
 
     this.renderView();
+    this.SubView.getElementParameters();
 
     const $container = this.$this.parent();
 
@@ -101,7 +102,7 @@ class View {
     const elementsParameters: ElementsParameters = {
       sliderPosition: View.getCoords(this.$stripe, isVertical),
       sliderLength: parseInt(this.$stripe.css(lengthParameter), 10),
-      runnerFromPosition: this.runnerFrom.runnerFromPosition,
+      runnerFromPosition: this.SubView.runnerFrom.runnerPosition,
       runnerLength: parseInt(this.$runnerFrom.css(lengthParameter), 10),
       tooltipFromLength: parseInt(this.$tooltipFrom.css(lengthParameter), 10),
       tooltipToLength: parseInt(this.$tooltipTo.css(lengthParameter), 10),
@@ -119,9 +120,9 @@ class View {
     this.$this.css({ width: '100%', height: '100%', 'box-sizing': 'border-box' });
 
     if (options.isRange) {
-      this.$range.css('display', 'block');
+      this.SubView.range.$range.css('display', 'block');
     } else {
-      this.$range.css('display', 'none');
+      this.SubView.range.$range.css('display', 'none');
     }
 
     if (options.isMinAndMax) {
@@ -169,7 +170,7 @@ class View {
   private setPlane = (isVertical = false): void => {
     this.$runnerFrom.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
     this.$runnerTo.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
-    this.$range.css({
+    this.SubView.range.$range.css({
       width: 0, height: 0, top: 0, left: 0,
     });
     this.$tooltipFrom.css({ left: 0, bottom: 0, top: 0 });
@@ -190,7 +191,7 @@ class View {
       this.$this.parent().css({ width: this.sliderHeight, height: this.sliderWidth });
       this.$runnerFrom.css({ left: '50%', transform: 'translateX(-50%)' });
       this.$runnerTo.css({ left: '50%', transform: 'translateX(-50%)' });
-      this.$range.css({ width: '100%' });
+      this.SubView.range.$range.css({ width: '100%' });
       this.$tooltipFrom.css({ left: runnerFromWidth });
       this.$tooltipTo.css({ left: runnerToWidth });
       this.$minValue.css({ left: runnerFromWidth });
@@ -203,7 +204,7 @@ class View {
     this.$this.parent().css({ width: `${this.sliderRelativeWidth}%`, height: this.sliderHeight });
     this.$runnerFrom.css({ top: '50%', transform: 'translateY(-50%)' });
     this.$runnerTo.css({ top: '50%', transform: 'translateY(-50%)' });
-    this.$range.css({ height: '100%' });
+    this.SubView.range.$range.css({ height: '100%' });
     this.$tooltipFrom.css({ bottom: runnerFromHeight, top: '' });
     this.$tooltipTo.css({ bottom: runnerToHeight, top: '' });
     this.$minValue.css({ bottom: runnerFromHeight, top: '' });
@@ -215,7 +216,7 @@ class View {
     this.$stripe.appendTo(this.$this).addClass('js-slider__stripe');
     this.$runnerFrom.appendTo(this.$stripe).addClass('js-slider__runner-from');
     this.$runnerTo.appendTo(this.$stripe).addClass('js-slider__runner-to');
-    this.$range.appendTo(this.$stripe).addClass('js-slider__range');
+    this.SubView.range.$range.appendTo(this.$stripe).addClass('js-slider__range');
     this.$minValue.appendTo(this.$stripe).addClass('js-slider__min-value');
     this.$maxValue.appendTo(this.$stripe).addClass('js-slider__max-value');
     this.$scaleContainer.appendTo(this.$stripe).addClass('js-slider__scale-container');

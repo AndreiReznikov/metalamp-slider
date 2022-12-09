@@ -117,6 +117,8 @@ class Model {
 
   pointerDownEvent = new jQuery.Event('click');
 
+  subViewOptions: any;
+
   constructor(userConfig: UserConfig = {}) {
     this.observer = new Observer();
 
@@ -142,6 +144,10 @@ class Model {
 
     this.setConfigParameters();
   }
+
+  public setSubViewOptions = (subViewOptions: any) => {
+    this.subViewOptions = subViewOptions;
+  };
 
   public setElementsParameters = (elementsParameters: ElementsParameters): void => {
     this.sliderPosition = elementsParameters.sliderPosition;
@@ -209,6 +215,7 @@ class Model {
       panelPosition: this.panelPosition,
       panelPositionParameter: this.panelPositionParameter,
       numberOfCharactersAfterDot: this.numberOfCharactersAfterDot,
+      subViewOptions: this.subViewOptions,
     };
 
     return options;
@@ -290,26 +297,18 @@ class Model {
     this.pointerDownEvent = event;
   };
 
-  public calculateRunnerFromPositionWhileMoving = (event: JQuery.TriggeredEvent): void => {
-    event.preventDefault();
-
-    if (this.checkIsWrongMouseButtonPressed(event)) return;
-
-    this.event = event;
-
-    let pageX1 = 0;
-    let pageY1 = 0;
-
-    if (event.pageX !== undefined) {
-      pageX1 = event.pageX;
-    }
-
-    if (event.pageY !== undefined) {
-      pageY1 = event.pageY;
-    }
-
-    this.pageAxis1 = this.isVertical ? pageY1 : pageX1;
-
+  public calculateRunnerFromPositionWhileMoving = (
+    subViewOptions: {
+      sliderPosition: number,
+      sliderLength: number,
+      runnerFromPosition: number,
+      runnerLength: number,
+      clickPosition: number,
+    },
+  ): void => {
+    this.from = parseFloat((((subViewOptions.runnerFromPosition
+      + subViewOptions.runnerLength / 2) / subViewOptions.sliderLength)
+     * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfCharactersAfterDot));
     // if (this.isStepSet) {
     //   this.calculateRunnerFromPositionWithSetStep(pageAxis1);
 
@@ -320,8 +319,8 @@ class Model {
     // } else {
     //   this.runnerFromPosition = pageAxis1 - shiftAxis1 - this.sliderPosition;
 
-    this.calculateTooltipsValues();
-    this.restrictTooltipFromValue();
+    // this.calculateTooltipsValues();
+    // this.restrictTooltipFromValue();
     //   this.restrictRunnerFromPosition();
     //   this.calculateRangePosition();
     //   this.calculateRangeLength();
@@ -723,19 +722,19 @@ class Model {
   };
 
   public calculateRangePosition = (): void => {
-    this.rangePosition = 0;
+    // this.rangePosition = 0;
 
-    if (!this.isInterval) return;
+    // if (!this.isInterval) return;
 
-    this.rangePosition = this.runnerFromPosition + this.runnerLength / 2;
+    // this.rangePosition = this.runnerFromPosition + this.runnerLength / 2;
   };
 
   public calculateRangeLength = (): void => {
-    this.rangeLength = this.runnerFromPosition + this.runnerLength / 2;
+    // this.rangeLength = this.runnerFromPosition + this.runnerLength / 2;
 
-    if (!this.isInterval) return;
+    // if (!this.isInterval) return;
 
-    this.rangeLength = this.runnerToPosition - this.runnerFromPosition;
+    // this.rangeLength = this.runnerToPosition - this.runnerFromPosition;
   };
 
   public calculateTooltipsPositions = (): void => {
