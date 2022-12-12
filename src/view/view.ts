@@ -3,7 +3,7 @@ import Stripe from './stripe/stripe';
 // import Range from './range/range';
 // import RunnerFrom from './runner-from/runner-from';
 // import RunnerTo from './runner-to/runner-to';
-import Tooltips from './tooltips/tooltips';
+import Tooltip from './tooltip/tooltip';
 import MinAndMaxValues from './min-and-max/min-and-max';
 import Scale from './scale/scale';
 import Panel from './panel/panel';
@@ -12,7 +12,7 @@ import SubView from './SubView';
 class View {
   SubView: SubView;
 
-  tooltips: Tooltips;
+  // tooltip: Tooltip;
 
   // runnerFrom: RunnerFrom;
 
@@ -60,7 +60,8 @@ class View {
 
   constructor($slider: JQuery<HTMLElement> = $('div')) {
     this.SubView = new SubView();
-    this.tooltips = new Tooltips();
+    // this.tooltipFrom = new Tooltip();
+    // this.tooltipTo = new Tooltip();
     // this.runnerFrom = new RunnerFrom();
     // this.runnerTo = new RunnerTo();
     // this.range = new Range();
@@ -78,8 +79,8 @@ class View {
     this.$minValue = this.minAndMaxValues.$minValue;
     this.$maxValue = this.minAndMaxValues.$maxValue;
     this.$scaleContainer = this.scale.$scaleContainer;
-    this.$tooltipFrom = this.tooltips.$tooltipFrom;
-    this.$tooltipTo = this.tooltips.$tooltipTo;
+    this.$tooltipFrom = this.SubView.tooltipFrom.$tooltip;
+    this.$tooltipTo = this.SubView.tooltipTo.$tooltip;
     this.$panelContainer = this.panel.$panelContainer;
 
     this.renderView();

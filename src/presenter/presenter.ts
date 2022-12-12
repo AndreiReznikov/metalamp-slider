@@ -24,7 +24,9 @@ class Presenter {
 
   private init = (): void => {
     this.view.initView(this.model.getOptions());
-
+    this.model.validateInitialValues();
+    this.model.setSubViewOptions(this.view.SubView.getSubViewOptions());
+    this.model.calculateStepLength();
     this.view.SubView.setModelOptions(this.model.getOptions());
 
     this.model.calculateInitialTooltipsValues();
@@ -32,6 +34,7 @@ class Presenter {
     this.model.setSubViewOptions(this.view.SubView.getSubViewOptions());
 
     this.updateView(this.model.getOptions());
+    // this.updateModel(this.view.SubView.getSubViewOptions());
 
     const elementsParameters = this.view.getElementsParameters(
       this.model.isVertical,
@@ -40,13 +43,21 @@ class Presenter {
 
     this.model.setElementsParameters(elementsParameters);
     this.model.validateInitialValues();
-    this.model.calculateInitialRunnerToPosition();
+    // this.model.calculateInitialRunnerToPosition();
+    this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.runnerFrom.setRunnerPosition(this.model.getOptions());
+    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.runnerTo.setRunnerPosition(this.model.getOptions());
+
+    this.updateModel(this.view.SubView.getSubViewOptions());
+
+    this.view.SubView.range.calculateRangePosition(this.model.getOptions());
+    this.view.SubView.range.setRangePosition(this.model.getOptions());
     this.view.SubView.range.calculateRangeLength(this.model.getOptions());
     this.view.SubView.range.setRangeLength(this.model.getOptions());
-    this.view.SubView.range.calculateRangePosition(this.model.getOptions());
     this.model.countNumberOfCharactersAfterDot();
     this.model.calculateMinAndMaxPositions();
-    this.model.calculateTooltipsPositions();
+    // this.model.calculateTooltipsPositions();
     this.model.calculateStepLength();
     this.model.calculateScaleElementsNumber();
     this.model.calculateScaleElementsValues();
@@ -54,17 +65,17 @@ class Presenter {
     this.updateView(this.model.getOptions());
     this.model.calculatePanelPosition();
     this.view.panel.setPanelPosition(this.model.getOptions());
-    // this.view.SubView.runnerFrom.calculateInitialRunnerFromPosition(this.model.getOptions());
-    // this.view.SubView.runnerFrom.setRunnerFromPosition(this.model.getOptions());
   };
 
   private updateView = (options: Options): void => {
     this.view.SubView.runnerFrom.setRunnerPosition(options);
     this.view.SubView.runnerTo.setRunnerPosition(options);
-    this.view.tooltips.setTooltipFromValue(options);
-    this.view.tooltips.setTooltipToValue(options);
-    this.view.tooltips.setTooltipFromPosition(options);
-    this.view.tooltips.setTooltipToPosition(options);
+    this.view.SubView.tooltipFrom.calculateTooltipPosition(options);
+    this.view.SubView.tooltipFrom.setTooltipPosition(options);
+    this.view.SubView.tooltipFrom.setTooltipValue(options);
+    this.view.SubView.tooltipTo.calculateTooltipPosition(options);
+    this.view.SubView.tooltipTo.setTooltipPosition(options);
+    this.view.SubView.tooltipTo.setTooltipValue(options);
     this.view.SubView.range.calculateRangePosition(options);
     this.view.SubView.range.setRangePosition(options);
     this.view.SubView.range.calculateRangeLength(options);
@@ -92,58 +103,68 @@ class Presenter {
       sliderPosition: number,
       sliderLength: number,
       runnerFromPosition: number,
+      runnerToPosition: number,
       runnerLength: number,
       clickPosition: number,
+      isCursorNearStepAheadFrom: boolean,
+      isCursorNearStepBehindFrom: boolean,
+      isCursorNearStepAheadTo: boolean,
+      isCursorNearStepBehindTo: boolean,
     },
   ): void => {
     this.model.setSubViewOptions(subViewOptions);
-    this.model.calculateRunnerFromPositionWhileMoving(subViewOptions);
+    this.model.calculateFrom(subViewOptions);
+    this.model.calculateTo(subViewOptions);
   };
 
   private launchEventManager = (): void => {
-    const $document = $(document);
+    // const $document = $(document);
 
-    const makeRunnerFromPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
-      // this.model.shiftAxis1 = this.view.runnerFrom.calculateShiftAxis1(
-      //   this.model.getOptions(),
-      // );
+    // const makeRunnerFromPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
+    //   // this.model.shiftAxis1 = this.view.runnerFrom.calculateShiftAxis1(
+    //   //   this.model.getOptions(),
+    //   // );
 
-      // const handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
-      //   // if (shiftAxis1 === undefined) return;
+    //   // const handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
+    //   //   // if (shiftAxis1 === undefined) return;
 
-      //   this.model.calculateRunnerFromPositionWhileMoving(event);
+    //   //   this.model.calculateRunnerFromPositionWhileMoving(event);
 
-      //   this.model.calculateTooltipsPositions();
+    //   //   this.model.calculateTooltipsPositions();
 
-      //   this.updateView(this.model.getOptions());
-      // };
+    //   //   this.updateView(this.model.getOptions());
+    //   // };
 
-      // $document.on('pointermove.move-from', handleRunnerFromPointermove);
-      // $document.on('pointerup.move-from', () => $document.off('pointermove.move-from', handleRunnerFromPointermove));
-    };
+    //   // $document.on('pointermove.move-from', handleRunnerFromPointermove);
+    // $document.on(
+    // 'pointerup.move-from',
+    // () => $document.off('pointermove.move-from', handleRunnerFromPointermove));
+    // };
 
-    const makeRunnerToPointermoveHandler = (event: JQuery.TriggeredEvent) => {
-      const shiftAxis2 = this.model.calculateShiftAxis2(event);
+    // const makeRunnerToPointermoveHandler = (event: JQuery.TriggeredEvent) => {
+    //   const shiftAxis2 = this.model.calculateShiftAxis2(event);
 
-      const handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
-        if (shiftAxis2 === undefined) return;
+    //   const handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
+    //     if (shiftAxis2 === undefined) return;
 
-        this.model.calculateRunnerToPositionWhileMoving(event, shiftAxis2);
+    //     this.model.calculateRunnerToPositionWhileMoving(event, shiftAxis2);
 
-        this.model.calculateTooltipsPositions();
+    //     this.model.calculateTooltipsPositions();
 
-        this.updateView(this.model.getOptions());
-      };
+    //     this.updateView(this.model.getOptions());
+    //   };
 
-      $document.on('pointermove.move-to', handleRunnerToPointermove);
-      $document.on('pointerup.move-to', () => $document.off('pointermove.move-to', handleRunnerToPointermove));
-    };
+    //   $document.on('pointermove.move-to', handleRunnerToPointermove);
+    //   $document.on(
+    // 'pointerup.move-to',
+    // () => $document.off('pointermove.move-to', handleRunnerToPointermove));
+    // };
 
     const makeRunnerFromKeydownHandler = (event: JQuery.FocusInEvent) => {
       const handleRunnerFromKeydown = (event: JQuery.KeyDownEvent): void => {
         this.model.calculateRunnerFromPositionAfterKeydown(event);
 
-        this.model.calculateTooltipsPositions();
+        // this.model.calculateTooltipsPositions();
 
         this.updateView(this.model.getOptions());
       };
@@ -158,7 +179,7 @@ class Presenter {
       const handleRunnerToKeydown = (event: JQuery.KeyDownEvent) => {
         this.model.calculateRunnerToPositionAfterKeydown(event);
 
-        this.model.calculateTooltipsPositions();
+        // this.model.calculateTooltipsPositions();
 
         this.updateView(this.model.getOptions());
       };
@@ -172,7 +193,7 @@ class Presenter {
     const handleRunnerFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateRunnerFromPositionAfterSliderOnDown(event);
 
-      this.model.calculateTooltipsPositions();
+      // this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
@@ -180,7 +201,7 @@ class Presenter {
     const handleRunnerToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateRunnerToPositionAfterSliderOnDown(event);
 
-      this.model.calculateTooltipsPositions();
+      // this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
@@ -188,7 +209,7 @@ class Presenter {
     const handleRunnerFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateRunnerFromPositionAfterMinValueOnDown(event);
 
-      this.model.calculateTooltipsPositions();
+      // this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
@@ -196,7 +217,7 @@ class Presenter {
     const handleRunnerFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateRunnerFromPositionAfterMaxValueOnDown(event);
 
-      this.model.calculateTooltipsPositions();
+      // this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
@@ -204,7 +225,7 @@ class Presenter {
     const handleRunnerToPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
       this.model.calculateRunnerToPositionAfterMaxValueOnDown(event);
 
-      this.model.calculateTooltipsPositions();
+      // this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
@@ -227,21 +248,21 @@ class Presenter {
 
       this.model.calculateRunnerPositionAfterScaleOnDown(event, scaleElementOptions);
 
-      this.model.calculateTooltipsPositions();
+      // this.model.calculateTooltipsPositions();
 
       this.updateView(this.model.getOptions());
     };
 
     this.view.SubView.runnerFrom.$runner.on('pointerdown.runner-from', this.view.SubView.makeRunnerFromPointermoveHandler);
     this.view.SubView.runnerTo.$runner.on('pointerdown.runner-to', this.view.SubView.makeRunnerToPointermoveHandler);
-    this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
-    this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
-    this.view.$stripe.on('pointerdown.stripe-from', handleRunnerFromPositionAfterSliderOnDown);
-    this.view.$stripe.on('pointerdown.stripe-to', handleRunnerToPositionAfterSliderOnDown);
-    this.view.$minValue.on('pointerdown.min-from', handleRunnerFromPositionAfterMinValueOnDown);
-    this.view.$maxValue.on('pointerdown.max-from', handleRunnerFromPositionAfterMaxValueOnDown);
-    this.view.$maxValue.on('pointerdown.max-to', handleRunnerToPositionAfterMaxValueOnDown);
-    this.view.$scaleContainer.on('pointerdown.scale', handleRunnersPositionAfterScaleOnDown);
+    // this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
+    // this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
+    // this.view.$stripe.on('pointerdown.stripe-from', handleRunnerFromPositionAfterSliderOnDown);
+    // this.view.$stripe.on('pointerdown.stripe-to', handleRunnerToPositionAfterSliderOnDown);
+    // this.view.$minValue.on('pointerdown.min-from', handleRunnerFromPositionAfterMinValueOnDown);
+    // this.view.$maxValue.on('pointerdown.max-from', handleRunnerFromPositionAfterMaxValueOnDown);
+    // this.view.$maxValue.on('pointerdown.max-to', handleRunnerToPositionAfterMaxValueOnDown);
+    // this.view.$scaleContainer.on('pointerdown.scale', handleRunnersPositionAfterScaleOnDown);
 
     this.view.$window.on('resize.slider', this.init);
   };
@@ -303,10 +324,10 @@ class Presenter {
 
     this.model.validateInitialValues();
     // this.model.calculateInitialRunnerFromPosition();
-    this.model.calculateRangePosition();
-    this.model.calculateRangeLength();
+    // this.model.calculateRangePosition();
+    // this.model.calculateRangeLength();
     this.model.calculateInitialTooltipsValues();
-    this.model.calculateTooltipsPositions();
+    // this.model.calculateTooltipsPositions();
 
     this.updateView(this.model.getOptions());
   };
@@ -323,11 +344,11 @@ class Presenter {
     this.model.to = parseFloat(`${to}`);
 
     this.model.validateInitialValues();
-    this.model.calculateInitialRunnerToPosition();
-    this.model.calculateRangePosition();
-    this.model.calculateRangeLength();
+    // this.model.calculateInitialRunnerToPosition();
+    // this.model.calculateRangePosition();
+    // this.model.calculateRangeLength();
     this.model.calculateInitialTooltipsValues();
-    this.model.calculateTooltipsPositions();
+    // this.model.calculateTooltipsPositions();
 
     this.updateView(this.model.getOptions());
   };
@@ -358,11 +379,11 @@ class Presenter {
 
     this.view.initView(this.model.getOptions());
     this.model.validateInitialValues();
-    this.model.calculateInitialRunnerToPosition();
-    this.model.calculateRangePosition();
-    this.model.calculateRangeLength();
+    // this.model.calculateInitialRunnerToPosition();
+    // this.model.calculateRangePosition();
+    // this.model.calculateRangeLength();
     this.model.calculateInitialTooltipsValues();
-    this.model.calculateTooltipsPositions();
+    // this.model.calculateTooltipsPositions();
 
     this.updateView(this.model.getOptions());
   };

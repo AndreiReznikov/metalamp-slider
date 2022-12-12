@@ -3,7 +3,7 @@ import Stripe from './stripe/stripe';
 import Range from './range/range';
 import Runner from './runner/runner';
 // import RunnerTo from './runner-to/runner-to';
-import Tooltips from './tooltips/tooltips';
+import Tooltip from './tooltip/tooltip';
 import MinAndMaxValues from './min-and-max/min-and-max';
 import Scale from './scale/scale';
 import Panel from './panel/panel';
@@ -12,7 +12,9 @@ import { Options } from '../interfaces/interfaces';
 class SubView {
   observer: Observer;
 
-  tooltips: Tooltips;
+  tooltipFrom: Tooltip;
+
+  tooltipTo: Tooltip;
 
   runnerFrom: Runner;
 
@@ -52,7 +54,8 @@ class SubView {
     this.observer = new Observer();
 
     this.stripe = new Stripe();
-    this.tooltips = new Tooltips();
+    this.tooltipFrom = new Tooltip('from');
+    this.tooltipTo = new Tooltip('to');
     this.runnerFrom = new Runner('from');
     this.runnerTo = new Runner('to');
     this.range = new Range();
@@ -76,6 +79,7 @@ class SubView {
     const handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
       this.calculateClickPosition(event);
       this.runnerFrom.calculateRunnerPositionWhileMoving(this.getSubViewOptions());
+      this.restrictRunnerFromPosition(this.getSubViewOptions());
 
       this.observer.notifyObservers(this.getSubViewOptions());
     };
@@ -91,6 +95,7 @@ class SubView {
     const handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
       this.calculateClickPosition(event);
       this.runnerTo.calculateRunnerPositionWhileMoving(this.getSubViewOptions());
+      this.restrictRunnerToPosition();
 
       this.observer.notifyObservers(this.getSubViewOptions());
     };
@@ -106,7 +111,7 @@ class SubView {
   };
 
   public getSubViewOptions = () => {
-    const viewOptions = {
+    const subViewOptions = {
       sliderPosition: this.sliderPosition,
       sliderLength: this.sliderLength,
       runnerFromPosition: this.runnerFrom.runnerPosition,
@@ -114,16 +119,53 @@ class SubView {
       runnerLength: this.runnerLength,
       clickPosition: this.clickPosition,
       shiftAxis: this.shiftAxis,
+      isCursorNearStepAheadFrom: this.runnerFrom.isCursorNearStepAhead,
+      isCursorNearStepBehindFrom: this.runnerFrom.isCursorNearStepBehind,
+      isCursorNearStepAheadTo: this.runnerTo.isCursorNearStepAhead,
+      isCursorNearStepBehindTo: this.runnerTo.isCursorNearStepBehind,
       modelOptions: this.modelOptions,
     };
 
-    return viewOptions;
+    return subViewOptions;
   };
 
   public getElementParameters = () => {
     this.sliderPosition = this.getCoords(this.$stripe, false);
     this.sliderLength = parseInt(this.$stripe.css('width'), 10);
     this.runnerLength = parseInt(this.runnerFrom.$runner.css('width'), 10);
+  };
+
+  private restrictRunnerFromPosition = (subViewOptions: any): void => {
+    const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFrom.runnerPosition
+      < 0 - this.runnerLength / 2;
+    const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition
+      > this.sliderLength - this.runnerLength / 2;
+    const
+      isRunnerFromPositionMoreThanRunnerToPosition: boolean = subViewOptions.modelOptions.isInterval
+      && this.runnerFrom.runnerPosition > this.runnerTo.runnerPosition;
+
+    if (isRunnerFromPositionLessThanMinimum) {
+      this.runnerFrom.runnerPosition = 0 - this.runnerLength / 2;
+    } else if (isRunnerFromPositionMoreThanMaximum) {
+      this.runnerFrom.runnerPosition = this.sliderLength - this.runnerLength / 2;
+    }
+
+    if (isRunnerFromPositionMoreThanRunnerToPosition) {
+      this.runnerFrom.runnerPosition = this.runnerTo.runnerPosition;
+    }
+  };
+
+  private restrictRunnerToPosition = (): void => {
+    const isRunnerFromPositionLessThanRunnerToPosition: boolean = this.runnerTo.runnerPosition
+      < this.runnerFrom.runnerPosition;
+    const isRunnerToPositionMoreThanMaximum: boolean = this.runnerTo.runnerPosition
+      > this.sliderLength - this.runnerLength / 2;
+
+    if (isRunnerFromPositionLessThanRunnerToPosition) {
+      this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
+    } else if (isRunnerToPositionMoreThanMaximum) {
+      this.runnerTo.runnerPosition = this.sliderLength - this.runnerLength / 2;
+    }
   };
 
   private getCoords = (element: JQuery<HTMLElement> = $('div'), isVertical = false): number => {

@@ -166,7 +166,7 @@ class Model {
   public calculateStepLength = (): void => {
     this.stepLength = parseFloat(((this.step
       / (this.maxValue - this.minValue))
-      * this.sliderLength).toFixed(this.numberOfCharactersAfterDot));
+      * this.subViewOptions.sliderLength).toFixed(this.numberOfCharactersAfterDot));
   };
 
   public getOptions = (): Options => {
@@ -267,65 +267,32 @@ class Model {
     }
   };
 
-  // public calculateInitialRunnerFromPosition = (): void => {
-  //   // const minRatio: number = this.minValue / (this.maxValue - this.minValue);
-  //   // const fromRatio: number = this.from / (this.maxValue - this.minValue);
-
-  //   // this.runnerFromPosition = Math.round((fromRatio - minRatio)
-  //   //   * this.sliderLength - this.runnerLength / 2);
-
-  //   // this.restrictRunnerFromPosition();
-  //   // this.restrictTooltipFromValue();
-  // };
-
-  public calculateInitialRunnerToPosition = (): void => {
-    const minRatio: number = this.minValue / (this.maxValue - this.minValue);
-    const toRatio: number = this.to / (this.maxValue - this.minValue);
-
-    this.runnerToPosition = Math.round((toRatio - minRatio)
-      * this.sliderLength - this.runnerLength / 2);
-
-    this.restrictRunnerToPosition();
-    this.restrictTooltipToValue();
-  };
-
-  public startRunnerFromMoving = (event: JQuery.TriggeredEvent): void => {
-    event.stopPropagation();
-
-    if (this.checkIsWrongMouseButtonPressed(event)) return;
-
-    this.pointerDownEvent = event;
-  };
-
-  public calculateRunnerFromPositionWhileMoving = (
+  public calculateFrom = (
     subViewOptions: {
       sliderPosition: number,
       sliderLength: number,
       runnerFromPosition: number,
       runnerLength: number,
       clickPosition: number,
+      isCursorNearStepAheadFrom: boolean,
+      isCursorNearStepBehindFrom: boolean,
     },
   ): void => {
-    this.from = parseFloat((((subViewOptions.runnerFromPosition
-      + subViewOptions.runnerLength / 2) / subViewOptions.sliderLength)
-     * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfCharactersAfterDot));
-    // if (this.isStepSet) {
-    //   this.calculateRunnerFromPositionWithSetStep(pageAxis1);
+    if (this.isStepSet) {
+      if (subViewOptions.isCursorNearStepAheadFrom) {
+        this.from = parseFloat((this.from + this.step).toFixed(this.numberOfCharactersAfterDot));
+      } else if (subViewOptions.isCursorNearStepBehindFrom) {
+        this.from = parseFloat((this.from - this.step).toFixed(this.numberOfCharactersAfterDot));
+      }
+    } else {
+      this.from = parseFloat((((subViewOptions.runnerFromPosition
+        + subViewOptions.runnerLength / 2) / subViewOptions.sliderLength)
+        * (this.maxValue - this.minValue) + this.minValue).toFixed(
+        this.numberOfCharactersAfterDot,
+      ));
+    }
 
-    //   this.restrictRunnerFromPosition();
-    //   this.calculateRangePosition();
-    //   this.calculateRangeLength();
-    //   this.calculateTooltipsPositions();
-    // } else {
-    //   this.runnerFromPosition = pageAxis1 - shiftAxis1 - this.sliderPosition;
-
-    // this.calculateTooltipsValues();
-    // this.restrictTooltipFromValue();
-    //   this.restrictRunnerFromPosition();
-    //   this.calculateRangePosition();
-    //   this.calculateRangeLength();
-    //   this.calculateTooltipsPositions();
-    // }
+    this.restrictFrom();
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -382,13 +349,13 @@ class Model {
       }
     } else if (isClickForRunnerFrom) {
       this.runnerFromPosition = pageAxis1 - this.sliderPosition - this.runnerLength / 2;
-      this.calculateTooltipsValues();
+      // this.calculateTooltipsValues();
     }
 
-    this.restrictRunnerFromPosition();
-    this.calculateRangePosition();
-    this.calculateRangeLength();
-    this.calculateTooltipsPositions();
+    // this.restrictRunnerFromPosition();
+    // this.calculateRangePosition();
+    // this.calculateRangeLength();
+    // this.calculateTooltipsPositions();
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -400,9 +367,9 @@ class Model {
 
     this.runnerFromPosition = 0 - this.runnerLength / 2;
 
-    this.calculateRangePosition();
-    this.calculateRangeLength();
-    this.calculateTooltipsPositions();
+    // this.calculateRangePosition();
+    // this.calculateRangeLength();
+    // this.calculateTooltipsPositions();
     this.calculateMinTooltipFromValue();
 
     this.observer.notifyObservers(this.getOptions());
@@ -418,9 +385,9 @@ class Model {
 
     this.runnerFromPosition = this.sliderLength - this.runnerLength / 2;
 
-    this.calculateRangePosition();
-    this.calculateRangeLength();
-    this.calculateTooltipsPositions();
+    // this.calculateRangePosition();
+    // this.calculateRangeLength();
+    // this.calculateTooltipsPositions();
     this.calculateMaxTooltipFromValue(this.maxValue);
 
     this.observer.notifyObservers(this.getOptions());
@@ -439,86 +406,48 @@ class Model {
 
     if (keyCodeToIncrease.includes(event.keyCode)) {
       this.runnerFromPosition += movementLength;
-      if (this.isStepSet) this.calculateTooltipFromValueWithStepAhead();
+      // if (this.isStepSet) this.calculateTooltipFromValueWithStepAhead();
     } else if (keyCodeToReduce.includes(event.keyCode)) {
       this.runnerFromPosition -= movementLength;
-      if (this.isStepSet) this.calculateTooltipFromValueWithStepBehind();
+      // if (this.isStepSet) this.calculateTooltipFromValueWithStepBehind();
     }
 
-    this.restrictRunnerFromPosition();
-    this.calculateRangePosition();
-    this.calculateRangeLength();
-    this.calculateTooltipsPositions();
-    if (!this.isStepSet) this.calculateTooltipsValues();
+    // this.restrictRunnerFromPosition();
+    // this.calculateRangePosition();
+    // this.calculateRangeLength();
+    // this.calculateTooltipsPositions();
+    // if (!this.isStepSet) this.calculateTooltipsValues();
 
     this.observer.notifyObservers(this.getOptions());
   };
 
-  public calculateShiftAxis2 = (event: JQuery.TriggeredEvent): number | undefined => {
-    event.stopPropagation();
-
-    const isWrongButtonPressedOrSingleRunner: boolean = this.checkIsWrongMouseButtonPressed(event)
-      || !this.isInterval;
-
-    if (isWrongButtonPressedOrSingleRunner) return undefined;
-
-    let shiftX2 = 0;
-    let shiftY2 = 0;
-
-    if (event.pageX !== undefined) {
-      shiftX2 = event.pageX - this.runnerToPosition - this.sliderPosition;
-    }
-
-    if (event.pageY !== undefined) {
-      shiftY2 = event.pageY - this.runnerToPosition - this.sliderPosition;
-    }
-
-    const shiftAxis2: number = this.isVertical ? shiftY2 : shiftX2;
-
-    return shiftAxis2;
-  };
-
-  public calculateRunnerToPositionWhileMoving = (
-    event: JQuery.TriggeredEvent,
-    shiftAxis2 = 0,
+  public calculateTo = (
+    subViewOptions: {
+      sliderPosition: number,
+      sliderLength: number,
+      runnerFromPosition: number,
+      runnerToPosition: number,
+      runnerLength: number,
+      clickPosition: number,
+      isCursorNearStepAheadTo: boolean,
+      isCursorNearStepBehindTo: boolean,
+    },
   ): void => {
-    event.preventDefault();
-
-    const isWrongButtonPressedOrSingleRunner: boolean = this.checkIsWrongMouseButtonPressed(event)
-      || !this.isInterval;
-
-    if (isWrongButtonPressedOrSingleRunner) return;
-
-    let pageX2 = 0;
-    let pageY2 = 0;
-
-    if (event.pageX !== undefined) {
-      pageX2 = event.pageX;
-    }
-
-    if (event.pageY !== undefined) {
-      pageY2 = event.pageY;
-    }
-
-    const pageAxis2: number = this.isVertical ? pageY2 : pageX2;
-
     if (this.isStepSet) {
-      this.calculateRunnerToPositionWithSetStep(pageAxis2);
-
-      this.restrictRunnerToPosition();
-      this.calculateRangePosition();
-      this.calculateRangeLength();
-      this.calculateTooltipsPositions();
+      if (subViewOptions.isCursorNearStepAheadTo) {
+        this.to = parseFloat((this.to + this.step).toFixed(this.numberOfCharactersAfterDot));
+      } else if (subViewOptions.isCursorNearStepBehindTo) {
+        this.to = parseFloat((this.to - this.step).toFixed(this.numberOfCharactersAfterDot));
+      }
     } else {
-      this.runnerToPosition = pageAxis2 - shiftAxis2 - this.sliderPosition;
-
-      this.calculateTooltipsValues();
-      this.restrictTooltipToValue();
-      this.restrictRunnerToPosition();
-      this.calculateRangePosition();
-      this.calculateRangeLength();
-      this.calculateTooltipsPositions();
+      this.to = parseFloat((((subViewOptions.runnerToPosition
+        + subViewOptions.runnerLength / 2) / subViewOptions.sliderLength)
+        * (this.maxValue - this.minValue) + this.minValue).toFixed(
+        this.numberOfCharactersAfterDot,
+      ));
     }
+
+    this.restrictTo();
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -570,13 +499,13 @@ class Model {
       }
     } else if (isClickForRunnerTo) {
       this.runnerToPosition = pageAxis2 - this.sliderPosition - this.runnerLength / 2;
-      this.calculateTooltipsValues();
+      // this.calculateTooltipsValues();
     }
 
-    this.restrictRunnerToPosition();
-    this.calculateRangePosition();
-    this.calculateRangeLength();
-    this.calculateTooltipsPositions();
+    // this.restrictRunnerToPosition();
+    // this.calculateRangePosition();
+    // this.calculateRangeLength();
+    // this.calculateTooltipsPositions();
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -588,9 +517,9 @@ class Model {
 
     this.runnerToPosition = this.sliderLength - this.runnerLength / 2;
 
-    this.calculateRangePosition();
-    this.calculateRangeLength();
-    this.calculateTooltipsPositions();
+    // this.calculateRangePosition();
+    // this.calculateRangeLength();
+    // this.calculateTooltipsPositions();
     this.calculateMaxTooltipToValue();
 
     this.observer.notifyObservers(this.getOptions());
@@ -612,17 +541,17 @@ class Model {
 
     if (keyCodeToIncrease.includes(event.keyCode)) {
       this.runnerToPosition += movementLength;
-      if (this.isStepSet) this.calculateTooltipToValueWithStepAhead();
+      // if (this.isStepSet) this.calculateTooltipToValueWithStepAhead();
     } else if (keyCodeToReduce.includes(event.keyCode)) {
       this.runnerToPosition -= movementLength;
-      if (this.isStepSet) this.calculateTooltipToValueWithStepBehind();
+      // if (this.isStepSet) this.calculateTooltipToValueWithStepBehind();
     }
 
-    this.restrictRunnerToPosition();
-    this.calculateRangePosition();
-    this.calculateRangeLength();
-    this.calculateTooltipsPositions();
-    if (!this.isStepSet) this.calculateTooltipsValues();
+    // this.restrictRunnerToPosition();
+    // this.calculateRangePosition();
+    // this.calculateRangeLength();
+    // this.calculateTooltipsPositions();
+    // if (!this.isStepSet) this.calculateTooltipsValues();
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -690,9 +619,9 @@ class Model {
       this.calculateTooltipToValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
     }
 
-    this.calculateRangePosition();
-    this.calculateRangeLength();
-    this.calculateTooltipsPositions();
+    // this.calculateRangePosition();
+    // this.calculateRangeLength();
+    // this.calculateTooltipsPositions();
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -719,35 +648,6 @@ class Model {
 
     this.numberOfCharactersAfterDot = minValuesAfterDot.length > maxValuesAfterDot.length
       ? minValuesAfterDot.length : maxValuesAfterDot.length;
-  };
-
-  public calculateRangePosition = (): void => {
-    // this.rangePosition = 0;
-
-    // if (!this.isInterval) return;
-
-    // this.rangePosition = this.runnerFromPosition + this.runnerLength / 2;
-  };
-
-  public calculateRangeLength = (): void => {
-    // this.rangeLength = this.runnerFromPosition + this.runnerLength / 2;
-
-    // if (!this.isInterval) return;
-
-    // this.rangeLength = this.runnerToPosition - this.runnerFromPosition;
-  };
-
-  public calculateTooltipsPositions = (): void => {
-    this.tooltipFromPosition = this.runnerFromPosition + this.runnerLength
-      / 2 - this.tooltipFromLength / 2;
-
-    if (this.isInterval) {
-      this.tooltipToPosition = this.runnerToPosition + this.runnerLength
-        / 2 - this.tooltipToLength / 2;
-    }
-
-    this.separateTooltips();
-    this.showMinAndMaxValuesAfterContactWithTooltip();
   };
 
   public calculateInitialTooltipsValues = (): void => {
@@ -832,21 +732,6 @@ class Model {
     }
   };
 
-  private calculateRunnerFromPositionWithSetStep = (pageAxis = 0): void => {
-    const isCursorNearStepAhead: boolean = pageAxis - this.sliderPosition
-      > this.runnerFromPosition + this.runnerLength / 2 + this.stepLength / 2;
-    const isCursorNearStepBehind: boolean = pageAxis - this.sliderPosition
-      < this.runnerFromPosition + this.runnerLength / 2 - this.stepLength / 2;
-
-    if (isCursorNearStepAhead) {
-      this.runnerFromPosition += this.stepLength;
-      this.calculateTooltipFromValueWithStepAhead();
-    } else if (isCursorNearStepBehind) {
-      this.runnerFromPosition -= this.stepLength;
-      this.calculateTooltipFromValueWithStepBehind();
-    }
-  };
-
   private alignRunnerFromWithRunnerToАfterApproaching = (): void => {
     const isRunnerFromNearRunnerTo: boolean = this.isInterval
     && Math.round(this.runnerToPosition - this.runnerFromPosition) <= Math.round(this.stepLength);
@@ -881,43 +766,6 @@ class Model {
     }
   };
 
-  private restrictRunnerFromPosition = (): void => {
-    const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFromPosition
-      < 0 - this.runnerLength / 2;
-    const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFromPosition
-      > this.sliderLength - this.runnerLength / 2;
-    const isRunnerFromPositionMoreThanRunnerToPosition: boolean = this.isInterval
-      && this.runnerFromPosition > this.runnerToPosition;
-
-    if (isRunnerFromPositionLessThanMinimum) {
-      this.runnerFromPosition = 0 - this.runnerLength / 2;
-    } else if (isRunnerFromPositionMoreThanMaximum) {
-      this.runnerFromPosition = this.sliderLength - this.runnerLength / 2;
-    }
-    if (isRunnerFromPositionMoreThanRunnerToPosition) {
-      this.runnerFromPosition = this.runnerToPosition;
-    }
-  };
-
-  private calculateRunnerToPositionWithSetStep = (pageAxis = 0): void => {
-    const isIntervalAndStep: boolean = this.isInterval && this.isStepSet;
-
-    if (!isIntervalAndStep) return;
-
-    const isCursorNearStepAhead: boolean = pageAxis - this.sliderPosition
-      > this.runnerToPosition + this.runnerLength / 2 + this.stepLength / 2;
-    const isCursorNearStepBehind: boolean = pageAxis - this.sliderPosition
-      < this.runnerToPosition + this.runnerLength / 2 - this.stepLength / 2;
-
-    if (isCursorNearStepAhead) {
-      this.runnerToPosition += this.stepLength;
-      this.calculateTooltipToValueWithStepAhead();
-    } else if (isCursorNearStepBehind) {
-      this.runnerToPosition -= this.stepLength;
-      this.calculateTooltipToValueWithStepBehind();
-    }
-  };
-
   private alignRunnerToWithRunnerFromАfterApproaching = (): void => {
     const isRunnerFromNearRunnerTo: boolean = this.isInterval
       && Math.round(this.runnerToPosition - this.runnerFromPosition)
@@ -943,19 +791,6 @@ class Model {
     }
   };
 
-  private restrictRunnerToPosition = (): void => {
-    const isRunnerFromPositionLessThanRunnerToPosition: boolean = this.runnerToPosition
-      < this.runnerFromPosition;
-    const isRunnerToPositionMoreThanMaximum: boolean = this.runnerToPosition
-      > this.sliderLength - this.runnerLength / 2;
-
-    if (isRunnerFromPositionLessThanRunnerToPosition) {
-      this.runnerToPosition = this.runnerFromPosition;
-    } else if (isRunnerToPositionMoreThanMaximum) {
-      this.runnerToPosition = this.sliderLength - this.runnerLength / 2;
-    }
-  };
-
   private setConfigParameters = (): void => {
     this.isInterval = this.config.isInterval;
     this.isVertical = this.config.isVertical;
@@ -975,22 +810,6 @@ class Model {
     this.scalePositionParameter = this.isVertical ? 'right' : 'top';
     this.scaleNumber = this.config.scaleNumber;
     this.panelPositionParameter = this.isVertical ? 'left' : 'top';
-  };
-
-  private calculateTooltipsValues = (): void => {
-    this.from = parseFloat((((this.runnerFromPosition + this.runnerLength / 2) / this.sliderLength)
-     * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfCharactersAfterDot));
-    this.tooltipFromValue = this.from;
-
-    this.restrictTooltipFromValue();
-
-    if (!this.isInterval) return;
-
-    this.to = parseFloat((((this.runnerToPosition + this.runnerLength / 2) / this.sliderLength)
-      * (this.maxValue - this.minValue) + this.minValue).toFixed(this.numberOfCharactersAfterDot));
-    this.tooltipToValue = this.to;
-
-    this.restrictTooltipToValue();
   };
 
   private calculateTooltipFromValueAfterScaleOnDown = (value = 0): void => {
@@ -1027,34 +846,6 @@ class Model {
     this.tooltipToValue = this.to;
   };
 
-  private calculateTooltipFromValueWithStepAhead = (): void => {
-    this.from = parseFloat((this.from + this.step).toFixed(this.numberOfCharactersAfterDot));
-    this.tooltipFromValue = this.from;
-
-    this.restrictTooltipFromValue();
-  };
-
-  private calculateTooltipFromValueWithStepBehind = (): void => {
-    this.from = parseFloat((this.from - this.step).toFixed(this.numberOfCharactersAfterDot));
-    this.tooltipFromValue = this.from;
-
-    this.restrictTooltipFromValue();
-  };
-
-  private calculateTooltipToValueWithStepAhead = (): void => {
-    this.to = parseFloat((this.to + this.step).toFixed(this.numberOfCharactersAfterDot));
-    this.tooltipToValue = this.to;
-
-    this.restrictTooltipToValue();
-  };
-
-  private calculateTooltipToValueWithStepBehind = (): void => {
-    this.to = parseFloat((this.to - this.step).toFixed(this.numberOfCharactersAfterDot));
-    this.tooltipToValue = this.to;
-
-    this.restrictTooltipToValue();
-  };
-
   private calculateMinTooltipFromValue = (): void => {
     this.from = this.minValue;
     this.tooltipFromValue = this.from;
@@ -1065,7 +856,7 @@ class Model {
     this.tooltipFromValue = this.from;
   };
 
-  private restrictTooltipFromValue = (): void => {
+  private restrictFrom = (): void => {
     const isFromLessThanMinimum: boolean = this.from < this.minValue;
     const isIntervalAndFromMoreThanTo: boolean = this.isInterval && this.from > this.to;
     const isFromMoreThanMaximum: boolean = this.from > this.maxValue;
@@ -1077,8 +868,6 @@ class Model {
     } else if (isFromMoreThanMaximum) {
       this.from = this.maxValue;
     }
-
-    this.tooltipFromValue = this.from;
   };
 
   private calculateMinTooltipToValue = (): void => {
@@ -1093,7 +882,7 @@ class Model {
     this.tooltipToValue = this.to;
   };
 
-  private restrictTooltipToValue = (): void => {
+  private restrictTo = (): void => {
     const isToLessThanFrom: boolean = this.to < this.from;
     const isToMoreThanMaximum: boolean = this.to > this.maxValue;
 
@@ -1102,8 +891,6 @@ class Model {
     } else if (isToMoreThanMaximum) {
       this.to = this.maxValue;
     }
-
-    this.tooltipToValue = this.to;
   };
 
   private separateTooltips = (): void => {
