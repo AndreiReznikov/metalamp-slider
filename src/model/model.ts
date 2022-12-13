@@ -650,10 +650,10 @@ class Model {
       ? minValuesAfterDot.length : maxValuesAfterDot.length;
   };
 
-  public calculateInitialTooltipsValues = (): void => {
-    this.tooltipFromValue = this.from;
-    this.tooltipToValue = this.to;
-  };
+  // public calculateInitialTooltipsValues = (): void => {
+  //   this.tooltipFromValue = this.from;
+  //   this.tooltipToValue = this.to;
+  // };
 
   public calculateMinAndMaxPositions = (): void => {
     this.minValuePosition = 0;
@@ -870,6 +870,19 @@ class Model {
     }
   };
 
+  private restrictTo = (): void => {
+    if (!this.isStepSet) return;
+
+    const isToLessThanFrom: boolean = this.to < this.from;
+    const isToMoreThanMaximum: boolean = this.to > this.maxValue;
+
+    if (isToLessThanFrom) {
+      this.to = this.from;
+    } else if (isToMoreThanMaximum) {
+      this.to = this.maxValue;
+    }
+  };
+
   private calculateMinTooltipToValue = (): void => {
     this.to = this.from;
 
@@ -880,17 +893,6 @@ class Model {
     this.to = this.maxValue;
 
     this.tooltipToValue = this.to;
-  };
-
-  private restrictTo = (): void => {
-    const isToLessThanFrom: boolean = this.to < this.from;
-    const isToMoreThanMaximum: boolean = this.to > this.maxValue;
-
-    if (isToLessThanFrom) {
-      this.to = this.from;
-    } else if (isToMoreThanMaximum) {
-      this.to = this.maxValue;
-    }
   };
 
   private separateTooltips = (): void => {

@@ -26,6 +26,14 @@ class Runner {
       * options.sliderLength - options.runnerLength / 2);
   };
 
+  public calculateMinRunnerPosition = (subViewOptions: any): void => {
+    this.runnerPosition = 0 - subViewOptions.runnerLength / 2;
+  };
+
+  public calculateMaxRunnerPosition = (subViewOptions: any): void => {
+    this.runnerPosition = subViewOptions.sliderLength - subViewOptions.runnerLength / 2;
+  };
+
   public calculateShiftAxis = (
     subViewOptions: {
       sliderPosition: number,

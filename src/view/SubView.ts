@@ -2,15 +2,20 @@ import Observer from '../model/observer';
 import Stripe from './stripe/stripe';
 import Range from './range/range';
 import Runner from './runner/runner';
-// import RunnerTo from './runner-to/runner-to';
 import Tooltip from './tooltip/tooltip';
-import MinAndMaxValues from './min-and-max/min-and-max';
+import Limit from './limit/limit';
 import Scale from './scale/scale';
 import Panel from './panel/panel';
 import { Options } from '../interfaces/interfaces';
 
 class SubView {
   observer: Observer;
+
+  stripe: Stripe;
+
+  limitMin: Limit;
+
+  limitMax: Limit;
 
   tooltipFrom: Tooltip;
 
@@ -22,10 +27,6 @@ class SubView {
 
   range: Range;
 
-  stripe: Stripe;
-
-  minAndMaxValues: MinAndMaxValues;
-
   scale: Scale;
 
   panel: Panel;
@@ -33,8 +34,6 @@ class SubView {
   $document: JQuery<Document>;
 
   $stripe: JQuery<HTMLElement>;
-
-  $runnerFrom: JQuery<HTMLElement>;
 
   coord = 0;
 
@@ -45,6 +44,10 @@ class SubView {
   sliderPosition = 0;
 
   runnerLength = 0;
+
+  limitMinLength = 0;
+
+  limitMaxLength = 0;
 
   shiftAxis = 0;
 
@@ -59,13 +62,13 @@ class SubView {
     this.runnerFrom = new Runner('from');
     this.runnerTo = new Runner('to');
     this.range = new Range();
-    this.minAndMaxValues = new MinAndMaxValues();
+    this.limitMin = new Limit('min');
+    this.limitMax = new Limit('max');
     this.scale = new Scale();
     this.panel = new Panel();
 
     this.$document = $(document);
     this.$stripe = this.stripe.$stripe;
-    this.$runnerFrom = this.runnerFrom.$runner;
   }
 
   public setModelOptions = (options: any) => {
@@ -104,6 +107,22 @@ class SubView {
     this.$document.on('pointerup.move-to', () => this.$document.off('pointermove.move-to', handleRunnerToPointermove));
   };
 
+  public handleLimitMinSetRunnerFromPosition = (): void => {
+    this.runnerFrom.calculateMinRunnerPosition(this.getSubViewOptions());
+
+    this.observer.notifyObservers(this.getSubViewOptions());
+  };
+
+  public handleLimitMaxSetRunnerPosition = (): void => {
+    if (this.getSubViewOptions().modelOptions.isInterval) {
+      this.runnerTo.calculateMaxRunnerPosition(this.getSubViewOptions());
+    } else {
+      this.runnerFrom.calculateMaxRunnerPosition(this.getSubViewOptions());
+    }
+
+    this.observer.notifyObservers(this.getSubViewOptions());
+  };
+
   public calculateClickPosition = (event: JQuery.TriggeredEvent): void => {
     if (!event.clientX) return;
 
@@ -117,6 +136,8 @@ class SubView {
       runnerFromPosition: this.runnerFrom.runnerPosition,
       runnerToPosition: this.runnerTo.runnerPosition,
       runnerLength: this.runnerLength,
+      limitMinLength: parseInt(this.limitMin.$limit.css('width'), 10),
+      limitMaxLength: parseInt(this.limitMax.$limit.css('width'), 10),
       clickPosition: this.clickPosition,
       shiftAxis: this.shiftAxis,
       isCursorNearStepAheadFrom: this.runnerFrom.isCursorNearStepAhead,

@@ -25,16 +25,24 @@ class Presenter {
   private init = (): void => {
     this.view.initView(this.model.getOptions());
     this.model.validateInitialValues();
+    this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
+    this.view.SubView.limitMax.setLimitValue(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getSubViewOptions());
     this.model.calculateStepLength();
     this.view.SubView.setModelOptions(this.model.getOptions());
 
-    this.model.calculateInitialTooltipsValues();
+    // this.model.calculateInitialTooltipsValues();
 
     this.model.setSubViewOptions(this.view.SubView.getSubViewOptions());
 
     this.updateView(this.model.getOptions());
     // this.updateModel(this.view.SubView.getSubViewOptions());
+    this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
+    this.view.SubView.limitMax.setLimitValue(this.model.getOptions());
+    this.view.SubView.limitMin.calculateLimitPosition(this.model.getOptions());
+    this.view.SubView.limitMin.setLimitPosition(this.model.getOptions());
+    this.view.SubView.limitMax.calculateLimitPosition(this.model.getOptions());
+    this.view.SubView.limitMax.setLimitPosition(this.model.getOptions());
 
     const elementsParameters = this.view.getElementsParameters(
       this.model.isVertical,
@@ -56,8 +64,6 @@ class Presenter {
     this.view.SubView.range.calculateRangeLength(this.model.getOptions());
     this.view.SubView.range.setRangeLength(this.model.getOptions());
     this.model.countNumberOfCharactersAfterDot();
-    this.model.calculateMinAndMaxPositions();
-    // this.model.calculateTooltipsPositions();
     this.model.calculateStepLength();
     this.model.calculateScaleElementsNumber();
     this.model.calculateScaleElementsValues();
@@ -80,9 +86,12 @@ class Presenter {
     this.view.SubView.range.setRangePosition(options);
     this.view.SubView.range.calculateRangeLength(options);
     this.view.SubView.range.setRangeLength(options);
-    this.view.minAndMaxValues.setMinAndMaxValues(options);
-    this.view.minAndMaxValues.setMinAndMaxPosition(options);
-    this.view.minAndMaxValues.showMinAndMax(options);
+    this.view.SubView.limitMin.setLimitValue(options);
+    this.view.SubView.limitMin.calculateLimitPosition(options);
+    this.view.SubView.limitMin.setLimitPosition(options);
+    this.view.SubView.limitMax.setLimitValue(options);
+    this.view.SubView.limitMax.calculateLimitPosition(options);
+    this.view.SubView.limitMax.setLimitPosition(options);
     this.view.scale.setScaleElementsValues(options);
     this.view.scale.setScaleLength(options);
     this.view.scale.setScaleElementsPositions(options);
@@ -255,12 +264,13 @@ class Presenter {
 
     this.view.SubView.runnerFrom.$runner.on('pointerdown.runner-from', this.view.SubView.makeRunnerFromPointermoveHandler);
     this.view.SubView.runnerTo.$runner.on('pointerdown.runner-to', this.view.SubView.makeRunnerToPointermoveHandler);
+    this.view.SubView.limitMin.$limit.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerFromPosition);
+    this.view.SubView.limitMax.$limit.on('pointerdown.max-to', this.view.SubView.handleLimitMaxSetRunnerPosition);
+    // this.view.SubView.limitMax.$limit.on('pointerdown.max-from', this.view.SubView.handleRunnerFromPositionAfterMaxValueOnDown);
     // this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
     // this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
     // this.view.$stripe.on('pointerdown.stripe-from', handleRunnerFromPositionAfterSliderOnDown);
     // this.view.$stripe.on('pointerdown.stripe-to', handleRunnerToPositionAfterSliderOnDown);
-    // this.view.$minValue.on('pointerdown.min-from', handleRunnerFromPositionAfterMinValueOnDown);
-    // this.view.$maxValue.on('pointerdown.max-from', handleRunnerFromPositionAfterMaxValueOnDown);
     // this.view.$maxValue.on('pointerdown.max-to', handleRunnerToPositionAfterMaxValueOnDown);
     // this.view.$scaleContainer.on('pointerdown.scale', handleRunnersPositionAfterScaleOnDown);
 
@@ -326,7 +336,7 @@ class Presenter {
     // this.model.calculateInitialRunnerFromPosition();
     // this.model.calculateRangePosition();
     // this.model.calculateRangeLength();
-    this.model.calculateInitialTooltipsValues();
+    // this.model.calculateInitialTooltipsValues();
     // this.model.calculateTooltipsPositions();
 
     this.updateView(this.model.getOptions());
@@ -347,7 +357,7 @@ class Presenter {
     // this.model.calculateInitialRunnerToPosition();
     // this.model.calculateRangePosition();
     // this.model.calculateRangeLength();
-    this.model.calculateInitialTooltipsValues();
+    // this.model.calculateInitialTooltipsValues();
     // this.model.calculateTooltipsPositions();
 
     this.updateView(this.model.getOptions());
@@ -382,7 +392,7 @@ class Presenter {
     // this.model.calculateInitialRunnerToPosition();
     // this.model.calculateRangePosition();
     // this.model.calculateRangeLength();
-    this.model.calculateInitialTooltipsValues();
+    // this.model.calculateInitialTooltipsValues();
     // this.model.calculateTooltipsPositions();
 
     this.updateView(this.model.getOptions());

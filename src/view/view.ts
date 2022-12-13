@@ -3,8 +3,8 @@ import Stripe from './stripe/stripe';
 // import Range from './range/range';
 // import RunnerFrom from './runner-from/runner-from';
 // import RunnerTo from './runner-to/runner-to';
-import Tooltip from './tooltip/tooltip';
-import MinAndMaxValues from './min-and-max/min-and-max';
+// import Tooltip from './tooltip/tooltip';
+// import MinAndMaxValues from './min-and-max/limit';
 import Scale from './scale/scale';
 import Panel from './panel/panel';
 import SubView from './SubView';
@@ -22,7 +22,7 @@ class View {
 
   stripe: Stripe;
 
-  minAndMaxValues: MinAndMaxValues;
+  // minAndMaxValues: MinAndMaxValues;
 
   scale: Scale;
 
@@ -40,9 +40,9 @@ class View {
 
   $range: JQuery<HTMLElement>;
 
-  $minValue: JQuery<HTMLElement>;
+  $limitMin: JQuery<HTMLElement>;
 
-  $maxValue: JQuery<HTMLElement>;
+  $limitMax: JQuery<HTMLElement>;
 
   $scaleContainer: JQuery<HTMLElement>;
 
@@ -66,7 +66,7 @@ class View {
     // this.runnerTo = new RunnerTo();
     // this.range = new Range();
     this.stripe = new Stripe();
-    this.minAndMaxValues = new MinAndMaxValues();
+    // this.minAndMaxValues = new MinAndMaxValues();
     this.scale = new Scale();
     this.panel = new Panel();
 
@@ -76,8 +76,8 @@ class View {
     this.$runnerFrom = this.SubView.runnerFrom.$runner;
     this.$runnerTo = this.SubView.runnerTo.$runner;
     this.$range = this.SubView.range.$range;
-    this.$minValue = this.minAndMaxValues.$minValue;
-    this.$maxValue = this.minAndMaxValues.$maxValue;
+    this.$limitMin = this.SubView.limitMin.$limit;
+    this.$limitMax = this.SubView.limitMax.$limit;
     this.$scaleContainer = this.scale.$scaleContainer;
     this.$tooltipFrom = this.SubView.tooltipFrom.$tooltip;
     this.$tooltipTo = this.SubView.tooltipTo.$tooltip;
@@ -107,10 +107,10 @@ class View {
       runnerLength: parseInt(this.$runnerFrom.css(lengthParameter), 10),
       tooltipFromLength: parseInt(this.$tooltipFrom.css(lengthParameter), 10),
       tooltipToLength: parseInt(this.$tooltipTo.css(lengthParameter), 10),
-      minValueLength: parseInt(this.$minValue.css(lengthParameter), 10),
-      maxValueLength: parseInt(this.$maxValue.css(lengthParameter), 10),
-      minValueWidth: parseInt(this.$minValue.css('width'), 10),
-      maxValueWidth: parseInt(this.$maxValue.css('width'), 10),
+      minValueLength: parseInt(this.$limitMin.css(lengthParameter), 10),
+      maxValueLength: parseInt(this.$limitMax.css(lengthParameter), 10),
+      minValueWidth: parseInt(this.$limitMin.css('width'), 10),
+      maxValueWidth: parseInt(this.$limitMax.css('width'), 10),
       scaleElementHeight: parseInt($scaleElement.css('height'), 10),
     };
 
@@ -127,11 +127,11 @@ class View {
     }
 
     if (options.isMinAndMax) {
-      this.$minValue.css('display', 'flex');
-      this.$maxValue.css('display', 'flex');
+      this.$limitMin.css('display', 'flex');
+      this.$limitMax.css('display', 'flex');
     } else {
-      this.$minValue.css('display', 'none');
-      this.$maxValue.css('display', 'none');
+      this.$limitMin.css('display', 'none');
+      this.$limitMax.css('display', 'none');
     }
 
     if (options.isScale) {
@@ -176,8 +176,8 @@ class View {
     });
     this.$tooltipFrom.css({ left: 0, bottom: 0, top: 0 });
     this.$tooltipTo.css({ left: 0, bottom: 0, top: 0 });
-    this.$minValue.css({ left: 0, bottom: 0, top: 0 });
-    this.$maxValue.css({ left: 0, bottom: 0, top: 0 });
+    this.$limitMin.css({ left: 0, bottom: 0, top: 0 });
+    this.$limitMax.css({ left: 0, bottom: 0, top: 0 });
     this.$scaleContainer.css({
       right: 0, top: 0, width: 0, height: 0,
     });
@@ -195,8 +195,8 @@ class View {
       this.SubView.range.$range.css({ width: '100%' });
       this.$tooltipFrom.css({ left: runnerFromWidth });
       this.$tooltipTo.css({ left: runnerToWidth });
-      this.$minValue.css({ left: runnerFromWidth });
-      this.$maxValue.css({ left: runnerFromWidth });
+      this.$limitMin.css({ left: runnerFromWidth });
+      this.$limitMax.css({ left: runnerFromWidth });
       this.$panelContainer.css({ transform: 'translateX(0)', top: 0, width: '150px' });
 
       return;
@@ -208,8 +208,8 @@ class View {
     this.SubView.range.$range.css({ height: '100%' });
     this.$tooltipFrom.css({ bottom: runnerFromHeight, top: '' });
     this.$tooltipTo.css({ bottom: runnerToHeight, top: '' });
-    this.$minValue.css({ bottom: runnerFromHeight, top: '' });
-    this.$maxValue.css({ bottom: runnerFromHeight, top: '' });
+    this.$limitMin.css({ bottom: runnerFromHeight, top: '' });
+    this.$limitMax.css({ bottom: runnerFromHeight, top: '' });
     this.$panelContainer.css({ left: '50%', transform: 'translateX(-50%)', width: '650px' });
   };
 
@@ -218,8 +218,8 @@ class View {
     this.$runnerFrom.appendTo(this.$stripe).addClass('js-slider__runner-from');
     this.$runnerTo.appendTo(this.$stripe).addClass('js-slider__runner-to');
     this.SubView.range.$range.appendTo(this.$stripe).addClass('js-slider__range');
-    this.$minValue.appendTo(this.$stripe).addClass('js-slider__min-value');
-    this.$maxValue.appendTo(this.$stripe).addClass('js-slider__max-value');
+    this.$limitMin.appendTo(this.$stripe).addClass('js-slider__min-value');
+    this.$limitMax.appendTo(this.$stripe).addClass('js-slider__max-value');
     this.$scaleContainer.appendTo(this.$stripe).addClass('js-slider__scale-container');
     this.$tooltipFrom.appendTo(this.$stripe).addClass('js-slider__tooltip-from');
     this.$tooltipTo.appendTo(this.$stripe).addClass('js-slider__tooltip-to');
