@@ -31,12 +31,10 @@ class Presenter {
     this.model.calculateStepLength();
     this.view.SubView.setModelOptions(this.model.getOptions());
 
-    // this.model.calculateInitialTooltipsValues();
-
     this.model.setSubViewOptions(this.view.SubView.getSubViewOptions());
 
     this.updateView(this.model.getOptions());
-    // this.updateModel(this.view.SubView.getSubViewOptions());
+
     this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
     this.view.SubView.limitMax.setLimitValue(this.model.getOptions());
     this.view.SubView.limitMin.calculateLimitPosition(this.model.getOptions());
@@ -51,7 +49,7 @@ class Presenter {
 
     this.model.setElementsParameters(elementsParameters);
     this.model.validateInitialValues();
-    // this.model.calculateInitialRunnerToPosition();
+
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.runnerFrom.setRunnerPosition(this.model.getOptions());
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
@@ -76,12 +74,12 @@ class Presenter {
   private updateView = (options: Options): void => {
     this.view.SubView.runnerFrom.setRunnerPosition(options);
     this.view.SubView.runnerTo.setRunnerPosition(options);
+    this.view.SubView.tooltipFrom.setTooltipValue(options);
     this.view.SubView.tooltipFrom.calculateTooltipPosition(options);
     this.view.SubView.tooltipFrom.setTooltipPosition(options);
-    this.view.SubView.tooltipFrom.setTooltipValue(options);
+    this.view.SubView.tooltipTo.setTooltipValue(options);
     this.view.SubView.tooltipTo.calculateTooltipPosition(options);
     this.view.SubView.tooltipTo.setTooltipPosition(options);
-    this.view.SubView.tooltipTo.setTooltipValue(options);
     this.view.SubView.range.calculateRangePosition(options);
     this.view.SubView.range.setRangePosition(options);
     this.view.SubView.range.calculateRangeLength(options);
@@ -115,6 +113,9 @@ class Presenter {
       runnerToPosition: number,
       runnerLength: number,
       clickPosition: number,
+      isMinFrom: boolean,
+      isMaxFrom: boolean,
+      isMaxTo: boolean,
       isCursorNearStepAheadFrom: boolean,
       isCursorNearStepBehindFrom: boolean,
       isCursorNearStepAheadTo: boolean,
@@ -127,48 +128,6 @@ class Presenter {
   };
 
   private launchEventManager = (): void => {
-    // const $document = $(document);
-
-    // const makeRunnerFromPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
-    //   // this.model.shiftAxis1 = this.view.runnerFrom.calculateShiftAxis1(
-    //   //   this.model.getOptions(),
-    //   // );
-
-    //   // const handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
-    //   //   // if (shiftAxis1 === undefined) return;
-
-    //   //   this.model.calculateRunnerFromPositionWhileMoving(event);
-
-    //   //   this.model.calculateTooltipsPositions();
-
-    //   //   this.updateView(this.model.getOptions());
-    //   // };
-
-    //   // $document.on('pointermove.move-from', handleRunnerFromPointermove);
-    // $document.on(
-    // 'pointerup.move-from',
-    // () => $document.off('pointermove.move-from', handleRunnerFromPointermove));
-    // };
-
-    // const makeRunnerToPointermoveHandler = (event: JQuery.TriggeredEvent) => {
-    //   const shiftAxis2 = this.model.calculateShiftAxis2(event);
-
-    //   const handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
-    //     if (shiftAxis2 === undefined) return;
-
-    //     this.model.calculateRunnerToPositionWhileMoving(event, shiftAxis2);
-
-    //     this.model.calculateTooltipsPositions();
-
-    //     this.updateView(this.model.getOptions());
-    //   };
-
-    //   $document.on('pointermove.move-to', handleRunnerToPointermove);
-    //   $document.on(
-    // 'pointerup.move-to',
-    // () => $document.off('pointermove.move-to', handleRunnerToPointermove));
-    // };
-
     const makeRunnerFromKeydownHandler = (event: JQuery.FocusInEvent) => {
       const handleRunnerFromKeydown = (event: JQuery.KeyDownEvent): void => {
         this.model.calculateRunnerFromPositionAfterKeydown(event);
@@ -199,40 +158,16 @@ class Presenter {
       $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerToKeydown));
     };
 
-    const handleRunnerFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateRunnerFromPositionAfterSliderOnDown(event);
+    // const handleRunnerFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
+    //   this.model.calculateRunnerFromPositionAfterSliderOnDown(event);
 
-      // this.model.calculateTooltipsPositions();
+    //   // this.model.calculateTooltipsPositions();
 
-      this.updateView(this.model.getOptions());
-    };
+    //   this.updateView(this.model.getOptions());
+    // };
 
     const handleRunnerToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateRunnerToPositionAfterSliderOnDown(event);
-
-      // this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
-    const handleRunnerFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateRunnerFromPositionAfterMinValueOnDown(event);
-
-      // this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
-    const handleRunnerFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateRunnerFromPositionAfterMaxValueOnDown(event);
-
-      // this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
-    const handleRunnerToPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateRunnerToPositionAfterMaxValueOnDown(event);
+      // this.model.calculateRunnerToPositionAfterSliderOnDown(event);
 
       // this.model.calculateTooltipsPositions();
 
@@ -264,14 +199,13 @@ class Presenter {
 
     this.view.SubView.runnerFrom.$runner.on('pointerdown.runner-from', this.view.SubView.makeRunnerFromPointermoveHandler);
     this.view.SubView.runnerTo.$runner.on('pointerdown.runner-to', this.view.SubView.makeRunnerToPointermoveHandler);
-    this.view.SubView.limitMin.$limit.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerFromPosition);
+    this.view.SubView.limitMin.$limit.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
     this.view.SubView.limitMax.$limit.on('pointerdown.max-to', this.view.SubView.handleLimitMaxSetRunnerPosition);
-    // this.view.SubView.limitMax.$limit.on('pointerdown.max-from', this.view.SubView.handleRunnerFromPositionAfterMaxValueOnDown);
+    this.view.SubView.stripe.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
     // this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
     // this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
     // this.view.$stripe.on('pointerdown.stripe-from', handleRunnerFromPositionAfterSliderOnDown);
     // this.view.$stripe.on('pointerdown.stripe-to', handleRunnerToPositionAfterSliderOnDown);
-    // this.view.$maxValue.on('pointerdown.max-to', handleRunnerToPositionAfterMaxValueOnDown);
     // this.view.$scaleContainer.on('pointerdown.scale', handleRunnersPositionAfterScaleOnDown);
 
     this.view.$window.on('resize.slider', this.init);

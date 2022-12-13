@@ -31,19 +31,6 @@ class Limit {
       this.$limit.html(`${options.maxValue}`);
     }
   }
-
-  // public showMinAndMax = (options: Options): void => {
-  //   this.$minValue.css({ opacity: '1' });
-  //   this.$maxValue.css({ opacity: '1' });
-
-  //   if (!options.isMinValueShow) {
-  //     this.$minValue.css({ opacity: '0' });
-  //   }
-
-  //   if (!options.isMaxValueShow) {
-  //     this.$maxValue.css({ opacity: '0' });
-  //   }
-  // };
 }
 
 export default Limit;

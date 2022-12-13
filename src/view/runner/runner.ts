@@ -11,6 +11,12 @@ class Runner {
 
   isCursorNearStepBehind = false;
 
+  isMinFrom = false;
+
+  isMaxFrom = false;
+
+  isMaxTo = false;
+
   constructor(runnerType: string) {
     this.runnerType = runnerType;
   }
@@ -28,10 +34,18 @@ class Runner {
 
   public calculateMinRunnerPosition = (subViewOptions: any): void => {
     this.runnerPosition = 0 - subViewOptions.runnerLength / 2;
+
+    this.isMinFrom = true;
   };
 
   public calculateMaxRunnerPosition = (subViewOptions: any): void => {
     this.runnerPosition = subViewOptions.sliderLength - subViewOptions.runnerLength / 2;
+
+    if (subViewOptions.modelOptions.isInterval) {
+      this.isMaxTo = true;
+    } else {
+      this.isMaxFrom = true;
+    }
   };
 
   public calculateShiftAxis = (
@@ -47,7 +61,7 @@ class Runner {
     return shiftAxis;
   };
 
-  public calculateRunnerPositionWhileMoving = (
+  public calculateRunnerPositionWhileMouseIsMoving = (
     subViewOptions: {
       sliderPosition: number,
       runnerFromPosition: number,
@@ -57,6 +71,10 @@ class Runner {
       modelOptions: any,
     },
   ): void => {
+    this.isMinFrom = false;
+    this.isMaxFrom = false;
+    this.isMaxTo = false;
+
     if (subViewOptions.modelOptions.isStepSet) {
       this.calculateRunnerPositionWithSetStep(subViewOptions);
     } else {
