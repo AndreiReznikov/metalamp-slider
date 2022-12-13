@@ -3,6 +3,8 @@ import { Options } from '../../interfaces/interfaces';
 class Scale {
   $scaleContainer: JQuery<HTMLElement> = $('<div>');
 
+  lengthBetweenScaleElements = 0;
+
   public setScaleLength = (options: Options): void => {
     this.$scaleContainer.css(options.lengthParameter, options.sliderLength);
   };
@@ -18,7 +20,11 @@ class Scale {
 
     const maxScaleElementsWidth: number = Math.max(...scaleElementsWidths);
 
-    this.$scaleContainer.css(options.scalePositionParameter, options.scalePositionParameter === 'right' ? maxScaleElementsWidth + options.runnerLength : options.runnerLength);
+    this.$scaleContainer.css(
+      options.scalePositionParameter,
+      options.scalePositionParameter === 'right'
+        ? maxScaleElementsWidth + options.runnerLength : options.runnerLength,
+    );
   };
 
   public setScaleElementsValues = (options: Options): void => {
@@ -31,6 +37,10 @@ class Scale {
     }
   };
 
+  public calculateLengthBetweenScaleElements = (options: Options): void => {
+    this.lengthBetweenScaleElements = options.sliderLength / (options.scaleNumber - 1);
+  };
+
   public setScaleElementsPositions = (options: Options): void => {
     let scaleElementPosition = 0;
 
@@ -40,7 +50,7 @@ class Scale {
 
       $scaleElement.css(options.positionParameter, scaleElementPosition - scaleElementLength / 2);
 
-      scaleElementPosition += options.lengthBetweenScaleElements;
+      scaleElementPosition += this.lengthBetweenScaleElements;
     }
   };
 }

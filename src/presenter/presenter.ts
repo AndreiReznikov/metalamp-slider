@@ -65,7 +65,6 @@ class Presenter {
     this.model.calculateStepLength();
     this.model.calculateScaleElementsNumber();
     this.model.calculateScaleElementsValues();
-    this.model.calculateLengthBetweenScaleElements();
     this.updateView(this.model.getOptions());
     this.model.calculatePanelPosition();
     this.view.panel.setPanelPosition(this.model.getOptions());
@@ -90,10 +89,11 @@ class Presenter {
     this.view.SubView.limitMax.setLimitValue(options);
     this.view.SubView.limitMax.calculateLimitPosition(options);
     this.view.SubView.limitMax.setLimitPosition(options);
-    this.view.scale.setScaleElementsValues(options);
-    this.view.scale.setScaleLength(options);
-    this.view.scale.setScaleElementsPositions(options);
-    this.view.scale.setScalePosition(options);
+    this.view.SubView.scale.setScaleElementsValues(options);
+    this.view.SubView.scale.calculateLengthBetweenScaleElements(options);
+    this.view.SubView.scale.setScaleLength(options);
+    this.view.SubView.scale.setScaleElementsPositions(options);
+    this.view.SubView.scale.setScalePosition(options);
     this.view.panel.setPanelPosition(options);
     this.view.panel.setPanelValues(options);
 
@@ -120,6 +120,12 @@ class Presenter {
       isCursorNearStepBehindFrom: boolean,
       isCursorNearStepAheadTo: boolean,
       isCursorNearStepBehindTo: boolean,
+      isClickAheadOfRunnerFrom: boolean,
+      isClickBehindOfRunnerFrom: boolean,
+      isClickAheadOfRunnerTo: boolean,
+      isClickBehindOfRunnerTo: boolean,
+      runnerFromStepsNumber: number,
+      runnerToStepsNumber: number,
     },
   ): void => {
     this.model.setSubViewOptions(subViewOptions);
@@ -158,22 +164,6 @@ class Presenter {
       $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerToKeydown));
     };
 
-    // const handleRunnerFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
-    //   this.model.calculateRunnerFromPositionAfterSliderOnDown(event);
-
-    //   // this.model.calculateTooltipsPositions();
-
-    //   this.updateView(this.model.getOptions());
-    // };
-
-    const handleRunnerToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
-      // this.model.calculateRunnerToPositionAfterSliderOnDown(event);
-
-      // this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
     const handleRunnersPositionAfterScaleOnDown = (event: JQuery.TriggeredEvent) => {
       if (!event.target) return;
 
@@ -204,8 +194,6 @@ class Presenter {
     this.view.SubView.stripe.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
     // this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
     // this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
-    // this.view.$stripe.on('pointerdown.stripe-from', handleRunnerFromPositionAfterSliderOnDown);
-    // this.view.$stripe.on('pointerdown.stripe-to', handleRunnerToPositionAfterSliderOnDown);
     // this.view.$scaleContainer.on('pointerdown.scale', handleRunnersPositionAfterScaleOnDown);
 
     this.view.$window.on('resize.slider', this.init);

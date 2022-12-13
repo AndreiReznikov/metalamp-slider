@@ -279,6 +279,12 @@ class Model {
       isMaxTo: boolean,
       isCursorNearStepAheadFrom: boolean,
       isCursorNearStepBehindFrom: boolean,
+      isClickAheadOfRunnerFrom: boolean,
+      isClickBehindOfRunnerFrom: boolean,
+      isClickAheadOfRunnerTo: boolean,
+      isClickBehindOfRunnerTo: boolean,
+      runnerFromStepsNumber: number,
+      runnerToStepsNumber: number,
     },
   ): void => {
     if (this.isStepSet) {
@@ -286,6 +292,12 @@ class Model {
         this.from = parseFloat((this.from + this.step).toFixed(this.numberOfCharactersAfterDot));
       } else if (subViewOptions.isCursorNearStepBehindFrom) {
         this.from = parseFloat((this.from - this.step).toFixed(this.numberOfCharactersAfterDot));
+      } else if (subViewOptions.isClickAheadOfRunnerFrom) {
+        this.from = parseFloat((this.from + (subViewOptions.runnerFromStepsNumber
+          * this.step)).toFixed(this.numberOfCharactersAfterDot));
+      } else if (subViewOptions.isClickBehindOfRunnerFrom) {
+        this.from = parseFloat((this.from - (subViewOptions.runnerFromStepsNumber
+          * this.step)).toFixed(this.numberOfCharactersAfterDot));
       }
     } else {
       this.from = parseFloat((((subViewOptions.runnerFromPosition
@@ -306,69 +318,6 @@ class Model {
 
     this.observer.notifyObservers(this.getOptions());
   };
-
-  // public calculateRunnerFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent): void => {
-  //   if (this.checkIsWrongMouseButtonPressed(event)) return;
-
-  //   let pageX1 = 0;
-  //   let pageY1 = 0;
-
-  //   if (event.pageX !== undefined) {
-  //     pageX1 = event.pageX;
-  //   }
-
-  //   if (event.pageY !== undefined) {
-  //     pageY1 = event.pageY;
-  //   }
-
-  //   const pageAxis1: number = this.isVertical ? pageY1 : pageX1;
-
-  //   const intervalForRunnerFromSteps: number = this.runnerFromPosition + this.runnerLength
-  //     / 2 - (pageAxis1 - this.sliderPosition);
-  //   let runnerFromStepsNumber: number = Math.round(intervalForRunnerFromSteps / this.stepLength);
-
-  //   runnerFromStepsNumber = runnerFromStepsNumber
-  //     < 0 ? -runnerFromStepsNumber : runnerFromStepsNumber;
-
-  //   const isClickAheadOfRunnerFromWithInterval: boolean = pageAxis1 - this.sliderPosition
-  //     > this.runnerFromPosition + this.runnerLength
-  //     && pageAxis1 - this.sliderPosition < this.runnerFromPosition + this.runnerLength
-  //     + (this.runnerToPosition - this.runnerFromPosition - this.runnerLength) / 2;
-  //   const isClickAheadOfRunnerFromWithoutInterval: boolean = pageAxis1 - this.sliderPosition
-  //     > this.runnerFromPosition + this.runnerLength;
-
-  //   const isClickAheadOfRunnerFrom: boolean = this.isInterval
-  //     ? isClickAheadOfRunnerFromWithInterval : isClickAheadOfRunnerFromWithoutInterval;
-  //   const isClickBehindOfRunnerFrom: boolean = pageAxis1 - this.sliderPosition
-  //     < this.runnerFromPosition;
-  //   const isClickForRunnerFrom: boolean = isClickAheadOfRunnerFrom || isClickBehindOfRunnerFrom;
-
-  //   if (this.isStepSet) {
-  //     if (isClickAheadOfRunnerFrom) {
-  //       this.alignRunnerFromWithRunnerToАfterApproaching();
-
-  //       this.runnerFromPosition += runnerFromStepsNumber * this.stepLength;
-
-  //       this.calculateTooltipFromValueAfterSliderOnDownAhead(runnerFromStepsNumber);
-  //       this.calculateMaxRunnerFromPositionAfterSliderOnDown(pageAxis1);
-  //     } else if (isClickBehindOfRunnerFrom) {
-  //       this.runnerFromPosition -= runnerFromStepsNumber * this.stepLength;
-
-  //       this.calculateTooltipFromValueAfterSliderOnDownBehind(runnerFromStepsNumber);
-  //       this.calculateMinRunnerFromPositionAfterSliderOnDown(pageAxis1);
-  //     }
-  //   } else if (isClickForRunnerFrom) {
-  //     this.runnerFromPosition = pageAxis1 - this.sliderPosition - this.runnerLength / 2;
-  //     // this.calculateTooltipsValues();
-  //   }
-
-  //   // this.restrictRunnerFromPosition();
-  //   // this.calculateRangePosition();
-  //   // this.calculateRangeLength();
-  //   // this.calculateTooltipsPositions();
-
-  //   this.observer.notifyObservers(this.getOptions());
-  // };
 
   public calculateRunnerFromPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
     const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
@@ -409,6 +358,12 @@ class Model {
       isMaxTo: boolean,
       isCursorNearStepAheadTo: boolean,
       isCursorNearStepBehindTo: boolean,
+      isClickAheadOfRunnerFrom: boolean,
+      isClickBehindOfRunnerFrom: boolean,
+      isClickAheadOfRunnerTo: boolean,
+      isClickBehindOfRunnerTo: boolean,
+      runnerFromStepsNumber: number,
+      runnerToStepsNumber: number,
     },
   ): void => {
     if (this.isStepSet) {
@@ -416,6 +371,12 @@ class Model {
         this.to = parseFloat((this.to + this.step).toFixed(this.numberOfCharactersAfterDot));
       } else if (subViewOptions.isCursorNearStepBehindTo) {
         this.to = parseFloat((this.to - this.step).toFixed(this.numberOfCharactersAfterDot));
+      } else if (subViewOptions.isClickAheadOfRunnerTo) {
+        this.to = parseFloat((this.to + (subViewOptions.runnerToStepsNumber
+          * this.step)).toFixed(this.numberOfCharactersAfterDot));
+      } else if (subViewOptions.isClickBehindOfRunnerTo) {
+        this.to = parseFloat((this.to - (subViewOptions.runnerToStepsNumber
+          * this.step)).toFixed(this.numberOfCharactersAfterDot));
       }
     } else {
       this.to = parseFloat((((subViewOptions.runnerToPosition
@@ -433,65 +394,6 @@ class Model {
 
     this.observer.notifyObservers(this.getOptions());
   };
-
-  // public calculateRunnerToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent): void => {
-  //   const isWrongButtonPressedOrSingleRunner: boolean =
-  // this.checkIsWrongMouseButtonPressed(event)
-  //     || !this.isInterval;
-
-  //   if (isWrongButtonPressedOrSingleRunner) return;
-
-  //   let pageX2 = 0;
-  //   let pageY2 = 0;
-
-  //   if (event.pageX !== undefined) {
-  //     pageX2 = event.pageX;
-  //   }
-
-  //   if (event.pageY !== undefined) {
-  //     pageY2 = event.pageY;
-  //   }
-
-  //   const pageAxis2: number = this.isVertical ? pageY2 : pageX2;
-  //   const intervalForRunnerToSteps: number = this.runnerToPosition + this.runnerLength
-  //     / 2 - (pageAxis2 - this.sliderPosition);
-  //   let runnerToStepsNumber: number = Math.round(intervalForRunnerToSteps / this.stepLength);
-
-  //   runnerToStepsNumber = runnerToStepsNumber < 0 ? -runnerToStepsNumber : runnerToStepsNumber;
-
-  //   const isClickAheadOfRunnerTo: boolean = pageAxis2 - this.sliderPosition
-  //     > this.runnerToPosition + this.runnerLength;
-  //   const isClickBehindOfRunnerTo: boolean = pageAxis2 - this.sliderPosition
-  //     < this.runnerToPosition && pageAxis2 - this.sliderPosition
-  //     >= this.runnerFromPosition + this.runnerLength
-  //     + (this.runnerToPosition - this.runnerFromPosition - this.runnerLength) / 2;
-  //   const isClickForRunnerTo: boolean = isClickAheadOfRunnerTo || isClickBehindOfRunnerTo;
-
-  //   if (this.isStepSet) {
-  //     if (isClickAheadOfRunnerTo) {
-  //       this.runnerToPosition += runnerToStepsNumber * this.stepLength;
-
-  //       this.calculateTooltipToValueAfterSliderOnDownAhead(runnerToStepsNumber);
-  //       this.calculateMaxRunnerToPositionAfterSliderOnDown(pageAxis2);
-  //     } else if (isClickBehindOfRunnerTo) {
-  //       this.alignRunnerToWithRunnerFromАfterApproaching();
-
-  //       this.runnerToPosition -= runnerToStepsNumber * this.stepLength;
-
-  //       this.calculateTooltipToValueAfterSliderOnDownBehind(runnerToStepsNumber);
-  //     }
-  //   } else if (isClickForRunnerTo) {
-  //     this.runnerToPosition = pageAxis2 - this.sliderPosition - this.runnerLength / 2;
-  //     // this.calculateTooltipsValues();
-  //   }
-
-  //   // this.restrictRunnerToPosition();
-  //   // this.calculateRangePosition();
-  //   // this.calculateRangeLength();
-  //   // this.calculateTooltipsPositions();
-
-  //   this.observer.notifyObservers(this.getOptions());
-  // };
 
   public calculateRunnerToPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
     const isKeyboardAndInterval: boolean = this.keyboard && this.isInterval;
@@ -540,10 +442,10 @@ class Model {
   ): void => {
     event.stopPropagation();
 
-    const isWrongMouseButtonOrWrongElement: boolean = this.checkIsWrongMouseButtonPressed(event)
-      || !scaleOptions.isScaleElementOnDown;
+    // const isWrongMouseButtonOrWrongElement: boolean = this.checkIsWrongMouseButtonPressed(event)
+    //   || !scaleOptions.isScaleElementOnDown;
 
-    if (isWrongMouseButtonOrWrongElement) return;
+    // if (isWrongMouseButtonOrWrongElement) return;
 
     let pageX1 = 0;
     let pageY1 = 0;
@@ -660,12 +562,8 @@ class Model {
     }
   };
 
-  public calculateLengthBetweenScaleElements = (): void => {
-    this.lengthBetweenScaleElements = this.sliderLength / (this.scaleNumber - 1);
-  };
-
   public calculateScaleElementsNumber = (): void => {
-    if (this.userConfig?.scaleNumber) return;
+    if (this.userConfig.scaleNumber) return;
 
     const isDifferenceBetweenMaxMinValuesLessOrEqualToOne: boolean = this.maxValue - this.minValue
       <= 1 && this.numberOfCharactersAfterDot === 0;
@@ -702,6 +600,17 @@ class Model {
   //   }
   // };
 
+  // private alignRunnerToWithRunnerFromАfterApproaching = (): void => {
+  //   const isRunnerFromNearRunnerTo: boolean = this.isInterval
+  //     && Math.round(this.runnerToPosition - this.runnerFromPosition)
+  //     <= Math.round(this.stepLength);
+
+  //   if (isRunnerFromNearRunnerTo) {
+  //     this.runnerToPosition = this.runnerFromPosition;
+  //     this.calculateMinTooltipToValue();
+  //   }
+  // };
+
   // private calculateMinRunnerFromPositionAfterSliderOnDown = (pageAxis = 0): void => {
   //   if (!this.isStepSet) return;
 
@@ -723,17 +632,6 @@ class Model {
   //   if (isClickNearMaximumWithoutInterval) {
   //     this.runnerFromPosition = this.sliderLength - this.runnerLength / 2;
   //     this.calculateMaxTooltipFromValue(this.maxValue);
-  //   }
-  // };
-
-  // private alignRunnerToWithRunnerFromАfterApproaching = (): void => {
-  //   const isRunnerFromNearRunnerTo: boolean = this.isInterval
-  //     && Math.round(this.runnerToPosition - this.runnerFromPosition)
-  //     <= Math.round(this.stepLength);
-
-  //   if (isRunnerFromNearRunnerTo) {
-  //     this.runnerToPosition = this.runnerFromPosition;
-  //     this.calculateMinTooltipToValue();
   //   }
   // };
 
@@ -782,40 +680,6 @@ class Model {
     this.tooltipToValue = this.to;
   };
 
-  // private calculateTooltipFromValueAfterSliderOnDownAhead = (stepNumber = 0): void => {
-  //   this.from = parseFloat((this.from + (stepNumber
-  //     * this.step)).toFixed(this.numberOfCharactersAfterDot));
-  //   this.tooltipFromValue = this.from;
-  // };
-
-  // private calculateTooltipFromValueAfterSliderOnDownBehind = (stepNumber = 0): void => {
-  //   this.from = parseFloat((this.from - (stepNumber
-  //     * this.step)).toFixed(this.numberOfCharactersAfterDot));
-  //   this.tooltipFromValue = this.from;
-  // };
-
-  // private calculateTooltipToValueAfterSliderOnDownAhead = (stepNumber = 0): void => {
-  //   this.to = parseFloat((this.to + (stepNumber
-  //     * this.step)).toFixed(this.numberOfCharactersAfterDot));
-  //   this.tooltipToValue = this.to;
-  // };
-
-  // private calculateTooltipToValueAfterSliderOnDownBehind = (stepNumber = 0): void => {
-  //   this.to = parseFloat((this.to - (stepNumber
-  //     * this.step)).toFixed(this.numberOfCharactersAfterDot));
-  //   this.tooltipToValue = this.to;
-  // };
-
-  // private calculateMinTooltipFromValue = (): void => {
-  //   this.from = this.minValue;
-  //   this.tooltipFromValue = this.from;
-  // };
-
-  // private calculateMaxTooltipFromValue = (value = 0): void => {
-  //   this.from = value;
-  //   this.tooltipFromValue = this.from;
-  // };
-
   private restrictFrom = (): void => {
     const isFromLessThanMinimum: boolean = this.from < this.minValue;
     const isIntervalAndFromMoreThanTo: boolean = this.isInterval && this.from > this.to;
@@ -843,18 +707,6 @@ class Model {
     }
   };
 
-  // private calculateMinTooltipToValue = (): void => {
-  //   this.to = this.from;
-
-  //   this.tooltipToValue = this.to;
-  // };
-
-  // private calculateMaxTooltipToValue = (): void => {
-  //   this.to = this.maxValue;
-
-  //   this.tooltipToValue = this.to;
-  // };
-
   // private separateTooltips = (): void => {
   //   const areTooltipsClose: boolean = this.tooltipFromPosition + this.tooltipFromLength
   //     > this.tooltipToPosition;
@@ -866,11 +718,11 @@ class Model {
   //   this.tooltipToPosition = this.runnerToPosition + this.runnerLength;
   // };
 
-  private checkIsWrongMouseButtonPressed = (event: JQuery.TriggeredEvent): boolean => {
-    this.isWrongMouseButtonPressed = event.pointerType === 'mouse' && event.buttons !== 1;
+  // private checkIsWrongMouseButtonPressed = (event: JQuery.TriggeredEvent): boolean => {
+  //   this.isWrongMouseButtonPressed = event.pointerType === 'mouse' && event.buttons !== 1;
 
-    return this.isWrongMouseButtonPressed;
-  };
+  //   return this.isWrongMouseButtonPressed;
+  // };
 }
 
 export default Model;

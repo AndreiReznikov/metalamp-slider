@@ -20,11 +20,11 @@ class View {
 
   // range: Range;
 
-  stripe: Stripe;
+  // stripe: Stripe;
 
   // minAndMaxValues: MinAndMaxValues;
 
-  scale: Scale;
+  // scale: Scale;
 
   panel: Panel;
 
@@ -65,9 +65,9 @@ class View {
     // this.runnerFrom = new RunnerFrom();
     // this.runnerTo = new RunnerTo();
     // this.range = new Range();
-    this.stripe = new Stripe();
+    // this.stripe = new Stripe();
     // this.minAndMaxValues = new MinAndMaxValues();
-    this.scale = new Scale();
+    // this.scale = new Scale();
     this.panel = new Panel();
 
     this.$window = $(window);
@@ -78,7 +78,7 @@ class View {
     this.$range = this.SubView.range.$range;
     this.$limitMin = this.SubView.limitMin.$limit;
     this.$limitMax = this.SubView.limitMax.$limit;
-    this.$scaleContainer = this.scale.$scaleContainer;
+    this.$scaleContainer = this.SubView.scale.$scaleContainer;
     this.$tooltipFrom = this.SubView.tooltipFrom.$tooltip;
     this.$tooltipTo = this.SubView.tooltipTo.$tooltip;
     this.$panelContainer = this.panel.$panelContainer;
