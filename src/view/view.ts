@@ -1,11 +1,11 @@
 import { Options, ElementsParameters } from '../interfaces/interfaces';
-import Stripe from './stripe/stripe';
+// import Stripe from './stripe/stripe';
 // import Range from './range/range';
 // import RunnerFrom from './runner-from/runner-from';
 // import RunnerTo from './runner-to/runner-to';
 // import Tooltip from './tooltip/tooltip';
 // import MinAndMaxValues from './min-and-max/limit';
-import Scale from './scale/scale';
+// import Scale from './scale/scale';
 import Panel from './panel/panel';
 import SubView from './SubView';
 
@@ -84,7 +84,7 @@ class View {
     this.$panelContainer = this.panel.$panelContainer;
 
     this.renderView();
-    this.SubView.getElementParameters();
+    // this.SubView.getElementParameters();
 
     const $container = this.$this.parent();
 

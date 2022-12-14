@@ -152,12 +152,6 @@ class SubView {
     this.observer.notifyObservers(this.getSubViewOptions());
   };
 
-  public calculateClickPosition = (event: JQuery.TriggeredEvent): void => {
-    if (!event.clientX) return;
-
-    this.clickPosition = event.clientX - this.sliderPosition;
-  };
-
   public getSubViewOptions = () => {
     const subViewOptions = {
       sliderPosition: this.sliderPosition,
@@ -189,9 +183,18 @@ class SubView {
   };
 
   public getElementParameters = () => {
-    this.sliderPosition = this.getCoords(this.$stripe, false);
-    this.sliderLength = parseInt(this.$stripe.css('width'), 10);
-    this.runnerLength = parseInt(this.runnerFrom.$runner.css('width'), 10);
+    this.sliderPosition = this.getCoords(
+      this.$stripe,
+      this.getSubViewOptions().modelOptions.isVertical,
+    );
+    this.sliderLength = parseInt(
+      this.$stripe.css('width'),
+      10,
+    );
+    this.runnerLength = parseInt(
+      this.runnerFrom.$runner.css(`${this.getSubViewOptions().modelOptions.lengthParameter}`),
+      10,
+    );
   };
 
   public calculateRunnerPositionAfterSliderOnDown = (subViewOptions: any): void => {
@@ -269,6 +272,23 @@ class SubView {
     } else if (isRunnerToPositionMoreThanMaximum) {
       this.runnerTo.runnerPosition = this.sliderLength - this.runnerLength / 2;
     }
+  };
+
+  private calculateClickPosition = (event: JQuery.TriggeredEvent): void => {
+    let pageX1 = 0;
+    let pageY1 = 0;
+
+    if (event.pageX !== undefined) {
+      pageX1 = event.pageX;
+    }
+
+    if (event.pageY !== undefined) {
+      pageY1 = event.pageY;
+    }
+
+    const clientAxis: number = this.getSubViewOptions().modelOptions.isVertical ? pageY1 : pageX1;
+
+    this.clickPosition = clientAxis - this.sliderPosition;
   };
 
   private defineClickLocation = (subViewOptions: any) => {

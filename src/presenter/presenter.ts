@@ -23,6 +23,8 @@ class Presenter {
   }
 
   private init = (): void => {
+    this.view.SubView.setModelOptions(this.model.getOptions());
+    this.view.SubView.getElementParameters();
     this.view.initView(this.model.getOptions());
     this.model.validateInitialValues();
     this.view.SubView.limitMin.setLimitValue(this.model.getOptions());

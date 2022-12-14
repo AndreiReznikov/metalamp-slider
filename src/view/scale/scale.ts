@@ -31,7 +31,9 @@ class Scale {
     this.$scaleContainer.empty();
 
     for (let i = 0; i < options.scaleElements.length; i += 1) {
-      const $scaleElement: JQuery<HTMLElement> = $('<span>').addClass(`js-slider__scale-element js-slider__scale-element_${i}`);
+      const $scaleElement: JQuery<HTMLElement> = $('<span>').addClass(
+        `slider__scale-element js-slider__scale-element js-slider__scale-element_${i}`,
+      );
       $scaleElement.html(`${options.scaleElements[i]}`);
       $scaleElement.appendTo(this.$scaleContainer);
     }
