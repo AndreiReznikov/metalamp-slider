@@ -126,7 +126,7 @@ class View {
       this.SubView.range.$range.css('display', 'none');
     }
 
-    if (options.isMinAndMax) {
+    if (options.isLimit) {
       this.$limitMin.css('display', 'flex');
       this.$limitMax.css('display', 'flex');
     } else {

@@ -1,4 +1,4 @@
-import { Options } from '../interfaces/interfaces';
+import { Options, SubViewOptions } from '../interfaces/interfaces';
 import Model from '../model/model';
 import View from '../view/view';
 
@@ -107,29 +107,7 @@ class Presenter {
     this.model.setElementsParameters(elementsParameters);
   };
 
-  private updateModel = (
-    subViewOptions: {
-      sliderPosition: number,
-      sliderLength: number,
-      runnerFromPosition: number,
-      runnerToPosition: number,
-      runnerLength: number,
-      clickPosition: number,
-      isMinFrom: boolean,
-      isMaxFrom: boolean,
-      isMaxTo: boolean,
-      isCursorNearStepAheadFrom: boolean,
-      isCursorNearStepBehindFrom: boolean,
-      isCursorNearStepAheadTo: boolean,
-      isCursorNearStepBehindTo: boolean,
-      isClickAheadOfRunnerFrom: boolean,
-      isClickBehindOfRunnerFrom: boolean,
-      isClickAheadOfRunnerTo: boolean,
-      isClickBehindOfRunnerTo: boolean,
-      runnerFromStepsNumber: number,
-      runnerToStepsNumber: number,
-    },
-  ): void => {
+  private updateModel = (subViewOptions: SubViewOptions): void => {
     this.model.setSubViewOptions(subViewOptions);
     this.model.calculateFrom(subViewOptions);
     this.model.calculateTo(subViewOptions);
@@ -182,7 +160,7 @@ class Presenter {
         scaleElementValue,
       };
 
-      this.model.calculateRunnerPositionAfterScaleOnDown(event, scaleElementOptions);
+      // this.model.calculateRunnerPositionAfterScaleOnDown(event, scaleElementOptions);
 
       // this.model.calculateTooltipsPositions();
 
@@ -226,7 +204,7 @@ class Presenter {
       return;
     }
 
-    this.model.minValue = parseFloat(`${minValue}`);
+    this.model.min = parseFloat(`${minValue}`);
 
     this.init();
   };
@@ -240,7 +218,7 @@ class Presenter {
       return;
     }
 
-    this.model.maxValue = parseFloat(`${maxValue}`);
+    this.model.max = parseFloat(`${maxValue}`);
 
     this.init();
   };

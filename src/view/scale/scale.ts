@@ -6,7 +6,7 @@ class Scale {
   lengthBetweenScaleElements = 0;
 
   public setScaleLength = (options: Options): void => {
-    this.$scaleContainer.css(options.lengthParameter, options.sliderLength);
+    this.$scaleContainer.css(options.lengthParameter, options.subViewOptions.sliderLength);
   };
 
   public setScalePosition = (options: Options): void => {
@@ -23,7 +23,8 @@ class Scale {
     this.$scaleContainer.css(
       options.scalePositionParameter,
       options.scalePositionParameter === 'right'
-        ? maxScaleElementsWidth + options.runnerLength : options.runnerLength,
+        ? maxScaleElementsWidth + options.subViewOptions.runnerLength
+        : options.subViewOptions.runnerLength,
     );
   };
 
@@ -40,7 +41,8 @@ class Scale {
   };
 
   public calculateLengthBetweenScaleElements = (options: Options): void => {
-    this.lengthBetweenScaleElements = options.sliderLength / (options.scaleNumber - 1);
+    this.lengthBetweenScaleElements = options.subViewOptions.sliderLength
+      / (options.scaleNumber - 1);
   };
 
   public setScaleElementsPositions = (options: Options): void => {

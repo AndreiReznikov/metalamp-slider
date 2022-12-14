@@ -1,7 +1,9 @@
+import Model from "../model/model";
+
 interface Options {
   isInterval: boolean;
   isTooltip: boolean;
-  isMinAndMax: boolean;
+  isLimit: boolean;
   isRange: boolean;
   isScale: boolean;
   isVertical: boolean;
@@ -9,33 +11,12 @@ interface Options {
   isStepSet: boolean;
   positionParameter: string;
   lengthParameter: string;
-  sliderPosition: number;
-  sliderLength: number;
-  event: JQuery.Event;
-  pointerDownEvent: JQuery.Event;
   to: number;
   from: number;
   step: number;
-  shiftAxis1: number;
-  pageAxis1: number;
-  runnerLength: number;
   stepLength: number;
-  minValuePosition: number;
-  maxValuePosition: number;
-  minValue: number;
-  maxValue: number;
-  isMinValueShow: boolean;
-  isMaxValueShow: boolean;
-  minValueLength: number;
-  maxValueLength: number;
-  runnerFromPosition: number;
-  runnerToPosition: number;
-  tooltipFromPosition: number;
-  tooltipToPosition: number;
-  tooltipFromValue: number | string;
-  tooltipToValue: number | string;
-  rangePosition: number;
-  rangeLength: number;
+  min: number;
+  max: number;
   scalePositionParameter: string;
   scaleNumber: number;
   scaleElements: number[];
@@ -48,15 +29,15 @@ interface Options {
 
 interface Config {
   isInterval: boolean;
-  minValue: number;
-  maxValue: number;
+  min: number;
+  max: number;
   from: number;
   to: number;
   step: number;
   keyboard: boolean;
   isVertical: boolean;
   isTooltip: boolean;
-  isMinAndMax: boolean;
+  isLimit: boolean;
   isRange: boolean;
   isScale: boolean;
   scaleNumber: number;
@@ -65,19 +46,42 @@ interface Config {
 
 interface UserConfig {
   isInterval?: boolean;
-  minValue?: number;
-  maxValue?: number;
+  min?: number;
+  max?: number;
   from?: number;
   to?: number;
   step?: number;
   keyboard?: boolean;
   isVertical?: boolean;
   isTooltip?: boolean;
-  isMinAndMax?: boolean;
+  isLimit?: boolean;
   isRange?: boolean;
   isScale?: boolean;
   scaleNumber?: number;
   isPanel?: boolean;
+}
+
+interface SubViewOptions {
+  sliderPosition: number;
+  sliderLength: number;
+  runnerFromPosition: number;
+  runnerToPosition: number;
+  runnerLength: number;
+  clickPosition: number;
+  isMinFrom: boolean;
+  isMaxFrom: boolean;
+  isMaxTo: boolean;
+  isCursorNearStepAheadFrom: boolean;
+  isCursorNearStepBehindFrom: boolean;
+  isCursorNearStepAheadTo: boolean;
+  isCursorNearStepBehindTo: boolean;
+  isClickAheadOfRunnerFrom: boolean;
+  isClickBehindOfRunnerFrom: boolean;
+  isClickAheadOfRunnerTo: boolean;
+  isClickBehindOfRunnerTo: boolean;
+  runnerFromStepsNumber: number;
+  runnerToStepsNumber: number;
+  modelOptions: Model;
 }
 
 interface ElementsParameters {
@@ -95,5 +99,5 @@ interface ElementsParameters {
 }
 
 export {
-  Options, Config, UserConfig, ElementsParameters,
+  Options, Config, UserConfig, SubViewOptions, ElementsParameters,
 };

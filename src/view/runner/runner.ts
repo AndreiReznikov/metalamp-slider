@@ -22,14 +22,14 @@ class Runner {
   }
 
   public calculateInitialRunnerPosition = (options: Options): void => {
-    const minRatio: number = options.minValue / (options.maxValue - options.minValue);
-    const fromRatio: number = options.from / (options.maxValue - options.minValue);
-    const toRatio: number = options.to / (options.maxValue - options.minValue);
+    const minRatio: number = options.min / (options.max - options.min);
+    const fromRatio: number = options.from / (options.max - options.min);
+    const toRatio: number = options.to / (options.max - options.min);
 
     const ratio = this.runnerType === 'from' ? fromRatio : toRatio;
 
     this.runnerPosition = Math.round((ratio - minRatio)
-      * options.sliderLength - options.runnerLength / 2);
+      * options.subViewOptions.sliderLength - options.subViewOptions.runnerLength / 2);
   };
 
   public calculateMinRunnerPosition = (subViewOptions: any): void => {

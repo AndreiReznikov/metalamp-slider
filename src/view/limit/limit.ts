@@ -26,9 +26,9 @@ class Limit {
 
   public setLimitValue(options: Options) {
     if (this.limitType === 'min') {
-      this.$limit.html(`${options.minValue}`);
+      this.$limit.html(`${options.min}`);
     } else if (this.limitType === 'max') {
-      this.$limit.html(`${options.maxValue}`);
+      this.$limit.html(`${options.max}`);
     }
   }
 }

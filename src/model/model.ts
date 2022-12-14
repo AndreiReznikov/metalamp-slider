@@ -2,6 +2,7 @@ import {
   Options,
   Config,
   UserConfig,
+  SubViewOptions,
   ElementsParameters,
 } from '../interfaces/interfaces';
 import Observer from './observer';
@@ -33,23 +34,19 @@ class Model {
 
   lengthParameter: string = this.isVertical ? 'height' : 'width';
 
-  isMinAndMax = true;
+  isLimit = true;
 
   isWrongMouseButtonPressed = false;
 
-  minValue = 0;
+  min = 0;
 
-  maxValue = 100;
+  max = 100;
 
   step = 0;
 
   from = 20;
 
   to = 50;
-
-  shiftAxis1 = 0;
-
-  pageAxis1 = 0;
 
   scalePositionParameter: string = this.isVertical ? 'right' : 'top';
 
@@ -61,49 +58,7 @@ class Model {
 
   isStepSet = false;
 
-  sliderPosition = 0;
-
-  sliderLength = 0;
-
-  runnerLength = 0;
-
-  isMinValueShow = true;
-
-  isMaxValueShow = true;
-
-  minValuePosition = 0;
-
-  maxValuePosition = 0;
-
-  minValueLength = 0;
-
-  maxValueLength = 0;
-
-  minValueWidth = 0;
-
-  maxValueWidth = 0;
-
-  tooltipFromLength = 0;
-
-  tooltipToLength = 0;
-
   stepLength = 0;
-
-  runnerFromPosition = 0;
-
-  runnerToPosition = 0;
-
-  tooltipFromPosition = 0;
-
-  tooltipToPosition = 0;
-
-  tooltipFromValue = 0;
-
-  tooltipToValue = 0;
-
-  rangePosition = 0;
-
-  rangeLength = 0;
 
   scaleElements: number[] = [];
 
@@ -112,10 +67,6 @@ class Model {
   lengthBetweenScaleElements = 0;
 
   numberOfCharactersAfterDot = 0;
-
-  event = new jQuery.Event('click');
-
-  pointerDownEvent = new jQuery.Event('click');
 
   subViewOptions: any;
 
@@ -127,12 +78,12 @@ class Model {
       isInterval: false,
       isVertical: false,
       isTooltip: true,
-      isMinAndMax: true,
+      isLimit: true,
       isRange: true,
       isPanel: false,
       isScale: false,
-      minValue: 0,
-      maxValue: 100,
+      min: 0,
+      max: 100,
       from: 10,
       to: 50,
       step: 0,
@@ -150,22 +101,12 @@ class Model {
   };
 
   public setElementsParameters = (elementsParameters: ElementsParameters): void => {
-    this.sliderPosition = elementsParameters.sliderPosition;
-    this.sliderLength = elementsParameters.sliderLength;
-    this.runnerFromPosition = elementsParameters.runnerFromPosition;
-    this.runnerLength = elementsParameters.runnerLength;
-    this.tooltipFromLength = elementsParameters.tooltipFromLength;
-    this.tooltipToLength = elementsParameters.tooltipToLength;
-    this.minValueLength = elementsParameters.minValueLength;
-    this.maxValueLength = elementsParameters.maxValueLength;
-    this.minValueWidth = elementsParameters.minValueWidth;
-    this.maxValueWidth = elementsParameters.maxValueWidth;
     this.scaleElementHeight = elementsParameters.scaleElementHeight;
   };
 
   public calculateStepLength = (): void => {
     this.stepLength = parseFloat(((this.step
-      / (this.maxValue - this.minValue))
+      / (this.max - this.min))
       * this.subViewOptions.sliderLength).toFixed(this.numberOfCharactersAfterDot));
   };
 
@@ -173,7 +114,7 @@ class Model {
     const options: Options = {
       isInterval: this.isInterval,
       isTooltip: this.isTooltip,
-      isMinAndMax: this.isMinAndMax,
+      isLimit: this.isLimit,
       isRange: this.isRange,
       isScale: this.isScale,
       isVertical: this.isVertical,
@@ -181,33 +122,12 @@ class Model {
       isStepSet: this.isStepSet,
       positionParameter: this.positionParameter,
       lengthParameter: this.lengthParameter,
-      sliderPosition: this.sliderPosition,
-      sliderLength: this.sliderLength,
-      event: this.event,
-      pointerDownEvent: this.pointerDownEvent,
       to: this.to,
       from: this.from,
       step: this.step,
-      shiftAxis1: this.shiftAxis1,
-      pageAxis1: this.pageAxis1,
-      runnerLength: this.runnerLength,
       stepLength: this.stepLength,
-      minValue: this.minValue,
-      maxValue: this.maxValue,
-      isMinValueShow: this.isMinValueShow,
-      isMaxValueShow: this.isMaxValueShow,
-      minValuePosition: this.minValuePosition,
-      maxValuePosition: this.maxValuePosition,
-      minValueLength: this.minValueLength,
-      maxValueLength: this.maxValueLength,
-      runnerFromPosition: this.runnerFromPosition,
-      runnerToPosition: this.runnerToPosition,
-      tooltipFromPosition: this.tooltipFromPosition,
-      tooltipToPosition: this.tooltipToPosition,
-      tooltipFromValue: this.tooltipFromValue,
-      tooltipToValue: this.tooltipToValue,
-      rangePosition: this.rangePosition,
-      rangeLength: this.rangeLength,
+      min: this.min,
+      max: this.max,
       scalePositionParameter: this.scalePositionParameter,
       scaleNumber: this.scaleNumber,
       scaleElements: this.scaleElements,
@@ -222,18 +142,18 @@ class Model {
   };
 
   public validateInitialValues = (): void => {
-    const areMinAndMaxNegative: boolean = this.minValue < 0 && this.maxValue < 0;
+    const areMinAndMaxNegative: boolean = this.min < 0 && this.max < 0;
     const isMinAndMaxPositiveAndStepMoreThanDifference: boolean = !areMinAndMaxNegative
-      && this.step > this.maxValue - this.minValue;
+      && this.step > this.max - this.min;
     const isMinAndMaxNegativeAndStepMoreThanDifference: boolean = areMinAndMaxNegative
-      && this.step > -(this.minValue - this.maxValue);
+      && this.step > -(this.min - this.max);
 
-    if (this.minValue > this.maxValue) {
-      const { minValue } = this;
-      const { maxValue } = this;
+    if (this.min > this.max) {
+      const { min } = this;
+      const { max } = this;
 
-      this.minValue = maxValue;
-      this.maxValue = minValue;
+      this.min = max;
+      this.max = min;
     }
 
     if (isMinAndMaxPositiveAndStepMoreThanDifference) {
@@ -250,43 +170,24 @@ class Model {
 
     this.isStepSet = this.step > 0;
 
-    if (this.from < this.minValue) {
-      this.from = this.minValue;
+    if (this.from < this.min) {
+      this.from = this.min;
     }
 
-    if (this.from > this.maxValue) {
-      this.from = this.maxValue;
+    if (this.from > this.max) {
+      this.from = this.max;
     }
 
-    if (this.to > this.maxValue) {
-      this.to = this.maxValue;
+    if (this.to > this.max) {
+      this.to = this.max;
     }
 
-    if (this.to < this.minValue) {
-      this.to = this.minValue;
+    if (this.to < this.min) {
+      this.to = this.min;
     }
   };
 
-  public calculateFrom = (
-    subViewOptions: {
-      sliderPosition: number,
-      sliderLength: number,
-      runnerFromPosition: number,
-      runnerLength: number,
-      clickPosition: number,
-      isMinFrom: boolean,
-      isMaxFrom: boolean,
-      isMaxTo: boolean,
-      isCursorNearStepAheadFrom: boolean,
-      isCursorNearStepBehindFrom: boolean,
-      isClickAheadOfRunnerFrom: boolean,
-      isClickBehindOfRunnerFrom: boolean,
-      isClickAheadOfRunnerTo: boolean,
-      isClickBehindOfRunnerTo: boolean,
-      runnerFromStepsNumber: number,
-      runnerToStepsNumber: number,
-    },
-  ): void => {
+  public calculateFrom = (subViewOptions: SubViewOptions): void => {
     if (this.isStepSet) {
       if (subViewOptions.isCursorNearStepAheadFrom) {
         this.from = parseFloat((this.from + this.step).toFixed(this.numberOfCharactersAfterDot));
@@ -302,16 +203,16 @@ class Model {
     } else {
       this.from = parseFloat((((subViewOptions.runnerFromPosition
         + subViewOptions.runnerLength / 2) / subViewOptions.sliderLength)
-        * (this.maxValue - this.minValue) + this.minValue).toFixed(
+        * (this.max - this.min) + this.min).toFixed(
         this.numberOfCharactersAfterDot,
       ));
     }
 
     if (subViewOptions.isMinFrom) {
-      this.from = this.minValue;
+      this.from = this.min;
     }
     if (subViewOptions.isMaxFrom) {
-      this.from = this.maxValue;
+      this.from = this.max;
     }
 
     this.restrictFrom();
@@ -320,52 +221,34 @@ class Model {
   };
 
   public calculateRunnerFromPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-    const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
-    const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
-    const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
+    // const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
+    // const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
+    // const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
 
-    const isKeyboardOrWrongKeyCode: boolean = !this.keyboard || !keyCodes.includes(event.keyCode);
+    // const isKeyboardOrWrongKeyCode: boolean = !this.keyboard || !keyCodes.includes(event.keyCode);
 
-    if (isKeyboardOrWrongKeyCode) return;
+    // if (isKeyboardOrWrongKeyCode) return;
 
-    const movementLength: number = this.isStepSet ? this.stepLength : 1;
+    // const movementLength: number = this.isStepSet ? this.stepLength : 1;
 
-    if (keyCodeToIncrease.includes(event.keyCode)) {
-      this.runnerFromPosition += movementLength;
-      // if (this.isStepSet) this.calculateTooltipFromValueWithStepAhead();
-    } else if (keyCodeToReduce.includes(event.keyCode)) {
-      this.runnerFromPosition -= movementLength;
-      // if (this.isStepSet) this.calculateTooltipFromValueWithStepBehind();
-    }
+    // if (keyCodeToIncrease.includes(event.keyCode)) {
+    //   this.runnerFromPosition += movementLength;
+    //   // if (this.isStepSet) this.calculateTooltipFromValueWithStepAhead();
+    // } else if (keyCodeToReduce.includes(event.keyCode)) {
+    //   this.runnerFromPosition -= movementLength;
+    //   // if (this.isStepSet) this.calculateTooltipFromValueWithStepBehind();
+    // }
 
-    // this.restrictRunnerFromPosition();
-    // this.calculateRangePosition();
-    // this.calculateRangeLength();
-    // this.calculateTooltipsPositions();
-    // if (!this.isStepSet) this.calculateTooltipsValues();
+    // // this.restrictRunnerFromPosition();
+    // // this.calculateRangePosition();
+    // // this.calculateRangeLength();
+    // // this.calculateTooltipsPositions();
+    // // if (!this.isStepSet) this.calculateTooltipsValues();
 
-    this.observer.notifyObservers(this.getOptions());
+    // this.observer.notifyObservers(this.getOptions());
   };
 
-  public calculateTo = (
-    subViewOptions: {
-      sliderPosition: number,
-      sliderLength: number,
-      runnerFromPosition: number,
-      runnerToPosition: number,
-      runnerLength: number,
-      clickPosition: number,
-      isMaxTo: boolean,
-      isCursorNearStepAheadTo: boolean,
-      isCursorNearStepBehindTo: boolean,
-      isClickAheadOfRunnerFrom: boolean,
-      isClickBehindOfRunnerFrom: boolean,
-      isClickAheadOfRunnerTo: boolean,
-      isClickBehindOfRunnerTo: boolean,
-      runnerFromStepsNumber: number,
-      runnerToStepsNumber: number,
-    },
-  ): void => {
+  public calculateTo = (subViewOptions: SubViewOptions): void => {
     if (this.isStepSet) {
       if (subViewOptions.isCursorNearStepAheadTo) {
         this.to = parseFloat((this.to + this.step).toFixed(this.numberOfCharactersAfterDot));
@@ -381,13 +264,13 @@ class Model {
     } else {
       this.to = parseFloat((((subViewOptions.runnerToPosition
         + subViewOptions.runnerLength / 2) / subViewOptions.sliderLength)
-        * (this.maxValue - this.minValue) + this.minValue).toFixed(
+        * (this.max - this.min) + this.min).toFixed(
         this.numberOfCharactersAfterDot,
       ));
     }
 
     if (subViewOptions.isMaxTo) {
-      this.to = this.maxValue;
+      this.to = this.max;
     }
 
     this.restrictTo();
@@ -396,119 +279,119 @@ class Model {
   };
 
   public calculateRunnerToPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-    const isKeyboardAndInterval: boolean = this.keyboard && this.isInterval;
+    // const isKeyboardAndInterval: boolean = this.keyboard && this.isInterval;
 
-    const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
-    const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
-    const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
+    // const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
+    // const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
+    // const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
 
-    const isKeyboardOrWrongKeyCode: boolean = !isKeyboardAndInterval
-      || !keyCodes.includes(event.keyCode);
+    // const isKeyboardOrWrongKeyCode: boolean = !isKeyboardAndInterval
+    //   || !keyCodes.includes(event.keyCode);
 
-    if (isKeyboardOrWrongKeyCode) return;
+    // if (isKeyboardOrWrongKeyCode) return;
 
-    const movementLength: number = this.isStepSet ? this.stepLength : 1;
+    // const movementLength: number = this.isStepSet ? this.stepLength : 1;
 
-    if (keyCodeToIncrease.includes(event.keyCode)) {
-      this.runnerToPosition += movementLength;
-      // if (this.isStepSet) this.calculateTooltipToValueWithStepAhead();
-    } else if (keyCodeToReduce.includes(event.keyCode)) {
-      this.runnerToPosition -= movementLength;
-      // if (this.isStepSet) this.calculateTooltipToValueWithStepBehind();
-    }
+    // if (keyCodeToIncrease.includes(event.keyCode)) {
+    //   this.runnerToPosition += movementLength;
+    //   // if (this.isStepSet) this.calculateTooltipToValueWithStepAhead();
+    // } else if (keyCodeToReduce.includes(event.keyCode)) {
+    //   this.runnerToPosition -= movementLength;
+    //   // if (this.isStepSet) this.calculateTooltipToValueWithStepBehind();
+    // }
 
-    // this.restrictRunnerToPosition();
-    // this.calculateRangePosition();
-    // this.calculateRangeLength();
-    // this.calculateTooltipsPositions();
-    // if (!this.isStepSet) this.calculateTooltipsValues();
+    // // this.restrictRunnerToPosition();
+    // // this.calculateRangePosition();
+    // // this.calculateRangeLength();
+    // // this.calculateTooltipsPositions();
+    // // if (!this.isStepSet) this.calculateTooltipsValues();
 
-    this.observer.notifyObservers(this.getOptions());
+    // this.observer.notifyObservers(this.getOptions());
   };
 
-  public calculateRunnerPositionAfterScaleOnDown = (
-    event: JQuery.TriggeredEvent,
-    scaleOptions: {
-      isScaleElementOnDown: boolean,
-      scaleElementPosition: number,
-      scaleElementLength: number,
-      scaleElementValue: string,
-    } = {
-      isScaleElementOnDown: true,
-      scaleElementPosition: 0,
-      scaleElementLength: 0,
-      scaleElementValue: '',
-    },
-  ): void => {
-    event.stopPropagation();
+  // public calculateRunnerPositionAfterScaleOnDown = (
+  //   event: JQuery.TriggeredEvent,
+  //   scaleOptions: {
+  //     isScaleElementOnDown: boolean,
+  //     scaleElementPosition: number,
+  //     scaleElementLength: number,
+  //     scaleElementValue: string,
+  //   } = {
+  //     isScaleElementOnDown: true,
+  //     scaleElementPosition: 0,
+  //     scaleElementLength: 0,
+  //     scaleElementValue: '',
+  //   },
+  // ): void => {
+  //   event.stopPropagation();
 
-    // const isWrongMouseButtonOrWrongElement: boolean = this.checkIsWrongMouseButtonPressed(event)
-    //   || !scaleOptions.isScaleElementOnDown;
+  //   // const isWrongMouseButtonOrWrongElement: boolean = this.checkIsWrongMouseButtonPressed(event)
+  //   //   || !scaleOptions.isScaleElementOnDown;
 
-    // if (isWrongMouseButtonOrWrongElement) return;
+  //   // if (isWrongMouseButtonOrWrongElement) return;
 
-    let pageX1 = 0;
-    let pageY1 = 0;
+  //   let pageX1 = 0;
+  //   let pageY1 = 0;
 
-    if (event.pageX !== undefined) {
-      pageX1 = event.pageX;
-    }
+  //   if (event.pageX !== undefined) {
+  //     pageX1 = event.pageX;
+  //   }
 
-    if (event.pageY !== undefined) {
-      pageY1 = event.pageY;
-    }
+  //   if (event.pageY !== undefined) {
+  //     pageY1 = event.pageY;
+  //   }
 
-    const pageAxis1: number = this.isVertical ? pageY1 : pageX1;
+  //   const pageAxis1: number = this.isVertical ? pageY1 : pageX1;
 
-    const isClickAheadOfRunnerFromWithInterval: boolean = pageAxis1 - this.sliderPosition
-      > this.runnerFromPosition + this.runnerLength
-      && pageAxis1 - this.sliderPosition < this.runnerFromPosition + this.runnerLength
-      + (this.runnerToPosition - this.runnerFromPosition) / 2;
-    const isClickAheadOfRunnerFromWithoutInterval: boolean = pageAxis1 - this.sliderPosition
-      > this.runnerFromPosition + this.runnerLength;
+  //   const isClickAheadOfRunnerFromWithInterval: boolean = pageAxis1 - this.sliderPosition
+  //     > this.runnerFromPosition + this.runnerLength
+  //     && pageAxis1 - this.sliderPosition < this.runnerFromPosition + this.runnerLength
+  //     + (this.runnerToPosition - this.runnerFromPosition) / 2;
+  //   const isClickAheadOfRunnerFromWithoutInterval: boolean = pageAxis1 - this.sliderPosition
+  //     > this.runnerFromPosition + this.runnerLength;
 
-    const isClickAheadOfRunnerFrom: boolean = this.isInterval
-      ? isClickAheadOfRunnerFromWithInterval : isClickAheadOfRunnerFromWithoutInterval;
-    const isClickBehindOfRunnerFrom: boolean = pageAxis1 - this.sliderPosition
-      < this.runnerFromPosition;
-    const isClickAheadOfRunnerTo: boolean = pageAxis1 - this.sliderPosition
-      > this.runnerToPosition + this.runnerLength;
-    const isClickBehindOfRunnerTo: boolean = pageAxis1 - this.sliderPosition < this.runnerToPosition
-      && pageAxis1 - this.sliderPosition >= this.runnerFromPosition + this.runnerLength
-      + (this.runnerToPosition - this.runnerFromPosition) / 2;
-    const isClickForRunnerFrom: boolean = isClickAheadOfRunnerFrom || isClickBehindOfRunnerFrom;
-    const isClickForRunnerTo: boolean = isClickAheadOfRunnerTo || isClickBehindOfRunnerTo;
+  //   const isClickAheadOfRunnerFrom: boolean = this.isInterval
+  //     ? isClickAheadOfRunnerFromWithInterval : isClickAheadOfRunnerFromWithoutInterval;
+  //   const isClickBehindOfRunnerFrom: boolean = pageAxis1 - this.sliderPosition
+  //     < this.runnerFromPosition;
+  //   const isClickAheadOfRunnerTo: boolean = pageAxis1 - this.sliderPosition
+  //     > this.runnerToPosition + this.runnerLength;
+  //   const isClickBehindOfRunnerTo: boolean = pageAxis1 - this.sliderPosition < this.runnerToPosition
+  //     && pageAxis1 - this.sliderPosition >= this.runnerFromPosition + this.runnerLength
+  //     + (this.runnerToPosition - this.runnerFromPosition) / 2;
+  //   const isClickForRunnerFrom: boolean = isClickAheadOfRunnerFrom || isClickBehindOfRunnerFrom;
+  //   const isClickForRunnerTo: boolean = isClickAheadOfRunnerTo || isClickBehindOfRunnerTo;
 
-    if (isClickForRunnerFrom) {
-      this.runnerFromPosition = scaleOptions.scaleElementPosition + scaleOptions.scaleElementLength
-        / 2 - this.runnerLength / 2;
-      this.calculateTooltipFromValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
-    } else if (isClickForRunnerTo) {
-      this.runnerToPosition = scaleOptions.scaleElementPosition + scaleOptions.scaleElementLength
-        / 2 - this.runnerLength / 2;
-      this.calculateTooltipToValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
-    }
+  //   if (isClickForRunnerFrom) {
+  //     this.runnerFromPosition = scaleOptions.scaleElementPosition + scaleOptions.scaleElementLength
+  //       / 2 - this.runnerLength / 2;
+  //     this.calculateTooltipFromValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
+  //   } else if (isClickForRunnerTo) {
+  //     this.runnerToPosition = scaleOptions.scaleElementPosition + scaleOptions.scaleElementLength
+  //       / 2 - this.runnerLength / 2;
+  //     this.calculateTooltipToValueAfterScaleOnDown(parseFloat(scaleOptions.scaleElementValue));
+  //   }
 
-    // this.calculateRangePosition();
-    // this.calculateRangeLength();
-    // this.calculateTooltipsPositions();
+  //   // this.calculateRangePosition();
+  //   // this.calculateRangeLength();
+  //   // this.calculateTooltipsPositions();
 
-    this.observer.notifyObservers(this.getOptions());
-  };
+  //   this.observer.notifyObservers(this.getOptions());
+  // };
 
   public calculatePanelPosition = (): void => {
-    const maxWidth: number = Math.max(this.minValueWidth, this.maxValueWidth);
+    const maxWidth: number = Math.max(30, 30);
 
     if (this.isVertical) {
-      this.panelPosition = maxWidth + this.runnerLength;
+      this.panelPosition = maxWidth + 10;
     } else {
-      this.panelPosition = this.scaleElementHeight + this.runnerLength;
+      this.panelPosition = this.scaleElementHeight + 10;
     }
   };
 
   public countNumberOfCharactersAfterDot = (): void => {
-    const minValuesBeforeAndAfterDot: string[] = `${this.minValue}`.split('.');
-    const maxValuesBeforeAndAfterDot: string[] = `${this.maxValue}`.split('.');
+    const minValuesBeforeAndAfterDot: string[] = `${this.min}`.split('.');
+    const maxValuesBeforeAndAfterDot: string[] = `${this.max}`.split('.');
 
     let minValuesAfterDot: string = minValuesBeforeAndAfterDot[1];
     let maxValuesAfterDot: string = maxValuesBeforeAndAfterDot[1];
@@ -547,9 +430,9 @@ class Model {
     this.scaleElements.length = 0;
 
     let minScaleElementValue: number = parseFloat(
-      this.minValue.toFixed(this.numberOfCharactersAfterDot),
+      this.min.toFixed(this.numberOfCharactersAfterDot),
     );
-    const intervalForScaleElements: number = (this.maxValue - this.minValue)
+    const intervalForScaleElements: number = (this.max - this.min)
       / (this.scaleNumber - 1);
 
     this.scaleElements.push(minScaleElementValue);
@@ -565,14 +448,14 @@ class Model {
   public calculateScaleElementsNumber = (): void => {
     if (this.userConfig.scaleNumber) return;
 
-    const isDifferenceBetweenMaxMinValuesLessOrEqualToOne: boolean = this.maxValue - this.minValue
+    const isDifferenceBetweenMaxMinValuesLessOrEqualToOne: boolean = this.max - this.min
       <= 1 && this.numberOfCharactersAfterDot === 0;
-    const isDifferenceBetweenMaxMinValuesLessOrEqualToTwo: boolean = this.maxValue - this.minValue
+    const isDifferenceBetweenMaxMinValuesLessOrEqualToTwo: boolean = this.max - this.min
       <= 2 && this.numberOfCharactersAfterDot === 0;
-    const isDifferenceBetweenMaxMinValuesLessOrEqualToFour: boolean = this.maxValue - this.minValue
+    const isDifferenceBetweenMaxMinValuesLessOrEqualToFour: boolean = this.max - this.min
       <= 4 && this.numberOfCharactersAfterDot === 0;
-    const isDifferenceBetweenMaxMinValuesLessThanTen: boolean = this.maxValue - this.minValue < 10;
-    const isMinValueNegativeMaxValuePositive: boolean = this.minValue < 0 && this.maxValue > 0;
+    const isDifferenceBetweenMaxMinValuesLessThanTen: boolean = this.max - this.min < 10;
+    const isMinValueNegativeMaxValuePositive: boolean = this.min < 0 && this.max > 0;
 
     if (isDifferenceBetweenMaxMinValuesLessOrEqualToOne) {
       this.scaleNumber = 2;
@@ -654,14 +537,14 @@ class Model {
     this.isVertical = this.config.isVertical;
     this.isPanel = this.config.isPanel;
     this.isTooltip = this.config.isTooltip;
-    this.isMinAndMax = this.config.isMinAndMax;
+    this.isLimit = this.config.isLimit;
     this.isRange = this.config.isRange;
     this.isScale = this.config.isScale;
     this.keyboard = this.config.keyboard;
     this.positionParameter = this.isVertical ? 'top' : 'left';
     this.lengthParameter = this.isVertical ? 'height' : 'width';
-    this.minValue = this.config.minValue;
-    this.maxValue = this.config.maxValue;
+    this.min = this.config.min;
+    this.max = this.config.max;
     this.step = this.config.step;
     this.from = this.config.from;
     this.to = this.config.to;
@@ -670,27 +553,27 @@ class Model {
     this.panelPositionParameter = this.isVertical ? 'left' : 'top';
   };
 
-  private calculateTooltipFromValueAfterScaleOnDown = (value = 0): void => {
-    this.from = value;
-    this.tooltipFromValue = this.from;
-  };
+  // private calculateTooltipFromValueAfterScaleOnDown = (value = 0): void => {
+  //   this.from = value;
+  //   this.tooltipFromValue = this.from;
+  // };
 
-  private calculateTooltipToValueAfterScaleOnDown = (value = 0): void => {
-    this.to = value;
-    this.tooltipToValue = this.to;
-  };
+  // private calculateTooltipToValueAfterScaleOnDown = (value = 0): void => {
+  //   this.to = value;
+  //   this.tooltipToValue = this.to;
+  // };
 
   private restrictFrom = (): void => {
-    const isFromLessThanMinimum: boolean = this.from < this.minValue;
+    const isFromLessThanMinimum: boolean = this.from < this.min;
     const isIntervalAndFromMoreThanTo: boolean = this.isInterval && this.from > this.to;
-    const isFromMoreThanMaximum: boolean = this.from > this.maxValue;
+    const isFromMoreThanMaximum: boolean = this.from > this.max;
 
     if (isFromLessThanMinimum) {
-      this.from = this.minValue;
+      this.from = this.min;
     } else if (isIntervalAndFromMoreThanTo) {
       this.from = this.to;
     } else if (isFromMoreThanMaximum) {
-      this.from = this.maxValue;
+      this.from = this.max;
     }
   };
 
@@ -698,12 +581,12 @@ class Model {
     if (!this.isStepSet) return;
 
     const isToLessThanFrom: boolean = this.to < this.from;
-    const isToMoreThanMaximum: boolean = this.to > this.maxValue;
+    const isToMoreThanMaximum: boolean = this.to > this.max;
 
     if (isToLessThanFrom) {
       this.to = this.from;
     } else if (isToMoreThanMaximum) {
-      this.to = this.maxValue;
+      this.to = this.max;
     }
   };
 
