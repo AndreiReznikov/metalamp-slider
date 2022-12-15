@@ -43,10 +43,6 @@ class SubView {
 
   runnerLength = 0;
 
-  limitMinLength = 0;
-
-  limitMaxLength = 0;
-
   shiftAxis = 0;
 
   isClickAheadOfRunnerFrom = false;
@@ -86,7 +82,7 @@ class SubView {
     this.$document = $(document);
     this.$stripe = this.stripe.$stripe;
 
-    this.subViewOptions = this.setSubViewOptions();
+    this.subViewOptions = this.getSubViewOptions();
     this.modelOptions = {
       isInterval: false,
       isTooltip: false,
@@ -117,7 +113,7 @@ class SubView {
   public getOptions = (): Options => {
     const options: Options = {
       modelOptions: this.modelOptions,
-      subViewOptions: this.setSubViewOptions(),
+      subViewOptions: this.getSubViewOptions(),
     };
 
     return options;
@@ -131,32 +127,14 @@ class SubView {
     this.calculateClickPosition(event);
     this.shiftAxis = this.runnerFrom.calculateShiftAxis(this.getOptions());
 
-    const handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
-      this.calculateClickPosition(event);
-      this.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
-      this.restrictRunnerFromPosition(this.getOptions());
-
-      this.observer.notifyObservers(this.getOptions());
-    };
-
-    this.$document.on('pointermove.move-from', handleRunnerFromPointermove);
-    this.$document.on('pointerup.move-from', () => this.$document.off('pointermove.move-from', handleRunnerFromPointermove));
+    this.attachPointermoveEvent('from');
   };
 
   public makeRunnerToPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
     this.calculateClickPosition(event);
     this.shiftAxis = this.runnerTo.calculateShiftAxis(this.getOptions());
 
-    const handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
-      this.calculateClickPosition(event);
-      this.runnerTo.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
-      this.restrictRunnerToPosition();
-
-      this.observer.notifyObservers(this.getOptions());
-    };
-
-    this.$document.on('pointermove.move-to', handleRunnerToPointermove);
-    this.$document.on('pointerup.move-to', () => this.$document.off('pointermove.move-to', handleRunnerToPointermove));
+    this.attachPointermoveEvent('to');
   };
 
   public handleLimitMinSetRunnerPosition = (event: JQuery.TriggeredEvent): void => {
@@ -234,7 +212,7 @@ class SubView {
     }
   };
 
-  public setSubViewOptions = (): SubViewOptions => {
+  public getSubViewOptions = (): SubViewOptions => {
     const subViewOptions: SubViewOptions = {
       sliderPosition: this.sliderPosition,
       sliderLength: this.sliderLength,
@@ -264,18 +242,38 @@ class SubView {
   };
 
   public getElementParameters = () => {
-    this.sliderPosition = this.getCoords(
-      this.$stripe,
-      this.getOptions().modelOptions.isVertical,
-    );
+    this.sliderPosition = this.getCoords(this.$stripe);
     this.sliderLength = parseInt(
       this.$stripe.css('width'),
       10,
     );
     this.runnerLength = parseInt(
-      this.runnerFrom.$runner.css(`${this.getOptions().modelOptions.lengthParameter}`),
+      this.runnerFrom.$runner.css(this.getOptions().modelOptions.lengthParameter),
       10,
     );
+  };
+
+  private handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
+    this.calculateClickPosition(event);
+    this.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
+    this.restrictRunnerFromPosition(this.getOptions());
+
+    this.observer.notifyObservers(this.getOptions());
+  };
+
+  private handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
+    this.calculateClickPosition(event);
+    this.runnerTo.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
+    this.restrictRunnerToPosition();
+
+    this.observer.notifyObservers(this.getOptions());
+  };
+
+  private attachPointermoveEvent = (valueType: string) => {
+    const pointermoveHandler = valueType === 'from' ? this.handleRunnerFromPointermove : this.handleRunnerToPointermove;
+
+    this.$document.on('pointermove.move', pointermoveHandler);
+    this.$document.on('pointerup.move', () => this.$document.off('pointermove.move', pointermoveHandler));
   };
 
   private restrictRunnerFromPosition = (options: Options): void => {
@@ -354,11 +352,11 @@ class SubView {
     this.isClickForRunnerTo = this.isClickAheadOfRunnerTo || this.isClickBehindOfRunnerTo;
   };
 
-  private getCoords = (element: JQuery<HTMLElement> = $('div'), isVertical = false): number => {
+  private getCoords = (element: JQuery<HTMLElement>): number => {
     const coords: JQuery.Coordinates | undefined = element.offset();
     let coord = 0;
 
-    if (coords) coord = isVertical ? coords.top : coords.left;
+    if (coords) coord = this.getOptions().modelOptions.isVertical ? coords.top : coords.left;
 
     return coord;
   };

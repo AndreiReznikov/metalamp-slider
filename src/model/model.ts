@@ -30,9 +30,9 @@ class Model {
 
   keyboard = false;
 
-  positionParameter: string = this.isVertical ? 'top' : 'left';
+  positionParameter = this.isVertical ? 'top' : 'left';
 
-  lengthParameter: string = this.isVertical ? 'height' : 'width';
+  lengthParameter = this.isVertical ? 'height' : 'width';
 
   isLimit = true;
 
@@ -48,11 +48,11 @@ class Model {
 
   to = 50;
 
-  scalePositionParameter: string = this.isVertical ? 'right' : 'top';
+  scalePositionParameter = this.isVertical ? 'right' : 'top';
 
   panelPosition = 0;
 
-  panelPositionParameter: string = this.isVertical ? 'left' : 'top';
+  panelPositionParameter = this.isVertical ? 'left' : 'top';
 
   scaleNumber = 5;
 

@@ -1,4 +1,4 @@
-import { ModelOptions, Options, SubViewOptions } from '../interfaces/interfaces';
+import { Options } from '../interfaces/interfaces';
 import Model from '../model/model';
 import View from '../view/view';
 
@@ -25,7 +25,7 @@ class Presenter {
   private init = (): void => {
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.SubView.getElementParameters();
-    this.view.initView(this.model.getOptions());
+    this.view.initializeView(this.model.getOptions());
     this.model.validateInitialValues();
     this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
     this.view.SubView.limitMax.setLimitValue(this.model.getOptions());
