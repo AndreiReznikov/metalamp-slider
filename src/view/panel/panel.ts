@@ -1,4 +1,4 @@
-import { Options } from '../../interfaces/interfaces';
+import { ModelOptions } from '../../interfaces/interfaces';
 
 class Panel {
   $panelContainer = $('<div/>');
@@ -77,11 +77,11 @@ class Panel {
 
   $toggleVerticalText = $('<span/>').html('VERTICAL').addClass('js-slider__toggle-text').appendTo(this.$verticalToggleContainer);
 
-  public setPanelPosition = (options: Options): void => {
+  public setPanelPosition = (options: ModelOptions): void => {
     this.$panelContainer.css(options.panelPositionParameter, options.panelPosition);
   };
 
-  public setPanelValues = (options: Options): void => {
+  public setPanelValues = (options: ModelOptions): void => {
     if (!options.isPanel) return;
 
     this.$minInput.val(`${options.min}`).attr('step', `${options.isStepSet ? '' : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);

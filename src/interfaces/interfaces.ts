@@ -1,6 +1,9 @@
-import Model from "../model/model";
-
 interface Options {
+  modelOptions: ModelOptions;
+  subViewOptions: SubViewOptions;
+}
+
+interface ModelOptions {
   isInterval: boolean;
   isTooltip: boolean;
   isLimit: boolean;
@@ -24,7 +27,31 @@ interface Options {
   panelPosition: number;
   panelPositionParameter: string;
   numberOfCharactersAfterDot: number;
-  subViewOptions: any,
+}
+
+interface SubViewOptions {
+  sliderPosition: number;
+  sliderLength: number;
+  runnerFromPosition: number;
+  runnerToPosition: number;
+  runnerLength: number;
+  limitMinLength: number;
+  limitMaxLength: number;
+  shiftAxis: number;
+  clickPosition: number;
+  isMinFrom: boolean;
+  isMaxFrom: boolean;
+  isMaxTo: boolean;
+  isCursorNearStepAheadFrom: boolean;
+  isCursorNearStepBehindFrom: boolean;
+  isCursorNearStepAheadTo: boolean;
+  isCursorNearStepBehindTo: boolean;
+  isClickAheadOfRunnerFrom: boolean;
+  isClickBehindOfRunnerFrom: boolean;
+  isClickAheadOfRunnerTo: boolean;
+  isClickBehindOfRunnerTo: boolean;
+  runnerFromStepsNumber: number;
+  runnerToStepsNumber: number;
 }
 
 interface Config {
@@ -61,43 +88,6 @@ interface UserConfig {
   isPanel?: boolean;
 }
 
-interface SubViewOptions {
-  sliderPosition: number;
-  sliderLength: number;
-  runnerFromPosition: number;
-  runnerToPosition: number;
-  runnerLength: number;
-  clickPosition: number;
-  isMinFrom: boolean;
-  isMaxFrom: boolean;
-  isMaxTo: boolean;
-  isCursorNearStepAheadFrom: boolean;
-  isCursorNearStepBehindFrom: boolean;
-  isCursorNearStepAheadTo: boolean;
-  isCursorNearStepBehindTo: boolean;
-  isClickAheadOfRunnerFrom: boolean;
-  isClickBehindOfRunnerFrom: boolean;
-  isClickAheadOfRunnerTo: boolean;
-  isClickBehindOfRunnerTo: boolean;
-  runnerFromStepsNumber: number;
-  runnerToStepsNumber: number;
-  modelOptions: Model;
-}
-
-interface ElementsParameters {
-  sliderPosition: number;
-  sliderLength: number;
-  runnerFromPosition: number;
-  runnerLength: number;
-  tooltipFromLength: number;
-  tooltipToLength: number;
-  minValueLength: number;
-  maxValueLength: number;
-  minValueWidth: number;
-  maxValueWidth: number;
-  scaleElementHeight: number;
-}
-
 export {
-  Options, Config, UserConfig, SubViewOptions, ElementsParameters,
+  Options, ModelOptions, Config, UserConfig, SubViewOptions,
 };

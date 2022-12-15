@@ -22,9 +22,12 @@ class Runner {
   }
 
   public calculateInitialRunnerPosition = (options: Options): void => {
-    const minRatio: number = options.min / (options.max - options.min);
-    const fromRatio: number = options.from / (options.max - options.min);
-    const toRatio: number = options.to / (options.max - options.min);
+    const minRatio: number = options.modelOptions.min
+      / (options.modelOptions.max - options.modelOptions.min);
+    const fromRatio: number = options.modelOptions.from
+      / (options.modelOptions.max - options.modelOptions.min);
+    const toRatio: number = options.modelOptions.to
+      / (options.modelOptions.max - options.modelOptions.min);
 
     const ratio = this.runnerType === 'from' ? fromRatio : toRatio;
 
@@ -32,72 +35,57 @@ class Runner {
       * options.subViewOptions.sliderLength - options.subViewOptions.runnerLength / 2);
   };
 
-  public calculateMinRunnerPosition = (subViewOptions: any): void => {
-    this.runnerPosition = 0 - subViewOptions.runnerLength / 2;
+  public calculateMinRunnerPosition = (options: Options): void => {
+    this.runnerPosition = 0 - options.subViewOptions.runnerLength / 2;
 
     this.isMinFrom = true;
   };
 
-  public calculateMaxRunnerPosition = (subViewOptions: any): void => {
-    this.runnerPosition = subViewOptions.sliderLength - subViewOptions.runnerLength / 2;
+  public calculateMaxRunnerPosition = (options: Options): void => {
+    this.runnerPosition = options.subViewOptions.sliderLength
+      - options.subViewOptions.runnerLength / 2;
 
-    if (subViewOptions.modelOptions.isInterval) {
+    if (options.modelOptions.isInterval) {
       this.isMaxTo = true;
     } else {
       this.isMaxFrom = true;
     }
   };
 
-  public calculateShiftAxis = (
-    subViewOptions: {
-      sliderPosition: number,
-      runnerFromPosition: number,
-      runnerLength: number,
-      clickPosition: number,
-    },
-  ): number => {
-    const shiftAxis = subViewOptions.clickPosition - this.runnerPosition;
+  public calculateShiftAxis = (options: Options): number => {
+    const shiftAxis = options.subViewOptions.clickPosition - this.runnerPosition;
 
     return shiftAxis;
   };
 
-  public calculateRunnerPositionWhileMouseIsMoving = (
-    subViewOptions: {
-      sliderPosition: number,
-      runnerFromPosition: number,
-      runnerLength: number,
-      clickPosition: number,
-      shiftAxis: number,
-      modelOptions: any,
-    },
-  ): void => {
+  public calculateRunnerPositionWhileMouseIsMoving = (options: Options): void => {
     this.isMinFrom = false;
     this.isMaxFrom = false;
     this.isMaxTo = false;
 
-    if (subViewOptions.modelOptions.isStepSet) {
-      this.calculateRunnerPositionWithSetStep(subViewOptions);
+    if (options.modelOptions.isStepSet) {
+      this.calculateRunnerPositionWithSetStep(options);
     } else {
-      this.runnerPosition = subViewOptions.clickPosition - subViewOptions.shiftAxis;
+      this.runnerPosition = options.subViewOptions.clickPosition - options.subViewOptions.shiftAxis;
     }
   };
 
   public setRunnerPosition = (options: Options): void => {
-    this.$runner.css(options.positionParameter, this.runnerPosition);
+    this.$runner.css(options.modelOptions.positionParameter, this.runnerPosition);
   };
 
-  private calculateRunnerPositionWithSetStep = (subViewOptions: any): void => {
-    this.isCursorNearStepAhead = subViewOptions.clickPosition
-      > this.runnerPosition + subViewOptions.runnerLength / 2
-      + subViewOptions.modelOptions.stepLength / 2;
-    this.isCursorNearStepBehind = subViewOptions.clickPosition
-      < this.runnerPosition + subViewOptions.runnerLength / 2
-      - subViewOptions.modelOptions.stepLength / 2;
+  private calculateRunnerPositionWithSetStep = (options: Options): void => {
+    this.isCursorNearStepAhead = options.subViewOptions.clickPosition
+      > this.runnerPosition + options.subViewOptions.runnerLength / 2
+      + options.modelOptions.stepLength / 2;
+    this.isCursorNearStepBehind = options.subViewOptions.clickPosition
+      < this.runnerPosition + options.subViewOptions.runnerLength / 2
+      - options.modelOptions.stepLength / 2;
 
     if (this.isCursorNearStepAhead) {
-      this.runnerPosition += subViewOptions.modelOptions.stepLength;
+      this.runnerPosition += options.modelOptions.stepLength;
     } else if (this.isCursorNearStepBehind) {
-      this.runnerPosition -= subViewOptions.modelOptions.stepLength;
+      this.runnerPosition -= options.modelOptions.stepLength;
     }
   };
 }

@@ -16,7 +16,7 @@ class Tooltip {
   }
 
   public calculateTooltipPosition = (options: Options): void => {
-    this.tooltipLength = parseInt(this.$tooltip.css(options.lengthParameter), 10);
+    this.tooltipLength = parseInt(this.$tooltip.css(options.modelOptions.lengthParameter), 10);
 
     const runnerPosition = this.tooltipType === 'from'
       ? options.subViewOptions.runnerFromPosition : options.subViewOptions.runnerToPosition;
@@ -27,12 +27,12 @@ class Tooltip {
   };
 
   public setTooltipPosition = (options: Options): void => {
-    this.$tooltip.css(options.positionParameter, this.tooltipPosition);
+    this.$tooltip.css(options.modelOptions.positionParameter, this.tooltipPosition);
   };
 
   public setTooltipValue = (options: Options): void => {
     this.tooltipValue = this.tooltipType === 'from'
-      ? options.from : options.to;
+      ? options.modelOptions.from : options.modelOptions.to;
 
     this.$tooltip.html(`${this.tooltipValue}`);
   };

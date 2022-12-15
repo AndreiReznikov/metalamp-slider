@@ -1,4 +1,4 @@
-import { Options, ElementsParameters } from '../interfaces/interfaces';
+import { Options } from '../interfaces/interfaces';
 // import Stripe from './stripe/stripe';
 // import Range from './range/range';
 // import RunnerFrom from './runner-from/runner-from';
@@ -94,39 +94,16 @@ class View {
     / parseInt($container.parent().css('width'), 10)) * 100;
   }
 
-  public getElementsParameters = (
-    isVertical = false,
-    lengthParameter = '',
-  ): ElementsParameters => {
-    const $scaleElement = $('.js-slider__scale-element');
-
-    const elementsParameters: ElementsParameters = {
-      sliderPosition: View.getCoords(this.$stripe, isVertical),
-      sliderLength: parseInt(this.$stripe.css(lengthParameter), 10),
-      runnerFromPosition: this.SubView.runnerFrom.runnerPosition,
-      runnerLength: parseInt(this.$runnerFrom.css(lengthParameter), 10),
-      tooltipFromLength: parseInt(this.$tooltipFrom.css(lengthParameter), 10),
-      tooltipToLength: parseInt(this.$tooltipTo.css(lengthParameter), 10),
-      minValueLength: parseInt(this.$limitMin.css(lengthParameter), 10),
-      maxValueLength: parseInt(this.$limitMax.css(lengthParameter), 10),
-      minValueWidth: parseInt(this.$limitMin.css('width'), 10),
-      maxValueWidth: parseInt(this.$limitMax.css('width'), 10),
-      scaleElementHeight: parseInt($scaleElement.css('height'), 10),
-    };
-
-    return elementsParameters;
-  };
-
   public initView = (options: Options): void => {
     this.$this.css({ width: '100%', height: '100%', 'box-sizing': 'border-box' });
 
-    if (options.isRange) {
+    if (options.modelOptions.isRange) {
       this.SubView.range.$range.css('display', 'block');
     } else {
       this.SubView.range.$range.css('display', 'none');
     }
 
-    if (options.isLimit) {
+    if (options.modelOptions.isLimit) {
       this.$limitMin.css('display', 'flex');
       this.$limitMax.css('display', 'flex');
     } else {
@@ -134,22 +111,22 @@ class View {
       this.$limitMax.css('display', 'none');
     }
 
-    if (options.isScale) {
+    if (options.modelOptions.isScale) {
       this.$scaleContainer.css('display', 'flex');
     } else {
       this.$scaleContainer.css('display', 'none');
     }
 
-    if (options.isInterval) {
+    if (options.modelOptions.isInterval) {
       this.$runnerTo.css('display', 'block');
     } else {
       this.$runnerTo.css('display', 'none');
     }
 
-    if (options.isTooltip) {
+    if (options.modelOptions.isTooltip) {
       this.$tooltipFrom.css('display', 'flex');
 
-      if (options.isInterval) {
+      if (options.modelOptions.isInterval) {
         this.$tooltipTo.css('display', 'flex');
       } else {
         this.$tooltipTo.css('display', 'none');
@@ -159,13 +136,13 @@ class View {
       this.$tooltipTo.css('display', 'none');
     }
 
-    if (options.isPanel) {
+    if (options.modelOptions.isPanel) {
       this.$panelContainer.css('display', 'flex');
     } else {
       this.$panelContainer.css('display', 'none');
     }
 
-    this.setPlane(options.isVertical);
+    this.setPlane(options.modelOptions.isVertical);
   };
 
   private setPlane = (isVertical = false): void => {

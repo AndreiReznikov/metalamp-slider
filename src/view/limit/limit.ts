@@ -21,14 +21,14 @@ class Limit {
   }
 
   public setLimitPosition(options: Options) {
-    this.$limit.css(options.positionParameter, this.limitPosition);
+    this.$limit.css(options.modelOptions.positionParameter, this.limitPosition);
   }
 
   public setLimitValue(options: Options) {
     if (this.limitType === 'min') {
-      this.$limit.html(`${options.min}`);
+      this.$limit.html(`${options.modelOptions.min}`);
     } else if (this.limitType === 'max') {
-      this.$limit.html(`${options.max}`);
+      this.$limit.html(`${options.modelOptions.max}`);
     }
   }
 }

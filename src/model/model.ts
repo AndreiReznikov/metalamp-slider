@@ -1,11 +1,11 @@
 import {
-  Options,
+  ModelOptions,
   Config,
   UserConfig,
   SubViewOptions,
-  ElementsParameters,
+  Options,
 } from '../interfaces/interfaces';
-import Observer from './observer';
+import Observer from '../observer/observer';
 
 class Model {
   observer: Observer;
@@ -68,7 +68,9 @@ class Model {
 
   numberOfCharactersAfterDot = 0;
 
-  subViewOptions: any;
+  modelOptions: ModelOptions;
+
+  subViewOptions: SubViewOptions;
 
   constructor(userConfig: UserConfig = {}) {
     this.observer = new Observer();
@@ -94,14 +96,36 @@ class Model {
     this.config = $.extend({}, this.data, this.userConfig);
 
     this.setConfigParameters();
+
+    this.modelOptions = this.setModelOptions();
+    this.subViewOptions = {
+      sliderPosition: 0,
+      sliderLength: 0,
+      runnerFromPosition: 0,
+      runnerToPosition: 0,
+      runnerLength: 0,
+      limitMinLength: 0,
+      limitMaxLength: 0,
+      shiftAxis: 0,
+      clickPosition: 0,
+      isMinFrom: false,
+      isMaxFrom: false,
+      isMaxTo: false,
+      isCursorNearStepAheadFrom: false,
+      isCursorNearStepBehindFrom: false,
+      isCursorNearStepAheadTo: false,
+      isCursorNearStepBehindTo: false,
+      isClickAheadOfRunnerFrom: false,
+      isClickBehindOfRunnerFrom: false,
+      isClickAheadOfRunnerTo: false,
+      isClickBehindOfRunnerTo: false,
+      runnerFromStepsNumber: 0,
+      runnerToStepsNumber: 0,
+    };
   }
 
-  public setSubViewOptions = (subViewOptions: any) => {
-    this.subViewOptions = subViewOptions;
-  };
-
-  public setElementsParameters = (elementsParameters: ElementsParameters): void => {
-    this.scaleElementHeight = elementsParameters.scaleElementHeight;
+  public setSubViewOptions = (options: Options): void => {
+    this.subViewOptions = options.subViewOptions;
   };
 
   public calculateStepLength = (): void => {
@@ -110,8 +134,8 @@ class Model {
       * this.subViewOptions.sliderLength).toFixed(this.numberOfCharactersAfterDot));
   };
 
-  public getOptions = (): Options => {
-    const options: Options = {
+  public setModelOptions = (): ModelOptions => {
+    const modelOptions: ModelOptions = {
       isInterval: this.isInterval,
       isTooltip: this.isTooltip,
       isLimit: this.isLimit,
@@ -135,6 +159,14 @@ class Model {
       panelPosition: this.panelPosition,
       panelPositionParameter: this.panelPositionParameter,
       numberOfCharactersAfterDot: this.numberOfCharactersAfterDot,
+    };
+
+    return modelOptions;
+  };
+
+  public getOptions = (): Options => {
+    const options: Options = {
+      modelOptions: this.setModelOptions(),
       subViewOptions: this.subViewOptions,
     };
 
@@ -187,31 +219,31 @@ class Model {
     }
   };
 
-  public calculateFrom = (subViewOptions: SubViewOptions): void => {
+  public calculateFrom = (options: Options): void => {
     if (this.isStepSet) {
-      if (subViewOptions.isCursorNearStepAheadFrom) {
+      if (options.subViewOptions.isCursorNearStepAheadFrom) {
         this.from = parseFloat((this.from + this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (subViewOptions.isCursorNearStepBehindFrom) {
+      } else if (options.subViewOptions.isCursorNearStepBehindFrom) {
         this.from = parseFloat((this.from - this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (subViewOptions.isClickAheadOfRunnerFrom) {
-        this.from = parseFloat((this.from + (subViewOptions.runnerFromStepsNumber
+      } else if (options.subViewOptions.isClickAheadOfRunnerFrom) {
+        this.from = parseFloat((this.from + (options.subViewOptions.runnerFromStepsNumber
           * this.step)).toFixed(this.numberOfCharactersAfterDot));
-      } else if (subViewOptions.isClickBehindOfRunnerFrom) {
-        this.from = parseFloat((this.from - (subViewOptions.runnerFromStepsNumber
+      } else if (options.subViewOptions.isClickBehindOfRunnerFrom) {
+        this.from = parseFloat((this.from - (options.subViewOptions.runnerFromStepsNumber
           * this.step)).toFixed(this.numberOfCharactersAfterDot));
       }
     } else {
-      this.from = parseFloat((((subViewOptions.runnerFromPosition
-        + subViewOptions.runnerLength / 2) / subViewOptions.sliderLength)
+      this.from = parseFloat((((options.subViewOptions.runnerFromPosition
+        + options.subViewOptions.runnerLength / 2) / options.subViewOptions.sliderLength)
         * (this.max - this.min) + this.min).toFixed(
         this.numberOfCharactersAfterDot,
       ));
     }
 
-    if (subViewOptions.isMinFrom) {
+    if (options.subViewOptions.isMinFrom) {
       this.from = this.min;
     }
-    if (subViewOptions.isMaxFrom) {
+    if (options.subViewOptions.isMaxFrom) {
       this.from = this.max;
     }
 
@@ -248,28 +280,28 @@ class Model {
     // this.observer.notifyObservers(this.getOptions());
   };
 
-  public calculateTo = (subViewOptions: SubViewOptions): void => {
+  public calculateTo = (options: Options): void => {
     if (this.isStepSet) {
-      if (subViewOptions.isCursorNearStepAheadTo) {
+      if (options.subViewOptions.isCursorNearStepAheadTo) {
         this.to = parseFloat((this.to + this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (subViewOptions.isCursorNearStepBehindTo) {
+      } else if (options.subViewOptions.isCursorNearStepBehindTo) {
         this.to = parseFloat((this.to - this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (subViewOptions.isClickAheadOfRunnerTo) {
-        this.to = parseFloat((this.to + (subViewOptions.runnerToStepsNumber
+      } else if (options.subViewOptions.isClickAheadOfRunnerTo) {
+        this.to = parseFloat((this.to + (options.subViewOptions.runnerToStepsNumber
           * this.step)).toFixed(this.numberOfCharactersAfterDot));
-      } else if (subViewOptions.isClickBehindOfRunnerTo) {
-        this.to = parseFloat((this.to - (subViewOptions.runnerToStepsNumber
+      } else if (options.subViewOptions.isClickBehindOfRunnerTo) {
+        this.to = parseFloat((this.to - (options.subViewOptions.runnerToStepsNumber
           * this.step)).toFixed(this.numberOfCharactersAfterDot));
       }
     } else {
-      this.to = parseFloat((((subViewOptions.runnerToPosition
-        + subViewOptions.runnerLength / 2) / subViewOptions.sliderLength)
+      this.to = parseFloat((((options.subViewOptions.runnerToPosition
+        + options.subViewOptions.runnerLength / 2) / options.subViewOptions.sliderLength)
         * (this.max - this.min) + this.min).toFixed(
         this.numberOfCharactersAfterDot,
       ));
     }
 
-    if (subViewOptions.isMaxTo) {
+    if (options.subViewOptions.isMaxTo) {
       this.to = this.max;
     }
 

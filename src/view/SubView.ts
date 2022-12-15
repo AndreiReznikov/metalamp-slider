@@ -1,4 +1,4 @@
-import Observer from '../model/observer';
+import Observer from '../observer/observer';
 import Stripe from './stripe/stripe';
 import Range from './range/range';
 import Runner from './runner/runner';
@@ -6,7 +6,7 @@ import Tooltip from './tooltip/tooltip';
 import Limit from './limit/limit';
 import Scale from './scale/scale';
 import Panel from './panel/panel';
-import { SubViewOptions } from '../interfaces/interfaces';
+import { Options, ModelOptions, SubViewOptions } from '../interfaces/interfaces';
 
 class SubView {
   observer: Observer;
@@ -49,8 +49,6 @@ class SubView {
 
   shiftAxis = 0;
 
-  modelOptions: any;
-
   isClickAheadOfRunnerFrom = false;
 
   isClickBehindOfRunnerFrom = false;
@@ -66,6 +64,10 @@ class SubView {
   runnerFromStepsNumber = 0;
 
   runnerToStepsNumber = 0;
+
+  modelOptions: ModelOptions;
+
+  subViewOptions: SubViewOptions;
 
   constructor() {
     this.observer = new Observer();
@@ -83,22 +85,58 @@ class SubView {
 
     this.$document = $(document);
     this.$stripe = this.stripe.$stripe;
+
+    this.subViewOptions = this.setSubViewOptions();
+    this.modelOptions = {
+      isInterval: false,
+      isTooltip: false,
+      isLimit: false,
+      isRange: false,
+      isScale: false,
+      isVertical: false,
+      isPanel: false,
+      isStepSet: false,
+      positionParameter: '',
+      lengthParameter: '',
+      to: 0,
+      from: 0,
+      step: 0,
+      stepLength: 0,
+      min: 0,
+      max: 0,
+      scalePositionParameter: '',
+      scaleNumber: 0,
+      scaleElements: [],
+      lengthBetweenScaleElements: 0,
+      panelPosition: 0,
+      panelPositionParameter: '',
+      numberOfCharactersAfterDot: 0,
+    };
   }
 
-  public setModelOptions = (options: any) => {
-    this.modelOptions = options;
+  public getOptions = (): Options => {
+    const options: Options = {
+      modelOptions: this.modelOptions,
+      subViewOptions: this.setSubViewOptions(),
+    };
+
+    return options;
+  };
+
+  public setModelOptions = (options: Options) => {
+    this.modelOptions = options.modelOptions;
   };
 
   public makeRunnerFromPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
     this.calculateClickPosition(event);
-    this.shiftAxis = this.runnerFrom.calculateShiftAxis(this.getSubViewOptions());
+    this.shiftAxis = this.runnerFrom.calculateShiftAxis(this.getOptions());
 
     const handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
       this.calculateClickPosition(event);
-      this.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(this.getSubViewOptions());
-      this.restrictRunnerFromPosition(this.getSubViewOptions());
+      this.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
+      this.restrictRunnerFromPosition(this.getOptions());
 
-      this.observer.notifyObservers(this.getSubViewOptions());
+      this.observer.notifyObservers(this.getOptions());
     };
 
     this.$document.on('pointermove.move-from', handleRunnerFromPointermove);
@@ -107,14 +145,14 @@ class SubView {
 
   public makeRunnerToPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
     this.calculateClickPosition(event);
-    this.shiftAxis = this.runnerTo.calculateShiftAxis(this.getSubViewOptions());
+    this.shiftAxis = this.runnerTo.calculateShiftAxis(this.getOptions());
 
     const handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
       this.calculateClickPosition(event);
-      this.runnerTo.calculateRunnerPositionWhileMouseIsMoving(this.getSubViewOptions());
+      this.runnerTo.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
       this.restrictRunnerToPosition();
 
-      this.observer.notifyObservers(this.getSubViewOptions());
+      this.observer.notifyObservers(this.getOptions());
     };
 
     this.$document.on('pointermove.move-to', handleRunnerToPointermove);
@@ -124,21 +162,21 @@ class SubView {
   public handleLimitMinSetRunnerPosition = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
 
-    this.runnerFrom.calculateMinRunnerPosition(this.getSubViewOptions());
+    this.runnerFrom.calculateMinRunnerPosition(this.getOptions());
 
-    this.observer.notifyObservers(this.getSubViewOptions());
+    this.observer.notifyObservers(this.getOptions());
   };
 
   public handleLimitMaxSetRunnerPosition = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
 
-    if (this.getSubViewOptions().modelOptions.isInterval) {
-      this.runnerTo.calculateMaxRunnerPosition(this.getSubViewOptions());
+    if (this.getOptions().modelOptions.isInterval) {
+      this.runnerTo.calculateMaxRunnerPosition(this.getOptions());
     } else {
-      this.runnerFrom.calculateMaxRunnerPosition(this.getSubViewOptions());
+      this.runnerFrom.calculateMaxRunnerPosition(this.getOptions());
     }
 
-    this.observer.notifyObservers(this.getSubViewOptions());
+    this.observer.notifyObservers(this.getOptions());
   };
 
   public handleStripeCalculateRunnerPositionAfterOnDown = (event: JQuery.TriggeredEvent): void => {
@@ -147,57 +185,57 @@ class SubView {
     this.runnerTo.isMaxTo = false;
 
     this.calculateClickPosition(event);
-    this.calculateRunnerPositionAfterSliderOnDown(this.getSubViewOptions());
+    this.calculateRunnerPositionAfterSliderOnDown(this.getOptions());
 
-    this.observer.notifyObservers(this.getSubViewOptions());
+    this.observer.notifyObservers(this.getOptions());
   };
 
-  public calculateRunnerPositionAfterSliderOnDown = (subViewOptions: SubViewOptions): void => {
+  public calculateRunnerPositionAfterSliderOnDown = (options: Options): void => {
     const intervalForRunnerFromSteps: number = this.runnerFrom.runnerPosition
-      + subViewOptions.runnerLength
-      / 2 - subViewOptions.clickPosition;
+      + options.subViewOptions.runnerLength
+      / 2 - options.subViewOptions.clickPosition;
     this.runnerFromStepsNumber = Math.round(intervalForRunnerFromSteps
-      / subViewOptions.modelOptions.stepLength);
+      / options.modelOptions.stepLength);
 
     this.runnerFromStepsNumber = this.runnerFromStepsNumber < 0
       ? -this.runnerFromStepsNumber : this.runnerFromStepsNumber;
 
     const intervalForRunnerToSteps: number = this.runnerTo.runnerPosition
-      + subViewOptions.runnerLength
-      / 2 - subViewOptions.clickPosition;
+      + options.subViewOptions.runnerLength
+      / 2 - options.subViewOptions.clickPosition;
     this.runnerToStepsNumber = Math.round(intervalForRunnerToSteps
-      / subViewOptions.modelOptions.stepLength);
+      / options.modelOptions.stepLength);
 
     this.runnerToStepsNumber = this.runnerToStepsNumber < 0
       ? -this.runnerToStepsNumber : this.runnerToStepsNumber;
 
-    this.defineClickLocation(subViewOptions);
+    this.defineClickLocation(options);
 
-    if (subViewOptions.modelOptions.isStepSet) {
+    if (options.modelOptions.isStepSet) {
       if (this.isClickAheadOfRunnerFrom) {
         this.runnerFrom.runnerPosition += this.runnerFromStepsNumber
-          * subViewOptions.modelOptions.stepLength;
+          * options.modelOptions.stepLength;
       } else if (this.isClickBehindOfRunnerFrom) {
         this.runnerFrom.runnerPosition -= this.runnerFromStepsNumber
-          * subViewOptions.modelOptions.stepLength;
+          * options.modelOptions.stepLength;
       } else if (this.isClickAheadOfRunnerTo) {
         this.runnerTo.runnerPosition += this.runnerToStepsNumber
-          * subViewOptions.modelOptions.stepLength;
+          * options.modelOptions.stepLength;
       } else if (this.isClickBehindOfRunnerTo) {
         this.runnerTo.runnerPosition -= this.runnerToStepsNumber
-        * subViewOptions.modelOptions.stepLength;
+        * options.modelOptions.stepLength;
       }
     } else if (this.isClickForRunnerFrom) {
-      this.runnerFrom.runnerPosition = subViewOptions.clickPosition
-        - subViewOptions.runnerLength / 2;
+      this.runnerFrom.runnerPosition = options.subViewOptions.clickPosition
+        - options.subViewOptions.runnerLength / 2;
     } else if (this.isClickForRunnerTo) {
-      this.runnerTo.runnerPosition = subViewOptions.clickPosition
-        - subViewOptions.runnerLength / 2;
+      this.runnerTo.runnerPosition = options.subViewOptions.clickPosition
+        - options.subViewOptions.runnerLength / 2;
     }
   };
 
-  public getSubViewOptions = () => {
-    const subViewOptions = {
+  public setSubViewOptions = (): SubViewOptions => {
+    const subViewOptions: SubViewOptions = {
       sliderPosition: this.sliderPosition,
       sliderLength: this.sliderLength,
       runnerFromPosition: this.runnerFrom.runnerPosition,
@@ -220,7 +258,6 @@ class SubView {
       isClickBehindOfRunnerTo: this.isClickBehindOfRunnerTo,
       runnerFromStepsNumber: this.runnerFromStepsNumber,
       runnerToStepsNumber: this.runnerToStepsNumber,
-      modelOptions: this.modelOptions,
     };
 
     return subViewOptions;
@@ -229,25 +266,25 @@ class SubView {
   public getElementParameters = () => {
     this.sliderPosition = this.getCoords(
       this.$stripe,
-      this.getSubViewOptions().modelOptions.isVertical,
+      this.getOptions().modelOptions.isVertical,
     );
     this.sliderLength = parseInt(
       this.$stripe.css('width'),
       10,
     );
     this.runnerLength = parseInt(
-      this.runnerFrom.$runner.css(`${this.getSubViewOptions().modelOptions.lengthParameter}`),
+      this.runnerFrom.$runner.css(`${this.getOptions().modelOptions.lengthParameter}`),
       10,
     );
   };
 
-  private restrictRunnerFromPosition = (subViewOptions: any): void => {
+  private restrictRunnerFromPosition = (options: Options): void => {
     const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFrom.runnerPosition
       < 0 - this.runnerLength / 2;
     const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition
       > this.sliderLength - this.runnerLength / 2;
     const
-      isRunnerFromPositionMoreThanRunnerToPosition: boolean = subViewOptions.modelOptions.isInterval
+      isRunnerFromPositionMoreThanRunnerToPosition: boolean = options.modelOptions.isInterval
       && this.runnerFrom.runnerPosition > this.runnerTo.runnerPosition;
 
     if (isRunnerFromPositionLessThanMinimum) {
@@ -286,33 +323,34 @@ class SubView {
       pageY1 = event.pageY;
     }
 
-    const clientAxis: number = this.getSubViewOptions().modelOptions.isVertical ? pageY1 : pageX1;
+    const clientAxis: number = this.getOptions().modelOptions.isVertical ? pageY1 : pageX1;
 
     this.clickPosition = clientAxis - this.sliderPosition;
   };
 
-  private defineClickLocation = (subViewOptions: any) => {
-    const isClickAheadOfRunnerFromWithInterval = subViewOptions.clickPosition
-      > this.runnerFrom.runnerPosition + subViewOptions.runnerLength
-      && subViewOptions.clickPosition < this.runnerFrom.runnerPosition + subViewOptions.runnerLength
+  private defineClickLocation = (options: Options) => {
+    const isClickAheadOfRunnerFromWithInterval = options.subViewOptions.clickPosition
+      > this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength
+      && options.subViewOptions.clickPosition
+      < this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength
       + (this.runnerTo.runnerPosition - this.runnerFrom.runnerPosition
-        - subViewOptions.runnerLength) / 2;
-    const isClickAheadOfRunnerFromWithoutInterval = subViewOptions.clickPosition
-      > this.runnerFrom.runnerPosition + subViewOptions.runnerLength;
+        - options.subViewOptions.runnerLength) / 2;
+    const isClickAheadOfRunnerFromWithoutInterval = options.subViewOptions.clickPosition
+      > this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength;
 
-    this.isClickAheadOfRunnerFrom = subViewOptions.modelOptions.isInterval
+    this.isClickAheadOfRunnerFrom = options.modelOptions.isInterval
       ? isClickAheadOfRunnerFromWithInterval : isClickAheadOfRunnerFromWithoutInterval;
-    this.isClickBehindOfRunnerFrom = subViewOptions.clickPosition
+    this.isClickBehindOfRunnerFrom = options.subViewOptions.clickPosition
       < this.runnerFrom.runnerPosition;
     this.isClickForRunnerFrom = this.isClickAheadOfRunnerFrom || this.isClickBehindOfRunnerFrom;
 
-    this.isClickAheadOfRunnerTo = subViewOptions.clickPosition
-      > this.runnerTo.runnerPosition + subViewOptions.runnerLength;
-    this.isClickBehindOfRunnerTo = subViewOptions.clickPosition
-      < this.runnerTo.runnerPosition && subViewOptions.clickPosition
-      >= this.runnerFrom.runnerPosition + subViewOptions.runnerLength
+    this.isClickAheadOfRunnerTo = options.subViewOptions.clickPosition
+      > this.runnerTo.runnerPosition + options.subViewOptions.runnerLength;
+    this.isClickBehindOfRunnerTo = options.subViewOptions.clickPosition
+      < this.runnerTo.runnerPosition && options.subViewOptions.clickPosition
+      >= this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength
       + (this.runnerTo.runnerPosition - this.runnerFrom.runnerPosition
-        - subViewOptions.runnerLength) / 2;
+        - options.subViewOptions.runnerLength) / 2;
     this.isClickForRunnerTo = this.isClickAheadOfRunnerTo || this.isClickBehindOfRunnerTo;
   };
 
