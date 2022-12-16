@@ -131,37 +131,14 @@ class Presenter {
       $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerToKeydown));
     };
 
-    const handleRunnersPositionAfterScaleOnDown = (event: JQuery.TriggeredEvent) => {
-      if (!event.target) return;
-
-      const $target: JQuery<EventTarget> = $(event.target);
-      const isScaleElementOnDown: boolean = $target.hasClass('js-slider__scale-element');
-      const scaleElementPosition: number = parseInt(`${$target.css(this.model.positionParameter)}`, 10);
-      const scaleElementLength: number = parseInt(`${$target.css(this.model.lengthParameter)}`, 10);
-      const scaleElementValue: string = $target.html();
-
-      const scaleElementOptions = {
-        isScaleElementOnDown,
-        scaleElementPosition,
-        scaleElementLength,
-        scaleElementValue,
-      };
-
-      // this.model.calculateRunnerPositionAfterScaleOnDown(event, scaleElementOptions);
-
-      // this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
     this.view.SubView.runnerFrom.$runner.on('pointerdown.runner-from', this.view.SubView.makeRunnerFromPointermoveHandler);
     this.view.SubView.runnerTo.$runner.on('pointerdown.runner-to', this.view.SubView.makeRunnerToPointermoveHandler);
     this.view.SubView.limitMin.$limit.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
     this.view.SubView.limitMax.$limit.on('pointerdown.max-to', this.view.SubView.handleLimitMaxSetRunnerPosition);
     this.view.SubView.stripe.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
+    this.view.$scaleContainer.on('pointerdown.scale', this.view.SubView.handleScaleCalculateRunnerPositionAfterOnDown);
     // this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
     // this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
-    // this.view.$scaleContainer.on('pointerdown.scale', handleRunnersPositionAfterScaleOnDown);
 
     this.view.$window.on('resize.slider', this.init);
   };

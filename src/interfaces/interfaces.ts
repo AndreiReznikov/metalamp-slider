@@ -44,14 +44,20 @@ interface SubViewOptions {
   isMaxTo: boolean;
   isCursorNearStepAheadFrom: boolean;
   isCursorNearStepBehindFrom: boolean;
+  isClickForRunnerFrom: boolean;
   isCursorNearStepAheadTo: boolean;
   isCursorNearStepBehindTo: boolean;
   isClickAheadOfRunnerFrom: boolean;
   isClickBehindOfRunnerFrom: boolean;
   isClickAheadOfRunnerTo: boolean;
   isClickBehindOfRunnerTo: boolean;
+  isClickForRunnerTo: boolean;
   runnerFromStepsNumber: number;
   runnerToStepsNumber: number;
+  isScaleElementOnDown: boolean;
+  scaleElementPosition: number;
+  scaleElementLength: number;
+  scaleElementValue: string;
 }
 
 interface Config {

@@ -1,13 +1,13 @@
-import { ModelOptions, SubViewOptions } from '../interfaces/interfaces';
+import { Options } from '../interfaces/interfaces';
 
 class Observer {
-  observers: ((options: any) => void)[] = [];
+  observers: ((options: Options) => void)[] = [];
 
-  public addObserver = (observer: (options: any) => void): void => {
+  public addObserver = (observer: (options: Options) => void): void => {
     this.observers.push(observer);
   };
 
-  public notifyObservers = (options: any): void => {
+  public notifyObservers = (options: Options): void => {
     this.observers.forEach((observer) => observer(options));
   };
 }

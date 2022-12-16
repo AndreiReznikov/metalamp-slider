@@ -117,10 +117,16 @@ class Model {
       isCursorNearStepBehindTo: false,
       isClickAheadOfRunnerFrom: false,
       isClickBehindOfRunnerFrom: false,
+      isClickForRunnerFrom: false,
       isClickAheadOfRunnerTo: false,
       isClickBehindOfRunnerTo: false,
+      isClickForRunnerTo: false,
       runnerFromStepsNumber: 0,
       runnerToStepsNumber: 0,
+      isScaleElementOnDown: false,
+      scaleElementPosition: 0,
+      scaleElementLength: 0,
+      scaleElementValue: '',
     };
   }
 
@@ -246,6 +252,10 @@ class Model {
     if (options.subViewOptions.isMaxFrom) {
       this.from = this.max;
     }
+    if (options.subViewOptions.isScaleElementOnDown
+        && options.subViewOptions.isClickForRunnerFrom) {
+      this.from = Number(options.subViewOptions.scaleElementValue);
+    }
 
     this.restrictFrom();
 
@@ -303,6 +313,11 @@ class Model {
 
     if (options.subViewOptions.isMaxTo) {
       this.to = this.max;
+    }
+    if (options.subViewOptions.isScaleElementOnDown
+      && options.subViewOptions.isClickForRunnerTo) {
+      this.to = Number(options.subViewOptions.scaleElementValue);
+      console.log('to')
     }
 
     this.restrictTo();

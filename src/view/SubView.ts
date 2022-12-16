@@ -61,6 +61,14 @@ class SubView {
 
   runnerToStepsNumber = 0;
 
+  isScaleElementOnDown = false;
+
+  scaleElementPosition = 0;
+
+  scaleElementLength = 0;
+
+  scaleElementValue = '';
+
   modelOptions: ModelOptions;
 
   subViewOptions: SubViewOptions;
@@ -168,6 +176,22 @@ class SubView {
     this.observer.notifyObservers(this.getOptions());
   };
 
+  public handleScaleCalculateRunnerPositionAfterOnDown = (event: JQuery.TriggeredEvent): void => {
+    event.stopPropagation();
+
+    const $target: JQuery<EventTarget> = $(event.target);
+
+    this.isScaleElementOnDown = $target.hasClass('js-slider__scale-element');
+    this.scaleElementPosition = parseInt(`${$target.css(this.getOptions().modelOptions.positionParameter)}`, 10);
+    this.scaleElementLength = parseInt(`${$target.css(this.getOptions().modelOptions.lengthParameter)}`, 10);
+    this.scaleElementValue = $target.html();
+
+    this.calculateClickPosition(event);
+    this.calculateRunnerPositionAfterScaleOnDown(this.getOptions());
+
+    this.observer.notifyObservers(this.getOptions());
+  };
+
   public calculateRunnerPositionAfterSliderOnDown = (options: Options): void => {
     const intervalForRunnerFromSteps: number = this.runnerFrom.runnerPosition
       + options.subViewOptions.runnerLength
@@ -212,6 +236,22 @@ class SubView {
     }
   };
 
+  public calculateRunnerPositionAfterScaleOnDown = (options: Options): void => {
+    this.defineClickLocation(options);
+
+    if (this.isClickForRunnerFrom) {
+      this.runnerFrom.runnerPosition = this.scaleElementPosition
+        + this.scaleElementLength
+        / 2 - this.runnerLength / 2;
+    } else if (this.isClickForRunnerTo) {
+      this.runnerTo.runnerPosition = this.scaleElementPosition
+        + this.scaleElementLength
+        / 2 - this.runnerLength / 2;
+    }
+
+    this.observer.notifyObservers(this.getOptions());
+  };
+
   public getSubViewOptions = (): SubViewOptions => {
     const subViewOptions: SubViewOptions = {
       sliderPosition: this.sliderPosition,
@@ -232,10 +272,16 @@ class SubView {
       isCursorNearStepBehindTo: this.runnerTo.isCursorNearStepBehind,
       isClickAheadOfRunnerFrom: this.isClickAheadOfRunnerFrom,
       isClickBehindOfRunnerFrom: this.isClickBehindOfRunnerFrom,
+      isClickForRunnerFrom: this.isClickForRunnerFrom,
       isClickAheadOfRunnerTo: this.isClickAheadOfRunnerTo,
       isClickBehindOfRunnerTo: this.isClickBehindOfRunnerTo,
+      isClickForRunnerTo: this.isClickForRunnerTo,
       runnerFromStepsNumber: this.runnerFromStepsNumber,
       runnerToStepsNumber: this.runnerToStepsNumber,
+      isScaleElementOnDown: this.isScaleElementOnDown,
+      scaleElementPosition: this.scaleElementPosition,
+      scaleElementLength: this.scaleElementLength,
+      scaleElementValue: this.scaleElementValue,
     };
 
     return subViewOptions;
@@ -341,6 +387,8 @@ class SubView {
     this.isClickBehindOfRunnerFrom = options.subViewOptions.clickPosition
       < this.runnerFrom.runnerPosition;
     this.isClickForRunnerFrom = this.isClickAheadOfRunnerFrom || this.isClickBehindOfRunnerFrom;
+
+    if (!options.modelOptions.isInterval) return;
 
     this.isClickAheadOfRunnerTo = options.subViewOptions.clickPosition
       > this.runnerTo.runnerPosition + options.subViewOptions.runnerLength;
