@@ -35,15 +35,17 @@ class SubView {
 
   $stripe: JQuery<HTMLElement>;
 
+  shiftAxis = 0;
+
   clickPosition = 0;
+
+  isWrongButtonPressed = false;
 
   sliderLength = 0;
 
   sliderPosition = 0;
 
   runnerLength = 0;
-
-  shiftAxis = 0;
 
   isClickAheadOfRunnerFrom = false;
 
@@ -131,14 +133,22 @@ class SubView {
     this.modelOptions = options.modelOptions;
   };
 
-  public makeRunnerFromPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
+  public handleRunnerFromStartPointermove = (event: JQuery.TriggeredEvent): void => {
+    this.checkMouseButton(event);
+
+    if (this.isWrongButtonPressed) return;
+
     this.calculateClickPosition(event);
     this.shiftAxis = this.runnerFrom.calculateShiftAxis(this.getOptions());
 
     this.attachPointermoveEvent('from');
   };
 
-  public makeRunnerToPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
+  public handleRunnerToStartPointermove = (event: JQuery.TriggeredEvent): void => {
+    this.checkMouseButton(event);
+
+    if (this.isWrongButtonPressed) return;
+
     this.calculateClickPosition(event);
     this.shiftAxis = this.runnerTo.calculateShiftAxis(this.getOptions());
 
@@ -147,6 +157,9 @@ class SubView {
 
   public handleLimitMinSetRunnerPosition = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
+    this.checkMouseButton(event);
+
+    if (this.isWrongButtonPressed) return;
 
     this.runnerFrom.calculateMinRunnerPosition(this.getOptions());
 
@@ -155,6 +168,9 @@ class SubView {
 
   public handleLimitMaxSetRunnerPosition = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
+    this.checkMouseButton(event);
+
+    if (this.isWrongButtonPressed) return;
 
     if (this.getOptions().modelOptions.isInterval) {
       this.runnerTo.calculateMaxRunnerPosition(this.getOptions());
@@ -166,6 +182,10 @@ class SubView {
   };
 
   public handleStripeCalculateRunnerPositionAfterOnDown = (event: JQuery.TriggeredEvent): void => {
+    this.checkMouseButton(event);
+
+    if (this.isWrongButtonPressed) return;
+
     this.runnerFrom.isMinFrom = false;
     this.runnerFrom.isMaxFrom = false;
     this.runnerTo.isMaxTo = false;
@@ -178,6 +198,9 @@ class SubView {
 
   public handleScaleCalculateRunnerPositionAfterOnDown = (event: JQuery.TriggeredEvent): void => {
     event.stopPropagation();
+    this.checkMouseButton(event);
+
+    if (this.isWrongButtonPressed) return;
 
     const $target: JQuery<EventTarget> = $(event.target);
 
@@ -407,6 +430,10 @@ class SubView {
     if (coords) coord = this.getOptions().modelOptions.isVertical ? coords.top : coords.left;
 
     return coord;
+  };
+
+  private checkMouseButton = (event: JQuery.TriggeredEvent): void => {
+    this.isWrongButtonPressed = event.pointerType === 'mouse' && event.buttons !== 1;
   };
 }
 

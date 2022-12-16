@@ -33,6 +33,8 @@ class Presenter {
     this.model.calculateStepLength();
     this.view.SubView.setModelOptions(this.model.getOptions());
 
+    this.view.setPlane(this.model.getOptions());
+
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.updateView(this.model.getOptions());
@@ -131,8 +133,8 @@ class Presenter {
       $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerToKeydown));
     };
 
-    this.view.SubView.runnerFrom.$runner.on('pointerdown.runner-from', this.view.SubView.makeRunnerFromPointermoveHandler);
-    this.view.SubView.runnerTo.$runner.on('pointerdown.runner-to', this.view.SubView.makeRunnerToPointermoveHandler);
+    this.view.SubView.runnerFrom.$runner.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
+    this.view.SubView.runnerTo.$runner.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
     this.view.SubView.limitMin.$limit.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
     this.view.SubView.limitMax.$limit.on('pointerdown.max-to', this.view.SubView.handleLimitMaxSetRunnerPosition);
     this.view.SubView.stripe.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
