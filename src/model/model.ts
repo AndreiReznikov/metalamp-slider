@@ -40,27 +40,27 @@ class Model {
 
   scaleElements: number[] = [];
 
-  isInterval = false;
+  double = false;
 
-  isVertical = false;
+  vertical = false;
 
-  isTooltip = true;
+  showLimit = true;
 
-  isRange = true;
+  showTooltip = true;
 
-  isScale = true;
+  showRange = true;
 
-  keyboard = false;
+  showScale = true;
 
-  isLimit = true;
+  useKeyboard = false;
 
   isStepSet = false;
 
-  positionParameter = this.isVertical ? 'top' : 'left';
+  positionParameter = this.vertical ? 'top' : 'left';
 
-  lengthParameter = this.isVertical ? 'height' : 'width';
+  lengthParameter = this.vertical ? 'height' : 'width';
 
-  scalePositionParameter = this.isVertical ? 'right' : 'top';
+  scalePositionParameter = this.vertical ? 'right' : 'top';
 
   modelOptions: ModelOptions;
 
@@ -71,13 +71,13 @@ class Model {
 
     this.userConfig = userConfig;
     this.data = {
-      isInterval: false,
-      isVertical: false,
-      isTooltip: true,
-      isLimit: true,
-      isRange: true,
-      isScale: false,
-      keyboard: false,
+      double: false,
+      vertical: false,
+      showTooltip: true,
+      showLimit: true,
+      showRange: true,
+      showScale: false,
+      useKeyboard: false,
       min: 0,
       max: 100,
       from: 10,
@@ -135,12 +135,12 @@ class Model {
 
   public getModelOptions = (): ModelOptions => {
     const modelOptions: ModelOptions = {
-      isInterval: this.isInterval,
-      isTooltip: this.isTooltip,
-      isLimit: this.isLimit,
-      isRange: this.isRange,
-      isScale: this.isScale,
-      isVertical: this.isVertical,
+      double: this.double,
+      vertical: this.vertical,
+      showTooltip: this.showTooltip,
+      showLimit: this.showLimit,
+      showRange: this.showRange,
+      showScale: this.showScale,
       isStepSet: this.isStepSet,
       positionParameter: this.positionParameter,
       lengthParameter: this.lengthParameter,
@@ -499,27 +499,27 @@ class Model {
   // };
 
   private setConfigParameters = (): void => {
-    this.isInterval = this.config.isInterval;
-    this.isVertical = this.config.isVertical;
-    this.isTooltip = this.config.isTooltip;
-    this.isLimit = this.config.isLimit;
-    this.isRange = this.config.isRange;
-    this.isScale = this.config.isScale;
-    this.keyboard = this.config.keyboard;
-    this.positionParameter = this.isVertical ? 'top' : 'left';
-    this.lengthParameter = this.isVertical ? 'height' : 'width';
+    this.double = this.config.double;
+    this.vertical = this.config.vertical;
+    this.showTooltip = this.config.showTooltip;
+    this.showLimit = this.config.showLimit;
+    this.showRange = this.config.showRange;
+    this.showScale = this.config.showScale;
+    this.useKeyboard = this.config.useKeyboard;
+    this.positionParameter = this.vertical ? 'top' : 'left';
+    this.lengthParameter = this.vertical ? 'height' : 'width';
+    this.scalePositionParameter = this.vertical ? 'right' : 'top';
     this.min = this.config.min;
     this.max = this.config.max;
     this.step = this.config.step;
     this.from = this.config.from;
     this.to = this.config.to;
-    this.scalePositionParameter = this.isVertical ? 'right' : 'top';
     this.scaleNumber = this.config.scaleNumber;
   };
 
   private restrictFrom = (): void => {
     const isFromLessThanMinimum: boolean = this.from < this.min;
-    const isIntervalAndFromMoreThanTo: boolean = this.isInterval && this.from > this.to;
+    const isIntervalAndFromMoreThanTo: boolean = this.double && this.from > this.to;
     const isFromMoreThanMaximum: boolean = this.from > this.max;
 
     if (isFromLessThanMinimum) {

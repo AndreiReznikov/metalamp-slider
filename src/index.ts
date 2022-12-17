@@ -30,14 +30,14 @@ import './index.css';
     };
 
     this.destroy = (): JQuery<HTMLElement> => {
-      const destroySlider = (): void => {
+      const destroy = (): void => {
         if (this.data('pooshkaSlider')) {
           this.data('pooshkaSlider', false);
           this.empty();
         }
       };
 
-      return this.each(destroySlider);
+      return this.each(destroy);
     };
 
     const init = (): void => {
@@ -51,13 +51,13 @@ import './index.css';
 
 $(document).ready(() => {
   $('.js-slider_double').pooshkaSlider({
-    isInterval: true,
-    isTooltip: true,
-    isVertical: false,
-    isLimit: true,
-    isRange: true,
-    isScale: true,
-    keyboard: true,
+    double: true,
+    vertical: false,
+    showTooltip: true,
+    showLimit: true,
+    showRange: true,
+    showScale: true,
+    useKeyboard: true,
     min: -12.5,
     max: 12.5,
     step: 0,
@@ -66,13 +66,13 @@ $(document).ready(() => {
   });
 
   $('.js-slider_single').pooshkaSlider({
-    isInterval: true,
-    isTooltip: false,
-    isVertical: false,
-    isLimit: true,
-    isRange: false,
-    isScale: true,
-    keyboard: true,
+    double: true,
+    vertical: false,
+    showTooltip: false,
+    showLimit: true,
+    showRange: false,
+    showScale: true,
+    useKeyboard: true,
     min: 0,
     max: 10000000,
     step: 2500000,
@@ -82,13 +82,13 @@ $(document).ready(() => {
   });
 
   $('.js-slider_vertical').pooshkaSlider({
-    isInterval: true,
-    isTooltip: false,
-    isVertical: true,
-    isLimit: false,
-    isRange: true,
-    isScale: true,
-    keyboard: true,
+    double: true,
+    vertical: true,
+    showTooltip: false,
+    showLimit: false,
+    showRange: true,
+    showScale: true,
+    useKeyboard: true,
     min: -125,
     max: -5,
     step: 0,
@@ -98,13 +98,13 @@ $(document).ready(() => {
   });
 
   $('.js-slider_empty').pooshkaSlider({
-    isInterval: false,
-    isTooltip: false,
-    isVertical: false,
-    isLimit: false,
-    isRange: false,
-    isScale: false,
-    keyboard: true,
+    double: false,
+    vertical: false,
+    showTooltip: false,
+    showLimit: false,
+    showRange: false,
+    showScale: false,
+    useKeyboard: true,
     min: 0,
     max: 10,
     step: 0,
@@ -119,7 +119,7 @@ $(document).ready(() => {
   //   isInterval: false,
   // });
 
-  $('.js-slider__input').prop('checked', $sliderDouble.data('api').getModelOptions().isTooltip);
+  $('.js-slider__input').prop('checked', $sliderDouble.data('api').getModelOptions().showTooltip);
 
   $('.js-slider__input').click(() => {
     $sliderDouble.toggleTooltip();

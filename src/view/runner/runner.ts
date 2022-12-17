@@ -45,7 +45,7 @@ class Runner {
     this.runnerPosition = options.subViewOptions.sliderLength
       - options.subViewOptions.runnerLength / 2;
 
-    if (options.modelOptions.isInterval) {
+    if (options.modelOptions.double) {
       this.isMaxTo = true;
     } else {
       this.isMaxFrom = true;

@@ -58,13 +58,13 @@ class View {
   public initializeView = (options: Options): void => {
     this.$slider.css({ width: '100%', height: '100%', 'box-sizing': 'border-box' });
 
-    if (options.modelOptions.isRange) {
+    if (options.modelOptions.showRange) {
       this.$range.css('display', 'block');
     } else {
       this.$range.css('display', 'none');
     }
 
-    if (options.modelOptions.isLimit) {
+    if (options.modelOptions.showLimit) {
       this.$limitMin.css('display', 'flex');
       this.$limitMax.css('display', 'flex');
     } else {
@@ -72,22 +72,22 @@ class View {
       this.$limitMax.css('display', 'none');
     }
 
-    if (options.modelOptions.isScale) {
+    if (options.modelOptions.showScale) {
       this.$scaleContainer.css('display', 'flex');
     } else {
       this.$scaleContainer.css('display', 'none');
     }
 
-    if (options.modelOptions.isInterval) {
+    if (options.modelOptions.double) {
       this.$runnerTo.css('display', 'block');
     } else {
       this.$runnerTo.css('display', 'none');
     }
 
-    if (options.modelOptions.isTooltip) {
+    if (options.modelOptions.showTooltip) {
       this.$tooltipFrom.css('display', 'flex');
 
-      if (options.modelOptions.isInterval) {
+      if (options.modelOptions.double) {
         this.$tooltipTo.css('display', 'flex');
       } else {
         this.$tooltipTo.css('display', 'none');
@@ -112,7 +112,7 @@ class View {
       right: 0, top: 0, width: 0, height: 0,
     });
 
-    if (options.modelOptions.isVertical) {
+    if (options.modelOptions.vertical) {
       this.$slider.parent().css({
         width: this.containerParameters.containerHeight,
         height: this.containerParameters.containerWidth,

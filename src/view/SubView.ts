@@ -94,12 +94,12 @@ class SubView {
 
     this.subViewOptions = this.getSubViewOptions();
     this.modelOptions = {
-      isInterval: false,
-      isTooltip: false,
-      isLimit: false,
-      isRange: false,
-      isScale: false,
-      isVertical: false,
+      double: false,
+      vertical: false,
+      showTooltip: false,
+      showLimit: false,
+      showRange: false,
+      showScale: false,
       isStepSet: false,
       positionParameter: '',
       lengthParameter: '',
@@ -169,7 +169,7 @@ class SubView {
 
     if (this.isWrongButtonPressed) return;
 
-    if (this.getOptions().modelOptions.isInterval) {
+    if (this.getOptions().modelOptions.double) {
       this.runnerTo.calculateMaxRunnerPosition(this.getOptions());
     } else {
       this.runnerFrom.calculateMaxRunnerPosition(this.getOptions());
@@ -346,7 +346,7 @@ class SubView {
     const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition
       > this.sliderLength - this.runnerLength / 2;
     const
-      isRunnerFromPositionMoreThanRunnerToPosition: boolean = options.modelOptions.isInterval
+      isRunnerFromPositionMoreThanRunnerToPosition: boolean = options.modelOptions.double
       && this.runnerFrom.runnerPosition > this.runnerTo.runnerPosition;
 
     if (isRunnerFromPositionLessThanMinimum) {
@@ -385,7 +385,7 @@ class SubView {
       pageY1 = event.pageY;
     }
 
-    const clientAxis: number = this.getOptions().modelOptions.isVertical ? pageY1 : pageX1;
+    const clientAxis: number = this.getOptions().modelOptions.vertical ? pageY1 : pageX1;
 
     this.clickPosition = clientAxis - this.sliderPosition;
   };
@@ -400,13 +400,13 @@ class SubView {
     const isClickAheadOfRunnerFromWithoutInterval = options.subViewOptions.clickPosition
       > this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength;
 
-    this.isClickAheadOfRunnerFrom = options.modelOptions.isInterval
+    this.isClickAheadOfRunnerFrom = options.modelOptions.double
       ? isClickAheadOfRunnerFromWithInterval : isClickAheadOfRunnerFromWithoutInterval;
     this.isClickBehindOfRunnerFrom = options.subViewOptions.clickPosition
       < this.runnerFrom.runnerPosition;
     this.isClickForRunnerFrom = this.isClickAheadOfRunnerFrom || this.isClickBehindOfRunnerFrom;
 
-    if (!options.modelOptions.isInterval) return;
+    if (!options.modelOptions.double) return;
 
     this.isClickAheadOfRunnerTo = options.subViewOptions.clickPosition
       > this.runnerTo.runnerPosition + options.subViewOptions.runnerLength;
@@ -422,7 +422,7 @@ class SubView {
     const coords: JQuery.Coordinates | undefined = element.offset();
     let coord = 0;
 
-    if (coords) coord = this.getOptions().modelOptions.isVertical ? coords.top : coords.left;
+    if (coords) coord = this.getOptions().modelOptions.vertical ? coords.top : coords.left;
 
     return coord;
   };

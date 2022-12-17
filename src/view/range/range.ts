@@ -10,7 +10,7 @@ class Range {
   public calculateRangePosition = (options: Options): void => {
     this.rangePosition = 0;
 
-    if (!options.modelOptions.isInterval) return;
+    if (!options.modelOptions.double) return;
 
     this.rangePosition = options.subViewOptions.runnerFromPosition
     + options.subViewOptions.runnerLength / 2;
@@ -20,7 +20,7 @@ class Range {
     this.rangeLength = options.subViewOptions.runnerFromPosition
     + options.subViewOptions.runnerLength / 2;
 
-    if (!options.modelOptions.isInterval) return;
+    if (!options.modelOptions.double) return;
 
     this.rangeLength = options.subViewOptions.runnerToPosition
     - options.subViewOptions.runnerFromPosition;

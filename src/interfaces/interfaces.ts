@@ -4,12 +4,12 @@ interface Options {
 }
 
 interface ModelOptions {
-  isInterval: boolean;
-  isTooltip: boolean;
-  isLimit: boolean;
-  isRange: boolean;
-  isScale: boolean;
-  isVertical: boolean;
+  double: boolean;
+  vertical: boolean;
+  showTooltip: boolean;
+  showLimit: boolean;
+  showRange: boolean;
+  showScale: boolean;
   isStepSet: boolean;
   positionParameter: string;
   lengthParameter: string;
@@ -58,34 +58,34 @@ interface SubViewOptions {
 }
 
 interface Config {
-  isInterval: boolean;
+  double: boolean;
+  vertical: boolean;
+  useKeyboard: boolean;
+  showTooltip: boolean;
+  showLimit: boolean;
+  showRange: boolean;
+  showScale: boolean;
   min: number;
   max: number;
   from: number;
   to: number;
   step: number;
-  keyboard: boolean;
-  isVertical: boolean;
-  isTooltip: boolean;
-  isLimit: boolean;
-  isRange: boolean;
-  isScale: boolean;
   scaleNumber: number;
 }
 
 interface UserConfig {
-  isInterval?: boolean;
+  double?: boolean;
+  vertical?: boolean;
+  useKeyboard?: boolean;
+  showTooltip?: boolean;
+  showLimit?: boolean;
+  showRange?: boolean;
+  showScale?: boolean;
   min?: number;
   max?: number;
   from?: number;
   to?: number;
   step?: number;
-  keyboard?: boolean;
-  isVertical?: boolean;
-  isTooltip?: boolean;
-  isLimit?: boolean;
-  isRange?: boolean;
-  isScale?: boolean;
   scaleNumber?: number;
 }
 

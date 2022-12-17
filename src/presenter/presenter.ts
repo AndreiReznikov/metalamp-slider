@@ -23,7 +23,7 @@ class Presenter {
   }
 
   private toggleTooltip = () => {
-    this.model.isTooltip = this.model.isTooltip !== true;
+    this.model.showTooltip = this.model.showTooltip !== true;
 
     this.view.initializeView(this.model.getOptions());
 
