@@ -1,5 +1,5 @@
 interface JQuery {
-  mySlider: (userConfig: UserConfig) => jQuery<HTMLElement>;
-  update: (newData: UserConfig) => JQuery<HTMLElement>;
+  pooshkaSlider: (userConfig: UserConfig) => jQuery<HTMLElement>;
+  toggleTooltip: (newData: UserConfig) => JQuery<HTMLElement>;
   destroy: () => JQuery<HTMLElement>;
 }

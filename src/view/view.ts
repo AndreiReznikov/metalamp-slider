@@ -1,11 +1,8 @@
 import { Options } from '../interfaces/interfaces';
-import Panel from './panel/panel';
 import SubView from './SubView';
 
 class View {
   SubView: SubView;
-
-  panel: Panel;
 
   $window: JQuery<Window & typeof globalThis>;
 
@@ -31,8 +28,6 @@ class View {
 
   $tooltipTo: JQuery<HTMLElement>;
 
-  $panelContainer: JQuery<HTMLElement>;
-
   containerParameters: {
     containerWidth: number;
     containerHeight: number;
@@ -41,7 +36,6 @@ class View {
 
   constructor($slider: JQuery<HTMLElement> = $('div')) {
     this.SubView = new SubView();
-    this.panel = new Panel();
 
     this.$window = $(window);
     this.$slider = $slider;
@@ -54,7 +48,6 @@ class View {
     this.$scaleContainer = this.SubView.scale.$scaleContainer;
     this.$tooltipFrom = this.SubView.tooltipFrom.$tooltip;
     this.$tooltipTo = this.SubView.tooltipTo.$tooltip;
-    this.$panelContainer = this.panel.$panelContainer;
 
     this.containerParameters = { containerWidth: 0, containerHeight: 0, containerRelativeWidth: 0 };
 
@@ -103,12 +96,6 @@ class View {
       this.$tooltipFrom.css('display', 'none');
       this.$tooltipTo.css('display', 'none');
     }
-
-    if (options.modelOptions.isPanel) {
-      this.$panelContainer.css('display', 'flex');
-    } else {
-      this.$panelContainer.css('display', 'none');
-    }
   };
 
   public setPlane = (options: Options): void => {
@@ -124,7 +111,6 @@ class View {
     this.$scaleContainer.css({
       right: 0, top: 0, width: 0, height: 0,
     });
-    this.$panelContainer.css({ right: '', top: '' });
 
     if (options.modelOptions.isVertical) {
       this.$slider.parent().css({
@@ -138,7 +124,6 @@ class View {
       this.$tooltipTo.css({ left: options.subViewOptions.runnerLength });
       this.$limitMin.css({ left: options.subViewOptions.runnerLength });
       this.$limitMax.css({ left: options.subViewOptions.runnerLength });
-      this.$panelContainer.css({ transform: 'translateX(0)', top: 0, width: '150px' });
 
       return;
     }
@@ -154,7 +139,6 @@ class View {
     this.$tooltipTo.css({ bottom: options.subViewOptions.runnerLength, top: '' });
     this.$limitMin.css({ bottom: options.subViewOptions.runnerLength, top: '' });
     this.$limitMax.css({ bottom: options.subViewOptions.runnerLength, top: '' });
-    this.$panelContainer.css({ left: '50%', transform: 'translateX(-50%)', width: '650px' });
   };
 
   private renderView = (): void => {
@@ -167,7 +151,6 @@ class View {
     this.$scaleContainer.appendTo(this.$stripe).addClass('js-slider__scale-container');
     this.$tooltipFrom.appendTo(this.$stripe).addClass('js-slider__tooltip-from');
     this.$tooltipTo.appendTo(this.$stripe).addClass('js-slider__tooltip-to');
-    this.$panelContainer.appendTo(this.$stripe).addClass('js-slider__panel-container');
   };
 
   private setContainerParameters = (): void => {

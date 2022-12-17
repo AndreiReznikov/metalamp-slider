@@ -39,13 +39,23 @@ class SubView {
 
   clickPosition = 0;
 
-  isWrongButtonPressed = false;
-
   sliderLength = 0;
 
   sliderPosition = 0;
 
   runnerLength = 0;
+
+  runnerFromStepsNumber = 0;
+
+  runnerToStepsNumber = 0;
+
+  scaleElementPosition = 0;
+
+  scaleElementLength = 0;
+
+  scaleElementValue = '';
+
+  isWrongButtonPressed = false;
 
   isClickAheadOfRunnerFrom = false;
 
@@ -59,17 +69,7 @@ class SubView {
 
   isClickForRunnerTo = false;
 
-  runnerFromStepsNumber = 0;
-
-  runnerToStepsNumber = 0;
-
   isScaleElementOnDown = false;
-
-  scaleElementPosition = 0;
-
-  scaleElementLength = 0;
-
-  scaleElementValue = '';
 
   modelOptions: ModelOptions;
 
@@ -100,7 +100,6 @@ class SubView {
       isRange: false,
       isScale: false,
       isVertical: false,
-      isPanel: false,
       isStepSet: false,
       positionParameter: '',
       lengthParameter: '',
@@ -114,8 +113,6 @@ class SubView {
       scaleNumber: 0,
       scaleElements: [],
       lengthBetweenScaleElements: 0,
-      panelPosition: 0,
-      panelPositionParameter: '',
       numberOfCharactersAfterDot: 0,
     };
   }
@@ -271,8 +268,6 @@ class SubView {
         + this.scaleElementLength
         / 2 - this.runnerLength / 2;
     }
-
-    this.observer.notifyObservers(this.getOptions());
   };
 
   public getSubViewOptions = (): SubViewOptions => {

@@ -16,28 +16,6 @@ class Model {
 
   config: Config;
 
-  isInterval = false;
-
-  isVertical = false;
-
-  isPanel = false;
-
-  isTooltip = true;
-
-  isRange = true;
-
-  isScale = true;
-
-  keyboard = false;
-
-  positionParameter = this.isVertical ? 'top' : 'left';
-
-  lengthParameter = this.isVertical ? 'height' : 'width';
-
-  isLimit = true;
-
-  isWrongMouseButtonPressed = false;
-
   min = 0;
 
   max = 100;
@@ -48,25 +26,41 @@ class Model {
 
   to = 50;
 
-  scalePositionParameter = this.isVertical ? 'right' : 'top';
-
   panelPosition = 0;
-
-  panelPositionParameter = this.isVertical ? 'left' : 'top';
 
   scaleNumber = 5;
 
-  isStepSet = false;
-
   stepLength = 0;
-
-  scaleElements: number[] = [];
 
   scaleElementHeight = 0;
 
   lengthBetweenScaleElements = 0;
 
   numberOfCharactersAfterDot = 0;
+
+  scaleElements: number[] = [];
+
+  isInterval = false;
+
+  isVertical = false;
+
+  isTooltip = true;
+
+  isRange = true;
+
+  isScale = true;
+
+  keyboard = false;
+
+  isLimit = true;
+
+  isStepSet = false;
+
+  positionParameter = this.isVertical ? 'top' : 'left';
+
+  lengthParameter = this.isVertical ? 'height' : 'width';
+
+  scalePositionParameter = this.isVertical ? 'right' : 'top';
 
   modelOptions: ModelOptions;
 
@@ -82,14 +76,13 @@ class Model {
       isTooltip: true,
       isLimit: true,
       isRange: true,
-      isPanel: false,
       isScale: false,
+      keyboard: false,
       min: 0,
       max: 100,
       from: 10,
       to: 50,
       step: 0,
-      keyboard: false,
       scaleNumber: 5,
     };
 
@@ -97,7 +90,7 @@ class Model {
 
     this.setConfigParameters();
 
-    this.modelOptions = this.setModelOptions();
+    this.modelOptions = this.getModelOptions();
     this.subViewOptions = {
       sliderPosition: 0,
       sliderLength: 0,
@@ -140,7 +133,7 @@ class Model {
       * this.subViewOptions.sliderLength).toFixed(this.numberOfCharactersAfterDot));
   };
 
-  public setModelOptions = (): ModelOptions => {
+  public getModelOptions = (): ModelOptions => {
     const modelOptions: ModelOptions = {
       isInterval: this.isInterval,
       isTooltip: this.isTooltip,
@@ -148,7 +141,6 @@ class Model {
       isRange: this.isRange,
       isScale: this.isScale,
       isVertical: this.isVertical,
-      isPanel: this.isPanel,
       isStepSet: this.isStepSet,
       positionParameter: this.positionParameter,
       lengthParameter: this.lengthParameter,
@@ -162,8 +154,6 @@ class Model {
       scaleNumber: this.scaleNumber,
       scaleElements: this.scaleElements,
       lengthBetweenScaleElements: this.lengthBetweenScaleElements,
-      panelPosition: this.panelPosition,
-      panelPositionParameter: this.panelPositionParameter,
       numberOfCharactersAfterDot: this.numberOfCharactersAfterDot,
     };
 
@@ -172,7 +162,7 @@ class Model {
 
   public getOptions = (): Options => {
     const options: Options = {
-      modelOptions: this.setModelOptions(),
+      modelOptions: this.getModelOptions(),
       subViewOptions: this.subViewOptions,
     };
 
@@ -511,7 +501,6 @@ class Model {
   private setConfigParameters = (): void => {
     this.isInterval = this.config.isInterval;
     this.isVertical = this.config.isVertical;
-    this.isPanel = this.config.isPanel;
     this.isTooltip = this.config.isTooltip;
     this.isLimit = this.config.isLimit;
     this.isRange = this.config.isRange;
@@ -526,7 +515,6 @@ class Model {
     this.to = this.config.to;
     this.scalePositionParameter = this.isVertical ? 'right' : 'top';
     this.scaleNumber = this.config.scaleNumber;
-    this.panelPositionParameter = this.isVertical ? 'left' : 'top';
   };
 
   private restrictFrom = (): void => {

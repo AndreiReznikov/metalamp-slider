@@ -10,7 +10,6 @@ interface ModelOptions {
   isRange: boolean;
   isScale: boolean;
   isVertical: boolean;
-  isPanel: boolean;
   isStepSet: boolean;
   positionParameter: string;
   lengthParameter: string;
@@ -24,8 +23,6 @@ interface ModelOptions {
   scaleNumber: number;
   scaleElements: number[];
   lengthBetweenScaleElements: number;
-  panelPosition: number;
-  panelPositionParameter: string;
   numberOfCharactersAfterDot: number;
 }
 
@@ -74,7 +71,6 @@ interface Config {
   isRange: boolean;
   isScale: boolean;
   scaleNumber: number;
-  isPanel: boolean;
 }
 
 interface UserConfig {
@@ -91,7 +87,6 @@ interface UserConfig {
   isRange?: boolean;
   isScale?: boolean;
   scaleNumber?: number;
-  isPanel?: boolean;
 }
 
 export {

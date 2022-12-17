@@ -78,22 +78,22 @@ class Panel {
   $toggleVerticalText = $('<span/>').html('VERTICAL').addClass('js-slider__toggle-text').appendTo(this.$verticalToggleContainer);
 
   public setPanelPosition = (options: ModelOptions): void => {
-    this.$panelContainer.css(options.panelPositionParameter, options.panelPosition);
+    // this.$panelContainer.css(options.panelPositionParameter, options.panelPosition);
   };
 
   public setPanelValues = (options: ModelOptions): void => {
-    if (!options.isPanel) return;
+  //   if (!options.isPanel) return;
 
-    this.$minInput.val(`${options.min}`).attr('step', `${options.isStepSet ? '' : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
-    this.$maxInput.val(`${options.max}`).attr('step', `${options.isStepSet ? '' : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
-    this.$toInput.val(`${options.to}`).attr('step', `${options.isStepSet ? options.step : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
-    this.$fromInput.val(`${options.from}`).attr('step', `${options.isStepSet ? options.step : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
-    this.$stepInput.val(`${options.step}`).attr('step', `${(0.1).toFixed(options.numberOfCharactersAfterDot)}`);
-    this.$intervalToggler.prop('checked', !!options.isInterval);
-    this.$verticalToggler.prop('checked', !!options.isVertical);
-    this.$tooltipsToggler.prop('checked', !!options.isTooltip);
-    this.$rangeToggler.prop('checked', !!options.isRange);
-    this.$scaleToggler.prop('checked', !!options.isScale);
+  //   this.$minInput.val(`${options.min}`).attr('step', `${options.isStepSet ? '' : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
+  //   this.$maxInput.val(`${options.max}`).attr('step', `${options.isStepSet ? '' : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
+  //   this.$toInput.val(`${options.to}`).attr('step', `${options.isStepSet ? options.step : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
+  //   this.$fromInput.val(`${options.from}`).attr('step', `${options.isStepSet ? options.step : (0.1).toFixed(options.numberOfCharactersAfterDot)}`);
+  //   this.$stepInput.val(`${options.step}`).attr('step', `${(0.1).toFixed(options.numberOfCharactersAfterDot)}`);
+  //   this.$intervalToggler.prop('checked', !!options.isInterval);
+  //   this.$verticalToggler.prop('checked', !!options.isVertical);
+  //   this.$tooltipsToggler.prop('checked', !!options.isTooltip);
+  //   this.$rangeToggler.prop('checked', !!options.isRange);
+  //   this.$scaleToggler.prop('checked', !!options.isScale);
   };
 }
 

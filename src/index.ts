@@ -4,40 +4,35 @@ import Presenter from './presenter/presenter';
 import { UserConfig } from './interfaces/interfaces';
 import './index.css';
 
-(function ($) {
+(function createPooshkaSlider($) {
   const jquery = $;
 
-  const mySlider = (
-    slider: JQuery<HTMLElement> = $('div'),
+  const pooshkaSlider = (
+    $slider: JQuery<HTMLElement> = $('div'),
     userConfig: UserConfig = {},
   ): JQuery<HTMLElement> => {
     const model = new Model(userConfig);
-    const view = new View(slider);
+    const view = new View($slider);
     const presenter = new Presenter(model, view);
 
-    return slider;
+    $slider.data('api', presenter.getApi());
+
+    return $slider;
   };
 
-  jquery.fn.mySlider = function (userConfig: UserConfig = {}): JQuery<HTMLElement> {
-    this.update = (userConfig: UserConfig): JQuery<HTMLElement> => {
-      const updateSlider = (): void => {
-        if (this.data('mySlider')) {
-          const initialConfig: UserConfig = this.data('userConfig');
-          const updatedConfig: UserConfig = $.extend({}, initialConfig, userConfig);
+  jquery.fn.pooshkaSlider = function addPooshkaSliderMethods(
+    userConfig: UserConfig = {},
+  ): JQuery<HTMLElement> {
+    this.toggleTooltip = (): JQuery<HTMLElement> => {
+      const toggleTooltip = (): void => this.data('api').toggleTooltip();
 
-          this.data('mySlider', false);
-          this.empty();
-          this.data('mySlider', mySlider(this, updatedConfig));
-        }
-      };
-
-      return this.each(updateSlider);
+      return this.each(toggleTooltip);
     };
 
     this.destroy = (): JQuery<HTMLElement> => {
       const destroySlider = (): void => {
-        if (this.data('mySlider')) {
-          this.data('mySlider', false);
+        if (this.data('pooshkaSlider')) {
+          this.data('pooshkaSlider', false);
           this.empty();
         }
       };
@@ -46,7 +41,7 @@ import './index.css';
     };
 
     const init = (): void => {
-      this.data('mySlider', mySlider(this, userConfig));
+      this.data('pooshkaSlider', pooshkaSlider(this, userConfig));
       this.data('userConfig', userConfig);
     };
 
@@ -55,7 +50,7 @@ import './index.css';
 }(jQuery));
 
 $(document).ready(() => {
-  $('.js-slider_double').mySlider({
+  $('.js-slider_double').pooshkaSlider({
     isInterval: true,
     isTooltip: true,
     isVertical: false,
@@ -70,7 +65,7 @@ $(document).ready(() => {
     to: 5,
   });
 
-  $('.js-slider_single').mySlider({
+  $('.js-slider_single').pooshkaSlider({
     isInterval: true,
     isTooltip: false,
     isVertical: false,
@@ -86,7 +81,7 @@ $(document).ready(() => {
     scaleNumber: 5,
   });
 
-  $('.js-slider_vertical').mySlider({
+  $('.js-slider_vertical').pooshkaSlider({
     isInterval: true,
     isTooltip: false,
     isVertical: true,
@@ -102,7 +97,7 @@ $(document).ready(() => {
     scaleNumber: 7,
   });
 
-  $('.js-slider_empty').mySlider({
+  $('.js-slider_empty').pooshkaSlider({
     isInterval: false,
     isTooltip: false,
     isVertical: false,
@@ -117,9 +112,16 @@ $(document).ready(() => {
     to: 8,
   });
 
-  const $slider = $('.js-slider_single').data('mySlider');
+  const $slider = $('.js-slider_single').data('pooshkaSlider');
+  const $sliderDouble = $('.js-slider_double').data('pooshkaSlider');
 
-  $slider.update({
-    isInterval: false,
+  // $slider.update({
+  //   isInterval: false,
+  // });
+
+  $('.js-slider__input').prop('checked', $sliderDouble.data('api').getModelOptions().isTooltip);
+
+  $('.js-slider__input').click(() => {
+    $sliderDouble.toggleTooltip();
   });
 });

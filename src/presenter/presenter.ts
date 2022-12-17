@@ -22,6 +22,23 @@ class Presenter {
     this.launchPanelEventManager();
   }
 
+  private toggleTooltip = () => {
+    this.model.isTooltip = this.model.isTooltip !== true;
+
+    this.view.initializeView(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  public getApi = () => {
+    const api = {
+      getModelOptions: this.model.getModelOptions,
+      toggleTooltip: this.toggleTooltip,
+    };
+
+    return api;
+  };
+
   private init = (): void => {
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.SubView.getElementParameters();
@@ -64,8 +81,6 @@ class Presenter {
     this.model.calculateScaleElementsNumber();
     this.model.calculateScaleElementsValues();
     this.updateView(this.model.getOptions());
-    // this.model.calculatePanelPosition();
-    // this.view.panel.setPanelPosition(this.model.getOptions());
   };
 
   private updateView = (options: Options): void => {
@@ -92,8 +107,6 @@ class Presenter {
     this.view.SubView.scale.setScaleLength(options);
     this.view.SubView.scale.setScaleElementsPositions(options);
     this.view.SubView.scale.setScalePosition(options);
-    // this.view.panel.setPanelPosition(options);
-    // this.view.panel.setPanelValues(options);
   };
 
   private updateModel = (options: Options): void => {
@@ -133,11 +146,11 @@ class Presenter {
       $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerToKeydown));
     };
 
-    this.view.SubView.runnerFrom.$runner.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
-    this.view.SubView.runnerTo.$runner.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
-    this.view.SubView.limitMin.$limit.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
-    this.view.SubView.limitMax.$limit.on('pointerdown.max-to', this.view.SubView.handleLimitMaxSetRunnerPosition);
-    this.view.SubView.stripe.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
+    this.view.$runnerFrom.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
+    this.view.$runnerTo.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
+    this.view.$limitMin.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
+    this.view.$limitMax.on('pointerdown.max', this.view.SubView.handleLimitMaxSetRunnerPosition);
+    this.view.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
     this.view.$scaleContainer.on('pointerdown.scale', this.view.SubView.handleScaleCalculateRunnerPositionAfterOnDown);
     // this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
     // this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
