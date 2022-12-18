@@ -23,7 +23,6 @@ class Presenter {
 
   private toggleTooltip = () => {
     this.model.showTooltip = this.model.showTooltip !== true;
-
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.setModelOptions(this.model.getOptions());
 
@@ -32,7 +31,6 @@ class Presenter {
 
   private toggleDouble = () => {
     this.model.double = this.model.double !== true;
-
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.setModelOptions(this.model.getOptions());
 
@@ -41,7 +39,6 @@ class Presenter {
 
   private toggleRange = () => {
     this.model.showRange = this.model.showRange !== true;
-
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.setModelOptions(this.model.getOptions());
 
@@ -50,7 +47,6 @@ class Presenter {
 
   private toggleScale = () => {
     this.model.showScale = this.model.showScale !== true;
-
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.setModelOptions(this.model.getOptions());
 
@@ -59,10 +55,37 @@ class Presenter {
 
   private toggleVertical = () => {
     this.model.vertical = this.model.vertical !== true;
+    this.model.setPositionParameters();
 
-    this.model.positionParameter = this.model.vertical ? 'top' : 'left';
-    this.model.lengthParameter = this.model.vertical ? 'height' : 'width';
-    this.model.scalePositionParameter = this.model.vertical ? 'right' : 'top';
+    this.init();
+  };
+
+  private setFrom = (value: number) => {
+    this.model.from = value;
+    this.model.validateInitialValues();
+    this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private setTo = (value: number) => {
+    this.model.to = value;
+    this.model.validateInitialValues();
+    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private setMin = (value: number) => {
+    this.model.min = value;
+
+    this.init();
+  };
+
+  private setMax = (value: number) => {
+    this.model.max = value;
 
     this.init();
   };
@@ -87,6 +110,10 @@ class Presenter {
       toggleRange: this.toggleRange,
       toggleScale: this.toggleScale,
       toggleVertical: this.toggleVertical,
+      setFrom: this.setFrom,
+      setTo: this.setTo,
+      setMin: this.setMin,
+      setMax: this.setMax,
     };
 
     return api;
@@ -97,6 +124,7 @@ class Presenter {
     this.view.initializeView(this.model.getOptions());
     this.view.setPlane(this.model.getOptions());
     this.view.SubView.getElementParameters();
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
     this.model.validateInitialValues();
     this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
     this.view.SubView.limitMax.setLimitValue(this.model.getOptions());
@@ -307,81 +335,6 @@ class Presenter {
   //   this.model.validateInitialValues();
   //   this.model.calculateStepLength();
   // };
-
-  // private handleIntervalTogglerToggleInterval = (event: JQuery.ClickEvent): void => {
-  //   const $currentTarget = $(event.currentTarget);
-
-  //   if ($currentTarget.is(':checked')) {
-  //     this.model.isInterval = true;
-  //   } else {
-  //     this.model.isInterval = false;
-  //   }
-
-  //   this.view.initView(this.model.getOptions());
-  //   this.model.validateInitialValues();
-  //   // this.model.calculateInitialRunnerToPosition();
-  //   // this.model.calculateRangePosition();
-  //   // this.model.calculateRangeLength();
-  //   // this.model.calculateInitialTooltipsValues();
-  //   // this.model.calculateTooltipsPositions();
-
-  //   this.updateView(this.model.getOptions());
-  // };
-
-  // private handleTooltipsTogglerToggleTooltips = (event: JQuery.ClickEvent): void => {
-  //   const $currentTarget = $(event.currentTarget);
-
-  //   if ($currentTarget.is(':checked')) {
-  //     this.model.isTooltip = true;
-  //   } else {
-  //     this.model.isTooltip = false;
-  //   }
-
-  //   this.view.initView(this.model.getOptions());
-  //   this.updateView(this.model.getOptions());
-  // };
-
-  // private handleRangeTogglerToggleRange = (event: JQuery.ClickEvent): void => {
-  //   const $currentTarget = $(event.currentTarget);
-
-  //   if ($currentTarget.is(':checked')) {
-  //     this.model.isRange = true;
-  //   } else {
-  //     this.model.isRange = false;
-  //   }
-
-  //   this.view.initView(this.model.getOptions());
-  //   this.updateView(this.model.getOptions());
-  // };
-
-  // private handleScaleTogglerToggleScale = (event: JQuery.ClickEvent): void => {
-  //   const $currentTarget = $(event.currentTarget);
-
-  //   if ($currentTarget.is(':checked')) {
-  //     this.model.isScale = true;
-  //   } else {
-  //     this.model.isScale = false;
-  //   }
-
-  //   this.view.initView(this.model.getOptions());
-  //   this.updateView(this.model.getOptions());
-  // };
-
-  // private handleVerticalTogglerToggleVertical = (event: JQuery.ClickEvent): void => {
-  //   const $currentTarget = $(event.currentTarget);
-
-  //   if ($currentTarget.is(':checked')) {
-  //     this.model.isVertical = true;
-  //   } else {
-  //     this.model.isVertical = false;
-  //   }
-
-  //   this.model.positionParameter = this.model.isVertical ? 'top' : 'left';
-  //   this.model.lengthParameter = this.model.isVertical ? 'height' : 'width';
-  //   this.model.scalePositionParameter = this.model.isVertical ? 'right' : 'top';
-  //   this.model.panelPositionParameter = this.model.isVertical ? 'left' : 'top';
-
-  //   this.init();
   };
 
   private checkIsValueANumberAndFullValue = (

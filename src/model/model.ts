@@ -56,11 +56,11 @@ class Model {
 
   isStepSet = false;
 
-  positionParameter = this.vertical ? 'top' : 'left';
+  positionParameter = 'left';
 
-  lengthParameter = this.vertical ? 'height' : 'width';
+  lengthParameter = 'width';
 
-  scalePositionParameter = this.vertical ? 'right' : 'top';
+  scalePositionParameter = 'top';
 
   modelOptions: ModelOptions;
 
@@ -88,6 +88,7 @@ class Model {
 
     this.config = $.extend({}, this.data, this.userConfig);
     this.setConfig();
+    this.setPositionParameters();
 
     this.modelOptions = this.getModelOptions();
     this.subViewOptions = {
@@ -166,6 +167,12 @@ class Model {
     };
 
     return options;
+  };
+
+  public setPositionParameters = (): void => {
+    this.positionParameter = this.vertical ? 'top' : 'left';
+    this.lengthParameter = this.vertical ? 'height' : 'width';
+    this.scalePositionParameter = this.vertical ? 'right' : 'top';
   };
 
   public validateInitialValues = (): void => {
@@ -505,9 +512,6 @@ class Model {
     this.showRange = this.config.showRange;
     this.showScale = this.config.showScale;
     this.useKeyboard = this.config.useKeyboard;
-    this.positionParameter = this.vertical ? 'top' : 'left';
-    this.lengthParameter = this.vertical ? 'height' : 'width';
-    this.scalePositionParameter = this.vertical ? 'right' : 'top';
     this.min = this.config.min;
     this.max = this.config.max;
     this.step = this.config.step;

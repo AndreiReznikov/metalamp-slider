@@ -128,6 +128,10 @@ $(document).ready(() => {
   $('.js-panel__input_range').prop('checked', $sliderDouble.data('api').getModelOptions().showRange);
   $('.js-panel__input_scale').prop('checked', $sliderDouble.data('api').getModelOptions().showScale);
   $('.js-panel__input_vertical').prop('checked', $sliderDouble.data('api').getModelOptions().vertical);
+  $('.js-slider__from-input').prop('value', $sliderDouble.data('api').getModelOptions().from);
+  $('.js-slider__to-input').prop('value', $sliderDouble.data('api').getModelOptions().to);
+  $('.js-slider__min-input').prop('value', $sliderDouble.data('api').getModelOptions().min);
+  $('.js-slider__max-input').prop('value', $sliderDouble.data('api').getModelOptions().max);
 
   $('.js-panel__input_tooltip').click(() => {
     $sliderDouble.data('api').toggleTooltip();
@@ -147,5 +151,47 @@ $(document).ready(() => {
 
   $('.js-panel__input_vertical').click(() => {
     $sliderDouble.data('api').toggleVertical();
+  });
+
+  $('.js-slider__from-input').change((event) => {
+    const $input = $(event.currentTarget);
+    const value = parseFloat(`${$input.val()}`);
+
+    $sliderDouble.data('api').setFrom(value);
+  });
+
+  $('.js-slider__to-input').change((event) => {
+    const $input = $(event.currentTarget);
+    const value = parseFloat(`${$input.val()}`);
+
+    $sliderDouble.data('api').setTo(value);
+  });
+
+  $('.js-slider__min-input').change((event) => {
+    const $input = $(event.currentTarget);
+    const value = parseFloat(`${$input.val()}`);
+
+    $sliderDouble.data('api').setMin(value);
+  });
+
+  $('.js-slider__max-input').change((event) => {
+    const $input = $(event.currentTarget);
+    const value = parseFloat(`${$input.val()}`);
+
+    $sliderDouble.data('api').setMax(value);
+  });
+
+  $(document).on('mousemove.from', () => {
+    $('.js-slider__from-input').prop('value', $sliderDouble.data('api').getModelOptions().from);
+  });
+  $('.js-slider').on('mousedown.from', () => {
+    $('.js-slider__from-input').prop('value', $sliderDouble.data('api').getModelOptions().from);
+  });
+
+  $(document).on('mousemove.to', () => {
+    $('.js-slider__to-input').prop('value', $sliderDouble.data('api').getModelOptions().to);
+  });
+  $('.js-slider').on('mousedown.to', () => {
+    $('.js-slider__to-input').prop('value', $sliderDouble.data('api').getModelOptions().to);
   });
 });
