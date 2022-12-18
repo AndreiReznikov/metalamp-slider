@@ -123,6 +123,12 @@ $(document).ready(() => {
     double: false,
   });
 
+  $('.js-slider__from-input').attr('step', `${$sliderDouble.data('api').getModelOptions().isStepSet ? '' : (0.1).toFixed($sliderDouble.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
+  $('.js-slider__to-input').attr('step', `${$sliderDouble.data('api').getModelOptions().isStepSet ? '' : (0.1).toFixed($sliderDouble.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
+  $('.js-slider__min-input').attr('step', `${$sliderDouble.data('api').getModelOptions().isStepSet ? $sliderDouble.data('api').getModelOptions().step : (0.1).toFixed($sliderDouble.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
+  $('.js-slider__max-input').attr('step', `${$sliderDouble.data('api').getModelOptions().isStepSet ? $sliderDouble.data('api').getModelOptions().step : (0.1).toFixed($sliderDouble.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
+  $('.js-slider__step-input').attr('step', `${(0.1).toFixed($sliderDouble.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
+
   $('.js-panel__input_double').prop('checked', $sliderDouble.data('api').getModelOptions().double);
   $('.js-panel__input_tooltip').prop('checked', $sliderDouble.data('api').getModelOptions().showTooltip);
   $('.js-panel__input_range').prop('checked', $sliderDouble.data('api').getModelOptions().showRange);
@@ -132,6 +138,7 @@ $(document).ready(() => {
   $('.js-slider__to-input').prop('value', $sliderDouble.data('api').getModelOptions().to);
   $('.js-slider__min-input').prop('value', $sliderDouble.data('api').getModelOptions().min);
   $('.js-slider__max-input').prop('value', $sliderDouble.data('api').getModelOptions().max);
+  $('.js-slider__step-input').prop('value', $sliderDouble.data('api').getModelOptions().step);
 
   $('.js-panel__input_tooltip').click(() => {
     $sliderDouble.data('api').toggleTooltip();
@@ -157,6 +164,8 @@ $(document).ready(() => {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
+    if (value < $sliderDouble.data('api').getModelOptions().min) return;
+
     $sliderDouble.data('api').setFrom(value);
   });
 
@@ -179,6 +188,13 @@ $(document).ready(() => {
     const value = parseFloat(`${$input.val()}`);
 
     $sliderDouble.data('api').setMax(value);
+  });
+
+  $('.js-slider__step-input').change((event) => {
+    const $input = $(event.currentTarget);
+    const value = parseFloat(`${$input.val()}`);
+
+    $sliderDouble.data('api').setStep(value);
   });
 
   $(document).on('mousemove.from', () => {

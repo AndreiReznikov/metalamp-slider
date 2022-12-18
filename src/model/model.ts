@@ -176,10 +176,10 @@ class Model {
   };
 
   public validateInitialValues = (): void => {
-    const areMinAndMaxNegative: boolean = this.min < 0 && this.max < 0;
-    const isMinAndMaxPositiveAndStepMoreThanDifference: boolean = !areMinAndMaxNegative
+    const areLimitsNegative: boolean = this.min < 0 && this.max < 0;
+    const isLimitsPositiveAndStepMoreThanDifference: boolean = !areLimitsNegative
       && this.step > this.max - this.min;
-    const isMinAndMaxNegativeAndStepMoreThanDifference: boolean = areMinAndMaxNegative
+    const isLimitsNegativeAndStepMoreThanDifference: boolean = areLimitsNegative
       && this.step > -(this.min - this.max);
 
     if (this.min > this.max) {
@@ -190,11 +190,11 @@ class Model {
       this.max = min;
     }
 
-    if (isMinAndMaxPositiveAndStepMoreThanDifference) {
+    if (isLimitsPositiveAndStepMoreThanDifference) {
       this.step = 0;
     }
 
-    if (isMinAndMaxNegativeAndStepMoreThanDifference) {
+    if (isLimitsNegativeAndStepMoreThanDifference) {
       this.step = 0;
     }
 
@@ -534,8 +534,8 @@ class Model {
     }
   };
 
-  private restrictTo = (): void => {
-    if (!this.isStepSet) return;
+  public restrictTo = (): void => {
+    if (!this.double) return;
 
     const isToLessThanFrom: boolean = this.to < this.from;
     const isToMoreThanMaximum: boolean = this.to > this.max;

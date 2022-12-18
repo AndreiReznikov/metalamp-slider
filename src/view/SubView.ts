@@ -5,7 +5,6 @@ import Runner from './runner/runner';
 import Tooltip from './tooltip/tooltip';
 import Limit from './limit/limit';
 import Scale from './scale/scale';
-import Panel from './panel/panel';
 import { Options, ModelOptions, SubViewOptions } from '../interfaces/interfaces';
 
 class SubView {
@@ -28,8 +27,6 @@ class SubView {
   range: Range;
 
   scale: Scale;
-
-  panel: Panel;
 
   $document: JQuery<Document>;
 
@@ -87,7 +84,6 @@ class SubView {
     this.limitMax = new Limit('max');
     this.range = new Range();
     this.scale = new Scale();
-    this.panel = new Panel();
 
     this.$document = $(document);
     this.$stripe = this.stripe.$stripe;
@@ -340,7 +336,7 @@ class SubView {
     this.$document.on('pointerup.move', () => this.$document.off('pointermove.move', pointermoveHandler));
   };
 
-  private restrictRunnerFromPosition = (options: Options): void => {
+  public restrictRunnerFromPosition = (options: Options): void => {
     const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFrom.runnerPosition
       < 0 - this.runnerLength / 2;
     const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition
@@ -360,7 +356,7 @@ class SubView {
     }
   };
 
-  private restrictRunnerToPosition = (): void => {
+  public restrictRunnerToPosition = (): void => {
     const isRunnerFromPositionLessThanRunnerToPosition: boolean = this.runnerTo.runnerPosition
       < this.runnerFrom.runnerPosition;
     const isRunnerToPositionMoreThanMaximum: boolean = this.runnerTo.runnerPosition

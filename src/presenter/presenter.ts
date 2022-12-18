@@ -31,8 +31,15 @@ class Presenter {
 
   private toggleDouble = () => {
     this.model.double = this.model.double !== true;
-    this.view.initializeView(this.model.getOptions());
+
+    this.model.validateInitialValues();
     this.view.SubView.setModelOptions(this.model.getOptions());
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.restrictRunnerToPosition();
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+    this.view.SubView.tooltipTo.setTooltipPosition(this.model.getOptions());
+    this.model.restrictTo();
 
     this.model.observer.notifyObservers(this.model.getOptions());
   };
@@ -64,6 +71,7 @@ class Presenter {
     this.model.from = value;
     this.model.validateInitialValues();
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.restrictRunnerFromPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
@@ -73,6 +81,7 @@ class Presenter {
     this.model.to = value;
     this.model.validateInitialValues();
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.restrictRunnerFromPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
@@ -88,6 +97,15 @@ class Presenter {
     this.model.max = value;
 
     this.init();
+  };
+
+  private setStep = (value: number) => {
+    this.model.step = value;
+
+    this.model.validateInitialValues();
+    this.model.calculateStepLength();
+
+    this.view.SubView.setModelOptions(this.model.getOptions());
   };
 
   private updateUserConfig = (userConfig: UserConfig) => {
@@ -114,6 +132,7 @@ class Presenter {
       setTo: this.setTo,
       setMin: this.setMin,
       setMax: this.setMax,
+      setStep: this.setStep,
     };
 
     return api;
@@ -233,108 +252,6 @@ class Presenter {
     // this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
 
     this.view.$window.on('resize.slider', this.init);
-  };
-
-  private launchPanelEventManager = (): void => {
-  //   const stopPropagation = (event: JQuery.TriggeredEvent) => event.stopPropagation();
-
-  //   this.view.panel.$panelContainer.on('pointerdown', stopPropagation);
-  //   this.view.panel.$minInput.on('change', this.handleMinInputSetMin);
-  //   this.view.panel.$maxInput.on('change', this.handleMaxInputSetMax);
-  //   this.view.panel.$fromInput.on('change', this.handleFromInputSetFrom);
-  //   this.view.panel.$toInput.on('change', this.handleToInputSetTo);
-  //   this.view.panel.$stepInput.on('change', this.handleStepInputSetStep);
-  //   this.view.panel.$intervalToggler.on('click', this.handleIntervalTogglerToggleInterval);
-  //   this.view.panel.$verticalToggler.on('click', this.handleVerticalTogglerToggleVertical);
-  //   this.view.panel.$tooltipsToggler.on('click', this.handleTooltipsTogglerToggleTooltips);
-  //   this.view.panel.$rangeToggler.on('click', this.handleRangeTogglerToggleRange);
-  //   this.view.panel.$scaleToggler.on('click', this.handleScaleTogglerToggleScale);
-  // };
-
-  // private handleMinInputSetMin = (event: JQuery.ChangeEvent): void => {
-  //   const $currentTarget = $(event.currentTarget);
-  //   const minValue = $currentTarget.val();
-
-  //   if (this.checkIsValueANumberAndFullValue(minValue)) {
-  //     this.view.panel.setPanelValues(this.model.getOptions());
-  //     return;
-  //   }
-
-  //   this.model.min = parseFloat(`${minValue}`);
-
-  //   this.init();
-  // };
-
-  // private handleMaxInputSetMax = (event: JQuery.ChangeEvent): void => {
-  //   const $currentTarget = $(event.currentTarget);
-  //   const maxValue = $currentTarget.val();
-
-  //   if (this.checkIsValueANumberAndFullValue(maxValue)) {
-  //     this.view.panel.setPanelValues(this.model.getOptions());
-  //     return;
-  //   }
-
-  //   this.model.max = parseFloat(`${maxValue}`);
-
-  //   this.init();
-  // };
-
-  // private handleFromInputSetFrom = (event: JQuery.ChangeEvent): void => {
-  //   const $currentTarget = $(event.currentTarget);
-  //   const from = $currentTarget.val();
-
-  //   if (this.checkIsValueANumberAndFullValue(from)) {
-  //     this.view.panel.setPanelValues(this.model.getOptions());
-  //     return;
-  //   }
-
-  //   this.model.from = parseFloat(`${from}`);
-
-  //   this.model.validateInitialValues();
-  //   // this.model.calculateInitialRunnerFromPosition();
-  //   // this.model.calculateRangePosition();
-  //   // this.model.calculateRangeLength();
-  //   // this.model.calculateInitialTooltipsValues();
-  //   // this.model.calculateTooltipsPositions();
-
-  //   this.updateView(this.model.getOptions());
-  // };
-
-  // private handleToInputSetTo = (event: JQuery.ChangeEvent): void => {
-  //   const $currentTarget = $(event.currentTarget);
-  //   const to = $currentTarget.val();
-
-  //   if (this.checkIsValueANumberAndFullValue(to)) {
-  //     this.view.panel.setPanelValues(this.model.getOptions());
-  //     return;
-  //   }
-
-  //   this.model.to = parseFloat(`${to}`);
-
-  //   this.model.validateInitialValues();
-  //   // this.model.calculateInitialRunnerToPosition();
-  //   // this.model.calculateRangePosition();
-  //   // this.model.calculateRangeLength();
-  //   // this.model.calculateInitialTooltipsValues();
-  //   // this.model.calculateTooltipsPositions();
-
-  //   this.updateView(this.model.getOptions());
-  // };
-
-  // private handleStepInputSetStep = (event: JQuery.ChangeEvent): void => {
-  //   const $currentTarget = $(event.currentTarget);
-  //   const step = $currentTarget.val();
-
-  //   if (this.checkIsValueANumberAndFullValue(step)) {
-  //     this.view.panel.setPanelValues(this.model.getOptions());
-  //     return;
-  //   }
-
-  //   this.model.step = parseFloat(`${step}`);
-
-  //   this.model.validateInitialValues();
-  //   this.model.calculateStepLength();
-  // };
   };
 
   private checkIsValueANumberAndFullValue = (
