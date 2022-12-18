@@ -80,19 +80,6 @@
  touch-action: none;
 }
 
-.js-slider__panel-container {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-content: center;
-  width: 650px;
-  cursor: default;
-  touch-action: none;
-}
-
 .js-slider__text-inputs-container,
 .js-slider__toggle-inputs-container {
   display: flex;
@@ -161,7 +148,7 @@
   cursor: pointer;
 }
 
-.js-slider__toggle-container {
+.panel__toggle-label {
   position: relative;
   display: flex;
   align-items: center;
@@ -170,19 +157,19 @@
   font-size: 14px;
 }
 
-.js-slider__toggle-text {
+.panel__toggle-text {
   padding-left: 40px;
   font-family: Arial, Helvetica, sans-serif;
   opacity: 0.5;
 }
 
-.js-slider__input {
+.panel__input {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
 
-.js-slider__custom-toggle {
+.panel__custom-toggle {
   position: absolute;
   display: flex;
   align-items: center;
@@ -197,7 +184,7 @@
   cursor: pointer;
 }
 
-.js-slider__custom-toggle:after {
+.panel__custom-toggle:after {
   position: absolute;
   content: '';
   width: 12px;
@@ -209,21 +196,21 @@
   transition: .4s;
 }
 
-.js-slider__input:checked ~ .js-slider__custom-toggle {
+.panel__input:checked ~ .panel__custom-toggle {
   opacity: 1;
 }
 
-.js-slider__input:checked ~ .js-slider__toggle-text {
+.panel__input:checked ~ .panel__toggle-text {
   opacity: 1;
 }
 
-.js-slider__input:checked + .js-slider__custom-toggle:after {
+.panel__input:checked + .panel__custom-toggle:after {
   -webkit-transform: translateX(20px);
   -ms-transform: translateX(20px);
   transform: translateX(20px);
 }
 
-.js-slider__input:focus ~ .js-slider__custom-toggle {
+.panel__input:focus ~ .panel__custom-toggle {
   outline: auto;
 }
 
@@ -264,10 +251,18 @@ html, body {
   box-sizing: border-box;
 }
 
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
 .double-slider-container {
   width: 500px;
   height: 6px;
-  margin: 200px 0;
+  margin: 200px 0 100px 0;
 }
 
 .single-slider-container {

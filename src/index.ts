@@ -7,7 +7,7 @@ import './index.css';
 (function createPooshkaSlider($) {
   const jquery = $;
 
-  const pooshkaSlider = (
+  const initializePooshkaSlider = (
     $slider: JQuery<HTMLElement> = $('div'),
     userConfig: UserConfig = {},
   ): JQuery<HTMLElement> => {
@@ -20,19 +20,23 @@ import './index.css';
     return $slider;
   };
 
-  jquery.fn.pooshkaSlider = function addPooshkaSliderMethods(
+  jquery.fn.pooshkaSlider = function addMethods(
     userConfig: UserConfig = {},
   ): JQuery<HTMLElement> {
-    this.toggleTooltip = (): JQuery<HTMLElement> => {
-      const toggleTooltip = (): void => this.data('api').toggleTooltip();
+    this.update = (userConfig: UserConfig): JQuery<HTMLElement> => {
+      const pastUserConfig = this.data('userConfig');
+      const newUserConfig = $.extend({}, pastUserConfig, userConfig);
 
-      return this.each(toggleTooltip);
+      const updateUserConfig = (): void => this.data('api').updateUserConfig(newUserConfig);
+
+      return this.each(updateUserConfig);
     };
 
     this.destroy = (): JQuery<HTMLElement> => {
       const destroy = (): void => {
         if (this.data('pooshkaSlider')) {
           this.data('pooshkaSlider', false);
+          this.data('userConfig', false);
           this.empty();
         }
       };
@@ -41,7 +45,7 @@ import './index.css';
     };
 
     const init = (): void => {
-      this.data('pooshkaSlider', pooshkaSlider(this, userConfig));
+      this.data('pooshkaSlider', initializePooshkaSlider(this, userConfig));
       this.data('userConfig', userConfig);
     };
 
@@ -115,13 +119,33 @@ $(document).ready(() => {
   const $slider = $('.js-slider_single').data('pooshkaSlider');
   const $sliderDouble = $('.js-slider_double').data('pooshkaSlider');
 
-  // $slider.update({
-  //   isInterval: false,
-  // });
+  $slider.update({
+    double: false,
+  });
 
-  $('.js-slider__input').prop('checked', $sliderDouble.data('api').getModelOptions().showTooltip);
+  $('.js-panel__input_double').prop('checked', $sliderDouble.data('api').getModelOptions().double);
+  $('.js-panel__input_tooltip').prop('checked', $sliderDouble.data('api').getModelOptions().showTooltip);
+  $('.js-panel__input_range').prop('checked', $sliderDouble.data('api').getModelOptions().showRange);
+  $('.js-panel__input_scale').prop('checked', $sliderDouble.data('api').getModelOptions().showScale);
+  $('.js-panel__input_vertical').prop('checked', $sliderDouble.data('api').getModelOptions().vertical);
 
-  $('.js-slider__input').click(() => {
-    $sliderDouble.toggleTooltip();
+  $('.js-panel__input_tooltip').click(() => {
+    $sliderDouble.data('api').toggleTooltip();
+  });
+
+  $('.js-panel__input_double').click(() => {
+    $sliderDouble.data('api').toggleDouble();
+  });
+
+  $('.js-panel__input_range').click(() => {
+    $sliderDouble.data('api').toggleRange();
+  });
+
+  $('.js-panel__input_scale').click(() => {
+    $sliderDouble.data('api').toggleScale();
+  });
+
+  $('.js-panel__input_vertical').click(() => {
+    $sliderDouble.data('api').toggleVertical();
   });
 });

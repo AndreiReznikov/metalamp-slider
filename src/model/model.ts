@@ -87,8 +87,7 @@ class Model {
     };
 
     this.config = $.extend({}, this.data, this.userConfig);
-
-    this.setConfigParameters();
+    this.setConfig();
 
     this.modelOptions = this.getModelOptions();
     this.subViewOptions = {
@@ -498,7 +497,7 @@ class Model {
   //   }
   // };
 
-  private setConfigParameters = (): void => {
+  public setConfig = (): void => {
     this.double = this.config.double;
     this.vertical = this.config.vertical;
     this.showTooltip = this.config.showTooltip;

@@ -8,6 +8,8 @@ class View {
 
   $container: JQuery<HTMLElement> = $('div');
 
+  $containerEnvironment: JQuery<HTMLElement> = $('div');
+
   $slider: JQuery<HTMLElement>;
 
   $stripe: JQuery<HTMLElement>;
@@ -113,7 +115,7 @@ class View {
     });
 
     if (options.modelOptions.vertical) {
-      this.$slider.parent().css({
+      this.$container.css({
         width: this.containerParameters.containerHeight,
         height: this.containerParameters.containerWidth,
       });
@@ -128,7 +130,7 @@ class View {
       return;
     }
 
-    this.$slider.parent().css({
+    this.$container.css({
       width: `${this.containerParameters.containerRelativeWidth}%`,
       height: this.containerParameters.containerHeight,
     });
@@ -155,11 +157,12 @@ class View {
 
   private setContainerParameters = (): void => {
     this.$container = this.$slider.parent();
+    this.$containerEnvironment = this.$container.parent();
 
     const containerWidth = parseInt(this.$container.css('width'), 10);
     const containerHeight = parseInt(this.$container.css('height'), 10);
     const containerRelativeWidth = (parseInt(this.$container.css('width'), 10)
-    / parseInt(this.$container.parent().css('width'), 10)) * 100;
+    / parseInt(this.$containerEnvironment.css('width'), 10)) * 100;
 
     this.containerParameters = {
       containerWidth,

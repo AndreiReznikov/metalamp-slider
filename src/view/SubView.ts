@@ -277,8 +277,8 @@ class SubView {
       runnerFromPosition: this.runnerFrom.runnerPosition,
       runnerToPosition: this.runnerTo.runnerPosition,
       runnerLength: this.runnerLength,
-      limitMinLength: parseInt(this.limitMin.$limit.css('width'), 10),
-      limitMaxLength: parseInt(this.limitMax.$limit.css('width'), 10),
+      limitMinLength: this.limitMin.limitLength,
+      limitMaxLength: this.limitMax.limitLength,
       clickPosition: this.clickPosition,
       shiftAxis: this.shiftAxis,
       isMinFrom: this.runnerFrom.isMinFrom,
@@ -308,7 +308,7 @@ class SubView {
   public getElementParameters = () => {
     this.sliderPosition = this.getCoords(this.$stripe);
     this.sliderLength = parseInt(
-      this.$stripe.css('width'),
+      this.$stripe.css(this.getOptions().modelOptions.lengthParameter),
       10,
     );
     this.runnerLength = parseInt(

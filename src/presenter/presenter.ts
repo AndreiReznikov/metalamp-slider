@@ -1,4 +1,4 @@
-import { Options } from '../interfaces/interfaces';
+import { Options, UserConfig } from '../interfaces/interfaces';
 import Model from '../model/model';
 import View from '../view/view';
 
@@ -19,11 +19,59 @@ class Presenter {
 
     this.init();
     this.launchEventManager();
-    this.launchPanelEventManager();
   }
 
   private toggleTooltip = () => {
     this.model.showTooltip = this.model.showTooltip !== true;
+
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleDouble = () => {
+    this.model.double = this.model.double !== true;
+
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleRange = () => {
+    this.model.showRange = this.model.showRange !== true;
+
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleScale = () => {
+    this.model.showScale = this.model.showScale !== true;
+
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleVertical = () => {
+    this.model.vertical = this.model.vertical !== true;
+
+    this.model.positionParameter = this.model.vertical ? 'top' : 'left';
+    this.model.lengthParameter = this.model.vertical ? 'height' : 'width';
+    this.model.scalePositionParameter = this.model.vertical ? 'right' : 'top';
+
+    this.init();
+  };
+
+  private updateUserConfig = (userConfig: UserConfig) => {
+    this.model.userConfig = userConfig;
+    this.model.config = $.extend({}, this.model.data, this.model.userConfig);
+    this.model.setConfig();
+    this.view.SubView.setModelOptions(this.model.getOptions());
 
     this.view.initializeView(this.model.getOptions());
 
@@ -33,7 +81,12 @@ class Presenter {
   public getApi = () => {
     const api = {
       getModelOptions: this.model.getModelOptions,
+      updateUserConfig: this.updateUserConfig,
+      toggleDouble: this.toggleDouble,
       toggleTooltip: this.toggleTooltip,
+      toggleRange: this.toggleRange,
+      toggleScale: this.toggleScale,
+      toggleVertical: this.toggleVertical,
     };
 
     return api;
@@ -41,8 +94,9 @@ class Presenter {
 
   private init = (): void => {
     this.view.SubView.setModelOptions(this.model.getOptions());
-    this.view.SubView.getElementParameters();
     this.view.initializeView(this.model.getOptions());
+    this.view.setPlane(this.model.getOptions());
+    this.view.SubView.getElementParameters();
     this.model.validateInitialValues();
     this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
     this.view.SubView.limitMax.setLimitValue(this.model.getOptions());
@@ -50,11 +104,7 @@ class Presenter {
     this.model.calculateStepLength();
     this.view.SubView.setModelOptions(this.model.getOptions());
 
-    this.view.setPlane(this.model.getOptions());
-
     this.model.setSubViewOptions(this.view.SubView.getOptions());
-
-    this.updateView(this.model.getOptions());
 
     this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
     this.view.SubView.limitMax.setLimitValue(this.model.getOptions());
@@ -62,8 +112,6 @@ class Presenter {
     this.view.SubView.limitMin.setLimitPosition(this.model.getOptions());
     this.view.SubView.limitMax.calculateLimitPosition(this.model.getOptions());
     this.view.SubView.limitMax.setLimitPosition(this.model.getOptions());
-
-    this.model.validateInitialValues();
 
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.runnerFrom.setRunnerPosition(this.model.getOptions());
@@ -80,6 +128,7 @@ class Presenter {
     this.model.calculateStepLength();
     this.model.calculateScaleElementsNumber();
     this.model.calculateScaleElementsValues();
+    this.view.setPlane(this.model.getOptions());
     this.updateView(this.model.getOptions());
   };
 

@@ -7,6 +7,8 @@ class Limit {
 
   limitPosition = 0;
 
+  limitLength = 0;
+
   constructor(limitType: string) {
     this.limitType = limitType;
   }
@@ -14,10 +16,10 @@ class Limit {
   public calculateLimitPosition(options: Options) {
     this.limitPosition = 0;
 
-    if (this.limitType === 'max') {
-      this.limitPosition = options.subViewOptions.sliderLength
+    if (this.limitType !== 'max') return;
+
+    this.limitPosition = options.subViewOptions.sliderLength
       - options.subViewOptions.limitMaxLength;
-    }
   }
 
   public setLimitPosition(options: Options) {
@@ -30,7 +32,13 @@ class Limit {
     } else if (this.limitType === 'max') {
       this.$limit.html(`${options.modelOptions.max}`);
     }
+
+    this.setLimitLength(options);
   }
+
+  private setLimitLength = (options: Options) => {
+    this.limitLength = parseInt(this.$limit.css(options.modelOptions.lengthParameter), 10);
+  };
 }
 
 export default Limit;
