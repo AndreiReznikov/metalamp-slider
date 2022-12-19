@@ -7,12 +7,12 @@ class Presenter {
 
   view: View;
 
-  isValueANumberAndFullValue: boolean;
+  isValueNumber: boolean;
 
   constructor(model: Model, view: View) {
     this.model = model;
     this.view = view;
-    this.isValueANumberAndFullValue = false;
+    this.isValueNumber = false;
 
     this.model.observer.addObserver(this.updateView);
     this.view.SubView.observer.addObserver(this.updateModel);
@@ -20,6 +20,25 @@ class Presenter {
     this.init();
     this.launchEventManager();
   }
+
+  public getApi = () => {
+    const api = {
+      getModelOptions: this.model.getModelOptions,
+      updateUserConfig: this.updateUserConfig,
+      toggleDouble: this.toggleDouble,
+      toggleTooltip: this.toggleTooltip,
+      toggleRange: this.toggleRange,
+      toggleScale: this.toggleScale,
+      toggleVertical: this.toggleVertical,
+      setFrom: this.setFrom,
+      setTo: this.setTo,
+      setMin: this.setMin,
+      setMax: this.setMax,
+      setStep: this.setStep,
+    };
+
+    return api;
+  };
 
   private toggleTooltip = () => {
     this.model.showTooltip = this.model.showTooltip !== true;
@@ -119,25 +138,6 @@ class Presenter {
     this.model.observer.notifyObservers(this.model.getOptions());
   };
 
-  public getApi = () => {
-    const api = {
-      getModelOptions: this.model.getModelOptions,
-      updateUserConfig: this.updateUserConfig,
-      toggleDouble: this.toggleDouble,
-      toggleTooltip: this.toggleTooltip,
-      toggleRange: this.toggleRange,
-      toggleScale: this.toggleScale,
-      toggleVertical: this.toggleVertical,
-      setFrom: this.setFrom,
-      setTo: this.setTo,
-      setMin: this.setMin,
-      setMax: this.setMax,
-      setStep: this.setStep,
-    };
-
-    return api;
-  };
-
   private init = (): void => {
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.initializeView(this.model.getOptions());
@@ -198,6 +198,9 @@ class Presenter {
     this.view.SubView.limitMax.setLimitValue(options);
     this.view.SubView.limitMax.calculateLimitPosition(options);
     this.view.SubView.limitMax.setLimitPosition(options);
+    this.view.SubView.showLimit(options);
+    this.view.SubView.limitMin.setLimitOpacity(options);
+    this.view.SubView.limitMax.setLimitOpacity(options);
     this.view.SubView.scale.setScaleElementsValues(options);
     this.view.SubView.scale.calculateLengthBetweenScaleElements(options);
     this.view.SubView.scale.setScaleLength(options);
@@ -254,12 +257,10 @@ class Presenter {
     this.view.$window.on('resize.slider', this.init);
   };
 
-  private checkIsValueANumberAndFullValue = (
+  private checkValue = (
     value: string | number | string[] | undefined = 0,
-  ): boolean => {
-    this.isValueANumberAndFullValue = typeof parseFloat(`${value}`) !== 'number' || value === '';
-
-    return this.isValueANumberAndFullValue;
+  ): void => {
+    this.isValueNumber = typeof parseFloat(`${value}`) === 'number';
   };
 }
 

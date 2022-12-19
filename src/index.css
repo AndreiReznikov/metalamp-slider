@@ -84,6 +84,8 @@
 .js-slider__toggle-inputs-container {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
   margin-bottom: 10px;
 }
 
@@ -155,6 +157,10 @@
   margin-right: 12px;
   line-height: 24px;
   font-size: 14px;
+}
+
+.panel__toggle-label:last-child {
+  margin: 0;
 }
 
 .panel__toggle-text {
@@ -281,4 +287,8 @@ html, body {
   width: 650px;
   height: 6px;
   margin: 200px 0;
+}
+
+.panel {
+  width: 100%;
 }

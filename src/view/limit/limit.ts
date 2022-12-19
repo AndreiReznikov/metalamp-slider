@@ -36,6 +36,16 @@ class Limit {
     this.setLimitLength(options);
   }
 
+  public setLimitOpacity = (opitons: Options) => {
+    this.$limit.css('opacity', 0);
+
+    if (opitons.subViewOptions.isLimitMaxShown && this.limitType === 'max') {
+      this.$limit.css('opacity', 1);
+    } else if (opitons.subViewOptions.isLimitMinShown && this.limitType === 'min') {
+      this.$limit.css('opacity', 1);
+    }
+  };
+
   private setLimitLength = (options: Options) => {
     this.limitLength = parseInt(this.$limit.css(options.modelOptions.lengthParameter), 10);
   };

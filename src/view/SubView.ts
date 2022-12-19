@@ -66,6 +66,10 @@ class SubView {
 
   isClickForRunnerTo = false;
 
+  isLimitMinShown = true;
+
+  isLimitMaxShown = true;
+
   isScaleElementOnDown = false;
 
   modelOptions: ModelOptions;
@@ -266,6 +270,75 @@ class SubView {
     }
   };
 
+  public restrictRunnerFromPosition = (options: Options): void => {
+    const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFrom.runnerPosition
+      < 0 - this.runnerLength / 2;
+    const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition
+      > this.sliderLength - this.runnerLength / 2;
+    const
+      isRunnerFromPositionMoreThanRunnerToPosition: boolean = options.modelOptions.double
+      && this.runnerFrom.runnerPosition > this.runnerTo.runnerPosition;
+
+    if (isRunnerFromPositionLessThanMinimum) {
+      this.runnerFrom.runnerPosition = 0 - this.runnerLength / 2;
+    } else if (isRunnerFromPositionMoreThanMaximum) {
+      this.runnerFrom.runnerPosition = this.sliderLength - this.runnerLength / 2;
+    }
+
+    if (isRunnerFromPositionMoreThanRunnerToPosition) {
+      this.runnerFrom.runnerPosition = this.runnerTo.runnerPosition;
+    }
+  };
+
+  public restrictRunnerToPosition = (): void => {
+    const isRunnerFromPositionLessThanRunnerToPosition: boolean = this.runnerTo.runnerPosition
+      < this.runnerFrom.runnerPosition;
+    const isRunnerToPositionMoreThanMaximum: boolean = this.runnerTo.runnerPosition
+      > this.sliderLength - this.runnerLength / 2;
+
+    if (isRunnerFromPositionLessThanRunnerToPosition) {
+      this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
+    } else if (isRunnerToPositionMoreThanMaximum) {
+      this.runnerTo.runnerPosition = this.sliderLength - this.runnerLength / 2;
+    }
+  };
+
+  // public separateTooltips = (): void => {
+  //   const areTooltipsClose: boolean = this.tooltipFrom.tooltipPosition + this.tooltipFromLength
+  //     > this.tooltipTo.tooltipPosition;
+  //   const areTooltipsCloseOrSingleRunner: boolean = !areTooltipsClose
+  //     || !this.getOptions().modelOptions.double;
+
+  //   if (areTooltipsCloseOrSingleRunner) return;
+
+  //   this.tooltipFromPosition = this.runnerFromPosition - this.tooltipFromLength;
+  //   this.tooltipToPosition = this.runnerToPosition + this.runnerLength;
+  // };
+
+  public showLimit = (options: Options): void => {
+    if (!options.modelOptions.showTooltip) return;
+
+    this.isLimitMinShown = true;
+    this.isLimitMaxShown = true;
+
+    const isTooltipFromNearLimitMin: boolean = this.tooltipFrom.tooltipPosition
+      < this.limitMin.limitPosition + this.limitMin.limitLength;
+    const isTooltipFromNearLimitMax: boolean = this.tooltipFrom.tooltipPosition
+      + this.tooltipFrom.tooltipLength
+      > this.limitMax.limitPosition;
+    const isTooltipToNearLimitMax: boolean = options.modelOptions.double
+      && this.tooltipTo.tooltipPosition
+      + this.tooltipTo.tooltipLength > this.limitMax.limitPosition;
+
+    if (isTooltipFromNearLimitMin) {
+      this.isLimitMinShown = false;
+    }
+
+    if (isTooltipToNearLimitMax || isTooltipFromNearLimitMax) {
+      this.isLimitMaxShown = false;
+    }
+  };
+
   public getSubViewOptions = (): SubViewOptions => {
     const subViewOptions: SubViewOptions = {
       sliderPosition: this.sliderPosition,
@@ -290,6 +363,8 @@ class SubView {
       isClickAheadOfRunnerTo: this.isClickAheadOfRunnerTo,
       isClickBehindOfRunnerTo: this.isClickBehindOfRunnerTo,
       isClickForRunnerTo: this.isClickForRunnerTo,
+      isLimitMinShown: this.isLimitMinShown,
+      isLimitMaxShown: this.isLimitMaxShown,
       runnerFromStepsNumber: this.runnerFromStepsNumber,
       runnerToStepsNumber: this.runnerToStepsNumber,
       isScaleElementOnDown: this.isScaleElementOnDown,
@@ -334,39 +409,6 @@ class SubView {
 
     this.$document.on('pointermove.move', pointermoveHandler);
     this.$document.on('pointerup.move', () => this.$document.off('pointermove.move', pointermoveHandler));
-  };
-
-  public restrictRunnerFromPosition = (options: Options): void => {
-    const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFrom.runnerPosition
-      < 0 - this.runnerLength / 2;
-    const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition
-      > this.sliderLength - this.runnerLength / 2;
-    const
-      isRunnerFromPositionMoreThanRunnerToPosition: boolean = options.modelOptions.double
-      && this.runnerFrom.runnerPosition > this.runnerTo.runnerPosition;
-
-    if (isRunnerFromPositionLessThanMinimum) {
-      this.runnerFrom.runnerPosition = 0 - this.runnerLength / 2;
-    } else if (isRunnerFromPositionMoreThanMaximum) {
-      this.runnerFrom.runnerPosition = this.sliderLength - this.runnerLength / 2;
-    }
-
-    if (isRunnerFromPositionMoreThanRunnerToPosition) {
-      this.runnerFrom.runnerPosition = this.runnerTo.runnerPosition;
-    }
-  };
-
-  public restrictRunnerToPosition = (): void => {
-    const isRunnerFromPositionLessThanRunnerToPosition: boolean = this.runnerTo.runnerPosition
-      < this.runnerFrom.runnerPosition;
-    const isRunnerToPositionMoreThanMaximum: boolean = this.runnerTo.runnerPosition
-      > this.sliderLength - this.runnerLength / 2;
-
-    if (isRunnerFromPositionLessThanRunnerToPosition) {
-      this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
-    } else if (isRunnerToPositionMoreThanMaximum) {
-      this.runnerTo.runnerPosition = this.sliderLength - this.runnerLength / 2;
-    }
   };
 
   private calculateClickPosition = (event: JQuery.TriggeredEvent): void => {

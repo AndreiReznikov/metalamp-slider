@@ -49,6 +49,8 @@ interface SubViewOptions {
   isClickAheadOfRunnerTo: boolean;
   isClickBehindOfRunnerTo: boolean;
   isClickForRunnerTo: boolean;
+  isLimitMinShown: boolean;
+  isLimitMaxShown: boolean;
   runnerFromStepsNumber: number;
   runnerToStepsNumber: number;
   isScaleElementOnDown: boolean;

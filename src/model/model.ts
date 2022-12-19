@@ -114,6 +114,8 @@ class Model {
       isClickAheadOfRunnerTo: false,
       isClickBehindOfRunnerTo: false,
       isClickForRunnerTo: false,
+      isLimitMinShown: true,
+      isLimitMaxShown: true,
       runnerFromStepsNumber: 0,
       runnerToStepsNumber: 0,
       isScaleElementOnDown: false,
@@ -181,6 +183,9 @@ class Model {
       && this.step > this.max - this.min;
     const isLimitsNegativeAndStepMoreThanDifference: boolean = areLimitsNegative
       && this.step > -(this.min - this.max);
+    const isStepIncorrect = isLimitsPositiveAndStepMoreThanDifference
+    || isLimitsNegativeAndStepMoreThanDifference
+    || this.step < 0;
 
     if (this.min > this.max) {
       const { min } = this;
@@ -190,15 +195,7 @@ class Model {
       this.max = min;
     }
 
-    if (isLimitsPositiveAndStepMoreThanDifference) {
-      this.step = 0;
-    }
-
-    if (isLimitsNegativeAndStepMoreThanDifference) {
-      this.step = 0;
-    }
-
-    if (this.step < 0) {
+    if (isStepIncorrect) {
       this.step = 0;
     }
 
@@ -256,6 +253,20 @@ class Model {
     this.restrictFrom();
 
     this.observer.notifyObservers(this.getOptions());
+  };
+
+  public restrictFrom = (): void => {
+    const isFromLessThanMinimum: boolean = this.from < this.min;
+    const isIntervalAndFromMoreThanTo: boolean = this.double && this.from > this.to;
+    const isFromMoreThanMaximum: boolean = this.from > this.max;
+
+    if (isFromLessThanMinimum) {
+      this.from = this.min;
+    } else if (isIntervalAndFromMoreThanTo) {
+      this.from = this.to;
+    } else if (isFromMoreThanMaximum) {
+      this.from = this.max;
+    }
   };
 
   public calculateRunnerFromPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
@@ -320,6 +331,19 @@ class Model {
     this.observer.notifyObservers(this.getOptions());
   };
 
+  public restrictTo = (): void => {
+    if (!this.double) return;
+
+    const isToLessThanFrom: boolean = this.to < this.from;
+    const isToMoreThanMaximum: boolean = this.to > this.max;
+
+    if (isToLessThanFrom) {
+      this.to = this.from;
+    } else if (isToMoreThanMaximum) {
+      this.to = this.max;
+    }
+  };
+
   public calculateRunnerToPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
     // const isKeyboardAndInterval: boolean = this.keyboard && this.isInterval;
 
@@ -351,16 +375,6 @@ class Model {
     // this.observer.notifyObservers(this.getOptions());
   };
 
-  // public calculatePanelPosition = (): void => {
-  //   const maxWidth: number = Math.max(30, 30);
-
-  //   if (this.isVertical) {
-  //     this.panelPosition = maxWidth + 10;
-  //   } else {
-  //     this.panelPosition = this.scaleElementHeight + 10;
-  //   }
-  // };
-
   public countNumberOfCharactersAfterDot = (): void => {
     const minValuesBeforeAndAfterDot: string[] = `${this.min}`.split('.');
     const maxValuesBeforeAndAfterDot: string[] = `${this.max}`.split('.');
@@ -374,29 +388,6 @@ class Model {
     this.numberOfCharactersAfterDot = minValuesAfterDot.length > maxValuesAfterDot.length
       ? minValuesAfterDot.length : maxValuesAfterDot.length;
   };
-
-  // private showMinAndMaxValuesAfterContactWithTooltip = (): void => {
-  //   this.isMinValueShow = true;
-  //   this.isMaxValueShow = true;
-
-  //   const isTooltipFromTouchesMinValue: boolean = this.tooltipFromPosition
-  //     < this.minValuePosition + this.minValueLength;
-  //   const isTooltipFromTouchesMaxValue: boolean = this.tooltipFromPosition
-  //  + this.tooltipFromLength
-  //     > this.maxValuePosition;
-  //   const isTooltipToTouchesMaxValue: boolean = this.isInterval
-  //     && this.tooltipToPosition + this.tooltipToLength > this.maxValuePosition;
-
-  //   if (isTooltipFromTouchesMinValue) {
-  //     this.isMinValueShow = false;
-  //   }
-
-  //   if (isTooltipToTouchesMaxValue) {
-  //     this.isMaxValueShow = false;
-  //   } else if (isTooltipFromTouchesMaxValue) {
-  //     this.isMaxValueShow = false;
-  //   }
-  // };
 
   public calculateScaleElementsValues = (): void => {
     this.scaleElements.length = 0;
@@ -519,44 +510,6 @@ class Model {
     this.to = this.config.to;
     this.scaleNumber = this.config.scaleNumber;
   };
-
-  private restrictFrom = (): void => {
-    const isFromLessThanMinimum: boolean = this.from < this.min;
-    const isIntervalAndFromMoreThanTo: boolean = this.double && this.from > this.to;
-    const isFromMoreThanMaximum: boolean = this.from > this.max;
-
-    if (isFromLessThanMinimum) {
-      this.from = this.min;
-    } else if (isIntervalAndFromMoreThanTo) {
-      this.from = this.to;
-    } else if (isFromMoreThanMaximum) {
-      this.from = this.max;
-    }
-  };
-
-  public restrictTo = (): void => {
-    if (!this.double) return;
-
-    const isToLessThanFrom: boolean = this.to < this.from;
-    const isToMoreThanMaximum: boolean = this.to > this.max;
-
-    if (isToLessThanFrom) {
-      this.to = this.from;
-    } else if (isToMoreThanMaximum) {
-      this.to = this.max;
-    }
-  };
-
-  // private separateTooltips = (): void => {
-  //   const areTooltipsClose: boolean = this.tooltipFromPosition + this.tooltipFromLength
-  //     > this.tooltipToPosition;
-  //   const areTooltipsCloseOrSingleRunner: boolean = !areTooltipsClose || !this.isInterval;
-
-  //   if (areTooltipsCloseOrSingleRunner) return;
-
-  //   this.tooltipFromPosition = this.runnerFromPosition - this.tooltipFromLength;
-  //   this.tooltipToPosition = this.runnerToPosition + this.runnerLength;
-  // };
 }
 
 export default Model;
