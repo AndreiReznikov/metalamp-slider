@@ -114,6 +114,7 @@ class Model {
       isClickAheadOfRunnerTo: false,
       isClickBehindOfRunnerTo: false,
       isClickForRunnerTo: false,
+      areTooltipsClose: false,
       isLimitMinShown: true,
       isLimitMaxShown: true,
       runnerFromStepsNumber: 0,

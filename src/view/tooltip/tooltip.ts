@@ -9,7 +9,7 @@ class Tooltip {
 
   tooltipPosition = 0;
 
-  tooltipValue = 0;
+  tooltipValue: number | string = 0;
 
   constructor(tooltipType: string) {
     this.tooltipType = tooltipType;
@@ -27,14 +27,34 @@ class Tooltip {
   };
 
   public setTooltipPosition = (options: Options): void => {
+    if (options.subViewOptions.areTooltipsClose && this.tooltipType === 'from') {
+      this.tooltipPosition = options.subViewOptions.runnerFromPosition + (
+        options.subViewOptions.runnerToPosition - options.subViewOptions.runnerFromPosition
+      ) / 2 + options.subViewOptions.runnerLength / 2 - this.tooltipLength / 2;
+    }
+
     this.$tooltip.css(options.modelOptions.positionParameter, this.tooltipPosition);
+
+    this.setTooltipOpacity(options);
   };
 
   public setTooltipValue = (options: Options): void => {
-    this.tooltipValue = this.tooltipType === 'from'
-      ? options.modelOptions.from : options.modelOptions.to;
+    if (options.subViewOptions.areTooltipsClose && this.tooltipType === 'from') {
+      this.tooltipValue = `${options.modelOptions.from} \u2013 ${options.modelOptions.to}`;
+    } else {
+      this.tooltipValue = this.tooltipType === 'from'
+        ? options.modelOptions.from : options.modelOptions.to;
+    }
 
     this.$tooltip.html(`${this.tooltipValue}`);
+  };
+
+  private setTooltipOpacity = (options: Options): void => {
+    if (!options.subViewOptions.areTooltipsClose || !options.modelOptions.double) {
+      this.$tooltip.css('opacity', 1);
+    } else if (this.tooltipType === 'to') {
+      this.$tooltip.css('opacity', 0);
+    }
   };
 
   private setTooltipLength = (options: Options) => {

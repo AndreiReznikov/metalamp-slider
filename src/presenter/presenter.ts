@@ -182,6 +182,7 @@ class Presenter {
   private updateView = (options: Options): void => {
     this.view.SubView.runnerFrom.setRunnerPosition(options);
     this.view.SubView.runnerTo.setRunnerPosition(options);
+    this.view.SubView.joinTooltips(options);
     this.view.SubView.tooltipFrom.setTooltipValue(options);
     this.view.SubView.tooltipFrom.calculateTooltipPosition(options);
     this.view.SubView.tooltipFrom.setTooltipPosition(options);

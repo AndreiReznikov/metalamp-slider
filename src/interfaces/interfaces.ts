@@ -49,6 +49,7 @@ interface SubViewOptions {
   isClickAheadOfRunnerTo: boolean;
   isClickBehindOfRunnerTo: boolean;
   isClickForRunnerTo: boolean;
+  areTooltipsClose: boolean;
   isLimitMinShown: boolean;
   isLimitMaxShown: boolean;
   runnerFromStepsNumber: number;

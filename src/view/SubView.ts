@@ -66,6 +66,8 @@ class SubView {
 
   isClickForRunnerTo = false;
 
+  areTooltipsClose = false;
+
   isLimitMinShown = true;
 
   isLimitMaxShown = true;
@@ -303,17 +305,17 @@ class SubView {
     }
   };
 
-  // public separateTooltips = (): void => {
-  //   const areTooltipsClose: boolean = this.tooltipFrom.tooltipPosition + this.tooltipFromLength
-  //     > this.tooltipTo.tooltipPosition;
-  //   const areTooltipsCloseOrSingleRunner: boolean = !areTooltipsClose
-  //     || !this.getOptions().modelOptions.double;
+  public joinTooltips = (options: Options): void => {
+    if (!options.modelOptions.double) return;
 
-  //   if (areTooltipsCloseOrSingleRunner) return;
+    this.areTooltipsClose = this.tooltipFrom.tooltipPosition
+      + this.tooltipFrom.tooltipLength
+      > this.tooltipTo.tooltipPosition;
 
-  //   this.tooltipFromPosition = this.runnerFromPosition - this.tooltipFromLength;
-  //   this.tooltipToPosition = this.runnerToPosition + this.runnerLength;
-  // };
+    // if (!this.areTooltipsClose || !options.modelOptions.double) {
+    //   this.areTooltipsClose = false;
+    // }
+  };
 
   public showLimit = (options: Options): void => {
     if (!options.modelOptions.showTooltip) return;
@@ -363,6 +365,7 @@ class SubView {
       isClickAheadOfRunnerTo: this.isClickAheadOfRunnerTo,
       isClickBehindOfRunnerTo: this.isClickBehindOfRunnerTo,
       isClickForRunnerTo: this.isClickForRunnerTo,
+      areTooltipsClose: this.areTooltipsClose,
       isLimitMinShown: this.isLimitMinShown,
       isLimitMaxShown: this.isLimitMaxShown,
       runnerFromStepsNumber: this.runnerFromStepsNumber,
