@@ -40,7 +40,7 @@ class Tooltip {
 
   public setTooltipValue = (options: Options): void => {
     if (options.subViewOptions.areTooltipsClose && this.tooltipType === 'from') {
-      this.tooltipValue = `${options.modelOptions.from} \u2013 ${options.modelOptions.to}`;
+      this.tooltipValue = `${options.modelOptions.from}&nbsp;&#8209;&nbsp;${options.modelOptions.to}`;
     } else {
       this.tooltipValue = this.tooltipType === 'from'
         ? options.modelOptions.from : options.modelOptions.to;
