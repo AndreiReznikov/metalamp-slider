@@ -55,9 +55,8 @@ class Presenter {
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
-    this.view.SubView.restrictRunnerToPosition();
+    this.view.SubView.restrictRunnerToPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
-    this.view.SubView.tooltipTo.setTooltipPosition(this.model.getOptions());
     this.model.restrictTo();
 
     this.model.observer.notifyObservers(this.model.getOptions());
@@ -182,7 +181,6 @@ class Presenter {
   private updateView = (options: Options): void => {
     this.view.SubView.runnerFrom.setRunnerPosition(options);
     this.view.SubView.runnerTo.setRunnerPosition(options);
-    this.view.SubView.joinTooltips(options);
     this.view.SubView.tooltipFrom.setTooltipValue(options);
     this.view.SubView.tooltipFrom.calculateTooltipPosition(options);
     this.view.SubView.tooltipFrom.setTooltipPosition(options);
@@ -199,7 +197,6 @@ class Presenter {
     this.view.SubView.limitMax.setLimitValue(options);
     this.view.SubView.limitMax.calculateLimitPosition(options);
     this.view.SubView.limitMax.setLimitPosition(options);
-    this.view.SubView.showLimit(options);
     this.view.SubView.limitMin.setLimitOpacity(options);
     this.view.SubView.limitMax.setLimitOpacity(options);
     this.view.SubView.scale.setScaleElementsValues(options);

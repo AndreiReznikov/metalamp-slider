@@ -133,6 +133,7 @@ class SubView {
   };
 
   public handleRunnerFromStartPointermove = (event: JQuery.TriggeredEvent): void => {
+    event.stopPropagation();
     this.checkMouseButton(event);
 
     if (this.isWrongButtonPressed) return;
@@ -144,6 +145,7 @@ class SubView {
   };
 
   public handleRunnerToStartPointermove = (event: JQuery.TriggeredEvent): void => {
+    event.stopPropagation();
     this.checkMouseButton(event);
 
     if (this.isWrongButtonPressed) return;
@@ -191,6 +193,8 @@ class SubView {
 
     this.calculateClickPosition(event);
     this.calculateRunnerPositionAfterSliderOnDown(this.getOptions());
+    this.restrictRunnerPositionAfterSliderOnDown(this.getOptions());
+    this.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -210,8 +214,11 @@ class SubView {
 
     this.calculateClickPosition(event);
     this.calculateRunnerPositionAfterScaleOnDown(this.getOptions());
+    this.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
+
+    this.isScaleElementOnDown = false;
   };
 
   public calculateRunnerPositionAfterSliderOnDown = (options: Options): void => {
@@ -290,9 +297,11 @@ class SubView {
     if (isRunnerFromPositionMoreThanRunnerToPosition) {
       this.runnerFrom.runnerPosition = this.runnerTo.runnerPosition;
     }
+
+    this.joinTooltips(options);
   };
 
-  public restrictRunnerToPosition = (): void => {
+  public restrictRunnerToPosition = (options: Options): void => {
     const isRunnerFromPositionLessThanRunnerToPosition: boolean = this.runnerTo.runnerPosition
       < this.runnerFrom.runnerPosition;
     const isRunnerToPositionMoreThanMaximum: boolean = this.runnerTo.runnerPosition
@@ -303,18 +312,8 @@ class SubView {
     } else if (isRunnerToPositionMoreThanMaximum) {
       this.runnerTo.runnerPosition = this.sliderLength - this.runnerLength / 2;
     }
-  };
 
-  public joinTooltips = (options: Options): void => {
-    if (!options.modelOptions.double) return;
-
-    this.areTooltipsClose = this.tooltipFrom.tooltipPosition
-      + this.tooltipFrom.tooltipLength
-      > this.tooltipTo.tooltipPosition;
-
-    // if (!this.areTooltipsClose || !options.modelOptions.double) {
-    //   this.areTooltipsClose = false;
-    // }
+    this.joinTooltips(options);
   };
 
   public showLimit = (options: Options): void => {
@@ -323,14 +322,15 @@ class SubView {
     this.isLimitMinShown = true;
     this.isLimitMaxShown = true;
 
-    const isTooltipFromNearLimitMin: boolean = this.tooltipFrom.tooltipPosition
-      < this.limitMin.limitPosition + this.limitMin.limitLength;
-    const isTooltipFromNearLimitMax: boolean = this.tooltipFrom.tooltipPosition
-      + this.tooltipFrom.tooltipLength
-      > this.limitMax.limitPosition;
+    const isTooltipFromNearLimitMin: boolean = this.runnerFrom.runnerPosition
+      <= 0;
+    const isTooltipFromNearLimitMax: boolean = this.runnerFrom.runnerPosition
+      + options.subViewOptions.runnerLength
+      > this.sliderLength;
     const isTooltipToNearLimitMax: boolean = options.modelOptions.double
-      && this.tooltipTo.tooltipPosition
-      + this.tooltipTo.tooltipLength > this.limitMax.limitPosition;
+      && this.runnerTo.runnerPosition
+      + options.subViewOptions.runnerLength
+      > this.sliderLength;
 
     if (isTooltipFromNearLimitMin) {
       this.isLimitMinShown = false;
@@ -391,10 +391,58 @@ class SubView {
     );
   };
 
+  private joinTooltips = (options: Options): void => {
+    this.areTooltipsClose = options.modelOptions.double
+      && this.tooltipFrom.tooltipPosition
+      + this.tooltipFrom.tooltipLength
+      > this.tooltipTo.tooltipPosition;
+  };
+
+  private restrictRunnerPositionAfterSliderOnDown = (options: Options): void => {
+    if (!options.modelOptions.isStepSet) return;
+
+    const isClickNearMinimum: boolean = options.subViewOptions.clickPosition
+      < options.modelOptions.stepLength / 2;
+    const isClickNearMaximumWithoutInterval: boolean = this.sliderLength
+    - options.subViewOptions.clickPosition < options.modelOptions.stepLength / 2
+    && !options.modelOptions.double;
+    const isClickNearMaximum: boolean = options.subViewOptions.sliderLength
+      - options.subViewOptions.clickPosition < options.modelOptions.stepLength / 2
+      && options.modelOptions.double;
+
+    this.alignRunners(options);
+
+    if (isClickNearMaximumWithoutInterval) {
+      this.runnerFrom.calculateMaxRunnerPosition(this.getOptions());
+    } else if (isClickNearMinimum) {
+      this.runnerFrom.calculateMinRunnerPosition(this.getOptions());
+    } else if (isClickNearMaximum) {
+      this.runnerTo.calculateMaxRunnerPosition(this.getOptions());
+    }
+  };
+
+  private alignRunners = (options: Options): void => {
+    const isRunnerFromNearRunnerTo: boolean = options.modelOptions.double
+    && Math.round(this.runnerTo.runnerPosition
+  - this.runnerFrom.runnerPosition) <= Math.round(options.modelOptions.stepLength)
+    && this.isClickForRunnerFrom;
+    const isRunnerToNearRunnerFrom: boolean = options.modelOptions.double
+    && Math.round(this.runnerTo.runnerPosition
+  - this.runnerFrom.runnerPosition) <= Math.round(options.modelOptions.stepLength)
+    && this.isClickForRunnerTo;
+
+    if (isRunnerFromNearRunnerTo) {
+      this.runnerFrom.runnerPosition = this.runnerTo.runnerPosition;
+    } else if (isRunnerToNearRunnerFrom) {
+      this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
+    }
+  };
+
   private handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
     this.calculateClickPosition(event);
     this.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
     this.restrictRunnerFromPosition(this.getOptions());
+    this.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -402,7 +450,8 @@ class SubView {
   private handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
     this.calculateClickPosition(event);
     this.runnerTo.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
-    this.restrictRunnerToPosition();
+    this.restrictRunnerToPosition(this.getOptions());
+    this.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
   };

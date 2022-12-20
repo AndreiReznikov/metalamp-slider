@@ -130,12 +130,6 @@ class Model {
     this.subViewOptions = options.subViewOptions;
   };
 
-  public calculateStepLength = (): void => {
-    this.stepLength = parseFloat(((this.step
-      / (this.max - this.min))
-      * this.subViewOptions.sliderLength).toFixed(this.numberOfCharactersAfterDot));
-  };
-
   public getModelOptions = (): ModelOptions => {
     const modelOptions: ModelOptions = {
       double: this.double,
@@ -270,34 +264,6 @@ class Model {
     }
   };
 
-  public calculateRunnerFromPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-    // const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
-    // const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
-    // const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
-
-    // const isKeyboardOrWrongKeyCode: boolean = !this.keyboard || !keyCodes.includes(event.keyCode);
-
-    // if (isKeyboardOrWrongKeyCode) return;
-
-    // const movementLength: number = this.isStepSet ? this.stepLength : 1;
-
-    // if (keyCodeToIncrease.includes(event.keyCode)) {
-    //   this.runnerFromPosition += movementLength;
-    //   // if (this.isStepSet) this.calculateTooltipFromValueWithStepAhead();
-    // } else if (keyCodeToReduce.includes(event.keyCode)) {
-    //   this.runnerFromPosition -= movementLength;
-    //   // if (this.isStepSet) this.calculateTooltipFromValueWithStepBehind();
-    // }
-
-    // // this.restrictRunnerFromPosition();
-    // // this.calculateRangePosition();
-    // // this.calculateRangeLength();
-    // // this.calculateTooltipsPositions();
-    // // if (!this.isStepSet) this.calculateTooltipsValues();
-
-    // this.observer.notifyObservers(this.getOptions());
-  };
-
   public calculateTo = (options: Options): void => {
     if (this.isStepSet) {
       if (options.subViewOptions.isCursorNearStepAheadTo) {
@@ -345,37 +311,6 @@ class Model {
     }
   };
 
-  public calculateRunnerToPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-    // const isKeyboardAndInterval: boolean = this.keyboard && this.isInterval;
-
-    // const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
-    // const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
-    // const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
-
-    // const isKeyboardOrWrongKeyCode: boolean = !isKeyboardAndInterval
-    //   || !keyCodes.includes(event.keyCode);
-
-    // if (isKeyboardOrWrongKeyCode) return;
-
-    // const movementLength: number = this.isStepSet ? this.stepLength : 1;
-
-    // if (keyCodeToIncrease.includes(event.keyCode)) {
-    //   this.runnerToPosition += movementLength;
-    //   // if (this.isStepSet) this.calculateTooltipToValueWithStepAhead();
-    // } else if (keyCodeToReduce.includes(event.keyCode)) {
-    //   this.runnerToPosition -= movementLength;
-    //   // if (this.isStepSet) this.calculateTooltipToValueWithStepBehind();
-    // }
-
-    // // this.restrictRunnerToPosition();
-    // // this.calculateRangePosition();
-    // // this.calculateRangeLength();
-    // // this.calculateTooltipsPositions();
-    // // if (!this.isStepSet) this.calculateTooltipsValues();
-
-    // this.observer.notifyObservers(this.getOptions());
-  };
-
   public countNumberOfCharactersAfterDot = (): void => {
     const minValuesBeforeAndAfterDot: string[] = `${this.min}`.split('.');
     const maxValuesBeforeAndAfterDot: string[] = `${this.max}`.split('.');
@@ -410,8 +345,6 @@ class Model {
   };
 
   public calculateScaleElementsNumber = (): void => {
-    if (this.userConfig.scaleNumber) return;
-
     const isDifferenceBetweenMaxMinValuesLessOrEqualToOne: boolean = this.max - this.min
       <= 1 && this.numberOfCharactersAfterDot === 0;
     const isDifferenceBetweenMaxMinValuesLessOrEqualToTwo: boolean = this.max - this.min
@@ -420,14 +353,19 @@ class Model {
       <= 4 && this.numberOfCharactersAfterDot === 0;
     const isDifferenceBetweenMaxMinValuesLessThanTen: boolean = this.max - this.min < 10;
     const isMinValueNegativeMaxValuePositive: boolean = this.min < 0 && this.max > 0;
+    const isMinOrMaxFourDigit: boolean = (Math.abs(this.min) > 999 && Math.abs(this.min) < 10000)
+    || (Math.abs(this.max) > 999 && Math.abs(this.max) < 10000);
+    const isMinOrMaxFiveDigit: boolean = Math.abs(this.min) > 9999 || Math.abs(this.max) > 9999;
 
-    if (isDifferenceBetweenMaxMinValuesLessOrEqualToOne) {
+    if (this.userConfig.scaleNumber) {
+      this.scaleNumber = this.userConfig.scaleNumber;
+    } else if (isDifferenceBetweenMaxMinValuesLessOrEqualToOne) {
       this.scaleNumber = 2;
     } else if (isDifferenceBetweenMaxMinValuesLessOrEqualToTwo) {
       this.scaleNumber = 3;
-    } else if (isDifferenceBetweenMaxMinValuesLessOrEqualToFour) {
+    } else if (isDifferenceBetweenMaxMinValuesLessOrEqualToFour || isMinOrMaxFiveDigit) {
       this.scaleNumber = 4;
-    } else if (isDifferenceBetweenMaxMinValuesLessThanTen) {
+    } else if (isDifferenceBetweenMaxMinValuesLessThanTen || isMinOrMaxFourDigit) {
       this.scaleNumber = 5;
     } else if (isMinValueNegativeMaxValuePositive) {
       this.scaleNumber = 11;
@@ -436,65 +374,11 @@ class Model {
     }
   };
 
-  // private alignRunnerFromWithRunnerToАfterApproaching = (): void => {
-  //   const isRunnerFromNearRunnerTo: boolean = this.isInterval
-  //   && Math.round(this.runnerToPosition
-  // - this.runnerFromPosition) <= Math.round(this.stepLength);
-
-  //   if (isRunnerFromNearRunnerTo) {
-  //     this.runnerFromPosition = this.runnerToPosition;
-  //     this.calculateMaxTooltipFromValue(this.tooltipToValue);
-  //   }
-  // };
-
-  // private alignRunnerToWithRunnerFromАfterApproaching = (): void => {
-  //   const isRunnerFromNearRunnerTo: boolean = this.isInterval
-  //     && Math.round(this.runnerToPosition - this.runnerFromPosition)
-  //     <= Math.round(this.stepLength);
-
-  //   if (isRunnerFromNearRunnerTo) {
-  //     this.runnerToPosition = this.runnerFromPosition;
-  //     this.calculateMinTooltipToValue();
-  //   }
-  // };
-
-  // private calculateMinRunnerFromPositionAfterSliderOnDown = (pageAxis = 0): void => {
-  //   if (!this.isStepSet) return;
-
-  //   const isClickNearMinimum: boolean = pageAxis - this.sliderPosition < this.stepLength / 2;
-
-  //   if (isClickNearMinimum) {
-  //     this.runnerFromPosition = 0 - this.runnerLength / 2;
-  //     this.calculateMinTooltipFromValue();
-  //   }
-  // };
-
-  // private calculateMaxRunnerFromPositionAfterSliderOnDown = (pageAxis = 0): void => {
-  //   if (!this.isStepSet) return;
-
-  //   const isClickNearMaximumWithoutInterval: boolean = this.sliderLength
-  //   - (pageAxis - this.sliderPosition) < this.stepLength / 2
-  //   && !this.isInterval;
-
-  //   if (isClickNearMaximumWithoutInterval) {
-  //     this.runnerFromPosition = this.sliderLength - this.runnerLength / 2;
-  //     this.calculateMaxTooltipFromValue(this.maxValue);
-  //   }
-  // };
-
-  // private calculateMaxRunnerToPositionAfterSliderOnDown = (pageAxis = 0): void => {
-  //   const isIntervalAndStep: boolean = this.isInterval && this.isStepSet;
-
-  //   if (!isIntervalAndStep) return;
-
-  //   const isClickNearMaximum: boolean = this.sliderLength - (pageAxis - this.sliderPosition)
-  //     < this.stepLength / 2;
-
-  //   if (isClickNearMaximum) {
-  //     this.runnerToPosition = this.sliderLength - this.runnerLength / 2;
-  //     this.calculateMaxTooltipToValue();
-  //   }
-  // };
+  public calculateStepLength = (): void => {
+    this.stepLength = parseFloat(((this.step
+      / (this.max - this.min))
+      * this.subViewOptions.sliderLength).toFixed(this.numberOfCharactersAfterDot));
+  };
 
   public setConfig = (): void => {
     this.double = this.config.double;
@@ -510,6 +394,65 @@ class Model {
     this.from = this.config.from;
     this.to = this.config.to;
     this.scaleNumber = this.config.scaleNumber;
+  };
+
+  public calculateRunnerFromPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
+    // const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
+    // const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
+    // const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
+
+    // const isKeyboardOrWrongKeyCode: boolean = !this.keyboard || !keyCodes.includes(event.keyCode);
+
+    // if (isKeyboardOrWrongKeyCode) return;
+
+    // const movementLength: number = this.isStepSet ? this.stepLength : 1;
+
+    // if (keyCodeToIncrease.includes(event.keyCode)) {
+    //   this.runnerFromPosition += movementLength;
+    //   // if (this.isStepSet) this.calculateTooltipFromValueWithStepAhead();
+    // } else if (keyCodeToReduce.includes(event.keyCode)) {
+    //   this.runnerFromPosition -= movementLength;
+    //   // if (this.isStepSet) this.calculateTooltipFromValueWithStepBehind();
+    // }
+
+    // // this.restrictRunnerFromPosition();
+    // // this.calculateRangePosition();
+    // // this.calculateRangeLength();
+    // // this.calculateTooltipsPositions();
+    // // if (!this.isStepSet) this.calculateTooltipsValues();
+
+    // this.observer.notifyObservers(this.getOptions());
+  };
+
+  public calculateRunnerToPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
+    // const isKeyboardAndInterval: boolean = this.keyboard && this.isInterval;
+
+    // const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
+    // const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
+    // const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
+
+    // const isKeyboardOrWrongKeyCode: boolean = !isKeyboardAndInterval
+    //   || !keyCodes.includes(event.keyCode);
+
+    // if (isKeyboardOrWrongKeyCode) return;
+
+    // const movementLength: number = this.isStepSet ? this.stepLength : 1;
+
+    // if (keyCodeToIncrease.includes(event.keyCode)) {
+    //   this.runnerToPosition += movementLength;
+    //   // if (this.isStepSet) this.calculateTooltipToValueWithStepAhead();
+    // } else if (keyCodeToReduce.includes(event.keyCode)) {
+    //   this.runnerToPosition -= movementLength;
+    //   // if (this.isStepSet) this.calculateTooltipToValueWithStepBehind();
+    // }
+
+    // // this.restrictRunnerToPosition();
+    // // this.calculateRangePosition();
+    // // this.calculateRangeLength();
+    // // this.calculateTooltipsPositions();
+    // // if (!this.isStepSet) this.calculateTooltipsValues();
+
+    // this.observer.notifyObservers(this.getOptions());
   };
 }
 
