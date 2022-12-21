@@ -1,4 +1,4 @@
-import View from '../src/view/view';
+import View from '../src/view/View';
 
 const $slider = $('<div/>');
 

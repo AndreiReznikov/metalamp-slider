@@ -1,4 +1,4 @@
-import Model from '../src/model/model';
+import Model from '../src/Model/Model';
 
 const model = new Model();
 

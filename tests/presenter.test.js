@@ -1,6 +1,6 @@
-import Model from '../src/model/model';
-import View from '../src/view/view';
-import Presenter from '../src/presenter/presenter';
+import Model from '../src/Model/Model';
+import View from '../src/view/View';
+import Presenter from '../src/Presenter/Presenter';
 
 const slider = $('<div/>');
 

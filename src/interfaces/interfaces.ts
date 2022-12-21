@@ -89,7 +89,7 @@ type Config = {
   to: number;
   step: number;
   scaleNumber: number;
-}
+};
 
 type UserConfig = {
   double?: boolean;
@@ -105,7 +105,7 @@ type UserConfig = {
   to?: number;
   step?: number;
   scaleNumber?: number;
-}
+};
 
 export {
   Options, ModelOptions, Config, UserConfig, SubViewOptions, Api,

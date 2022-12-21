@@ -1,6 +1,6 @@
 import { Options, UserConfig, Api } from '../interfaces/interfaces';
-import Model from '../model/model';
-import View from '../view/view';
+import Model from '../Model/Model';
+import View from '../View/View';
 
 class Presenter {
   model: Model;

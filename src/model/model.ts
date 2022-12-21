@@ -5,7 +5,7 @@ import {
   SubViewOptions,
   Options,
 } from '../interfaces/interfaces';
-import Observer from '../observer/observer';
+import Observer from '../Observer/Observer';
 
 class Model {
   observer: Observer;
