@@ -1,4 +1,4 @@
-import { Options, UserConfig } from '../interfaces/interfaces';
+import { Options, UserConfig, Api } from '../interfaces/interfaces';
 import Model from '../model/model';
 import View from '../view/view';
 
@@ -21,8 +21,8 @@ class Presenter {
     this.launchEventManager();
   }
 
-  public getApi = () => {
-    const api = {
+  public getApi = (): Api => {
+    const api: Api = {
       getModelOptions: this.model.getModelOptions,
       updateUserConfig: this.updateUserConfig,
       toggleDouble: this.toggleDouble,
@@ -40,7 +40,7 @@ class Presenter {
     return api;
   };
 
-  private toggleTooltip = () => {
+  private toggleTooltip = (): void => {
     this.model.showTooltip = this.model.showTooltip !== true;
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.setModelOptions(this.model.getOptions());
@@ -48,7 +48,7 @@ class Presenter {
     this.model.observer.notifyObservers(this.model.getOptions());
   };
 
-  private toggleDouble = () => {
+  private toggleDouble = (): void => {
     this.model.double = this.model.double !== true;
 
     this.model.validateInitialValues();
@@ -62,7 +62,7 @@ class Presenter {
     this.model.observer.notifyObservers(this.model.getOptions());
   };
 
-  private toggleRange = () => {
+  private toggleRange = (): void => {
     this.model.showRange = this.model.showRange !== true;
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.setModelOptions(this.model.getOptions());
@@ -70,7 +70,7 @@ class Presenter {
     this.model.observer.notifyObservers(this.model.getOptions());
   };
 
-  private toggleScale = () => {
+  private toggleScale = (): void => {
     this.model.showScale = this.model.showScale !== true;
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.setModelOptions(this.model.getOptions());
@@ -78,7 +78,7 @@ class Presenter {
     this.model.observer.notifyObservers(this.model.getOptions());
   };
 
-  private toggleVertical = () => {
+  private toggleVertical = (): void => {
     this.model.vertical = this.model.vertical !== true;
     this.model.setPositionParameters();
 
@@ -95,7 +95,7 @@ class Presenter {
     this.model.observer.notifyObservers(this.model.getOptions());
   };
 
-  private setTo = (value: number) => {
+  private setTo = (value: number): void => {
     this.model.to = value;
     this.model.validateInitialValues();
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
@@ -105,19 +105,19 @@ class Presenter {
     this.model.observer.notifyObservers(this.model.getOptions());
   };
 
-  private setMin = (value: number) => {
+  private setMin = (value: number): void => {
     this.model.min = value;
 
     this.init();
   };
 
-  private setMax = (value: number) => {
+  private setMax = (value: number): void => {
     this.model.max = value;
 
     this.init();
   };
 
-  private setStep = (value: number) => {
+  private setStep = (value: number): void => {
     this.model.step = value;
 
     this.model.validateInitialValues();
@@ -126,7 +126,7 @@ class Presenter {
     this.view.SubView.setModelOptions(this.model.getOptions());
   };
 
-  private updateUserConfig = (userConfig: UserConfig) => {
+  private updateUserConfig = (userConfig: UserConfig): void => {
     this.model.userConfig = userConfig;
     this.model.config = $.extend({}, this.model.data, this.model.userConfig);
     this.model.setConfig();

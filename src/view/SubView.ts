@@ -163,6 +163,7 @@ class SubView {
     if (this.isWrongButtonPressed) return;
 
     this.runnerFrom.calculateMinRunnerPosition(this.getOptions());
+    this.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -178,6 +179,8 @@ class SubView {
     } else {
       this.runnerFrom.calculateMaxRunnerPosition(this.getOptions());
     }
+
+    this.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
   };

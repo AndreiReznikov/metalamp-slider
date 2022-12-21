@@ -60,7 +60,22 @@ interface SubViewOptions {
   scaleElementValue: string;
 }
 
-interface Config {
+type Api = {
+  getModelOptions: () => ModelOptions;
+  updateUserConfig: (userConfig: UserConfig) => void;
+  toggleDouble: () => void;
+  toggleTooltip: () => void;
+  toggleRange: () => void;
+  toggleScale: () => void;
+  toggleVertical: () => void;
+  setFrom: (value: number) => void;
+  setTo: (value: number) => void;
+  setMin: (value: number) => void;
+  setMax: (value: number) => void;
+  setStep: (value: number) => void;
+};
+
+type Config = {
   double: boolean;
   vertical: boolean;
   useKeyboard: boolean;
@@ -76,7 +91,7 @@ interface Config {
   scaleNumber: number;
 }
 
-interface UserConfig {
+type UserConfig = {
   double?: boolean;
   vertical?: boolean;
   useKeyboard?: boolean;
@@ -93,5 +108,5 @@ interface UserConfig {
 }
 
 export {
-  Options, ModelOptions, Config, UserConfig, SubViewOptions,
+  Options, ModelOptions, Config, UserConfig, SubViewOptions, Api,
 };
