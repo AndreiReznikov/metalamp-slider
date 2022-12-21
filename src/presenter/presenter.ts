@@ -7,12 +7,12 @@ class Presenter {
 
   view: View;
 
-  isValueNumber: boolean;
+  isValueNotNumber: boolean;
 
   constructor(model: Model, view: View) {
     this.model = model;
     this.view = view;
-    this.isValueNumber = false;
+    this.isValueNotNumber = false;
 
     this.model.observer.addObserver(this.updateView);
     this.view.SubView.observer.addObserver(this.updateModel);
@@ -38,92 +38,6 @@ class Presenter {
     };
 
     return api;
-  };
-
-  private toggleTooltip = (): void => {
-    this.model.showTooltip = this.model.showTooltip !== true;
-    this.view.initializeView(this.model.getOptions());
-    this.view.SubView.setModelOptions(this.model.getOptions());
-
-    this.model.observer.notifyObservers(this.model.getOptions());
-  };
-
-  private toggleDouble = (): void => {
-    this.model.double = this.model.double !== true;
-
-    this.model.validateInitialValues();
-    this.view.SubView.setModelOptions(this.model.getOptions());
-    this.view.initializeView(this.model.getOptions());
-    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
-    this.view.SubView.restrictRunnerToPosition(this.model.getOptions());
-    this.model.setSubViewOptions(this.view.SubView.getOptions());
-    this.model.restrictTo();
-
-    this.model.observer.notifyObservers(this.model.getOptions());
-  };
-
-  private toggleRange = (): void => {
-    this.model.showRange = this.model.showRange !== true;
-    this.view.initializeView(this.model.getOptions());
-    this.view.SubView.setModelOptions(this.model.getOptions());
-
-    this.model.observer.notifyObservers(this.model.getOptions());
-  };
-
-  private toggleScale = (): void => {
-    this.model.showScale = this.model.showScale !== true;
-    this.view.initializeView(this.model.getOptions());
-    this.view.SubView.setModelOptions(this.model.getOptions());
-
-    this.model.observer.notifyObservers(this.model.getOptions());
-  };
-
-  private toggleVertical = (): void => {
-    this.model.vertical = this.model.vertical !== true;
-    this.model.setPositionParameters();
-
-    this.init();
-  };
-
-  private setFrom = (value: number) => {
-    this.model.from = value;
-    this.model.validateInitialValues();
-    this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
-    this.view.SubView.restrictRunnerFromPosition(this.model.getOptions());
-    this.model.setSubViewOptions(this.view.SubView.getOptions());
-
-    this.model.observer.notifyObservers(this.model.getOptions());
-  };
-
-  private setTo = (value: number): void => {
-    this.model.to = value;
-    this.model.validateInitialValues();
-    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
-    this.view.SubView.restrictRunnerFromPosition(this.model.getOptions());
-    this.model.setSubViewOptions(this.view.SubView.getOptions());
-
-    this.model.observer.notifyObservers(this.model.getOptions());
-  };
-
-  private setMin = (value: number): void => {
-    this.model.min = value;
-
-    this.init();
-  };
-
-  private setMax = (value: number): void => {
-    this.model.max = value;
-
-    this.init();
-  };
-
-  private setStep = (value: number): void => {
-    this.model.step = value;
-
-    this.model.validateInitialValues();
-    this.model.calculateStepLength();
-
-    this.view.SubView.setModelOptions(this.model.getOptions());
   };
 
   private updateUserConfig = (userConfig: UserConfig): void => {
@@ -212,6 +126,112 @@ class Presenter {
     this.model.calculateTo(options);
   };
 
+  private toggleTooltip = (): void => {
+    this.model.showTooltip = this.model.showTooltip !== true;
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleDouble = (): void => {
+    this.model.double = this.model.double !== true;
+
+    this.model.validateInitialValues();
+    this.view.SubView.setModelOptions(this.model.getOptions());
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.restrictRunnerToPosition(this.model.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+    this.model.restrictTo();
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleRange = (): void => {
+    this.model.showRange = this.model.showRange !== true;
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleScale = (): void => {
+    this.model.showScale = this.model.showScale !== true;
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleVertical = (): void => {
+    this.model.vertical = this.model.vertical !== true;
+    this.model.setPositionParameters();
+
+    this.init();
+  };
+
+  private setFrom = (value: number) => {
+    this.checkValue(value);
+
+    if (this.isValueNotNumber) return;
+
+    this.model.from = value;
+    this.model.validateInitialValues();
+    this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.restrictRunnerFromPosition(this.model.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private setTo = (value: number): void => {
+    this.checkValue(value);
+
+    if (this.isValueNotNumber) return;
+
+    this.model.to = value;
+    this.model.validateInitialValues();
+    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.restrictRunnerFromPosition(this.model.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private setMin = (value: number): void => {
+    this.checkValue(value);
+
+    if (this.isValueNotNumber) return;
+
+    this.model.min = value;
+
+    this.init();
+  };
+
+  private setMax = (value: number): void => {
+    this.checkValue(value);
+
+    if (this.isValueNotNumber) return;
+
+    this.model.max = value;
+
+    this.init();
+  };
+
+  private setStep = (value: number): void => {
+    this.checkValue(value);
+
+    if (this.isValueNotNumber) return;
+
+    this.model.step = value;
+
+    this.model.validateInitialValues();
+    this.model.calculateStepLength();
+
+    this.view.SubView.setModelOptions(this.model.getOptions());
+  };
+
   private launchEventManager = (): void => {
     const makeRunnerFromKeydownHandler = (event: JQuery.FocusInEvent) => {
       const handleRunnerFromKeydown = (event: JQuery.KeyDownEvent): void => {
@@ -258,7 +278,7 @@ class Presenter {
   private checkValue = (
     value: string | number | string[] | undefined = 0,
   ): void => {
-    this.isValueNumber = typeof parseFloat(`${value}`) === 'number';
+    this.isValueNotNumber = typeof parseFloat(`${value}`) !== 'number';
   };
 }
 
