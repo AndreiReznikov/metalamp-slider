@@ -98,11 +98,7 @@
   box-sizing: border-box;
 }
 
-.js-slider__min-input-container,
-.js-slider__max-input-container,
-.js-slider__from-input-container,
-.js-slider__to-input-container,
-.js-slider__step-input-container {
+.js-slider__input-container {
   display: flex;
   margin: 5px;
 }

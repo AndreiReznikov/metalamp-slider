@@ -1,0 +1,74 @@
+doctype html
+html(lang="ru")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(name="keywords" content="JQuery plugin, slider, MVP, TypeScript, education")
+    meta(name="description" content="Slider")
+    title pooshkaSlider
+  body
+    -
+      const togglers = [
+        {
+          class: 'panel__input panel__input_tooltip js-panel__input js-panel__input_tooltip',
+          text: 'tooltips'
+        },
+        {
+          class: 'panel__input panel__input_double js-panel__input js-panel__input_double',
+          text: 'double'
+        },
+        {
+          class: 'panel__input panel__input_range js-panel__input js-panel__input_range',
+          text: 'range'
+        },
+        {
+          class: 'panel__input panel__input_scale js-panel__input js-panel__input_scale',
+          text: 'scale'
+        },
+        {
+          class: 'panel__input panel__input_vertical js-panel__input js-panel__input_vertical',
+          text: 'vertical'
+        },
+      ];
+
+      const inputs = ['from', 'to', 'min', 'max', 'step'];
+
+    mixin panelToggler(options)
+      label.panel__toggle-label
+        input(class=options.class type="checkbox")
+        span.panel__custom-toggle
+        span.panel__toggle-text=options.text
+
+    mixin panelInputs(inputType)
+      -
+        const buttonClassName = 'js-slider__' + inputType + '-button';
+        const inputClassName = 'js-slider__' + inputType + '-input';
+
+      <div class="js-slider__input-container">
+        button(class=buttonClassName)=inputType
+        input(class=inputClassName type="number")
+      </div>
+
+
+    main.container
+      .slider-container
+        .double-slider-container
+          .slider.js-slider.js-slider_double
+
+        .panel
+          .js-slider__toggle-inputs-container
+            each val in togglers
+              +panelToggler(val)
+
+          .js-slider__text-inputs-container
+            each val in inputs
+              +panelInputs(val)
+
+      .single-slider-container
+        .slider.js-slider.js-slider_single
+
+      .vertical-slider-container
+        .slider.js-slider.js-slider_vertical
+
+      .empty-slider-container
+        .slider.js-slider.js-slider_empty

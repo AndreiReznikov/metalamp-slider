@@ -233,35 +233,36 @@ class Presenter {
   };
 
   private launchEventManager = (): void => {
-    const makeRunnerFromKeydownHandler = (event: JQuery.FocusInEvent) => {
-      const handleRunnerFromKeydown = (event: JQuery.KeyDownEvent): void => {
-        this.model.calculateRunnerFromPositionAfterKeydown(event);
+    // const makeRunnerFromKeydownHandler = (event: JQuery.FocusInEvent) => {
+    //   const handleRunnerFromKeydown = (event: JQuery.KeyDownEvent): void => {
+    //     this.model.calculateRunnerFromPositionAfterKeydown(event);
 
-        // this.model.calculateTooltipsPositions();
+    //     // this.model.calculateTooltipsPositions();
 
-        this.updateView(this.model.getOptions());
-      };
+    //     this.updateView(this.model.getOptions());
+    //   };
 
-      const $currentTarget = $(event.currentTarget);
+    //   const $currentTarget = $(event.currentTarget);
 
-      $currentTarget.on('keydown', handleRunnerFromKeydown);
-      $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerFromKeydown));
-    };
+    //   $currentTarget.on('keydown', handleRunnerFromKeydown);
+    //   $currentTarget.on('focusout',
+    // () => $currentTarget.off('keydown', handleRunnerFromKeydown));
+    // };
 
-    const makeRunnerToKeydownHandler = (event: JQuery.FocusInEvent) => {
-      const handleRunnerToKeydown = (event: JQuery.KeyDownEvent) => {
-        this.model.calculateRunnerToPositionAfterKeydown(event);
+    // const makeRunnerToKeydownHandler = (event: JQuery.FocusInEvent) => {
+    //   const handleRunnerToKeydown = (event: JQuery.KeyDownEvent) => {
+    //     this.model.calculateRunnerToPositionAfterKeydown(event);
 
-        // this.model.calculateTooltipsPositions();
+    //     // this.model.calculateTooltipsPositions();
 
-        this.updateView(this.model.getOptions());
-      };
+    //     this.updateView(this.model.getOptions());
+    //   };
 
-      const $currentTarget = $(event.currentTarget);
+    //   const $currentTarget = $(event.currentTarget);
 
-      $currentTarget.on('keydown', handleRunnerToKeydown);
-      $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerToKeydown));
-    };
+    //   $currentTarget.on('keydown', handleRunnerToKeydown);
+    //   $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerToKeydown));
+    // };
 
     this.view.$runnerFrom.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
     this.view.$runnerTo.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);

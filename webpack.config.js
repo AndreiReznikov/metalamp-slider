@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const PugPlugin = require('pug-plugin');
 
 const { NODE_ENV } = process.env;
 
@@ -25,18 +26,35 @@ module.exports = {
         use: ['ts-loader'],
       },
       {
-        test: /\.css$/i,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-        ],
+        test: /\.(scss|css)$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', {
+          loader: 'postcss-loader',
+          options: {
+            postcssOptions: {
+              plugins: [
+                [
+                  'postcss-preset-env',
+                ],
+              ],
+            },
+          },
+        }, {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: true,
+          },
+        }],
+      },
+      {
+        test: /\.pug$/,
+        loader: PugPlugin.loader,
       },
     ],
   },
   plugins: [
     new MiniCssExtractPlugin(),
     new HTMLWebpackPlugin({
-      template: './src/index.html',
+      template: './src/index.pug',
       filename: 'index.html',
     }),
     new webpack.ProvidePlugin({

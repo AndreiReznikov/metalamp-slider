@@ -2,7 +2,7 @@ import Model from './Model/Model';
 import View from './View/View';
 import Presenter from './Presenter/Presenter';
 import { UserConfig } from './interfaces/interfaces';
-import './index.css';
+import './index.scss';
 
 (function createPooshkaSlider($) {
   const jquery = $;
