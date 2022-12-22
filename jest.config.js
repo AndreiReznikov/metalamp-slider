@@ -4,5 +4,5 @@ module.exports = {
     '\\.ts$': 'babel-jest',
   },
   setupFilesAfterEnv: ['./setup-jest.js'],
-  testEnvironment: 'jsdom'
+  testEnvironment: 'jsdom',
 };

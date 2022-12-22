@@ -395,65 +395,6 @@ class Model {
     this.to = this.config.to;
     this.scaleNumber = this.config.scaleNumber;
   };
-
-  public calculateRunnerFromPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-    // const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
-    // const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
-    // const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
-
-    // const isKeyboardOrWrongKeyCode: boolean = !this.keyboard || !keyCodes.includes(event.keyCode);
-
-    // if (isKeyboardOrWrongKeyCode) return;
-
-    // const movementLength: number = this.isStepSet ? this.stepLength : 1;
-
-    // if (keyCodeToIncrease.includes(event.keyCode)) {
-    //   this.runnerFromPosition += movementLength;
-    //   // if (this.isStepSet) this.calculateTooltipFromValueWithStepAhead();
-    // } else if (keyCodeToReduce.includes(event.keyCode)) {
-    //   this.runnerFromPosition -= movementLength;
-    //   // if (this.isStepSet) this.calculateTooltipFromValueWithStepBehind();
-    // }
-
-    // // this.restrictRunnerFromPosition();
-    // // this.calculateRangePosition();
-    // // this.calculateRangeLength();
-    // // this.calculateTooltipsPositions();
-    // // if (!this.isStepSet) this.calculateTooltipsValues();
-
-    // this.observer.notifyObservers(this.getOptions());
-  };
-
-  public calculateRunnerToPositionAfterKeydown = (event: JQuery.KeyDownEvent): void => {
-    // const isKeyboardAndInterval: boolean = this.keyboard && this.isInterval;
-
-    // const keyCodeToIncrease: number[] = this.isVertical ? [40, 83] : [39, 68];
-    // const keyCodeToReduce: number[] = this.isVertical ? [38, 87] : [37, 65];
-    // const keyCodes: number[] = keyCodeToIncrease.concat(keyCodeToReduce);
-
-    // const isKeyboardOrWrongKeyCode: boolean = !isKeyboardAndInterval
-    //   || !keyCodes.includes(event.keyCode);
-
-    // if (isKeyboardOrWrongKeyCode) return;
-
-    // const movementLength: number = this.isStepSet ? this.stepLength : 1;
-
-    // if (keyCodeToIncrease.includes(event.keyCode)) {
-    //   this.runnerToPosition += movementLength;
-    //   // if (this.isStepSet) this.calculateTooltipToValueWithStepAhead();
-    // } else if (keyCodeToReduce.includes(event.keyCode)) {
-    //   this.runnerToPosition -= movementLength;
-    //   // if (this.isStepSet) this.calculateTooltipToValueWithStepBehind();
-    // }
-
-    // // this.restrictRunnerToPosition();
-    // // this.calculateRangePosition();
-    // // this.calculateRangeLength();
-    // // this.calculateTooltipsPositions();
-    // // if (!this.isStepSet) this.calculateTooltipsValues();
-
-    // this.observer.notifyObservers(this.getOptions());
-  };
 }
 
 export default Model;

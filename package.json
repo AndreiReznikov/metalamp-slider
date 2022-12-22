@@ -6,6 +6,7 @@
   "scripts": {
     "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.js",
     "build:prod": "cross-env NODE_ENV=production webpack --config webpack.config.js",
+    "build:demo": "cross-env NODE_ENV=production webpack --config webpack.demo.config.js",
     "server": "cross-env NODE_ENV=development webpack-dev-server",
     "lint": "eslint . --ext .ts",
     "fix": "eslint --fix",

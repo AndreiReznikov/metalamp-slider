@@ -233,45 +233,12 @@ class Presenter {
   };
 
   private launchEventManager = (): void => {
-    // const makeRunnerFromKeydownHandler = (event: JQuery.FocusInEvent) => {
-    //   const handleRunnerFromKeydown = (event: JQuery.KeyDownEvent): void => {
-    //     this.model.calculateRunnerFromPositionAfterKeydown(event);
-
-    //     // this.model.calculateTooltipsPositions();
-
-    //     this.updateView(this.model.getOptions());
-    //   };
-
-    //   const $currentTarget = $(event.currentTarget);
-
-    //   $currentTarget.on('keydown', handleRunnerFromKeydown);
-    //   $currentTarget.on('focusout',
-    // () => $currentTarget.off('keydown', handleRunnerFromKeydown));
-    // };
-
-    // const makeRunnerToKeydownHandler = (event: JQuery.FocusInEvent) => {
-    //   const handleRunnerToKeydown = (event: JQuery.KeyDownEvent) => {
-    //     this.model.calculateRunnerToPositionAfterKeydown(event);
-
-    //     // this.model.calculateTooltipsPositions();
-
-    //     this.updateView(this.model.getOptions());
-    //   };
-
-    //   const $currentTarget = $(event.currentTarget);
-
-    //   $currentTarget.on('keydown', handleRunnerToKeydown);
-    //   $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerToKeydown));
-    // };
-
     this.view.$runnerFrom.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
     this.view.$runnerTo.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
     this.view.$limitMin.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
     this.view.$limitMax.on('pointerdown.max', this.view.SubView.handleLimitMaxSetRunnerPosition);
     this.view.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
     this.view.$scaleContainer.on('pointerdown.scale', this.view.SubView.handleScaleCalculateRunnerPositionAfterOnDown);
-    // this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
-    // this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
 
     this.view.$window.on('resize.slider', this.init);
   };
