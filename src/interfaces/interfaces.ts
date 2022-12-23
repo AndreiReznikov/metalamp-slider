@@ -78,7 +78,6 @@ type Api = {
 type Config = {
   double: boolean;
   vertical: boolean;
-  useKeyboard: boolean;
   showTooltip: boolean;
   showLimit: boolean;
   showRange: boolean;
@@ -94,7 +93,6 @@ type Config = {
 type UserConfig = {
   double?: boolean;
   vertical?: boolean;
-  useKeyboard?: boolean;
   showTooltip?: boolean;
   showLimit?: boolean;
   showRange?: boolean;

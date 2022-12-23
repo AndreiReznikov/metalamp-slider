@@ -52,7 +52,7 @@ html(lang="ru")
 
 
     main.container
-      .slider-container
+      .slider-container.js-slider-container
         .double-slider-container
           .slider.js-slider.js-slider_double
 
@@ -65,8 +65,18 @@ html(lang="ru")
             each val in inputs
               +panelInputs(val)
 
-      .single-slider-container
-        .slider.js-slider.js-slider_single
+      .second-slider-container.js-second-slider-container
+        .single-slider-container.js-single-slider-container
+          .slider.js-slider.js-slider_single
+
+        .panel
+            .js-slider__toggle-inputs-container
+              each val in togglers
+                +panelToggler(val)
+
+            .js-slider__text-inputs-container
+              each val in inputs
+                +panelInputs(val)
 
       .vertical-slider-container
         .slider.js-slider.js-slider_vertical

@@ -77,7 +77,6 @@ class Model {
       showLimit: true,
       showRange: true,
       showScale: false,
-      useKeyboard: false,
       min: 0,
       max: 100,
       from: 10,
@@ -387,7 +386,6 @@ class Model {
     this.showLimit = this.config.showLimit;
     this.showRange = this.config.showRange;
     this.showScale = this.config.showScale;
-    this.useKeyboard = this.config.useKeyboard;
     this.min = this.config.min;
     this.max = this.config.max;
     this.step = this.config.step;

@@ -6,15 +6,20 @@ const PugPlugin = require('pug-plugin');
 
 const { NODE_ENV } = process.env;
 
+const entryPoints = {
+  demo: path.resolve(__dirname, 'src/demo/demo.ts'),
+  slider: path.resolve(__dirname, 'src/index.ts'),
+};
+
 module.exports = {
   resolve: {
     extensions: ['.js', '.ts', '.json'],
   },
   mode: NODE_ENV || 'development',
-  entry: path.resolve(__dirname, 'src/index.ts'),
+  entry: entryPoints,
   output: {
-    path: path.resolve(__dirname, 'pooshkaSliderDemo/pooshkaSlider'),
-    filename: 'pooshkaSlider.min.js',
+    path: path.resolve(__dirname, 'pooshkaSliderDemo'),
+    filename: "[name].min.js",
   },
   externals: {
     jquery: 'jQuery',
@@ -54,8 +59,9 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin(),
     new HTMLWebpackPlugin({
-      template: './src/index.pug',
-      filename: '../index.html',
+      template: './src/demo/demo.pug',
+      filename: './index.html',
+      chunks: '../index.js',
     }),
     new webpack.ProvidePlugin({
       $: 'jquery',
