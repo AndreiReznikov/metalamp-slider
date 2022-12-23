@@ -436,8 +436,10 @@ class SubView {
 
     if (isRunnerFromNearRunnerTo) {
       this.runnerFrom.runnerPosition = this.runnerTo.runnerPosition;
+      this.changeRunnerZIndex('from');
     } else if (isRunnerToNearRunnerFrom) {
       this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
+      this.changeRunnerZIndex('to');
     }
   };
 
@@ -446,6 +448,7 @@ class SubView {
     this.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
     this.restrictRunnerFromPosition(this.getOptions());
     this.showLimit(this.getOptions());
+    this.changeRunnerZIndex('from');
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -455,6 +458,7 @@ class SubView {
     this.runnerTo.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
     this.restrictRunnerToPosition(this.getOptions());
     this.showLimit(this.getOptions());
+    this.changeRunnerZIndex('to');
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -481,6 +485,16 @@ class SubView {
     const clientAxis: number = this.getOptions().modelOptions.vertical ? pageY1 : pageX1;
 
     this.clickPosition = clientAxis - this.sliderPosition;
+  };
+
+  private changeRunnerZIndex = (runnerType: string) => {
+    if (runnerType === 'from') {
+      this.runnerFrom.$runner.css('z-index', 3);
+      this.runnerTo.$runner.css('z-index', 2);
+    } else if (runnerType === 'to') {
+      this.runnerFrom.$runner.css('z-index', 2);
+      this.runnerTo.$runner.css('z-index', 3);
+    }
   };
 
   private defineClickLocation = (options: Options) => {
