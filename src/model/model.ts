@@ -52,7 +52,7 @@ class Model {
 
   showScale = true;
 
-  useKeyboard = false;
+  localeString = false;
 
   isStepSet = false;
 
@@ -77,6 +77,7 @@ class Model {
       showLimit: true,
       showRange: true,
       showScale: false,
+      localeString: false,
       min: 0,
       max: 100,
       from: 10,
@@ -137,6 +138,7 @@ class Model {
       showLimit: this.showLimit,
       showRange: this.showRange,
       showScale: this.showScale,
+      localeString: this.localeString,
       isStepSet: this.isStepSet,
       positionParameter: this.positionParameter,
       lengthParameter: this.lengthParameter,
@@ -386,6 +388,7 @@ class Model {
     this.showLimit = this.config.showLimit;
     this.showRange = this.config.showRange;
     this.showScale = this.config.showScale;
+    this.localeString = this.config.localeString;
     this.min = this.config.min;
     this.max = this.config.max;
     this.step = this.config.step;

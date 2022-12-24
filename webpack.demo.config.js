@@ -7,7 +7,7 @@ const PugPlugin = require('pug-plugin');
 const { NODE_ENV } = process.env;
 
 const entryPoints = {
-  demo: path.resolve(__dirname, 'src/demo/demo.ts'),
+  demo: path.resolve(__dirname, 'src/demo/index.ts'),
   slider: path.resolve(__dirname, 'src/index.ts'),
 };
 
@@ -59,7 +59,7 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin(),
     new HTMLWebpackPlugin({
-      template: './src/demo/demo.pug',
+      template: './src/demo/index.pug',
       filename: './index.html',
       chunks: '../index.js',
     }),

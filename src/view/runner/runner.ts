@@ -38,7 +38,7 @@ class Runner {
   public calculateMinRunnerPosition = (options: Options): void => {
     this.runnerPosition = 0 - options.subViewOptions.runnerLength / 2;
 
-    this.isMinFrom = true;
+    this.isMinFrom = this.isMinFrom !== true;
   };
 
   public calculateMaxRunnerPosition = (options: Options): void => {
@@ -46,9 +46,9 @@ class Runner {
       - options.subViewOptions.runnerLength / 2;
 
     if (options.modelOptions.double) {
-      this.isMaxTo = true;
+      this.isMaxTo = this.isMaxTo !== true;
     } else {
-      this.isMaxFrom = true;
+      this.isMaxFrom = this.isMaxFrom !== true;
     }
   };
 

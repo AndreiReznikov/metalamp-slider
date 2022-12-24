@@ -10,6 +10,7 @@ interface ModelOptions {
   showLimit: boolean;
   showRange: boolean;
   showScale: boolean;
+  localeString: boolean;
   isStepSet: boolean;
   positionParameter: string;
   lengthParameter: string;
@@ -82,6 +83,7 @@ type Config = {
   showLimit: boolean;
   showRange: boolean;
   showScale: boolean;
+  localeString: boolean;
   min: number;
   max: number;
   from: number;
@@ -97,6 +99,7 @@ type UserConfig = {
   showLimit?: boolean;
   showRange?: boolean;
   showScale?: boolean;
+  localeString?: boolean;
   min?: number;
   max?: number;
   from?: number;

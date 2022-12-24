@@ -102,6 +102,7 @@ class SubView {
       showLimit: false,
       showRange: false,
       showScale: false,
+      localeString: false,
       isStepSet: false,
       positionParameter: '',
       lengthParameter: '',
@@ -269,6 +270,10 @@ class SubView {
   };
 
   public calculateRunnerPositionAfterScaleOnDown = (options: Options): void => {
+    this.runnerFrom.isMinFrom = false;
+    this.runnerFrom.isMaxFrom = false;
+    this.runnerTo.isMaxTo = false;
+
     this.defineClickLocation(options);
 
     if (this.isClickForRunnerFrom) {

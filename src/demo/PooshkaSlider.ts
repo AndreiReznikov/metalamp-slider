@@ -27,17 +27,17 @@ class PooshkaSlider {
 
   $inputStep: JQuery<HTMLElement> = $('div');
 
-  constructor(container: string, config: UserConfig) {
+  constructor(container: string) {
     this.findElements(container);
-    this.initializePlugin(config);
-    this.setPanelValues();
-    this.addPanelEvents();
   }
 
-  private initializePlugin = (config: UserConfig) => {
+  public initializePlugin = (config: UserConfig) => {
     this.$slider.pooshkaSlider(config);
 
     this.$pooskaSlider = this.$slider.data('pooshkaSlider');
+
+    this.setPanelValues();
+    this.addPanelEvents();
   };
 
   private setPanelValues = () => {

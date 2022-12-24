@@ -27,11 +27,19 @@ class Limit {
   };
 
   public setLimitValue = (options: Options) => {
+    let limitValue: number | string = 0;
+
     if (this.limitType === 'min') {
-      this.$limit.html(`${options.modelOptions.min}`);
+      limitValue = options.modelOptions.min;
     } else if (this.limitType === 'max') {
-      this.$limit.html(`${options.modelOptions.max}`);
+      limitValue = options.modelOptions.max;
     }
+
+    if (options.modelOptions.localeString) {
+      limitValue = limitValue.toLocaleString();
+    }
+
+    this.$limit.html(`${limitValue}`);
 
     this.setLimitLength(options);
   };

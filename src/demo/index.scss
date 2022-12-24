@@ -1,3 +1,62 @@
+html, body {
+  max-width: 1920px;
+  min-width: 320px;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #000;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.slider-container,
+.js-second-slider-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.double-slider-container {
+  width: 500px;
+  height: 6px;
+  margin: 200px 0 100px 0;
+}
+
+.single-slider-container {
+  width: 80%;
+  height: 6px;
+  margin: 200px 0;
+}
+
+.vertical-slider-container {
+  width: 500px;
+  height: 6px;
+  margin: 200px 0;
+}
+
+.empty-slider-container {
+  width: 650px;
+  height: 6px;
+  margin: 200px 0;
+}
+
+.panel {
+  width: 100%;
+}
+
 .js-slider__text-inputs-container,
 .js-slider__toggle-inputs-container {
   display: flex;
@@ -148,63 +207,4 @@
   .js-slider__custom-toggle {
     cursor: auto;
   }
-}
-
-html, body {
-  max-width: 1920px;
-  min-width: 320px;
-  margin: 0;
-  padding: 0;
-  background-color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  color: #000;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.slider-container,
-.js-second-slider-container {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.double-slider-container {
-  width: 500px;
-  height: 6px;
-  margin: 200px 0 100px 0;
-}
-
-.single-slider-container {
-  width: 80%;
-  height: 6px;
-  margin: 200px 0;
-}
-
-.vertical-slider-container {
-  width: 500px;
-  height: 6px;
-  margin: 200px 0;
-}
-
-.empty-slider-container {
-  width: 650px;
-  height: 6px;
-  margin: 200px 0;
-}
-
-.panel {
-  width: 100%;
 }

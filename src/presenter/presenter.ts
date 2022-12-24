@@ -52,42 +52,32 @@ class Presenter {
   };
 
   private init = (): void => {
+    this.model.validateInitialValues();
+    this.model.countNumberOfCharactersAfterDot();
+    this.model.calculateScaleElementsNumber();
+    this.model.calculateScaleElementsValues();
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.initializeView(this.model.getOptions());
     this.view.setPlane(this.model.getOptions());
     this.view.SubView.getElementParameters();
     this.model.setSubViewOptions(this.view.SubView.getOptions());
-    this.model.validateInitialValues();
-    this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
-    this.view.SubView.limitMax.setLimitValue(this.model.getOptions());
-    this.model.setSubViewOptions(this.view.SubView.getOptions());
     this.model.calculateStepLength();
-    this.view.SubView.setModelOptions(this.model.getOptions());
-
-    this.model.setSubViewOptions(this.view.SubView.getOptions());
-
     this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
     this.view.SubView.limitMax.setLimitValue(this.model.getOptions());
     this.view.SubView.limitMin.calculateLimitPosition(this.model.getOptions());
     this.view.SubView.limitMin.setLimitPosition(this.model.getOptions());
     this.view.SubView.limitMax.calculateLimitPosition(this.model.getOptions());
     this.view.SubView.limitMax.setLimitPosition(this.model.getOptions());
-
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.runnerFrom.setRunnerPosition(this.model.getOptions());
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.runnerTo.setRunnerPosition(this.model.getOptions());
-
     this.updateModel(this.view.SubView.getOptions());
-
     this.view.SubView.range.calculateRangePosition(this.model.getOptions());
     this.view.SubView.range.setRangePosition(this.model.getOptions());
     this.view.SubView.range.calculateRangeLength(this.model.getOptions());
     this.view.SubView.range.setRangeLength(this.model.getOptions());
-    this.model.countNumberOfCharactersAfterDot();
-    this.model.calculateStepLength();
-    this.model.calculateScaleElementsNumber();
-    this.model.calculateScaleElementsValues();
+    this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.setPlane(this.model.getOptions());
     this.updateView(this.model.getOptions());
   };

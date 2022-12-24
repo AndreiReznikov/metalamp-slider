@@ -39,11 +39,19 @@ class Tooltip {
   };
 
   public setTooltipValue = (options: Options): void => {
+    let fromValue: number | string = options.modelOptions.from;
+    let toValue: number | string = options.modelOptions.to;
+
+    if (options.modelOptions.localeString) {
+      fromValue = fromValue.toLocaleString();
+      toValue = toValue.toLocaleString();
+    }
+
     if (options.subViewOptions.areTooltipsClose && this.tooltipType === 'from') {
-      this.tooltipValue = `${options.modelOptions.from}&nbsp;&#8209;&nbsp;${options.modelOptions.to}`;
+      this.tooltipValue = `${fromValue}&nbsp;&#8209;&nbsp;${toValue}`;
     } else {
       this.tooltipValue = this.tooltipType === 'from'
-        ? options.modelOptions.from : options.modelOptions.to;
+        ? fromValue : toValue;
     }
 
     this.$tooltip.html(`${this.tooltipValue}`);
