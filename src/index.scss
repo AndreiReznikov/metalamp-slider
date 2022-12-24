@@ -17,7 +17,7 @@
   z-index: 1;
 }
 
-.js-slider__runner-from, .js-slider__runner-to {
+.js-slider__from, .js-slider__to {
   position: absolute;
   height: 20px;
   width: 20px;
@@ -30,7 +30,7 @@
   z-index: 2;
 }
 
-.js-slider__min-value, .js-slider__max-value {
+.js-slider__min, .js-slider__max {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -82,10 +82,10 @@
 
 @media (hover: none) and (pointer: coarse) {
   .js-slider__stripe,
-  .js-slider__button-from,
-  .js-slider__button-to,
-  .js-slider__min-value,
-  .js-slider__max-value {
+  .js-slider__from,
+  .js-slider__to,
+  .js-slider__min,
+  .js-slider__max {
     cursor: auto;
   }
 }

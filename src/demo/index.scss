@@ -19,46 +19,55 @@ html, body {
   box-sizing: border-box;
 }
 
-.slider-container,
-.js-second-slider-container {
+.double-slider-container,
+.single-slider-container,
+.vertical-slider-container,
+.simple-slider-container {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   width: 100%;
+  margin: 25px 0;
+  box-sizing: border-box;
 }
 
-.double-slider-container {
+.subtitle {
+  margin: 0;
+  font-weight: normal;
+}
+
+.double-slider-wrapper {
   width: 500px;
   height: 6px;
-  margin: 200px 0 100px 0;
+  margin: 100px 0;
 }
 
-.single-slider-container {
+.single-slider-wrapper {
   width: 80%;
   height: 6px;
-  margin: 200px 0;
+  margin: 100px 0;
 }
 
-.vertical-slider-container {
+.vertical-slider-wrapper {
   width: 500px;
   height: 6px;
-  margin: 200px 0;
+  margin: 100px 0;
 }
 
-.empty-slider-container {
+.simple-slider-wrapper {
   width: 650px;
   height: 6px;
-  margin: 200px 0;
+  margin: 100px 0;
 }
 
 .panel {
   width: 100%;
 }
 
-.js-slider__text-inputs-container,
-.js-slider__toggle-inputs-container {
+.panel__text-inputs-container,
+.panel__toggle-inputs-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -66,25 +75,25 @@ html, body {
   margin-bottom: 10px;
 }
 
-.js-slider__vertical-input,
-.js-slider__tooltip-input,
-.js-slider__range-input,
-.js-slider__scale-input
+.panel__vertical-input,
+.panel__tooltip-input,
+.panel__range-input,
+.panel__scale-input
 {
   margin: 5px;
   box-sizing: border-box;
 }
 
-.js-slider__input-container {
+.panel__input-container {
   display: flex;
   margin: 5px;
 }
 
-.js-slider__min-input,
-.js-slider__max-input,
-.js-slider__from-input,
-.js-slider__to-input,
-.js-slider__step-input
+.panel__min-input,
+.panel__max-input,
+.panel__from-input,
+.panel__to-input,
+.panel__step-input
 {
   width: 65px;
   height: 26px;
@@ -96,20 +105,20 @@ html, body {
   outline: none;
 }
 
-.js-slider__min-input:focus,
-.js-slider__max-input:focus,
-.js-slider__from-input:focus,
-.js-slider__to-input:focus,
-.js-slider__step-input:focus
+.panel__min-input:focus,
+.panel__max-input:focus,
+.panel__from-input:focus,
+.panel__to-input:focus,
+.panel__step-input:focus
 {
   border: 3px solid rgb(47, 50, 53);
 }
 
-.js-slider__min-button,
-.js-slider__max-button,
-.js-slider__from-button,
-.js-slider__to-button,
-.js-slider__step-button {
+.panel__min-button,
+.panel__max-button,
+.panel__from-button,
+.panel__to-button,
+.panel__step-button {
   width: 45px;
   height: 26px;
   background-color: rgb(47, 50, 53);
@@ -194,17 +203,15 @@ html, body {
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .js-slider__stripe,
-  .js-slider__button-from,
-  .js-slider__button-to,
-  .js-slider__min-value,
-  .js-slider__max-value,
-  .js-slider__min-button,
-  .js-slider__max-button,
-  .js-slider__from-button,
-  .js-slider__to-button,
-  .js-slider__step-button,
-  .js-slider__custom-toggle {
+  .panel__stripe,
+  .panel__button-from,
+  .panel__button-to,
+  .panel__min-button,
+  .panel__max-button,
+  .panel__from-button,
+  .panel__to-button,
+  .panel__step-button,
+  .panel__custom-toggle {
     cursor: auto;
   }
 }

@@ -23,7 +23,6 @@ interface ModelOptions {
   scalePositionParameter: string;
   scaleNumber: number;
   scaleElements: number[];
-  lengthBetweenScaleElements: number;
   numberOfCharactersAfterDot: number;
 }
 
@@ -62,6 +61,13 @@ interface SubViewOptions {
 }
 
 type Api = {
+  $document: JQuery<Document>;
+  $stripe: JQuery<HTMLElement>;
+  $runnerFrom: JQuery<HTMLElement>;
+  $runnerTo: JQuery<HTMLElement>;
+  $limitMin: JQuery<HTMLElement>;
+  $limitMax: JQuery<HTMLElement>;
+  $scaleContainer: JQuery<HTMLElement>;
   getModelOptions: () => ModelOptions;
   updateUserConfig: (userConfig: UserConfig) => void;
   toggleDouble: () => void;

@@ -26,15 +26,9 @@ class Model {
 
   to = 50;
 
-  panelPosition = 0;
-
   scaleNumber = 5;
 
   stepLength = 0;
-
-  scaleElementHeight = 0;
-
-  lengthBetweenScaleElements = 0;
 
   numberOfCharactersAfterDot = 0;
 
@@ -151,7 +145,6 @@ class Model {
       scalePositionParameter: this.scalePositionParameter,
       scaleNumber: this.scaleNumber,
       scaleElements: this.scaleElements,
-      lengthBetweenScaleElements: this.lengthBetweenScaleElements,
       numberOfCharactersAfterDot: this.numberOfCharactersAfterDot,
     };
 
@@ -371,14 +364,14 @@ class Model {
     } else if (isMinValueNegativeMaxValuePositive) {
       this.scaleNumber = 11;
     } else {
-      this.scaleNumber = 6;
+      this.scaleNumber = 5;
     }
   };
 
   public calculateStepLength = (): void => {
-    this.stepLength = parseFloat(((this.step
+    this.stepLength = ((this.step
       / (this.max - this.min))
-      * this.subViewOptions.sliderLength).toFixed(this.numberOfCharactersAfterDot));
+      * this.subViewOptions.sliderLength);
   };
 
   public setConfig = (): void => {

@@ -2,7 +2,7 @@ import PooshkaSlider from './PooshkaSlider';
 import './index.scss';
 
 $(document).ready(() => {
-  const pooshkaSlider = new PooshkaSlider('.js-slider-container');
+  const pooshkaSlider = new PooshkaSlider('.js-double-slider-container');
 
   pooshkaSlider.initializePlugin({
     double: true,
@@ -18,10 +18,10 @@ $(document).ready(() => {
     to: 5,
   });
 
-  const pooshkaSliderSingle = new PooshkaSlider('.js-second-slider-container');
+  const pooshkaSliderSingle = new PooshkaSlider('.js-single-slider-container');
 
   pooshkaSliderSingle.initializePlugin({
-    double: true,
+    double: false,
     vertical: false,
     showTooltip: false,
     showLimit: true,
@@ -36,36 +36,26 @@ $(document).ready(() => {
     scaleNumber: 5,
   });
 
-  // $('.js-slider_vertical').pooshkaSlider({
-  //   double: true,
-  //   vertical: true,
-  //   showTooltip: false,
-  //   showLimit: false,
-  //   showRange: true,
-  //   showScale: true,
-  //   useKeyboard: true,
-  //   min: -125,
-  //   max: -5,
-  //   step: 0,
-  //   from: -85,
-  //   to: -45,
-  //   scaleNumber: 7,
-  // });
+  const pooshkaSliderVertical = new PooshkaSlider('.js-vertical-slider-container');
 
-  // $('.js-slider_empty').pooshkaSlider({
-  //   double: false,
-  //   vertical: false,
-  //   showTooltip: false,
-  //   showLimit: false,
-  //   showRange: false,
-  //   showScale: false,
-  //   useKeyboard: true,
-  //   min: 0,
-  //   max: 10,
-  //   step: 0,
-  //   from: 5,
-  //   to: 8,
-  // });
+  pooshkaSliderVertical.initializePlugin({
+    double: true,
+    vertical: true,
+    showTooltip: false,
+    showLimit: false,
+    showRange: true,
+    showScale: true,
+    min: -125,
+    max: -5,
+    step: 0,
+    from: -85,
+    to: -45,
+    scaleNumber: 7,
+  });
+
+  const pooshkaSliderSimple = new PooshkaSlider('.js-simple-slider-container');
+
+  pooshkaSliderSimple.initializePlugin();
 
   // $(document).on('mousemove.from', () => {
   //   $('.js-slider__from-input').prop('value', $sliderDouble.data('api').getModelOptions().from);

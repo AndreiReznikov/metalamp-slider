@@ -115,7 +115,6 @@ class SubView {
       scalePositionParameter: '',
       scaleNumber: 0,
       scaleElements: [],
-      lengthBetweenScaleElements: 0,
       numberOfCharactersAfterDot: 0,
     };
   }
@@ -167,6 +166,8 @@ class SubView {
     this.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
+
+    this.runnerFrom.isMinFrom = false;
   };
 
   public handleLimitMaxSetRunnerPosition = (event: JQuery.TriggeredEvent): void => {
@@ -184,6 +185,9 @@ class SubView {
     this.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
+
+    this.runnerFrom.isMaxFrom = false;
+    this.runnerTo.isMaxTo = false;
   };
 
   public handleStripeCalculateRunnerPositionAfterOnDown = (event: JQuery.TriggeredEvent): void => {
@@ -191,16 +195,20 @@ class SubView {
 
     if (this.isWrongButtonPressed) return;
 
-    this.runnerFrom.isMinFrom = false;
-    this.runnerFrom.isMaxFrom = false;
-    this.runnerTo.isMaxTo = false;
-
     this.calculateClickPosition(event);
     this.calculateRunnerPositionAfterSliderOnDown(this.getOptions());
     this.restrictRunnerPositionAfterSliderOnDown(this.getOptions());
     this.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
+
+    this.isClickAheadOfRunnerFrom = false;
+    this.isClickBehindOfRunnerFrom = false;
+    this.isClickForRunnerFrom = false;
+
+    this.isClickAheadOfRunnerTo = false;
+    this.isClickBehindOfRunnerTo = false;
+    this.isClickForRunnerTo = false;
   };
 
   public handleScaleCalculateRunnerPositionAfterOnDown = (event: JQuery.TriggeredEvent): void => {
@@ -223,6 +231,13 @@ class SubView {
     this.observer.notifyObservers(this.getOptions());
 
     this.isScaleElementOnDown = false;
+
+    this.isClickAheadOfRunnerFrom = false;
+    this.isClickBehindOfRunnerFrom = false;
+    this.isClickForRunnerFrom = false;
+    this.isClickAheadOfRunnerTo = false;
+    this.isClickBehindOfRunnerTo = false;
+    this.isClickForRunnerTo = false;
   };
 
   public calculateRunnerPositionAfterSliderOnDown = (options: Options): void => {
@@ -270,10 +285,6 @@ class SubView {
   };
 
   public calculateRunnerPositionAfterScaleOnDown = (options: Options): void => {
-    this.runnerFrom.isMinFrom = false;
-    this.runnerFrom.isMaxFrom = false;
-    this.runnerTo.isMaxTo = false;
-
     this.defineClickLocation(options);
 
     if (this.isClickForRunnerFrom) {
@@ -431,13 +442,13 @@ class SubView {
 
   private alignRunners = (options: Options): void => {
     const isRunnerFromNearRunnerTo: boolean = options.modelOptions.double
-    && Math.round(this.runnerTo.runnerPosition
-  - this.runnerFrom.runnerPosition) <= Math.round(options.modelOptions.stepLength)
-    && this.isClickForRunnerFrom;
+      && Math.round(this.runnerTo.runnerPosition
+      - this.runnerFrom.runnerPosition) <= Math.round(options.modelOptions.stepLength)
+      && this.isClickForRunnerFrom;
     const isRunnerToNearRunnerFrom: boolean = options.modelOptions.double
-    && Math.round(this.runnerTo.runnerPosition
-  - this.runnerFrom.runnerPosition) <= Math.round(options.modelOptions.stepLength)
-    && this.isClickForRunnerTo;
+      && Math.round(this.runnerTo.runnerPosition
+      - this.runnerFrom.runnerPosition) <= Math.round(options.modelOptions.stepLength)
+      && this.isClickForRunnerTo;
 
     if (isRunnerFromNearRunnerTo) {
       this.runnerFrom.runnerPosition = this.runnerTo.runnerPosition;

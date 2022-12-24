@@ -145,11 +145,11 @@ class View {
 
   private renderView = (): void => {
     this.$stripe.appendTo(this.$slider).addClass('js-slider__stripe');
-    this.$runnerFrom.appendTo(this.$stripe).addClass('js-slider__runner-from');
-    this.$runnerTo.appendTo(this.$stripe).addClass('js-slider__runner-to');
+    this.$runnerFrom.appendTo(this.$stripe).addClass('js-slider__from');
+    this.$runnerTo.appendTo(this.$stripe).addClass('js-slider__to');
     this.$range.appendTo(this.$stripe).addClass('js-slider__range');
-    this.$limitMin.appendTo(this.$stripe).addClass('js-slider__min-value');
-    this.$limitMax.appendTo(this.$stripe).addClass('js-slider__max-value');
+    this.$limitMin.appendTo(this.$stripe).addClass('js-slider__min');
+    this.$limitMax.appendTo(this.$stripe).addClass('js-slider__max');
     this.$scaleContainer.appendTo(this.$stripe).addClass('js-slider__scale-container');
     this.$tooltipFrom.appendTo(this.$stripe).addClass('js-slider__tooltip-from');
     this.$tooltipTo.appendTo(this.$stripe).addClass('js-slider__tooltip-to');

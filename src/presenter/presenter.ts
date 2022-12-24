@@ -23,6 +23,13 @@ class Presenter {
 
   public getApi = (): Api => {
     const api: Api = {
+      $document: this.view.SubView.$document,
+      $stripe: this.view.$stripe,
+      $runnerFrom: this.view.$runnerFrom,
+      $runnerTo: this.view.$runnerTo,
+      $limitMin: this.view.$limitMin,
+      $limitMax: this.view.$limitMax,
+      $scaleContainer: this.view.$scaleContainer,
       getModelOptions: this.model.getModelOptions,
       updateUserConfig: this.updateUserConfig,
       toggleDouble: this.toggleDouble,
