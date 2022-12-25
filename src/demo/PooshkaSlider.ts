@@ -52,27 +52,26 @@ class PooshkaSlider {
 
     this.setSliderElements();
     this.setPanelValues();
-    this.setInputValues();
     this.addPanelEvents();
     this.addSliderEvents();
   };
 
   private setPanelValues = () => {
     this.$inputFrom.attr('step', `${
-      this.$slider.data('api').getModelOptions().isStepSet
-        ? this.$slider.data('api').getModelOptions().step
+      this.$pooshkaSlider.data('api').getModelOptions().isStepSet
+        ? this.$pooshkaSlider.data('api').getModelOptions().step
         : (0.1).toFixed(this.$pooshkaSlider.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
     this.$inputTo.attr('step', `${
-      this.$slider.data('api').getModelOptions().isStepSet
-        ? this.$slider.data('api').getModelOptions().step
+      this.$pooshkaSlider.data('api').getModelOptions().isStepSet
+        ? this.$pooshkaSlider.data('api').getModelOptions().step
         : (0.1).toFixed(this.$pooshkaSlider.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
     this.$inputMin.attr('step', `${
-      this.$slider.data('api').getModelOptions().isStepSet
-        ? this.$slider.data('api').getModelOptions().step
+      this.$pooshkaSlider.data('api').getModelOptions().isStepSet
+        ? this.$pooshkaSlider.data('api').getModelOptions().step
         : (0.1).toFixed(this.$pooshkaSlider.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
     this.$inputMax.attr('step', `${
-      this.$slider.data('api').getModelOptions().isStepSet
-        ? this.$slider.data('api').getModelOptions().step
+      this.$pooshkaSlider.data('api').getModelOptions().isStepSet
+        ? this.$pooshkaSlider.data('api').getModelOptions().step
         : (0.1).toFixed(this.$pooshkaSlider.data('api').getModelOptions().numberOfCharactersAfterDot)
     }`);
     this.$inputStep.attr('step', `${
@@ -83,9 +82,6 @@ class PooshkaSlider {
     this.$inputRange.prop('checked', this.$pooshkaSlider.data('api').getModelOptions().showRange);
     this.$inputScale.prop('checked', this.$pooshkaSlider.data('api').getModelOptions().showScale);
     this.$inputVertical.prop('checked', this.$pooshkaSlider.data('api').getModelOptions().vertical);
-  };
-
-  private setInputValues = () => {
     this.$inputFrom.prop('value', this.$pooshkaSlider.data('api').getModelOptions().from);
     this.$inputTo.prop('value', this.$pooshkaSlider.data('api').getModelOptions().to);
     this.$inputMin.prop('value', this.$pooshkaSlider.data('api').getModelOptions().min);
@@ -102,7 +98,7 @@ class PooshkaSlider {
       $limitMin,
       $limitMax,
       $scaleContainer,
-    } = this.$slider.data('api');
+    } = this.$pooshkaSlider.data('api');
 
     this.$document = $document;
     this.$stripe = $stripe;
@@ -114,25 +110,19 @@ class PooshkaSlider {
   };
 
   private addSliderEvents = () => {
-    this.$limitMin.click(this.setInputValues);
-    this.$limitMax.click(this.setInputValues);
-    this.$stripe.click(this.setInputValues);
+    const handleRunnerBindPointerEvents = (valueType: string) => {
+      const $runner = valueType === 'from' ? this.$runnerFrom : this.$runnerTo;
 
-    this.$runnerFrom.on('pointerdown', () => {
-      this.$document.on('pointermove', () => {
-        this.setInputValues();
-      });
+      this.$document.on('pointermove', this.setPanelValues);
+      $runner.on('pointerup', () => this.$document.off('pointermove'));
+    };
 
-      this.$runnerFrom.on('pointerup', () => this.$document.off('pointermove'));
-    });
-
-    this.$runnerTo.on('pointerdown', () => {
-      this.$document.on('pointermove', () => {
-        this.setInputValues();
-      });
-
-      this.$runnerTo.on('pointerup', () => this.$document.off('pointermove'));
-    });
+    this.$limitMin.mousedown(this.setPanelValues);
+    this.$limitMax.mousedown(this.setPanelValues);
+    this.$stripe.mousedown(this.setPanelValues);
+    this.$scaleContainer.mousedown(this.setPanelValues);
+    this.$runnerFrom.on('pointerdown', () => handleRunnerBindPointerEvents('from'));
+    this.$runnerTo.on('pointerdown', () => handleRunnerBindPointerEvents('to'));
   };
 
   private addPanelEvents = () => {
@@ -151,22 +141,32 @@ class PooshkaSlider {
 
   private toggleDouble = () => {
     this.$pooshkaSlider.data('api').toggleDouble();
+
+    this.setPanelValues();
   };
 
   private toggleTooltip = () => {
     this.$pooshkaSlider.data('api').toggleTooltip();
+
+    this.setPanelValues();
   };
 
   private toggleRange = () => {
     this.$pooshkaSlider.data('api').toggleRange();
+
+    this.setPanelValues();
   };
 
   private toggleScale = () => {
     this.$pooshkaSlider.data('api').toggleScale();
+
+    this.setPanelValues();
   };
 
   private toggleVertical = () => {
     this.$pooshkaSlider.data('api').toggleVertical();
+
+    this.setPanelValues();
   };
 
   private setFrom = (event: JQuery.ChangeEvent) => {
@@ -174,6 +174,8 @@ class PooshkaSlider {
     const value = parseFloat(`${$input.val()}`);
 
     this.$pooshkaSlider.data('api').setFrom(value);
+
+    this.setPanelValues();
   };
 
   private setTo = (event: JQuery.ChangeEvent) => {
@@ -181,6 +183,8 @@ class PooshkaSlider {
     const value = parseFloat(`${$input.val()}`);
 
     this.$pooshkaSlider.data('api').setTo(value);
+
+    this.setPanelValues();
   };
 
   private setMin = (event: JQuery.ChangeEvent) => {
@@ -188,6 +192,8 @@ class PooshkaSlider {
     const value = parseFloat(`${$input.val()}`);
 
     this.$pooshkaSlider.data('api').setMin(value);
+
+    this.setPanelValues();
   };
 
   private setMax = (event: JQuery.ChangeEvent) => {
@@ -195,6 +201,8 @@ class PooshkaSlider {
     const value = parseFloat(`${$input.val()}`);
 
     this.$pooshkaSlider.data('api').setMax(value);
+
+    this.setPanelValues();
   };
 
   private setStep = (event: JQuery.ChangeEvent) => {
@@ -202,6 +210,8 @@ class PooshkaSlider {
     const value = parseFloat(`${$input.val()}`);
 
     this.$pooshkaSlider.data('api').setStep(value);
+
+    this.setPanelValues();
   };
 
   private findElements = (container: string) => {

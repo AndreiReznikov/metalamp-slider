@@ -56,18 +56,4 @@ $(document).ready(() => {
   const pooshkaSliderSimple = new PooshkaSlider('.js-simple-slider-container');
 
   pooshkaSliderSimple.initializePlugin();
-
-  // $(document).on('mousemove.from', () => {
-  //   $('.js-slider__from-input').prop('value', $sliderDouble.data('api').getModelOptions().from);
-  // });
-  // $('.js-slider').on('mousedown.from', () => {
-  //   $('.js-slider__from-input').prop('value', $sliderDouble.data('api').getModelOptions().from);
-  // });
-
-  // $(document).on('mousemove.to', () => {
-  //   $('.js-slider__to-input').prop('value', $sliderDouble.data('api').getModelOptions().to);
-  // });
-  // $('.js-slider').on('mousedown.to', () => {
-  //   $('.js-slider__to-input').prop('value', $sliderDouble.data('api').getModelOptions().to);
-  // });
 });
