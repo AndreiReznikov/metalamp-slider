@@ -22,7 +22,7 @@ class Model {
 
   step = 0;
 
-  from = 20;
+  from = 10;
 
   to = 50;
 
@@ -120,6 +120,53 @@ class Model {
     };
   }
 
+  public validateInitialValues = (): void => {
+    const areLimitsNegative: boolean = this.min < 0 && this.max < 0;
+    const isLimitsPositiveAndStepMoreThanDifference: boolean = !areLimitsNegative
+      && this.step > this.max - this.min;
+    const isLimitsNegativeAndStepMoreThanDifference: boolean = areLimitsNegative
+      && this.step > -(this.min - this.max);
+    const isStepIncorrect = isLimitsPositiveAndStepMoreThanDifference
+      || isLimitsNegativeAndStepMoreThanDifference
+      || this.step < 0;
+
+    if (this.min > this.max) {
+      const { min } = this;
+      const { max } = this;
+
+      this.min = max;
+      this.max = min;
+    }
+
+    if (isStepIncorrect) {
+      this.step = 0;
+    }
+
+    this.isStepSet = this.step > 0;
+
+    if (this.from < this.min) {
+      this.from = this.min;
+    }
+
+    if (this.from > this.max) {
+      this.from = this.max;
+    }
+
+    if (this.to > this.max) {
+      this.to = this.max;
+    }
+
+    if (this.to < this.from) {
+      this.to = this.from;
+    }
+  };
+
+  public setPositionParameters = (): void => {
+    this.positionParameter = this.vertical ? 'top' : 'left';
+    this.lengthParameter = this.vertical ? 'height' : 'width';
+    this.scalePositionParameter = this.vertical ? 'right' : 'top';
+  };
+
   public setSubViewOptions = (options: Options): void => {
     this.subViewOptions = options.subViewOptions;
   };
@@ -158,53 +205,6 @@ class Model {
     };
 
     return options;
-  };
-
-  public setPositionParameters = (): void => {
-    this.positionParameter = this.vertical ? 'top' : 'left';
-    this.lengthParameter = this.vertical ? 'height' : 'width';
-    this.scalePositionParameter = this.vertical ? 'right' : 'top';
-  };
-
-  public validateInitialValues = (): void => {
-    const areLimitsNegative: boolean = this.min < 0 && this.max < 0;
-    const isLimitsPositiveAndStepMoreThanDifference: boolean = !areLimitsNegative
-      && this.step > this.max - this.min;
-    const isLimitsNegativeAndStepMoreThanDifference: boolean = areLimitsNegative
-      && this.step > -(this.min - this.max);
-    const isStepIncorrect = isLimitsPositiveAndStepMoreThanDifference
-    || isLimitsNegativeAndStepMoreThanDifference
-    || this.step < 0;
-
-    if (this.min > this.max) {
-      const { min } = this;
-      const { max } = this;
-
-      this.min = max;
-      this.max = min;
-    }
-
-    if (isStepIncorrect) {
-      this.step = 0;
-    }
-
-    this.isStepSet = this.step > 0;
-
-    if (this.from < this.min) {
-      this.from = this.min;
-    }
-
-    if (this.from > this.max) {
-      this.from = this.max;
-    }
-
-    if (this.to > this.max) {
-      this.to = this.max;
-    }
-
-    if (this.to < this.min) {
-      this.to = this.min;
-    }
   };
 
   public calculateFrom = (options: Options): void => {
