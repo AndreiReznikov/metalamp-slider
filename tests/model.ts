@@ -1,40 +1,7 @@
 import Model from '../src/Model/Model';
-import { ModelOptions, Options, SubViewOptions } from '../src/interfaces/interfaces';
+import { ModelOptions, Options } from '../src/interfaces/interfaces';
 
 const model = new Model();
-const subViewOptions: SubViewOptions = {
-  sliderPosition: 0,
-  sliderLength: 0,
-  runnerFromPosition: 0,
-  runnerToPosition: 0,
-  runnerLength: 0,
-  limitMinLength: 0,
-  limitMaxLength: 0,
-  shiftAxis: 0,
-  clickPosition: 0,
-  isMinFrom: false,
-  isMaxFrom: false,
-  isMaxTo: false,
-  isCursorNearStepAheadFrom: false,
-  isCursorNearStepBehindFrom: false,
-  isCursorNearStepAheadTo: false,
-  isCursorNearStepBehindTo: false,
-  isClickAheadOfRunnerFrom: false,
-  isClickBehindOfRunnerFrom: false,
-  isClickForRunnerFrom: false,
-  isClickAheadOfRunnerTo: false,
-  isClickBehindOfRunnerTo: false,
-  isClickForRunnerTo: false,
-  areTooltipsClose: false,
-  isLimitMinShown: true,
-  isLimitMaxShown: true,
-  runnerFromStepsNumber: 0,
-  runnerToStepsNumber: 0,
-  isScaleElementOnDown: false,
-  scaleElementPosition: 0,
-  scaleElementLength: 0,
-  scaleElementValue: '',
-};
 const modelOptions: ModelOptions = model.getModelOptions();
 const options: Options = model.getOptions();
 
