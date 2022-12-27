@@ -480,10 +480,11 @@ class SubView {
   };
 
   private attachPointermoveEvent = (valueType: string) => {
-    const pointermoveHandler = valueType === 'from' ? this.handleRunnerFromPointermove : this.handleRunnerToPointermove;
+    const handleRunnerPointermove = valueType === 'from' ? this.handleRunnerFromPointermove : this.handleRunnerToPointermove;
+    const handleDocumentOffPointerMove = () => this.$document.off('pointermove.move', handleRunnerPointermove);
 
-    this.$document.on('pointermove.move', pointermoveHandler);
-    this.$document.on('pointerup.move', () => this.$document.off('pointermove.move', pointermoveHandler));
+    this.$document.on('pointermove.move', handleRunnerPointermove);
+    this.$document.on('pointerup.move', handleDocumentOffPointerMove);
   };
 
   private calculateClickPosition = (event: JQuery.TriggeredEvent): void => {

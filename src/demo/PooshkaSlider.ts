@@ -112,17 +112,21 @@ class PooshkaSlider {
   private addSliderEvents = () => {
     const handleRunnerBindPointerEvents = (valueType: string) => {
       const $runner = valueType === 'from' ? this.$runnerFrom : this.$runnerTo;
+      const handleDocumentOffPointerMove = () => this.$document.off('pointermove');
 
       this.$document.on('pointermove', this.setPanelValues);
-      $runner.on('pointerup', () => this.$document.off('pointermove'));
+      $runner.on('pointerup', handleDocumentOffPointerMove);
     };
+
+    const handleRunnerFromBindPointerEvents = () => handleRunnerBindPointerEvents('from');
+    const handleRunnerToBindPointerEvents = () => handleRunnerBindPointerEvents('to');
 
     this.$limitMin.mousedown(this.setPanelValues);
     this.$limitMax.mousedown(this.setPanelValues);
     this.$stripe.mousedown(this.setPanelValues);
     this.$scaleContainer.mousedown(this.setPanelValues);
-    this.$runnerFrom.on('pointerdown', () => handleRunnerBindPointerEvents('from'));
-    this.$runnerTo.on('pointerdown', () => handleRunnerBindPointerEvents('to'));
+    this.$runnerFrom.on('pointerdown', handleRunnerFromBindPointerEvents);
+    this.$runnerTo.on('pointerdown', handleRunnerToBindPointerEvents);
   };
 
   private addPanelEvents = () => {

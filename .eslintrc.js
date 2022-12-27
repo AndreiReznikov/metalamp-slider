@@ -16,6 +16,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'airbnb',
     'airbnb-typescript/base',
+    'plugin:fsd/all',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -23,6 +24,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: [
+    'fsd',
     '@typescript-eslint',
     'jest',
   ],
