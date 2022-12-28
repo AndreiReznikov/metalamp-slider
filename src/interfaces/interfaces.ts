@@ -57,7 +57,7 @@ interface SubViewOptions {
   isScaleElementOnDown: boolean;
   scaleElementPosition: number;
   scaleElementLength: number;
-  scaleElementValue: string;
+  scaleElementValue: number;
 }
 
 type Api = {

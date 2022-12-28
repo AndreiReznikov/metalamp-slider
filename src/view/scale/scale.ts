@@ -40,10 +40,10 @@ class Scale {
       const $scaleElement: JQuery<HTMLElement> = $('<span>').addClass(
         `slider__scale-element js-slider__scale-element js-slider__scale-element_${i}`,
       );
-      const scaleElementValue: number | string = options.modelOptions.localeString
-        ? scaleElements[i].toLocaleString() : scaleElements[i];
+      const scaleElementValue: string = options.modelOptions.localeString
+        ? scaleElements[i].toLocaleString() : `${scaleElements[i]}`;
 
-      $scaleElement.html(`${scaleElementValue}`);
+      $scaleElement.html(scaleElementValue);
       $scaleElement.appendTo(this.$scaleContainer);
     }
   };

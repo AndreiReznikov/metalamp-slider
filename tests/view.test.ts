@@ -62,7 +62,7 @@ let subViewOptions: SubViewOptions = {
   isScaleElementOnDown: false,
   scaleElementPosition: 0,
   scaleElementLength: 0,
-  scaleElementValue: '',
+  scaleElementValue: 0,
 };
 
 beforeEach(() => {
@@ -119,7 +119,7 @@ beforeEach(() => {
     isScaleElementOnDown: false,
     scaleElementPosition: 0,
     scaleElementLength: 0,
-    scaleElementValue: '',
+    scaleElementValue: 0,
   };
 });
 
@@ -169,5 +169,11 @@ describe('initializeView', () => {
     view.initializeView(options);
 
     expect(view.$tooltipTo.css('display')).toEqual('none');
+  });
+});
+
+describe('setPlane', () => {
+  test('method should set elements css parameters for model.vertical: false', () => {
+
   });
 });

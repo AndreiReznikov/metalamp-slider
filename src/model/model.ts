@@ -116,7 +116,7 @@ class Model {
       isScaleElementOnDown: false,
       scaleElementPosition: 0,
       scaleElementLength: 0,
-      scaleElementValue: '',
+      scaleElementValue: 0,
     };
   }
 

@@ -58,7 +58,7 @@ beforeEach(() => {
     isScaleElementOnDown: false,
     scaleElementPosition: 0,
     scaleElementLength: 0,
-    scaleElementValue: '',
+    scaleElementValue: 0,
   };
 });
 
@@ -205,7 +205,7 @@ describe('calculateFrom', () => {
   test('from should be equal to scaleElementValue', () => {
     model.subViewOptions.isScaleElementOnDown = true;
     model.subViewOptions.isClickForRunnerFrom = true;
-    model.subViewOptions.scaleElementValue = '30';
+    model.subViewOptions.scaleElementValue = 30;
 
     model.calculateFrom(model.getOptions());
 
@@ -304,7 +304,7 @@ describe('calculateTo', () => {
   test('to should be equal to scaleElementValue', () => {
     model.subViewOptions.isScaleElementOnDown = true;
     model.subViewOptions.isClickForRunnerTo = true;
-    model.subViewOptions.scaleElementValue = '30';
+    model.subViewOptions.scaleElementValue = 30;
 
     model.calculateTo(model.getOptions());
 
