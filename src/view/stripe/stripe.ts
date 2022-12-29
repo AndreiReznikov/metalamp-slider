@@ -156,7 +156,7 @@ class Stripe {
   };
 
   public showLimit = (options: Options): void => {
-    if (!options.modelOptions.showTooltip) return;
+    if (!options.modelOptions.showLimit) return;
 
     this.isLimitMinShown = true;
     this.isLimitMaxShown = true;

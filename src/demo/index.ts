@@ -41,7 +41,7 @@ $(document).ready(() => {
   pooshkaSliderVertical.initializePlugin({
     double: true,
     vertical: true,
-    showTooltip: false,
+    showTooltip: true,
     showLimit: false,
     showRange: true,
     showScale: true,

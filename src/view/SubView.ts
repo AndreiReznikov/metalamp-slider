@@ -82,15 +82,15 @@ class SubView {
       showScale: false,
       localeString: false,
       isStepSet: false,
-      positionParameter: '',
-      lengthParameter: '',
+      positionParameter: 'left',
+      lengthParameter: 'width',
+      scalePositionParameter: 'top',
       to: 0,
       from: 0,
       step: 0,
       stepLength: 0,
       min: 0,
       max: 0,
-      scalePositionParameter: '',
       scaleNumber: 0,
       scaleElements: [],
       numberOfCharactersAfterDot: 0,
@@ -261,7 +261,7 @@ class SubView {
     return subViewOptions;
   };
 
-  public getElementParameters = () => {
+  public setElementParameters = () => {
     this.sliderPosition = this.getCoords(this.$stripe);
     this.sliderLength = parseInt(
       this.$stripe.css(this.getOptions().modelOptions.lengthParameter),

@@ -1,4 +1,4 @@
-.js-slider__stripe {
+.slider__stripe {
   position: relative;
   width: 100%;
   height: 100%;
@@ -9,7 +9,7 @@
   cursor: pointer;
 }
 
-.js-slider__range {
+.slider__range {
   position: absolute;
   border-radius: 8px;
   background-color: rgb(47, 50, 53);
@@ -17,7 +17,7 @@
   z-index: 1;
 }
 
-.js-slider__from, .js-slider__to {
+.slider__from, .slider__to {
   position: absolute;
   height: 20px;
   width: 20px;
@@ -30,7 +30,7 @@
   z-index: 2;
 }
 
-.js-slider__min, .js-slider__max {
+.slider__min, .slider__max {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -48,7 +48,7 @@
   cursor: pointer;
 }
 
-.js-slider__tooltip-from, .js-slider__tooltip-to {
+.slider__tooltip-from, .slider__tooltip-to {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -66,7 +66,7 @@
   touch-action: none;
 }
 
-.js-slider__scale-container {
+.slider__scale-container {
   position: relative;
   display: flex;
   font-family: Helvetica, Arial, sans-serif;
@@ -75,17 +75,17 @@
   touch-action: none;
 }
 
-.js-slider__scale-element {
+.slider__scale-element {
  position: absolute;
  touch-action: none;
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .js-slider__stripe,
-  .js-slider__from,
-  .js-slider__to,
-  .js-slider__min,
-  .js-slider__max {
+  .slider__stripe,
+  .slider__from,
+  .slider__to,
+  .slider__min,
+  .slider__max {
     cursor: auto;
   }
 }

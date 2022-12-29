@@ -21,18 +21,20 @@ class Tooltip {
     const runnerPosition = this.tooltipType === 'from'
       ? options.subViewOptions.runnerFromPosition : options.subViewOptions.runnerToPosition;
 
+    if (options.subViewOptions.areTooltipsClose && this.tooltipType === 'from') {
+      this.tooltipPosition = options.subViewOptions.runnerFromPosition + (
+        options.subViewOptions.runnerToPosition - options.subViewOptions.runnerFromPosition
+      ) / 2 + options.subViewOptions.runnerLength / 2 - this.tooltipLength / 2;
+
+      return;
+    }
+
     this.tooltipPosition = runnerPosition
       + options.subViewOptions.runnerLength / 2
       - this.tooltipLength / 2;
   };
 
   public setTooltipPosition = (options: Options): void => {
-    if (options.subViewOptions.areTooltipsClose && this.tooltipType === 'from') {
-      this.tooltipPosition = options.subViewOptions.runnerFromPosition + (
-        options.subViewOptions.runnerToPosition - options.subViewOptions.runnerFromPosition
-      ) / 2 + options.subViewOptions.runnerLength / 2 - this.tooltipLength / 2;
-    }
-
     this.$tooltip.css(options.modelOptions.positionParameter, this.tooltipPosition);
 
     this.setTooltipOpacity(options);

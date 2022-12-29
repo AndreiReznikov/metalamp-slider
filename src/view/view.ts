@@ -6,9 +6,9 @@ class View {
 
   $window: JQuery<Window & typeof globalThis>;
 
-  $container: JQuery<HTMLElement> = $('div');
+  $container: JQuery<HTMLElement> = $('<div/>');
 
-  $containerEnvironment: JQuery<HTMLElement> = $('div');
+  $containerEnvironment: JQuery<HTMLElement> = $('<div/>');
 
   $slider: JQuery<HTMLElement>;
 
@@ -36,7 +36,7 @@ class View {
     containerRelativeWidth: number;
   };
 
-  constructor($slider: JQuery<HTMLElement> = $('div')) {
+  constructor($slider: JQuery<HTMLElement> = $('<div/>')) {
     this.SubView = new SubView();
 
     this.$window = $(window);
@@ -59,6 +59,7 @@ class View {
 
   public initializeView = (options: Options): void => {
     this.$slider.css({ width: '100%', height: '100%', 'box-sizing': 'border-box' });
+    this.$stripe.css({ width: '100%', height: '100%' });
 
     if (options.modelOptions.showRange) {
       this.$range.css('display', 'block');
@@ -144,15 +145,16 @@ class View {
   };
 
   private renderView = (): void => {
-    this.$stripe.appendTo(this.$slider).addClass('js-slider__stripe');
-    this.$runnerFrom.appendTo(this.$stripe).addClass('js-slider__from');
-    this.$runnerTo.appendTo(this.$stripe).addClass('js-slider__to');
-    this.$range.appendTo(this.$stripe).addClass('js-slider__range');
-    this.$limitMin.appendTo(this.$stripe).addClass('js-slider__min');
-    this.$limitMax.appendTo(this.$stripe).addClass('js-slider__max');
-    this.$scaleContainer.appendTo(this.$stripe).addClass('js-slider__scale-container');
-    this.$tooltipFrom.appendTo(this.$stripe).addClass('js-slider__tooltip-from');
-    this.$tooltipTo.appendTo(this.$stripe).addClass('js-slider__tooltip-to');
+    this.$slider.addClass('slider js-slider');
+    this.$stripe.appendTo(this.$slider).addClass('slider__stripe js-slider__stripe');
+    this.$runnerFrom.appendTo(this.$stripe).addClass('slider__from js-slider__from');
+    this.$runnerTo.appendTo(this.$stripe).addClass('slider__to js-slider__to');
+    this.$range.appendTo(this.$stripe).addClass('slider__range js-slider__range');
+    this.$limitMin.appendTo(this.$stripe).addClass('slider__min js-slider__min');
+    this.$limitMax.appendTo(this.$stripe).addClass('slider__max js-slider__max');
+    this.$scaleContainer.appendTo(this.$stripe).addClass('slider__scale-container js-slider__scale-container');
+    this.$tooltipFrom.appendTo(this.$stripe).addClass('slider__tooltip-from js-slider__tooltip-from');
+    this.$tooltipTo.appendTo(this.$stripe).addClass('slider__tooltip-to js-slider__tooltip-to');
   };
 
   private setContainerParameters = (): void => {

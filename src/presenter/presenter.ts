@@ -66,7 +66,7 @@ class Presenter {
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.initializeView(this.model.getOptions());
     this.view.setPlane(this.model.getOptions());
-    this.view.SubView.getElementParameters();
+    this.view.SubView.setElementParameters();
     this.model.setSubViewOptions(this.view.SubView.getOptions());
     this.model.calculateStepLength();
     this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
