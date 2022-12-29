@@ -7,12 +7,9 @@ class Presenter {
 
   view: View;
 
-  isValueNotNumber: boolean;
-
   constructor(model: Model, view: View) {
     this.model = model;
     this.view = view;
-    this.isValueNotNumber = false;
 
     this.model.observer.addObserver(this.updateView);
     this.view.SubView.observer.addObserver(this.updateModel);
@@ -169,10 +166,6 @@ class Presenter {
   };
 
   private setFrom = (value: number) => {
-    this.checkValue(value);
-
-    if (this.isValueNotNumber) return;
-
     this.model.from = value;
     this.model.validateInitialValues();
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
@@ -183,10 +176,6 @@ class Presenter {
   };
 
   private setTo = (value: number): void => {
-    this.checkValue(value);
-
-    if (this.isValueNotNumber) return;
-
     this.model.to = value;
     this.model.validateInitialValues();
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
@@ -197,30 +186,18 @@ class Presenter {
   };
 
   private setMin = (value: number): void => {
-    this.checkValue(value);
-
-    if (this.isValueNotNumber) return;
-
     this.model.min = value;
 
     this.init();
   };
 
   private setMax = (value: number): void => {
-    this.checkValue(value);
-
-    if (this.isValueNotNumber) return;
-
     this.model.max = value;
 
     this.init();
   };
 
   private setStep = (value: number): void => {
-    this.checkValue(value);
-
-    if (this.isValueNotNumber) return;
-
     this.model.step = value;
 
     this.model.validateInitialValues();
@@ -238,12 +215,6 @@ class Presenter {
     this.view.$scaleContainer.on('pointerdown.scale', this.view.SubView.handleScaleCalculateRunnerPositionAfterOnDown);
 
     this.view.$window.on('resize.slider', this.init);
-  };
-
-  private checkValue = (
-    value: string | number | string[] | undefined = 0,
-  ): void => {
-    this.isValueNotNumber = typeof parseFloat(`${value}`) !== 'number';
   };
 }
 

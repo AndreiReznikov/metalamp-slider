@@ -663,6 +663,15 @@ describe('Scale', () => {
       expect($('.js-slider__scale-element').length).toEqual(6);
     });
 
+    test('method should add elements to scaleContainer with localeString', () => {
+      options.modelOptions.localeString = true;
+      options.modelOptions.scaleElements = [1000, 1, 2, 3, 4, 5];
+
+      view.SubView.scale.setScaleElementsValues(options);
+
+      expect($($('.js-slider__scale-element')[0]).html()).toEqual('1&nbsp;000');
+    });
+
     test('method should set elements values', () => {
       options.modelOptions.scaleElements = [0, 1, 2, 3, 4, 5];
 
