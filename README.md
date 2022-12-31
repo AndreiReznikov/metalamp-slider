@@ -27,11 +27,11 @@ The project is compatible with *jQuery 3.6.0* and *node 16.13.2*
 Add the following libraries to the page:
 
 - jQuery 3.6.0
-- slider.min.js
+- pooshkaSlider.min.js
 
 Add the following stylesheets to the page:
 
-- slider.css
+- main.css
 
 # Initiation
 
