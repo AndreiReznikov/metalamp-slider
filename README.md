@@ -16,7 +16,7 @@ All DOM elements are subscribed to events in the Presenter class. Observers are 
 
 ![UML](/UML-pooshkaSlider.png "UML")
 
-# Demo https://andreireznikov.github.io/metalamp-slider/demo/
+# Demo https://andreireznikov.github.io/metalamp-slider-demo/
 
 # Technologies
 
