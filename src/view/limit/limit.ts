@@ -13,7 +13,7 @@ class Limit {
     this.limitType = limitType;
   }
 
-  public calculateLimitPosition = (options: Options) => {
+  public calculateLimitPosition = (options: Options): void => {
     this.limitPosition = 0;
 
     if (this.limitType !== 'max') return;
@@ -22,11 +22,11 @@ class Limit {
       - options.subViewOptions.limitMaxLength;
   };
 
-  public setLimitPosition = (options: Options) => {
+  public setLimitPosition = (options: Options): void => {
     this.$limit.css(options.modelOptions.positionParameter, this.limitPosition);
   };
 
-  public setLimitValue = (options: Options) => {
+  public setLimitValue = (options: Options): void => {
     let limitValue: number | string = 0;
 
     if (this.limitType === 'min') {
@@ -44,7 +44,7 @@ class Limit {
     this.setLimitLength(options);
   };
 
-  public setLimitOpacity = (opitons: Options) => {
+  public setLimitOpacity = (opitons: Options): void => {
     this.$limit.css('opacity', 0);
 
     if (opitons.subViewOptions.isLimitMaxShown && this.limitType === 'max') {
@@ -54,7 +54,7 @@ class Limit {
     }
   };
 
-  private setLimitLength = (options: Options) => {
+  private setLimitLength = (options: Options): void => {
     this.limitLength = parseInt(this.$limit.css(options.modelOptions.lengthParameter), 10);
   };
 }

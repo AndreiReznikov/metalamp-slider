@@ -201,7 +201,7 @@ class Stripe {
     }
   };
 
-  public changeRunnerZIndex = (runnerType: string) => {
+  public changeRunnerZIndex = (runnerType: string): void => {
     if (runnerType === 'from') {
       this.runnerFrom.$runner.css('z-index', 3);
       this.runnerTo.$runner.css('z-index', 2);
@@ -218,7 +218,7 @@ class Stripe {
       > this.tooltipTo.tooltipPosition;
   };
 
-  private defineClickLocation = (options: Options) => {
+  private defineClickLocation = (options: Options): void => {
     const isClickAheadOfRunnerFromWithInterval = options.subViewOptions.clickPosition
       > this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength
       && options.subViewOptions.clickPosition

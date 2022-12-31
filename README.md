@@ -41,53 +41,49 @@ The slider is created based on the div element. It needs to be placed in a conta
 
 `<div class="slider js-slider"></div>`
 
-To initialise the slider, call mySlider on the element:
+To initialise the slider, call pooshkaSlider on the element:
 
-`$('js-slider').mySlider();`
+`$('.js-slider').pooshkaSlider();`
 
 You can initialize the slider with the following parameters:
 
-  - isInterval: boolean - double or single slider
-  - minValue: number - minimum value
-  - maxValue: number - maximum value
+  - double: boolean - double or single slider
+  - vertical: boolean - vertical or horizontal
+  - showTooltip: boolean - whether to show tooltips over handles
+  - showMinAndMax: boolean - whether to show the minimum and maximum values
+  - showRange: boolean - whether to show the progress bar
+  - showScale: boolean - whether to show the scale
+  - min: number - minimum value
+  - max: number - maximum value
   - from: number - the value of the first handle
   - to: number - the value of the second handle
   - step: number - step value
-  - keyboard: boolean - keyboard control
-  - isVertical: boolean - vertical or horizontal
-  - isTooltip: boolean - whether to show tooltips over handles
-  - isMinAndMax: boolean - whether to show the minimum and maximum values
-  - isRange: boolean - whether to show the progress bar
-  - isScale: boolean - whether to show the scale
   - scaleNumber: number - number of values on the scale
-  - isPanel: boolean - whether to show the panel
 
 # Public methods
 
 To use public methods, at first you must save slider instance to variable:
 
-`$('js-slider').mySlider({ 
-   isInterval: true, 
-   minValue: 0,
-   maxValue: 100,
+`$('js-slider').pooshkaSlider({
+   double: true,
+   min: 0,
+   max: 100,
    from: 20,
    to: 80,
-   isPanel: true
  });`
 
- `const $slider = $('.js-slider').data('mySlider');`
+ `const $slider = $('.js-slider').data('pooshkaSlider');`
 
- `$slider.destroy();`
+ `$slider.update({
+   double: false,
+ });`
 
  - update - overrides the set parameters
- 
+
     `$slider.update({
-      isInterval: false
+      double: false
     });`
 
- - destroy - destroys the slider and leaves the original div empty
-
-    `$slider.destroy();`
 
 
 

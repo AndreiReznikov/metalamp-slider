@@ -44,17 +44,6 @@ class Presenter {
     return api;
   };
 
-  private updateUserConfig = (userConfig: UserConfig): void => {
-    this.model.userConfig = userConfig;
-    this.model.config = $.extend({}, this.model.data, this.model.userConfig);
-    this.model.setConfig();
-    this.view.SubView.setModelOptions(this.model.getOptions());
-
-    this.view.initializeView(this.model.getOptions());
-
-    this.model.observer.notifyObservers(this.model.getOptions());
-  };
-
   private init = (): void => {
     this.model.validateInitialValues();
     this.model.countNumberOfCharactersAfterDot();
@@ -84,6 +73,28 @@ class Presenter {
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.setPlane(this.model.getOptions());
     this.updateView(this.model.getOptions());
+  };
+
+  private launchEventManager = (): void => {
+    this.view.$runnerFrom.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
+    this.view.$runnerTo.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
+    this.view.$limitMin.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
+    this.view.$limitMax.on('pointerdown.max', this.view.SubView.handleLimitMaxSetRunnerPosition);
+    this.view.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
+    this.view.$scaleContainer.on('pointerdown.scale', this.view.SubView.handleScaleCalculateRunnerPositionAfterOnDown);
+
+    this.view.$window.on('resize.slider', this.init);
+  };
+
+  private updateUserConfig = (userConfig: UserConfig): void => {
+    this.model.userConfig = userConfig;
+    this.model.config = $.extend({}, this.model.data, this.model.userConfig);
+    this.model.setConfig();
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.view.initializeView(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
   };
 
   private updateView = (options: Options): void => {
@@ -165,7 +176,7 @@ class Presenter {
     this.init();
   };
 
-  private setFrom = (value: number) => {
+  private setFrom = (value: number): void => {
     this.model.from = value;
     this.model.validateInitialValues();
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
@@ -204,17 +215,6 @@ class Presenter {
     this.model.calculateStepLength();
 
     this.view.SubView.setModelOptions(this.model.getOptions());
-  };
-
-  private launchEventManager = (): void => {
-    this.view.$runnerFrom.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
-    this.view.$runnerTo.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
-    this.view.$limitMin.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
-    this.view.$limitMax.on('pointerdown.max', this.view.SubView.handleLimitMaxSetRunnerPosition);
-    this.view.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
-    this.view.$scaleContainer.on('pointerdown.scale', this.view.SubView.handleScaleCalculateRunnerPositionAfterOnDown);
-
-    this.view.$window.on('resize.slider', this.init);
   };
 }
 

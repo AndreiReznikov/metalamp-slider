@@ -67,7 +67,7 @@ class Tooltip {
     }
   };
 
-  private setTooltipLength = (options: Options) => {
+  private setTooltipLength = (options: Options): void => {
     this.tooltipLength = parseInt(this.$tooltip.css(options.modelOptions.lengthParameter), 10);
   };
 }
