@@ -16,7 +16,7 @@ All DOM elements are subscribed to events in the Presenter class. Observers are 
 
 ![UML](/UML-pooshkaSlider.png "UML")
 
-# Demo https://andreireznikov.github.io/metalamp-slider/demo/
+# Demo https://andreireznikov.github.io/metalamp-slider-demo/
 
 # Technologies
 
@@ -27,11 +27,11 @@ The project is compatible with *jQuery 3.6.0* and *node 16.13.2*
 Add the following libraries to the page:
 
 - jQuery 3.6.0
-- slider.min.js
+- pooshkaSlider.min.js
 
 Add the following stylesheets to the page:
 
-- slider.css
+- main.css
 
 # Initiation
 
