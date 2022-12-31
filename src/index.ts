@@ -1,52 +1,51 @@
-import Model from './model/model';
-import View from './view/view';
-import Presenter from './presenter/presenter';
+import Model from './Model/Model';
+import View from './View/View';
+import Presenter from './Presenter/Presenter';
 import { UserConfig } from './interfaces/interfaces';
-import './index.css';
+import './index.scss';
 
-(function ($) {
+(function createPooshkaSlider($) {
   const jquery = $;
 
-  const mySlider = (
-    slider: JQuery<HTMLElement> = $('div'),
+  const initializePooshkaSlider = (
+    $slider: JQuery<HTMLElement> = $('div'),
     userConfig: UserConfig = {},
   ): JQuery<HTMLElement> => {
     const model = new Model(userConfig);
-    const view = new View(slider);
+    const view = new View($slider);
     const presenter = new Presenter(model, view);
 
-    return slider;
+    $slider.data('api', presenter.getApi());
+
+    return $slider;
   };
 
-  jquery.fn.mySlider = function (userConfig: UserConfig = {}): JQuery<HTMLElement> {
+  jquery.fn.pooshkaSlider = function addMethods(
+    userConfig: UserConfig = {},
+  ): JQuery<HTMLElement> {
     this.update = (userConfig: UserConfig): JQuery<HTMLElement> => {
-      const updateSlider = (): void => {
-        if (this.data('mySlider')) {
-          const initialConfig: UserConfig = this.data('userConfig');
-          const updatedConfig: UserConfig = $.extend({}, initialConfig, userConfig);
+      const pastUserConfig = this.data('userConfig');
+      const newUserConfig = $.extend({}, pastUserConfig, userConfig);
 
-          this.data('mySlider', false);
-          this.empty();
-          this.data('mySlider', mySlider(this, updatedConfig));
-        }
-      };
+      const updateUserConfig = (): void => this.data('api').updateUserConfig(newUserConfig);
 
-      return this.each(updateSlider);
+      return this.each(updateUserConfig);
     };
 
     this.destroy = (): JQuery<HTMLElement> => {
-      const destroySlider = (): void => {
-        if (this.data('mySlider')) {
-          this.data('mySlider', false);
+      const destroy = (): void => {
+        if (this.data('pooshkaSlider')) {
+          this.data('pooshkaSlider', false);
+          this.data('userConfig', false);
           this.empty();
         }
       };
 
-      return this.each(destroySlider);
+      return this.each(destroy);
     };
 
     const init = (): void => {
-      this.data('mySlider', mySlider(this, userConfig));
+      this.data('pooshkaSlider', initializePooshkaSlider(this, userConfig));
       this.data('userConfig', userConfig);
     };
 

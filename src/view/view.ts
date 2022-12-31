@@ -1,33 +1,16 @@
-import { Options, ElementsParameters } from '../interfaces/interfaces';
-import Stripe from './stripe/stripe';
-import Range from './range/range';
-import RunnerFrom from './runner-from/runner-from';
-import RunnerTo from './runner-to/runner-to';
-import Tooltips from './tooltips/tooltips';
-import MinAndMaxValues from './min-and-max/min-and-max';
-import Scale from './scale/scale';
-import Panel from './panel/panel';
+import { Options } from '../interfaces/interfaces';
+import SubView from './SubView';
 
 class View {
-  tooltips: Tooltips;
-
-  runnerFrom: RunnerFrom;
-
-  runnerTo: RunnerTo;
-
-  range: Range;
-
-  stripe: Stripe;
-
-  minAndMaxValues: MinAndMaxValues;
-
-  scale: Scale;
-
-  panel: Panel;
+  SubView: SubView;
 
   $window: JQuery<Window & typeof globalThis>;
 
-  $this: JQuery<HTMLElement>;
+  $container: JQuery<HTMLElement> = $('<div/>');
+
+  $containerEnvironment: JQuery<HTMLElement> = $('<div/>');
+
+  $slider: JQuery<HTMLElement>;
 
   $stripe: JQuery<HTMLElement>;
 
@@ -37,9 +20,9 @@ class View {
 
   $range: JQuery<HTMLElement>;
 
-  $minValue: JQuery<HTMLElement>;
+  $limitMin: JQuery<HTMLElement>;
 
-  $maxValue: JQuery<HTMLElement>;
+  $limitMax: JQuery<HTMLElement>;
 
   $scaleContainer: JQuery<HTMLElement>;
 
@@ -47,102 +30,67 @@ class View {
 
   $tooltipTo: JQuery<HTMLElement>;
 
-  $panelContainer: JQuery<HTMLElement>;
-
-  sliderWidth = 0;
-
-  sliderHeight = 0;
-
-  sliderRelativeWidth = 0;
-
-  constructor($slider: JQuery<HTMLElement> = $('div')) {
-    this.tooltips = new Tooltips();
-    this.runnerFrom = new RunnerFrom();
-    this.runnerTo = new RunnerTo();
-    this.range = new Range();
-    this.stripe = new Stripe();
-    this.minAndMaxValues = new MinAndMaxValues();
-    this.scale = new Scale();
-    this.panel = new Panel();
-
-    this.$window = $(window);
-    this.$this = $slider;
-    this.$stripe = this.stripe.$stripe;
-    this.$runnerFrom = this.runnerFrom.$runnerFrom;
-    this.$runnerTo = this.runnerTo.$runnerTo;
-    this.$range = this.range.$range;
-    this.$minValue = this.minAndMaxValues.$minValue;
-    this.$maxValue = this.minAndMaxValues.$maxValue;
-    this.$scaleContainer = this.scale.$scaleContainer;
-    this.$tooltipFrom = this.tooltips.$tooltipFrom;
-    this.$tooltipTo = this.tooltips.$tooltipTo;
-    this.$panelContainer = this.panel.$panelContainer;
-
-    this.renderView();
-
-    const $container = this.$this.parent();
-
-    this.sliderWidth = parseInt($container.css('width'), 10);
-    this.sliderHeight = parseInt($container.css('height'), 10);
-    this.sliderRelativeWidth = (parseInt($container.css('width'), 10)
-    / parseInt($container.parent().css('width'), 10)) * 100;
-  }
-
-  public getElementsParameters = (
-    isVertical = false,
-    lengthParameter = '',
-  ): ElementsParameters => {
-    const $scaleElement = $('.js-slider__scale-element');
-
-    const elementsParameters: ElementsParameters = {
-      sliderPosition: View.getCoords(this.$stripe, isVertical),
-      sliderLength: parseInt(this.$stripe.css(lengthParameter), 10),
-      runnerLength: parseInt(this.$runnerFrom.css(lengthParameter), 10),
-      tooltipFromLength: parseInt(this.$tooltipFrom.css(lengthParameter), 10),
-      tooltipToLength: parseInt(this.$tooltipTo.css(lengthParameter), 10),
-      minValueLength: parseInt(this.$minValue.css(lengthParameter), 10),
-      maxValueLength: parseInt(this.$maxValue.css(lengthParameter), 10),
-      minValueWidth: parseInt(this.$minValue.css('width'), 10),
-      maxValueWidth: parseInt(this.$maxValue.css('width'), 10),
-      scaleElementHeight: parseInt($scaleElement.css('height'), 10),
-    };
-
-    return elementsParameters;
+  containerParameters: {
+    containerWidth: number;
+    containerHeight: number;
+    containerRelativeWidth: number;
   };
 
-  public initView = (options: Options): void => {
-    this.$this.css({ width: '100%', height: '100%', 'box-sizing': 'border-box' });
+  constructor($slider: JQuery<HTMLElement> = $('<div/>')) {
+    this.SubView = new SubView();
 
-    if (options.isRange) {
+    this.$window = $(window);
+    this.$slider = $slider;
+    this.$stripe = this.SubView.$stripe;
+    this.$runnerFrom = this.SubView.runnerFrom.$runner;
+    this.$runnerTo = this.SubView.runnerTo.$runner;
+    this.$range = this.SubView.range.$range;
+    this.$limitMin = this.SubView.limitMin.$limit;
+    this.$limitMax = this.SubView.limitMax.$limit;
+    this.$scaleContainer = this.SubView.scale.$scaleContainer;
+    this.$tooltipFrom = this.SubView.tooltipFrom.$tooltip;
+    this.$tooltipTo = this.SubView.tooltipTo.$tooltip;
+
+    this.containerParameters = { containerWidth: 0, containerHeight: 0, containerRelativeWidth: 0 };
+
+    this.setContainerParameters();
+    this.renderView();
+  }
+
+  public initializeView = (options: Options): void => {
+    this.$slider.css({ width: '100%', height: '100%', 'box-sizing': 'border-box' });
+    this.$stripe.css({ width: '100%', height: '100%' });
+
+    if (options.modelOptions.showRange) {
       this.$range.css('display', 'block');
     } else {
       this.$range.css('display', 'none');
     }
 
-    if (options.isMinAndMax) {
-      this.$minValue.css('display', 'flex');
-      this.$maxValue.css('display', 'flex');
+    if (options.modelOptions.showLimit) {
+      this.$limitMin.css('display', 'flex');
+      this.$limitMax.css('display', 'flex');
     } else {
-      this.$minValue.css('display', 'none');
-      this.$maxValue.css('display', 'none');
+      this.$limitMin.css('display', 'none');
+      this.$limitMax.css('display', 'none');
     }
 
-    if (options.isScale) {
+    if (options.modelOptions.showScale) {
       this.$scaleContainer.css('display', 'flex');
     } else {
       this.$scaleContainer.css('display', 'none');
     }
 
-    if (options.isInterval) {
+    if (options.modelOptions.double) {
       this.$runnerTo.css('display', 'block');
     } else {
       this.$runnerTo.css('display', 'none');
     }
 
-    if (options.isTooltip) {
+    if (options.modelOptions.showTooltip) {
       this.$tooltipFrom.css('display', 'flex');
 
-      if (options.isInterval) {
+      if (options.modelOptions.double) {
         this.$tooltipTo.css('display', 'flex');
       } else {
         this.$tooltipTo.css('display', 'none');
@@ -151,17 +99,9 @@ class View {
       this.$tooltipFrom.css('display', 'none');
       this.$tooltipTo.css('display', 'none');
     }
-
-    if (options.isPanel) {
-      this.$panelContainer.css('display', 'flex');
-    } else {
-      this.$panelContainer.css('display', 'none');
-    }
-
-    this.setPlane(options.isVertical);
   };
 
-  private setPlane = (isVertical = false): void => {
+  public setPlane = (options: Options): void => {
     this.$runnerFrom.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
     this.$runnerTo.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
     this.$range.css({
@@ -169,63 +109,68 @@ class View {
     });
     this.$tooltipFrom.css({ left: 0, bottom: 0, top: 0 });
     this.$tooltipTo.css({ left: 0, bottom: 0, top: 0 });
-    this.$minValue.css({ left: 0, bottom: 0, top: 0 });
-    this.$maxValue.css({ left: 0, bottom: 0, top: 0 });
+    this.$limitMin.css({ left: 0, bottom: 0, top: 0 });
+    this.$limitMax.css({ left: 0, bottom: 0, top: 0 });
     this.$scaleContainer.css({
       right: 0, top: 0, width: 0, height: 0,
     });
-    this.$panelContainer.css({ right: '', top: '' });
 
-    const runnerFromWidth: number = parseInt(this.$runnerFrom.css('width'), 10);
-    const runnerFromHeight: number = parseInt(this.$runnerFrom.css('height'), 10);
-    const runnerToWidth: number = parseInt(this.$runnerTo.css('width'), 10);
-    const runnerToHeight: number = parseInt(this.$runnerTo.css('height'), 10);
-
-    if (isVertical) {
-      this.$this.parent().css({ width: this.sliderHeight, height: this.sliderWidth });
+    if (options.modelOptions.vertical) {
+      this.$container.css({
+        width: this.containerParameters.containerHeight,
+        height: this.containerParameters.containerWidth,
+      });
       this.$runnerFrom.css({ left: '50%', transform: 'translateX(-50%)' });
       this.$runnerTo.css({ left: '50%', transform: 'translateX(-50%)' });
       this.$range.css({ width: '100%' });
-      this.$tooltipFrom.css({ left: runnerFromWidth });
-      this.$tooltipTo.css({ left: runnerToWidth });
-      this.$minValue.css({ left: runnerFromWidth });
-      this.$maxValue.css({ left: runnerFromWidth });
-      this.$panelContainer.css({ transform: 'translateX(0)', top: 0, width: '150px' });
+      this.$tooltipFrom.css({ left: options.subViewOptions.runnerLength });
+      this.$tooltipTo.css({ left: options.subViewOptions.runnerLength });
+      this.$limitMin.css({ left: options.subViewOptions.runnerLength });
+      this.$limitMax.css({ left: options.subViewOptions.runnerLength });
 
       return;
     }
 
-    this.$this.parent().css({ width: `${this.sliderRelativeWidth}%`, height: this.sliderHeight });
+    this.$container.css({
+      width: `${this.containerParameters.containerRelativeWidth}%`,
+      height: this.containerParameters.containerHeight,
+    });
     this.$runnerFrom.css({ top: '50%', transform: 'translateY(-50%)' });
     this.$runnerTo.css({ top: '50%', transform: 'translateY(-50%)' });
     this.$range.css({ height: '100%' });
-    this.$tooltipFrom.css({ bottom: runnerFromHeight, top: '' });
-    this.$tooltipTo.css({ bottom: runnerToHeight, top: '' });
-    this.$minValue.css({ bottom: runnerFromHeight, top: '' });
-    this.$maxValue.css({ bottom: runnerFromHeight, top: '' });
-    this.$panelContainer.css({ left: '50%', transform: 'translateX(-50%)', width: '650px' });
+    this.$tooltipFrom.css({ bottom: options.subViewOptions.runnerLength, top: '' });
+    this.$tooltipTo.css({ bottom: options.subViewOptions.runnerLength, top: '' });
+    this.$limitMin.css({ bottom: options.subViewOptions.runnerLength, top: '' });
+    this.$limitMax.css({ bottom: options.subViewOptions.runnerLength, top: '' });
   };
 
   private renderView = (): void => {
-    this.$stripe.appendTo(this.$this).addClass('js-slider__stripe');
-    this.$runnerFrom.appendTo(this.$stripe).addClass('js-slider__runner-from');
-    this.$runnerTo.appendTo(this.$stripe).addClass('js-slider__runner-to');
-    this.$range.appendTo(this.$stripe).addClass('js-slider__range');
-    this.$minValue.appendTo(this.$stripe).addClass('js-slider__min-value');
-    this.$maxValue.appendTo(this.$stripe).addClass('js-slider__max-value');
-    this.$scaleContainer.appendTo(this.$stripe).addClass('js-slider__scale-container');
-    this.$tooltipFrom.appendTo(this.$stripe).addClass('js-slider__tooltip-from');
-    this.$tooltipTo.appendTo(this.$stripe).addClass('js-slider__tooltip-to');
-    this.$panelContainer.appendTo(this.$stripe).addClass('js-slider__panel-container');
+    this.$slider.addClass('slider js-slider');
+    this.$stripe.appendTo(this.$slider).addClass('slider__stripe js-slider__stripe');
+    this.$runnerFrom.appendTo(this.$stripe).addClass('slider__from js-slider__from');
+    this.$runnerTo.appendTo(this.$stripe).addClass('slider__to js-slider__to');
+    this.$range.appendTo(this.$stripe).addClass('slider__range js-slider__range');
+    this.$limitMin.appendTo(this.$stripe).addClass('slider__min js-slider__min');
+    this.$limitMax.appendTo(this.$stripe).addClass('slider__max js-slider__max');
+    this.$scaleContainer.appendTo(this.$stripe).addClass('slider__scale-container js-slider__scale-container');
+    this.$tooltipFrom.appendTo(this.$stripe).addClass('slider__tooltip-from js-slider__tooltip-from');
+    this.$tooltipTo.appendTo(this.$stripe).addClass('slider__tooltip-to js-slider__tooltip-to');
   };
 
-  static getCoords = (element: JQuery<HTMLElement> = $('div'), isVertical = false): number => {
-    const coords: JQuery.Coordinates | undefined = element.offset();
-    let coord = 0;
+  private setContainerParameters = (): void => {
+    this.$container = this.$slider.parent();
+    this.$containerEnvironment = this.$container.parent();
 
-    if (coords) coord = isVertical ? coords.top : coords.left;
+    const containerWidth = parseInt(this.$container.css('width'), 10);
+    const containerHeight = parseInt(this.$container.css('height'), 10);
+    const containerRelativeWidth = (parseInt(this.$container.css('width'), 10)
+    / parseInt(this.$containerEnvironment.css('width'), 10)) * 100;
 
-    return coord;
+    this.containerParameters = {
+      containerWidth,
+      containerHeight,
+      containerRelativeWidth,
+    };
   };
 }
 

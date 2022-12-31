@@ -1,409 +1,220 @@
-import { Options } from '../interfaces/interfaces';
-import Model from '../model/model';
-import View from '../view/view';
+import { Options, UserConfig, Api } from '../interfaces/interfaces';
+import Model from '../Model/Model';
+import View from '../View/View';
 
 class Presenter {
   model: Model;
 
   view: View;
 
-  isValueANumberAndFullValue: boolean;
-
   constructor(model: Model, view: View) {
     this.model = model;
     this.view = view;
-    this.isValueANumberAndFullValue = false;
 
     this.model.observer.addObserver(this.updateView);
+    this.view.SubView.observer.addObserver(this.updateModel);
 
     this.init();
     this.launchEventManager();
-    this.launchPanelEventManager();
   }
 
-  private init = (): void => {
-    this.view.initView(this.model.getOptions());
+  public getApi = (): Api => {
+    const api: Api = {
+      $document: this.view.SubView.$document,
+      $stripe: this.view.$stripe,
+      $runnerFrom: this.view.$runnerFrom,
+      $runnerTo: this.view.$runnerTo,
+      $limitMin: this.view.$limitMin,
+      $limitMax: this.view.$limitMax,
+      $scaleContainer: this.view.$scaleContainer,
+      getModelOptions: this.model.getModelOptions,
+      updateUserConfig: this.updateUserConfig,
+      toggleDouble: this.toggleDouble,
+      toggleTooltip: this.toggleTooltip,
+      toggleRange: this.toggleRange,
+      toggleScale: this.toggleScale,
+      toggleVertical: this.toggleVertical,
+      setFrom: this.setFrom,
+      setTo: this.setTo,
+      setMin: this.setMin,
+      setMax: this.setMax,
+      setStep: this.setStep,
+    };
 
-    this.model.calculateInitialTooltipsValues();
-
-    this.updateView(this.model.getOptions());
-
-    const elementsParameters = this.view.getElementsParameters(
-      this.model.isVertical,
-      this.model.getOptions().lengthParameter,
-    );
-
-    this.model.setElementsParameters(elementsParameters);
-    this.model.validateInitialValues();
-    this.model.calculateInitialRunnersPosition();
-    this.model.calculateRangePosition();
-    this.model.calculateRangeLength();
-    this.model.countNumberOfCharactersAfterDot();
-    this.model.calculateMinAndMaxPositions();
-    this.model.calculateTooltipsPositions();
-    this.model.calculateStepLength();
-    this.model.calculateScaleElementsNumber();
-    this.model.calculateScaleElementsValues();
-    this.model.calculateLengthBetweenScaleElements();
-    this.updateView(this.model.getOptions());
-    this.model.calculatePanelPosition();
-    this.view.panel.setPanelPosition(this.model.getOptions());
+    return api;
   };
 
-  private updateView = (options: Options): void => {
-    this.view.runnerFrom.setRunnerFromPosition(options);
-    this.view.runnerTo.setRunnerToPosition(options);
-    this.view.tooltips.setTooltipFromValue(options);
-    this.view.tooltips.setTooltipToValue(options);
-    this.view.tooltips.setTooltipFromPosition(options);
-    this.view.tooltips.setTooltipToPosition(options);
-    this.view.range.setRangePosition(options);
-    this.view.range.setRangeLength(options);
-    this.view.minAndMaxValues.setMinAndMaxValues(options);
-    this.view.minAndMaxValues.setMinAndMaxPosition(options);
-    this.view.minAndMaxValues.showMinAndMax(options);
-    this.view.scale.setScaleElementsValues(options);
-    this.view.scale.setScaleLength(options);
-    this.view.scale.setScaleElementsPositions(options);
-    this.view.scale.setScalePosition(options);
-    this.view.panel.setPanelPosition(options);
-    this.view.panel.setPanelValues(options);
-
-    const elementsParameters = this.view.getElementsParameters(
-      this.model.isVertical,
-      this.model.getOptions().lengthParameter,
-    );
-
-    this.model.setElementsParameters(elementsParameters);
+  private init = (): void => {
+    this.model.validateInitialValues();
+    this.model.countNumberOfCharactersAfterDot();
+    this.model.calculateScaleElementsNumber();
+    this.model.calculateScaleElementsValues();
+    this.view.SubView.setModelOptions(this.model.getOptions());
+    this.view.initializeView(this.model.getOptions());
+    this.view.setPlane(this.model.getOptions());
+    this.view.SubView.setElementParameters();
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+    this.model.calculateStepLength();
+    this.view.SubView.limitMin.setLimitValue(this.model.getOptions());
+    this.view.SubView.limitMax.setLimitValue(this.model.getOptions());
+    this.view.SubView.limitMin.calculateLimitPosition(this.model.getOptions());
+    this.view.SubView.limitMin.setLimitPosition(this.model.getOptions());
+    this.view.SubView.limitMax.calculateLimitPosition(this.model.getOptions());
+    this.view.SubView.limitMax.setLimitPosition(this.model.getOptions());
+    this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.runnerFrom.setRunnerPosition(this.model.getOptions());
+    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.runnerTo.setRunnerPosition(this.model.getOptions());
+    this.updateModel(this.view.SubView.getOptions());
+    this.view.SubView.range.calculateRangePosition(this.model.getOptions());
+    this.view.SubView.range.setRangePosition(this.model.getOptions());
+    this.view.SubView.range.calculateRangeLength(this.model.getOptions());
+    this.view.SubView.range.setRangeLength(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+    this.view.setPlane(this.model.getOptions());
+    this.updateView(this.model.getOptions());
   };
 
   private launchEventManager = (): void => {
-    const $document = $(document);
-
-    const makeRunnerFromPointermoveHandler = (event: JQuery.TriggeredEvent): void => {
-      const shiftAxis1 = this.model.calculateShiftAxis1(event);
-
-      const handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
-        if (shiftAxis1 === undefined) return;
-
-        this.model.calculateRunnerFromPositionWhileMoving(event, shiftAxis1);
-
-        this.model.calculateTooltipsPositions();
-
-        this.updateView(this.model.getOptions());
-      };
-
-      $document.on('pointermove.move-from', handleRunnerFromPointermove);
-      $document.on('pointerup.move-from', () => $document.off('pointermove.move-from', handleRunnerFromPointermove));
-    };
-
-    const makeRunnerToPointermoveHandler = (event: JQuery.TriggeredEvent) => {
-      const shiftAxis2 = this.model.calculateShiftAxis2(event);
-
-      const handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
-        if (shiftAxis2 === undefined) return;
-
-        this.model.calculateRunnerToPositionWhileMoving(event, shiftAxis2);
-
-        this.model.calculateTooltipsPositions();
-
-        this.updateView(this.model.getOptions());
-      };
-
-      $document.on('pointermove.move-to', handleRunnerToPointermove);
-      $document.on('pointerup.move-to', () => $document.off('pointermove.move-to', handleRunnerToPointermove));
-    };
-
-    const makeRunnerFromKeydownHandler = (event: JQuery.FocusInEvent) => {
-      const handleRunnerFromKeydown = (event: JQuery.KeyDownEvent): void => {
-        this.model.calculateRunnerFromPositionAfterKeydown(event);
-
-        this.model.calculateTooltipsPositions();
-
-        this.updateView(this.model.getOptions());
-      };
-
-      const $currentTarget = $(event.currentTarget);
-
-      $currentTarget.on('keydown', handleRunnerFromKeydown);
-      $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerFromKeydown));
-    };
-
-    const makeRunnerToKeydownHandler = (event: JQuery.FocusInEvent) => {
-      const handleRunnerToKeydown = (event: JQuery.KeyDownEvent) => {
-        this.model.calculateRunnerToPositionAfterKeydown(event);
-
-        this.model.calculateTooltipsPositions();
-
-        this.updateView(this.model.getOptions());
-      };
-
-      const $currentTarget = $(event.currentTarget);
-
-      $currentTarget.on('keydown', handleRunnerToKeydown);
-      $currentTarget.on('focusout', () => $currentTarget.off('keydown', handleRunnerToKeydown));
-    };
-
-    const handleRunnerFromPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateRunnerFromPositionAfterSliderOnDown(event);
-
-      this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
-    const handleRunnerToPositionAfterSliderOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateRunnerToPositionAfterSliderOnDown(event);
-
-      this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
-    const handleRunnerFromPositionAfterMinValueOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateRunnerFromPositionAfterMinValueOnDown(event);
-
-      this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
-    const handleRunnerFromPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateRunnerFromPositionAfterMaxValueOnDown(event);
-
-      this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
-    const handleRunnerToPositionAfterMaxValueOnDown = (event: JQuery.TriggeredEvent) => {
-      this.model.calculateRunnerToPositionAfterMaxValueOnDown(event);
-
-      this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
-    const handleRunnersPositionAfterScaleOnDown = (event: JQuery.TriggeredEvent) => {
-      if (!event.target) return;
-
-      const $target: JQuery<EventTarget> = $(event.target);
-      const isScaleElementOnDown: boolean = $target.hasClass('js-slider__scale-element');
-      const scaleElementPosition: number = parseInt(`${$target.css(this.model.positionParameter)}`, 10);
-      const scaleElementLength: number = parseInt(`${$target.css(this.model.lengthParameter)}`, 10);
-      const scaleElementValue: string = $target.html();
-
-      const scaleElementOptions = {
-        isScaleElementOnDown,
-        scaleElementPosition,
-        scaleElementLength,
-        scaleElementValue,
-      };
-
-      this.model.calculateRunnerPositionAfterScaleOnDown(event, scaleElementOptions);
-
-      this.model.calculateTooltipsPositions();
-
-      this.updateView(this.model.getOptions());
-    };
-
-    this.view.$runnerFrom.on('pointerdown.runner-from', makeRunnerFromPointermoveHandler);
-    this.view.$runnerTo.on('pointerdown.runner-to', makeRunnerToPointermoveHandler);
-    this.view.$runnerFrom.on('focusin', makeRunnerFromKeydownHandler);
-    this.view.$runnerTo.on('focusin', makeRunnerToKeydownHandler);
-    this.view.$stripe.on('pointerdown.stripe-from', handleRunnerFromPositionAfterSliderOnDown);
-    this.view.$stripe.on('pointerdown.stripe-to', handleRunnerToPositionAfterSliderOnDown);
-    this.view.$minValue.on('pointerdown.min-from', handleRunnerFromPositionAfterMinValueOnDown);
-    this.view.$maxValue.on('pointerdown.max-from', handleRunnerFromPositionAfterMaxValueOnDown);
-    this.view.$maxValue.on('pointerdown.max-to', handleRunnerToPositionAfterMaxValueOnDown);
-    this.view.$scaleContainer.on('pointerdown.scale', handleRunnersPositionAfterScaleOnDown);
+    this.view.$runnerFrom.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
+    this.view.$runnerTo.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
+    this.view.$limitMin.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
+    this.view.$limitMax.on('pointerdown.max', this.view.SubView.handleLimitMaxSetRunnerPosition);
+    this.view.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
+    this.view.$scaleContainer.on('pointerdown.scale', this.view.SubView.handleScaleCalculateRunnerPositionAfterOnDown);
 
     this.view.$window.on('resize.slider', this.init);
   };
 
-  private launchPanelEventManager = (): void => {
-    const stopPropagation = (event: JQuery.TriggeredEvent) => event.stopPropagation();
+  private updateUserConfig = (userConfig: UserConfig): void => {
+    this.model.userConfig = userConfig;
+    this.model.config = $.extend({}, this.model.data, this.model.userConfig);
+    this.model.setConfig();
+    this.view.SubView.setModelOptions(this.model.getOptions());
 
-    this.view.panel.$panelContainer.on('pointerdown', stopPropagation);
-    this.view.panel.$minInput.on('change', this.handleMinInputSetMin);
-    this.view.panel.$maxInput.on('change', this.handleMaxInputSetMax);
-    this.view.panel.$fromInput.on('change', this.handleFromInputSetFrom);
-    this.view.panel.$toInput.on('change', this.handleToInputSetTo);
-    this.view.panel.$stepInput.on('change', this.handleStepInputSetStep);
-    this.view.panel.$intervalToggler.on('click', this.handleIntervalTogglerToggleInterval);
-    this.view.panel.$verticalToggler.on('click', this.handleVerticalTogglerToggleVertical);
-    this.view.panel.$tooltipsToggler.on('click', this.handleTooltipsTogglerToggleTooltips);
-    this.view.panel.$rangeToggler.on('click', this.handleRangeTogglerToggleRange);
-    this.view.panel.$scaleToggler.on('click', this.handleScaleTogglerToggleScale);
+    this.view.initializeView(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
   };
 
-  private handleMinInputSetMin = (event: JQuery.ChangeEvent): void => {
-    const $currentTarget = $(event.currentTarget);
-    const minValue = $currentTarget.val();
+  private updateView = (options: Options): void => {
+    this.view.SubView.runnerFrom.setRunnerPosition(options);
+    this.view.SubView.runnerTo.setRunnerPosition(options);
+    this.view.SubView.tooltipFrom.setTooltipValue(options);
+    this.view.SubView.tooltipFrom.calculateTooltipPosition(options);
+    this.view.SubView.tooltipFrom.setTooltipPosition(options);
+    this.view.SubView.tooltipTo.setTooltipValue(options);
+    this.view.SubView.tooltipTo.calculateTooltipPosition(options);
+    this.view.SubView.tooltipTo.setTooltipPosition(options);
+    this.view.SubView.range.calculateRangePosition(options);
+    this.view.SubView.range.setRangePosition(options);
+    this.view.SubView.range.calculateRangeLength(options);
+    this.view.SubView.range.setRangeLength(options);
+    this.view.SubView.limitMin.setLimitValue(options);
+    this.view.SubView.limitMin.calculateLimitPosition(options);
+    this.view.SubView.limitMin.setLimitPosition(options);
+    this.view.SubView.limitMax.setLimitValue(options);
+    this.view.SubView.limitMax.calculateLimitPosition(options);
+    this.view.SubView.limitMax.setLimitPosition(options);
+    this.view.SubView.limitMin.setLimitOpacity(options);
+    this.view.SubView.limitMax.setLimitOpacity(options);
+    this.view.SubView.scale.setScaleElementsValues(options);
+    this.view.SubView.scale.calculateLengthBetweenScaleElements(options);
+    this.view.SubView.scale.setScaleLength(options);
+    this.view.SubView.scale.setScaleElementsPositions(options);
+    this.view.SubView.scale.setScalePosition(options);
+  };
 
-    if (this.checkIsValueANumberAndFullValue(minValue)) {
-      this.view.panel.setPanelValues(this.model.getOptions());
-      return;
-    }
+  private updateModel = (options: Options): void => {
+    this.model.setSubViewOptions(options);
+    this.model.calculateFrom(options);
+    this.model.calculateTo(options);
+  };
 
-    this.model.minValue = parseFloat(`${minValue}`);
+  private toggleTooltip = (): void => {
+    this.model.showTooltip = this.model.showTooltip !== true;
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleDouble = (): void => {
+    this.model.double = this.model.double !== true;
+
+    this.model.validateInitialValues();
+    this.view.SubView.setModelOptions(this.model.getOptions());
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+    this.model.restrictTo();
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleRange = (): void => {
+    this.model.showRange = this.model.showRange !== true;
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleScale = (): void => {
+    this.model.showScale = this.model.showScale !== true;
+    this.view.initializeView(this.model.getOptions());
+    this.view.SubView.setModelOptions(this.model.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private toggleVertical = (): void => {
+    this.model.vertical = this.model.vertical !== true;
+    this.model.setPositionParameters();
 
     this.init();
   };
 
-  private handleMaxInputSetMax = (event: JQuery.ChangeEvent): void => {
-    const $currentTarget = $(event.currentTarget);
-    const maxValue = $currentTarget.val();
+  private setFrom = (value: number): void => {
+    this.model.from = value;
+    this.model.validateInitialValues();
+    this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
 
-    if (this.checkIsValueANumberAndFullValue(maxValue)) {
-      this.view.panel.setPanelValues(this.model.getOptions());
-      return;
-    }
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
 
-    this.model.maxValue = parseFloat(`${maxValue}`);
+  private setTo = (value: number): void => {
+    this.model.to = value;
+    this.model.validateInitialValues();
+    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+  };
+
+  private setMin = (value: number): void => {
+    this.model.min = value;
 
     this.init();
   };
 
-  private handleFromInputSetFrom = (event: JQuery.ChangeEvent): void => {
-    const $currentTarget = $(event.currentTarget);
-    const from = $currentTarget.val();
+  private setMax = (value: number): void => {
+    this.model.max = value;
 
-    if (this.checkIsValueANumberAndFullValue(from)) {
-      this.view.panel.setPanelValues(this.model.getOptions());
-      return;
-    }
-
-    this.model.from = parseFloat(`${from}`);
-
-    this.model.validateInitialValues();
-    this.model.calculateInitialRunnerFromPosition();
-    this.model.calculateRangePosition();
-    this.model.calculateRangeLength();
-    this.model.calculateInitialTooltipsValues();
-    this.model.calculateTooltipsPositions();
-
-    this.updateView(this.model.getOptions());
+    this.init();
   };
 
-  private handleToInputSetTo = (event: JQuery.ChangeEvent): void => {
-    const $currentTarget = $(event.currentTarget);
-    const to = $currentTarget.val();
-
-    if (this.checkIsValueANumberAndFullValue(to)) {
-      this.view.panel.setPanelValues(this.model.getOptions());
-      return;
-    }
-
-    this.model.to = parseFloat(`${to}`);
-
-    this.model.validateInitialValues();
-    this.model.calculateInitialRunnerToPosition();
-    this.model.calculateRangePosition();
-    this.model.calculateRangeLength();
-    this.model.calculateInitialTooltipsValues();
-    this.model.calculateTooltipsPositions();
-
-    this.updateView(this.model.getOptions());
-  };
-
-  private handleStepInputSetStep = (event: JQuery.ChangeEvent): void => {
-    const $currentTarget = $(event.currentTarget);
-    const step = $currentTarget.val();
-
-    if (this.checkIsValueANumberAndFullValue(step)) {
-      this.view.panel.setPanelValues(this.model.getOptions());
-      return;
-    }
-
-    this.model.step = parseFloat(`${step}`);
+  private setStep = (value: number): void => {
+    this.model.step = value;
 
     this.model.validateInitialValues();
     this.model.calculateStepLength();
-  };
 
-  private handleIntervalTogglerToggleInterval = (event: JQuery.ClickEvent): void => {
-    const $currentTarget = $(event.currentTarget);
-
-    if ($currentTarget.is(':checked')) {
-      this.model.isInterval = true;
-    } else {
-      this.model.isInterval = false;
-    }
-
-    this.view.initView(this.model.getOptions());
-    this.model.validateInitialValues();
-    this.model.calculateInitialRunnerToPosition();
-    this.model.calculateRangePosition();
-    this.model.calculateRangeLength();
-    this.model.calculateInitialTooltipsValues();
-    this.model.calculateTooltipsPositions();
-
-    this.updateView(this.model.getOptions());
-  };
-
-  private handleTooltipsTogglerToggleTooltips = (event: JQuery.ClickEvent): void => {
-    const $currentTarget = $(event.currentTarget);
-
-    if ($currentTarget.is(':checked')) {
-      this.model.isTooltip = true;
-    } else {
-      this.model.isTooltip = false;
-    }
-
-    this.view.initView(this.model.getOptions());
-    this.updateView(this.model.getOptions());
-  };
-
-  private handleRangeTogglerToggleRange = (event: JQuery.ClickEvent): void => {
-    const $currentTarget = $(event.currentTarget);
-
-    if ($currentTarget.is(':checked')) {
-      this.model.isRange = true;
-    } else {
-      this.model.isRange = false;
-    }
-
-    this.view.initView(this.model.getOptions());
-    this.updateView(this.model.getOptions());
-  };
-
-  private handleScaleTogglerToggleScale = (event: JQuery.ClickEvent): void => {
-    const $currentTarget = $(event.currentTarget);
-
-    if ($currentTarget.is(':checked')) {
-      this.model.isScale = true;
-    } else {
-      this.model.isScale = false;
-    }
-
-    this.view.initView(this.model.getOptions());
-    this.updateView(this.model.getOptions());
-  };
-
-  private handleVerticalTogglerToggleVertical = (event: JQuery.ClickEvent): void => {
-    const $currentTarget = $(event.currentTarget);
-
-    if ($currentTarget.is(':checked')) {
-      this.model.isVertical = true;
-    } else {
-      this.model.isVertical = false;
-    }
-
-    this.model.positionParameter = this.model.isVertical ? 'top' : 'left';
-    this.model.lengthParameter = this.model.isVertical ? 'height' : 'width';
-    this.model.scalePositionParameter = this.model.isVertical ? 'right' : 'top';
-    this.model.panelPositionParameter = this.model.isVertical ? 'left' : 'top';
-
-    this.init();
-  };
-
-  private checkIsValueANumberAndFullValue = (
-    value: string | number | string[] | undefined = 0,
-  ): boolean => {
-    this.isValueANumberAndFullValue = typeof parseFloat(`${value}`) !== 'number' || value === '';
-
-    return this.isValueANumberAndFullValue;
+    this.view.SubView.setModelOptions(this.model.getOptions());
   };
 }
 

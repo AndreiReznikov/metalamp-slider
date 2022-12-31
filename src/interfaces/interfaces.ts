@@ -1,93 +1,119 @@
 interface Options {
-  isInterval: boolean;
-  isTooltip: boolean;
-  isMinAndMax: boolean;
-  isRange: boolean;
-  isScale: boolean;
-  isVertical: boolean;
-  isPanel: boolean;
+  modelOptions: ModelOptions;
+  subViewOptions: SubViewOptions;
+}
+
+interface ModelOptions {
+  double: boolean;
+  vertical: boolean;
+  showTooltip: boolean;
+  showLimit: boolean;
+  showRange: boolean;
+  showScale: boolean;
+  localeString: boolean;
   isStepSet: boolean;
   positionParameter: string;
   lengthParameter: string;
-  sliderPosition: number;
-  sliderLength: number;
   to: number;
   from: number;
   step: number;
-  runnerLength: number;
   stepLength: number;
-  minValuePosition: number;
-  maxValuePosition: number;
-  minValue: number;
-  maxValue: number;
-  isMinValueShow: boolean;
-  isMaxValueShow: boolean;
-  minValueLength: number;
-  maxValueLength: number;
-  runnerFromPosition: number;
-  runnerToPosition: number;
-  tooltipFromPosition: number;
-  tooltipToPosition: number;
-  tooltipFromValue: number | string;
-  tooltipToValue: number | string;
-  rangePosition: number;
-  rangeLength: number;
+  min: number;
+  max: number;
   scalePositionParameter: string;
   scaleNumber: number;
   scaleElements: number[];
-  lengthBetweenScaleElements: number;
-  panelPosition: number;
-  panelPositionParameter: string;
   numberOfCharactersAfterDot: number;
 }
 
-interface Config {
-  isInterval: boolean;
-  minValue: number;
-  maxValue: number;
+interface SubViewOptions {
+  sliderPosition: number;
+  sliderLength: number;
+  runnerFromPosition: number;
+  runnerToPosition: number;
+  runnerLength: number;
+  limitMinLength: number;
+  limitMaxLength: number;
+  shiftAxis: number;
+  clickPosition: number;
+  isMinFrom: boolean;
+  isMaxFrom: boolean;
+  isMaxTo: boolean;
+  isCursorNearStepAheadFrom: boolean;
+  isCursorNearStepBehindFrom: boolean;
+  isClickForRunnerFrom: boolean;
+  isCursorNearStepAheadTo: boolean;
+  isCursorNearStepBehindTo: boolean;
+  isClickAheadOfRunnerFrom: boolean;
+  isClickBehindOfRunnerFrom: boolean;
+  isClickAheadOfRunnerTo: boolean;
+  isClickBehindOfRunnerTo: boolean;
+  isClickForRunnerTo: boolean;
+  areTooltipsClose: boolean;
+  isLimitMinShown: boolean;
+  isLimitMaxShown: boolean;
+  runnerFromStepsNumber: number;
+  runnerToStepsNumber: number;
+  isScaleElementOnDown: boolean;
+  scaleElementPosition: number;
+  scaleElementLength: number;
+  scaleElementValue: number;
+}
+
+type Api = {
+  $document: JQuery<Document>;
+  $stripe: JQuery<HTMLElement>;
+  $runnerFrom: JQuery<HTMLElement>;
+  $runnerTo: JQuery<HTMLElement>;
+  $limitMin: JQuery<HTMLElement>;
+  $limitMax: JQuery<HTMLElement>;
+  $scaleContainer: JQuery<HTMLElement>;
+  getModelOptions: () => ModelOptions;
+  updateUserConfig: (userConfig: UserConfig) => void;
+  toggleDouble: () => void;
+  toggleTooltip: () => void;
+  toggleRange: () => void;
+  toggleScale: () => void;
+  toggleVertical: () => void;
+  setFrom: (value: number) => void;
+  setTo: (value: number) => void;
+  setMin: (value: number) => void;
+  setMax: (value: number) => void;
+  setStep: (value: number) => void;
+};
+
+type Config = {
+  double: boolean;
+  vertical: boolean;
+  showTooltip: boolean;
+  showLimit: boolean;
+  showRange: boolean;
+  showScale: boolean;
+  localeString: boolean;
+  min: number;
+  max: number;
   from: number;
   to: number;
   step: number;
-  keyboard: boolean;
-  isVertical: boolean;
-  isTooltip: boolean;
-  isMinAndMax: boolean;
-  isRange: boolean;
-  isScale: boolean;
   scaleNumber: number;
-  isPanel: boolean;
-}
+};
 
-interface UserConfig {
-  isInterval?: boolean;
-  minValue?: number;
-  maxValue?: number;
+type UserConfig = {
+  double?: boolean;
+  vertical?: boolean;
+  showTooltip?: boolean;
+  showLimit?: boolean;
+  showRange?: boolean;
+  showScale?: boolean;
+  localeString?: boolean;
+  min?: number;
+  max?: number;
   from?: number;
   to?: number;
   step?: number;
-  keyboard?: boolean;
-  isVertical?: boolean;
-  isTooltip?: boolean;
-  isMinAndMax?: boolean;
-  isRange?: boolean;
-  isScale?: boolean;
   scaleNumber?: number;
-  isPanel?: boolean;
-}
-
-interface ElementsParameters {
-  sliderPosition: number;
-  sliderLength: number;
-  runnerLength: number;
-  tooltipFromLength: number;
-  tooltipToLength: number;
-  minValueLength: number;
-  maxValueLength: number;
-  minValueWidth: number;
-  maxValueWidth: number;
-  scaleElementHeight: number;
-}
+};
 
 export {
-  Options, Config, UserConfig, ElementsParameters,
+  Options, ModelOptions, Config, UserConfig, SubViewOptions, Api,
 };

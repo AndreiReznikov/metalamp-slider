@@ -14,7 +14,7 @@ When the user interacts with the interface (View), the Model methods are called.
 
 All DOM elements are subscribed to events in the Presenter class. Observers are also designated in this class.
 
-![UML](/slider-uml.svg "UML")
+![UML](/UML-pooshkaSlider.png "UML")
 
 # Demo https://andreireznikov.github.io/metalamp-slider/demo/
 
@@ -45,61 +45,46 @@ The slider is created based on the div element. It needs to be placed in a conta
 
 `<div class="slider js-slider"></div>`
 
-To initialise the slider, call mySlider on the element:
+To initialise the slider, call pooshkaSlider on the element:
 
-`$('js-slider').mySlider();`
+`$('.js-slider').pooshkaSlider();`
 
 You can initialize the slider with the following parameters:
 
-  | Parameter | Type | Defaults | Description |
-  | --- | --- | --- | --- |
-  | isInterval | boolean | false | double or single slider |
-  | minValue | number | 0 | minimum value |
-  | maxValue | number | 100 | maximum value |
-  | from | number | 10 | the value of the first handle |
-  | to | number | 50 | the value of the second handle |
-  | step | number | 0 | step value |
-  | keyboard | boolean | false | keyboard control |
-  | isVertical | boolean | false | vertical or horizontal |
-  | isTooltip | boolean | true | whether to show tooltips over handles |
-  | isMinAndMax | boolean | true | whether to show the minimum and maximum values |
-  | isRange | boolean | true | whether to show the progress bar |
-  | isScale | boolean | false | whether to show the scale |
-  | scaleNumber | number | 5 | number of values on the scale |
-  | isPanel | boolean | false | whether to show the panel |
+  - double: boolean - double or single slider
+  - vertical: boolean - vertical or horizontal
+  - showTooltip: boolean - whether to show tooltips over handles
+  - showMinAndMax: boolean - whether to show the minimum and maximum values
+  - showRange: boolean - whether to show the progress bar
+  - showScale: boolean - whether to show the scale
+  - min: number - minimum value
+  - max: number - maximum value
+  - from: number - the value of the first handle
+  - to: number - the value of the second handle
+  - step: number - step value
+  - scaleNumber: number - number of values on the scale
 
 # Public methods
 
 To use public methods, at first you must save slider instance to variable:
 
-```javascript
-$('js-slider').mySlider({ 
-   isInterval: true, 
-   minValue: 0, 
-   maxValue: 100, 
-   from: 20, 
-   to: 80, 
-   isPanel: true 
- });
+`$('js-slider').pooshkaSlider({
+   double: true,
+   min: 0,
+   max: 100,
+   from: 20,
+   to: 80,
+ });`
 
- const $slider = $('.js-slider').data('mySlider');
+ `const $slider = $('.js-slider').data('pooshkaSlider');`
 
- $slider.destroy();
- ```
+ `$slider.update();`
 
- - **update** - overrides the set parameters
- 
-    ```javascript
-    $slider.update({
-      isInterval: false
-    });
-    ```
+ - update - overrides the set parameters
 
- - **destroy** - destroys the slider and leaves the original div empty
-    
-    ```javascript
-    $slider.destroy();
-    ```
+    `$slider.update({
+      double: false
+    });`
 
 
 
