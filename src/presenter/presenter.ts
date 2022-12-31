@@ -178,6 +178,7 @@ class Presenter {
 
   private setFrom = (value: number): void => {
     this.model.from = value;
+    this.model.restrictFrom();
     this.model.validateInitialValues();
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
@@ -188,6 +189,7 @@ class Presenter {
 
   private setTo = (value: number): void => {
     this.model.to = value;
+    this.model.restrictTo();
     this.model.validateInitialValues();
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
