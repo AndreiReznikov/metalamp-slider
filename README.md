@@ -14,20 +14,24 @@ When the user interacts with the interface (View), the Model methods are called.
 
 All DOM elements are subscribed to events in the Presenter class. Observers are also designated in this class.
 
+![UML](/UML-pooshkaSlider.png "UML")
+
+# Demo https://andreireznikov.github.io/metalamp-slider/demo/
+
 # Technologies
 
-The project is compatible with jQuery 3.6.0 and node 16.13.2
+The project is compatible with *jQuery 3.6.0* and *node 16.13.2*
 
 # Usage
 
 Add the following libraries to the page:
 
-jQuery 3.6.0
-slider.min.js
+- jQuery 3.6.0
+- slider.min.js
 
 Add the following stylesheets to the page:
 
-slider.css
+- slider.css
 
 # Initiation
 
@@ -74,16 +78,13 @@ To use public methods, at first you must save slider instance to variable:
 
  `const $slider = $('.js-slider').data('pooshkaSlider');`
 
- `$slider.update({
-   double: false,
- });`
+ `$slider.update();`
 
  - update - overrides the set parameters
 
     `$slider.update({
       double: false
     });`
-
 
 
 
