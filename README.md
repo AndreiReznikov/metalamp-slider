@@ -51,18 +51,20 @@ To initialise the slider, call pooshkaSlider on the element:
 
 You can initialize the slider with the following parameters:
 
-  - double: boolean - double or single slider
-  - vertical: boolean - vertical or horizontal
-  - showTooltip: boolean - whether to show tooltips over handles
-  - showMinAndMax: boolean - whether to show the minimum and maximum values
-  - showRange: boolean - whether to show the progress bar
-  - showScale: boolean - whether to show the scale
-  - min: number - minimum value
-  - max: number - maximum value
-  - from: number - the value of the first handle
-  - to: number - the value of the second handle
-  - step: number - step value
-  - scaleNumber: number - number of values on the scale
+| Option | Type | Defaults | Description |
+| --- | --- | --- | --- |
+| double | boolean | double or single slider |
+| vertical | boolean | vertical or horizontal |
+| showTooltip | boolean | whether to show tooltips over handles |
+| showMinAndMax | boolean | whether to show the minimum and maximum values |
+| showRange | boolean | whether to show the progress bar |
+| showScale | boolean | whether to show the scale |
+| min | number | minimum value |
+| max | number | maximum value |
+| from | number | the value of the first handle |
+| to | number | the value of the second handle |
+| step | number | step value |
+| scaleNumber | number | number of values on the scale |
 
 # Public methods
 
