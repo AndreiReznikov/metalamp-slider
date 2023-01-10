@@ -1,7 +1,7 @@
 import { Options } from '../../interfaces/interfaces';
 
 class Scale {
-  $scaleContainer: JQuery<HTMLElement> = $('<div>');
+  $scaleContainer: JQuery<HTMLElement> = $('<div/>');
 
   lengthBetweenScaleElements = 0;
 
