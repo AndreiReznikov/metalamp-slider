@@ -1,9 +1,9 @@
+import { Options } from '../../interfaces/interfaces';
 import Range from '../Range/Range';
 import Runner from '../Runner/Runner';
 import Tooltip from '../Tooltip/Tooltip';
 import Limit from '../Limit/Limit';
 import Scale from '../Scale/Scale';
-import { Options } from '../../interfaces/interfaces';
 
 class Stripe {
   $stripe: JQuery<HTMLElement> = $('<div/>');
