@@ -10,7 +10,7 @@ When creating the slider, the MVP architecture was used, which contains three ma
 - View - contains DOM tree elements and their display methods
 - Presenter - connects Model and View, and also contains the logic of the configuration panel
 
-When the user interacts with the interface (View), the Model methods are called. After that, the Model, using Observer, notifies observers about a change in its state. The observers in this case are the View methods that accept the modified state of the model.
+When the user interacts with the interface (View), the Model methods are called, using Observer. After that, the Model, using Observer, notifies observers about a change in its state. The observers in this case are the View methods that accept the modified state of the model.
 
 All DOM elements are subscribed to events in the Presenter class. Observers are also designated in this class.
 
@@ -32,6 +32,24 @@ Add the following libraries to the page:
 Add the following stylesheets to the page:
 
 - main.css
+
+# Working with the project
+
+First you have to create a copy of the remote repository locally:
+
+`git clone https://github.com/AndreiReznikov/metalamp-slider`
+
+Then you have to install all the necessary packages to work with the project. Use the following command in the local repository:
+
+`npm install`
+
+To start the project, use the command:
+
+`npm run server`
+
+To test the project, use the command:
+
+`npm run test`
 
 # Initiation
 
@@ -65,13 +83,13 @@ You can initialize the slider with the following parameters:
 | from | number | 10 | the value of the first handle |
 | to | number | 50 | the value of the second handle |
 | step | number | 0 | step value |
-| scaleNumber | 5 | number | number of values on the scale |
+| scaleNumber | number | 5 | number of values on the scale |
 
 # Public methods
 
 To use public methods, at first you must save slider instance to variable:
 
-`$('js-slider').pooshkaSlider({
+`$('.js-slider').pooshkaSlider({
    double: true,
    min: 0,
    max: 100,
@@ -88,6 +106,38 @@ To use public methods, at first you must save slider instance to variable:
     `$slider.update({
       double: false
     });`
+
+# Api
+
+To api methods, at first you must save slider instance to variable:
+
+`$('.js-slider').pooshkaSlider();`
+
+ `const $slider = $('.js-slider').data('pooshkaSlider');`
+
+ Then use an object with api methods:
+
+`$slider.data('api');`
+
+You can access the slider's jQuery elements via Api: and $document: $document, $stripe, $runnerFrom, $runnerTo, $limitMin, $limitMax, $scaleContainer.
+
+You can use the following Api methods:
+
+| Method | Description | Example |
+| --- | --- | --- |
+| getModelOptions | Returns the current values: double, vertical, showTooltip, showLimit, showRange, show Scale, localeString, isStepSet,  positionParameter, lengthParameter, to, from, step, stepLength, min, max, scalePositionParameter, scaleNumber, scaleElements, numberOfCharactersAfterDot | $slider.data('api').getModelOptions().double |
+| updateUserConfig | Update model values | $slider.data('api').updateUserConfig({'vertical': true}) |
+| toggleDouble | Toggle double value | $slider.data('api').toggleDouble() |
+| toggleTooltip | Toggle showTooltip value | $slider.data('api').toggleTooltip() |
+| toggleRange | Toggle showRange value | $slider.data('api').toggleRange() |
+| toggleScale | Toggle showScale value | $slider.data('api').toggleScale() |
+| toggleVertical | Toggle vertical value | $slider.data('api').toggleVertical() |
+| setFrom | Set from value | $slider.data('api').setFrom(25) |
+| setTo | Set to value | $slider.data('api').setTo(50) |
+| setMin | Set min value | $slider.data('api').setMin(5) |
+| setMax | Set max value | $slider.data('api').setMax(100) |
+| setStep | Set step value | $slider.data('api').setStep(5) |
+
 
 
 
