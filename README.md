@@ -51,7 +51,7 @@ To test the project, use the command:
 
 `npm run test`
 
-# Initiation
+# Initialization
 
 First you have to create a container for the slider and set its length and height:
 
