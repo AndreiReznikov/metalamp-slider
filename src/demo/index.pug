@@ -1,0 +1,112 @@
+doctype html
+html(lang="ru")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(name="keywords" content="JQuery plugin, slider, MVP, TypeScript, education")
+    meta(name="description" content="Slider")
+    title pooshkaSlider
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js")
+  body
+    -
+      const togglers = [
+        {
+          class: 'panel__input panel__input_tooltip js-panel__input js-panel__input_tooltip',
+          text: 'tooltips'
+        },
+        {
+          class: 'panel__input panel__input_double js-panel__input js-panel__input_double',
+          text: 'double'
+        },
+        {
+          class: 'panel__input panel__input_range js-panel__input js-panel__input_range',
+          text: 'range'
+        },
+        {
+          class: 'panel__input panel__input_scale js-panel__input js-panel__input_scale',
+          text: 'scale'
+        },
+        {
+          class: 'panel__input panel__input_vertical js-panel__input js-panel__input_vertical',
+          text: 'vertical'
+        },
+      ];
+
+      const inputs = ['from', 'to', 'min', 'max', 'step'];
+
+    mixin panelToggler(options)
+      label.panel__toggle-label
+        input(class=options.class type="checkbox")
+        span.panel__custom-toggle
+        span.panel__toggle-text=options.text
+
+    mixin panelInputs(inputType)
+      -
+        const buttonClassName = 'panel__' + inputType + '-button' + ' '
+          + 'js-panel__' + inputType + '-button';
+        const inputClassName = 'panel__' + inputType + '-input' + ' '
+          + 'js-panel__' + inputType + '-input';
+
+      <div class="panel__input-container">
+        button(class=buttonClassName)=inputType
+        input(class=inputClassName type="number")
+      </div>
+
+
+    main.container
+      h1.demo-page-title PooshkaSlider Demo
+      .double-slider-container.js-double-slider-container
+        h2.subtitle Double slider:
+        .double-slider-wrapper
+          .slider.js-slider.js-slider_double
+
+        .panel
+          .panel__toggle-inputs-container
+            each val in togglers
+              +panelToggler(val)
+
+          .panel__text-inputs-container
+            each val in inputs
+              +panelInputs(val)
+
+      .single-slider-container.js-single-slider-container
+        h2.subtitle Single/step slider:
+        .single-slider-wrapper
+          .slider.js-slider.js-slider_single
+
+        .panel
+            .panel__toggle-inputs-container
+              each val in togglers
+                +panelToggler(val)
+
+            .panel__text-inputs-container
+              each val in inputs
+                +panelInputs(val)
+
+      .vertical-slider-container.js-vertical-slider-container
+        h2.subtitle Vertical slider:
+        .vertical-slider-wrapper
+          .slider.js-slider.js-slider_vertical
+
+        .panel
+            .panel__toggle-inputs-container
+              each val in togglers
+                +panelToggler(val)
+
+            .panel__text-inputs-container
+              each val in inputs
+                +panelInputs(val)
+
+      .simple-slider-container.js-simple-slider-container
+        h2.subtitle Simple slider:
+        .simple-slider-wrapper
+          .slider.js-slider.js-slider_simple
+
+        .panel
+            .panel__toggle-inputs-container
+              each val in togglers
+                +panelToggler(val)
+
+            .panel__text-inputs-container
+              each val in inputs
+                +panelInputs(val)
