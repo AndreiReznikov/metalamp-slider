@@ -36,6 +36,8 @@ interface SubViewOptions {
   limitMaxLength: number;
   shiftAxis: number;
   clickPosition: number;
+  leftOrRight: string;
+  upOrDown: string;
   isMinFrom: boolean;
   isMaxFrom: boolean;
   isMaxTo: boolean;

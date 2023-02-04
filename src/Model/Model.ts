@@ -95,6 +95,8 @@ class Model {
       limitMaxLength: 0,
       shiftAxis: 0,
       clickPosition: 0,
+      leftOrRight: '',
+      upOrDown: '',
       isMinFrom: false,
       isMaxFrom: false,
       isMaxTo: false,
@@ -259,6 +261,8 @@ class Model {
   };
 
   public calculateTo = (options: Options): void => {
+    if (!this.double) return;
+
     if (this.isStepSet) {
       if (options.subViewOptions.isCursorNearStepAheadTo) {
         this.to = parseFloat((this.to + this.step).toFixed(this.numberOfCharactersAfterDot));

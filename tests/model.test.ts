@@ -37,6 +37,8 @@ beforeEach(() => {
     limitMaxLength: 0,
     shiftAxis: 0,
     clickPosition: 0,
+    leftOrRight: '',
+    upOrDown: '',
     isMinFrom: false,
     isMaxFrom: false,
     isMaxTo: false,

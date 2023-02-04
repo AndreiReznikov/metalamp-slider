@@ -56,6 +56,12 @@ class SubView {
 
   subViewOptions: SubViewOptions;
 
+  lastPoint: { x: number; y: number; } = { x: 0, y: 0 };
+
+  leftOrRight = '';
+
+  upOrDown = '';
+
   constructor() {
     this.observer = new Observer();
 
@@ -233,6 +239,8 @@ class SubView {
       limitMinLength: this.limitMin.limitLength,
       limitMaxLength: this.limitMax.limitLength,
       clickPosition: this.clickPosition,
+      leftOrRight: this.leftOrRight,
+      upOrDown: this.upOrDown,
       shiftAxis: this.shiftAxis,
       isMinFrom: this.runnerFrom.isMinFrom,
       isMaxFrom: this.runnerFrom.isMaxFrom,
@@ -295,7 +303,9 @@ class SubView {
 
   private attachPointermoveEvent = (valueType: string) => {
     const handleRunnerPointermove = valueType === 'from' ? this.handleRunnerFromPointermove : this.handleRunnerToPointermove;
-    const handleDocumentOffPointerMove = () => this.$document.off('pointermove.move', handleRunnerPointermove);
+    const handleDocumentOffPointerMove = () => {
+      this.$document.off('pointermove.move', handleRunnerPointermove);
+    };
 
     this.$document.on('pointermove.move', handleRunnerPointermove);
     this.$document.on('pointerup.move', handleDocumentOffPointerMove);
@@ -312,6 +322,12 @@ class SubView {
     if (event.pageY !== undefined) {
       pageY1 = event.pageY;
     }
+
+    this.leftOrRight = pageX1 > this.lastPoint.x ? 'right' : 'left';
+    this.upOrDown = pageY1 > this.lastPoint.y ? 'down' : 'up';
+
+    this.lastPoint.x = pageX1;
+    this.lastPoint.y = pageY1;
 
     const clientAxis: number = this.getOptions().modelOptions.vertical ? pageY1 : pageX1;
 
