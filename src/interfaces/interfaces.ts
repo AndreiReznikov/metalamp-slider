@@ -20,6 +20,9 @@ interface ModelOptions {
   stepLength: number;
   min: number;
   max: number;
+  remains: number;
+  minRemains: number;
+  maxRemains: number;
   scalePositionParameter: string;
   scaleNumber: number;
   scaleElements: number[];

@@ -124,6 +124,30 @@ class Stripe {
     const
       isRunnerFromPositionMoreThanRunnerToPosition: boolean = options.modelOptions.double
       && this.runnerFrom.runnerPosition > this.runnerTo.runnerPosition;
+    const isRunnerFromNearMinWithRemains: boolean = options.modelOptions.minRemains !== 0
+      && options.subViewOptions.isCursorNearStepBehindFrom
+      && this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength
+      / 2 < options.modelOptions.stepLength;
+    const isRunnerFromNearMaxWithRemains: boolean = options.modelOptions.maxRemains !== 0
+      && options.subViewOptions.isCursorNearStepAheadFrom
+      && options.subViewOptions.sliderLength - this.runnerFrom.runnerPosition
+      + options.subViewOptions.runnerLength / 2 < options.modelOptions.stepLength;
+
+    if (isRunnerFromNearMaxWithRemains) {
+      this.runnerFrom.runnerPosition = options.subViewOptions.sliderLength
+        - ((options.modelOptions.maxRemains / options.modelOptions.step)
+        * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
+
+      return;
+    }
+
+    if (isRunnerFromNearMinWithRemains) {
+      this.runnerFrom.runnerPosition = ((options.modelOptions.maxRemains
+        / options.modelOptions.step)
+        * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
+
+      return;
+    }
 
     if (isRunnerFromPositionLessThanMinimum) {
       this.runnerFrom.runnerPosition = 0 - options.subViewOptions.runnerLength / 2;

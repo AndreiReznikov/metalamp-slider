@@ -60,6 +60,12 @@ class Model {
 
   subViewOptions: SubViewOptions;
 
+  remains = 0;
+
+  minRemains = 0;
+
+  maxRemains = 0;
+
   constructor(userConfig: UserConfig = {}) {
     this.observer = new Observer();
 
@@ -128,7 +134,7 @@ class Model {
       && this.step > this.max - this.min;
     const isLimitsNegativeAndStepMoreThanDifference: boolean = areLimitsNegative
       && this.step > -(this.min - this.max);
-    const isStepIncorrect = isLimitsPositiveAndStepMoreThanDifference
+    const isStepIncorrect: boolean = isLimitsPositiveAndStepMoreThanDifference
       || isLimitsNegativeAndStepMoreThanDifference
       || this.step < 0;
 
@@ -163,6 +169,26 @@ class Model {
     }
   };
 
+  public calculateRemains = (): void => {
+    if (!this.isStepSet) return;
+
+    this.remains = this.from % this.step;
+    this.minRemains = this.min % this.step;
+    this.maxRemains = this.max % this.step;
+
+    let isRemainsReal = false;
+    const isRemainsCorrect: boolean = this.remains !== 0;
+
+    if (this.numberOfCharactersAfterDot !== 0) {
+      isRemainsReal = `${(this.from / this.step)}`.split('.')[1]?.length > 0
+        && `${(this.from / this.step)}`.split('.')[1][0] !== '9';
+    }
+
+    if (isRemainsCorrect && isRemainsReal) {
+      this.from -= this.remains;
+    }
+  };
+
   public setPositionParameters = (): void => {
     this.positionParameter = this.vertical ? 'top' : 'left';
     this.lengthParameter = this.vertical ? 'height' : 'width';
@@ -191,6 +217,9 @@ class Model {
       stepLength: this.stepLength,
       min: this.min,
       max: this.max,
+      remains: this.remains,
+      minRemains: this.minRemains,
+      maxRemains: this.maxRemains,
       scalePositionParameter: this.scalePositionParameter,
       scaleNumber: this.scaleNumber,
       scaleElements: this.scaleElements,
@@ -210,11 +239,20 @@ class Model {
   };
 
   public calculateFrom = (options: Options): void => {
+    const from = parseFloat((((options.subViewOptions.runnerFromPosition
+      + options.subViewOptions.runnerLength / 2) / options.subViewOptions.sliderLength)
+      * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
+
     if (this.isStepSet) {
-      if (options.subViewOptions.isCursorNearStepAheadFrom) {
-        this.from = parseFloat((this.from + this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isCursorNearStepBehindFrom) {
-        this.from = parseFloat((this.from - this.step).toFixed(this.numberOfCharactersAfterDot));
+      if (options.subViewOptions.isCursorNearStepBehindFrom
+            || options.subViewOptions.isCursorNearStepAheadFrom) {
+        const currentRemains: number = from % this.step;
+
+        if (currentRemains && this.numberOfCharactersAfterDot === 0) {
+          this.from = from - currentRemains;
+        } else {
+          this.from = from;
+        }
       } else if (options.subViewOptions.isClickAheadOfRunnerFrom) {
         this.from = parseFloat((this.from + (options.subViewOptions.runnerFromStepsNumber
           * this.step)).toFixed(this.numberOfCharactersAfterDot));
@@ -223,11 +261,7 @@ class Model {
           * this.step)).toFixed(this.numberOfCharactersAfterDot));
       }
     } else {
-      this.from = parseFloat((((options.subViewOptions.runnerFromPosition
-        + options.subViewOptions.runnerLength / 2) / options.subViewOptions.sliderLength)
-        * (this.max - this.min) + this.min).toFixed(
-        this.numberOfCharactersAfterDot,
-      ));
+      this.from = from;
     }
 
     if (options.subViewOptions.isMinFrom) {
@@ -312,15 +346,17 @@ class Model {
   public countNumberOfCharactersAfterDot = (): void => {
     const minValuesBeforeAndAfterDot: string[] = `${this.min}`.split('.');
     const maxValuesBeforeAndAfterDot: string[] = `${this.max}`.split('.');
+    const stepValuesBeforeAndAfterDot: string[] = `${this.step}`.split('.');
 
-    let minValuesAfterDot: string = minValuesBeforeAndAfterDot[1];
-    let maxValuesAfterDot: string = maxValuesBeforeAndAfterDot[1];
+    const minValuesAfterDot: string = minValuesBeforeAndAfterDot[1] || '';
+    const maxValuesAfterDot: string = maxValuesBeforeAndAfterDot[1] || '';
+    const stepValuesAfterDot: string = stepValuesBeforeAndAfterDot[1] || '';
 
-    if (minValuesAfterDot === undefined) minValuesAfterDot = '';
-    if (maxValuesAfterDot === undefined) maxValuesAfterDot = '';
-
-    this.numberOfCharactersAfterDot = minValuesAfterDot.length > maxValuesAfterDot.length
-      ? minValuesAfterDot.length : maxValuesAfterDot.length;
+    this.numberOfCharactersAfterDot = Math.max(
+      minValuesAfterDot.length,
+      maxValuesAfterDot.length,
+      stepValuesAfterDot.length,
+    );
   };
 
   public calculateScaleElementsValues = (): void => {

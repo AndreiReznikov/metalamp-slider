@@ -47,6 +47,7 @@ class Presenter {
   private init = (): void => {
     this.model.validateInitialValues();
     this.model.countNumberOfCharactersAfterDot();
+    this.model.calculateRemains();
     this.model.calculateScaleElementsNumber();
     this.model.calculateScaleElementsValues();
     this.view.SubView.setModelOptions(this.model.getOptions());
@@ -180,6 +181,7 @@ class Presenter {
     this.model.from = value;
     this.model.restrictFrom();
     this.model.validateInitialValues();
+    this.model.calculateRemains();
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
@@ -192,7 +194,7 @@ class Presenter {
     this.model.restrictTo();
     this.model.validateInitialValues();
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
-    this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
+    this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
@@ -214,9 +216,16 @@ class Presenter {
     this.model.step = value;
 
     this.model.validateInitialValues();
+    this.model.countNumberOfCharactersAfterDot();
+    this.model.calculateRemains();
     this.model.calculateStepLength();
 
     this.view.SubView.setModelOptions(this.model.getOptions());
+    this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
   };
 }
 

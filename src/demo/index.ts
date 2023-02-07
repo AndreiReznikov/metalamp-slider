@@ -14,7 +14,7 @@ $(document).ready(() => {
     min: -12.5,
     max: 12.5,
     step: 5,
-    from: -5,
+    from: -5.5,
     to: 5,
   });
 
