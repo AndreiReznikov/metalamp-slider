@@ -97,7 +97,8 @@ class SubView {
       stepLength: 0,
       min: 0,
       max: 0,
-      remains: 0,
+      fromRemains: 0,
+      toRemains: 0,
       minRemains: 0,
       maxRemains: 0,
       scaleNumber: 0,
@@ -216,9 +217,33 @@ class SubView {
     this.scaleElementLength = parseInt(`${$target.css(this.getOptions().modelOptions.lengthParameter)}`, 10);
     this.scaleElementValue = Number(targetValue);
 
-    this.calculateClickPosition(event);
-    this.stripe.calculateRunnerPositionAfterScaleOnDown(this.getOptions());
-    this.stripe.showLimit(this.getOptions());
+    const isRemainsOnScaleValue: boolean = parseFloat((this.scaleElementValue
+        % this.getOptions().modelOptions.step).toFixed(
+      this.getOptions().modelOptions.numberOfCharactersAfterDot,
+    )) !== 0;
+
+    // && `${(this.scaleElementValue / this.getOptions().modelOptions.step)}`.split('.')[1]?.length
+    //     === this.getOptions().modelOptions.numberOfCharactersAfterDot;
+
+    if (isRemainsOnScaleValue) {
+      this.isScaleElementOnDown = false;
+      this.scaleElementValue = 0;
+
+      return;
+    }
+
+    if (this.scaleElementValue === this.getOptions().modelOptions.max
+          && this.getOptions().modelOptions.double) {
+      this.runnerTo.calculateMaxRunnerPosition(this.getOptions());
+    } else if (this.scaleElementValue === this.getOptions().modelOptions.max) {
+      this.runnerFrom.calculateMaxRunnerPosition(this.getOptions());
+    } else if (this.scaleElementValue === this.getOptions().modelOptions.min) {
+      this.runnerFrom.calculateMinRunnerPosition(this.getOptions());
+    } else {
+      this.calculateClickPosition(event);
+      this.stripe.calculateRunnerPositionAfterScaleOnDown(this.getOptions());
+      this.stripe.showLimit(this.getOptions());
+    }
 
     this.observer.notifyObservers(this.getOptions());
 

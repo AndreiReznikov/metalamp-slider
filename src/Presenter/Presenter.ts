@@ -178,6 +178,8 @@ class Presenter {
   };
 
   private setFrom = (value: number): void => {
+    if (Number.isNaN(value)) return;
+
     this.model.from = value;
     this.model.restrictFrom();
     this.model.validateInitialValues();
@@ -190,6 +192,8 @@ class Presenter {
   };
 
   private setTo = (value: number): void => {
+    if (Number.isNaN(value)) return;
+
     this.model.to = value;
     this.model.restrictTo();
     this.model.validateInitialValues();
@@ -201,18 +205,24 @@ class Presenter {
   };
 
   private setMin = (value: number): void => {
+    if (Number.isNaN(value)) return;
+
     this.model.min = value;
 
     this.init();
   };
 
   private setMax = (value: number): void => {
+    if (Number.isNaN(value)) return;
+
     this.model.max = value;
 
     this.init();
   };
 
   private setStep = (value: number): void => {
+    if (Number.isNaN(value)) return;
+
     this.model.step = value;
 
     this.model.validateInitialValues();
@@ -223,6 +233,8 @@ class Presenter {
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
+    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());

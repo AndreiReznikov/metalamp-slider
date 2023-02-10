@@ -60,7 +60,9 @@ class Model {
 
   subViewOptions: SubViewOptions;
 
-  remains = 0;
+  fromRemains = 0;
+
+  toRemains = 0;
 
   minRemains = 0;
 
@@ -172,21 +174,21 @@ class Model {
   public calculateRemains = (): void => {
     if (!this.isStepSet) return;
 
-    this.remains = this.from % this.step;
-    this.minRemains = this.min % this.step;
-    this.maxRemains = this.max % this.step;
+    this.fromRemains = parseFloat((this.from % this.step).toFixed(this.numberOfCharactersAfterDot));
+    this.toRemains = parseFloat((this.to % this.step).toFixed(this.numberOfCharactersAfterDot));
+    this.minRemains = parseFloat((this.min % this.step).toFixed(this.numberOfCharactersAfterDot));
+    this.maxRemains = parseFloat((this.max % this.step).toFixed(this.numberOfCharactersAfterDot));
 
-    let isRemainsReal = false;
-    const isRemainsCorrect: boolean = this.remains !== 0;
+    if (Math.abs(this.minRemains) === Math.abs(this.step)) this.minRemains = 0;
+    if (Math.abs(this.maxRemains) === Math.abs(this.step)) this.maxRemains = 0;
 
-    if (this.numberOfCharactersAfterDot !== 0) {
-      isRemainsReal = `${(this.from / this.step)}`.split('.')[1]?.length > 0
-        && `${(this.from / this.step)}`.split('.')[1][0] !== '9';
-    }
+    // const isRemainsReal = `${(this.from / this.step)}`.split('.')[1]?.length === this.numberOfCharactersAfterDot || 0;
+    // const isRemainsCorrect: boolean = this.remains !== 0;
 
-    if (isRemainsCorrect && isRemainsReal) {
-      this.from -= this.remains;
-    }
+    // if (isRemainsCorrect && isRemainsReal) {
+      this.from -= this.fromRemains;
+      this.to -= this.toRemains;
+    // }
   };
 
   public setPositionParameters = (): void => {
@@ -217,7 +219,8 @@ class Model {
       stepLength: this.stepLength,
       min: this.min,
       max: this.max,
-      remains: this.remains,
+      fromRemains: this.fromRemains,
+      toRemains: this.toRemains,
       minRemains: this.minRemains,
       maxRemains: this.maxRemains,
       scalePositionParameter: this.scalePositionParameter,
@@ -244,21 +247,12 @@ class Model {
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
     if (this.isStepSet) {
-      if (options.subViewOptions.isCursorNearStepBehindFrom
-            || options.subViewOptions.isCursorNearStepAheadFrom) {
-        const currentRemains: number = from % this.step;
+      const currentFromRemains: number = from % this.step;
 
-        if (currentRemains && this.numberOfCharactersAfterDot === 0) {
-          this.from = from - currentRemains;
-        } else {
-          this.from = from;
-        }
-      } else if (options.subViewOptions.isClickAheadOfRunnerFrom) {
-        this.from = parseFloat((this.from + (options.subViewOptions.runnerFromStepsNumber
-          * this.step)).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isClickBehindOfRunnerFrom) {
-        this.from = parseFloat((this.from - (options.subViewOptions.runnerFromStepsNumber
-          * this.step)).toFixed(this.numberOfCharactersAfterDot));
+      if (currentFromRemains && this.numberOfCharactersAfterDot === 0) {
+        this.from = from - currentFromRemains;
+      } else {
+        this.from = from;
       }
     } else {
       this.from = from;
@@ -297,24 +291,20 @@ class Model {
   public calculateTo = (options: Options): void => {
     if (!this.double) return;
 
+    const to = parseFloat((((options.subViewOptions.runnerToPosition
+      + options.subViewOptions.runnerLength / 2) / options.subViewOptions.sliderLength)
+      * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
+
     if (this.isStepSet) {
-      if (options.subViewOptions.isCursorNearStepAheadTo) {
-        this.to = parseFloat((this.to + this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isCursorNearStepBehindTo) {
-        this.to = parseFloat((this.to - this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isClickAheadOfRunnerTo) {
-        this.to = parseFloat((this.to + (options.subViewOptions.runnerToStepsNumber
-          * this.step)).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isClickBehindOfRunnerTo) {
-        this.to = parseFloat((this.to - (options.subViewOptions.runnerToStepsNumber
-          * this.step)).toFixed(this.numberOfCharactersAfterDot));
+      const currentToRemains: number = to % this.step;
+
+      if (currentToRemains && this.numberOfCharactersAfterDot === 0) {
+        this.to = to - currentToRemains;
+      } else {
+        this.to = to;
       }
     } else {
-      this.to = parseFloat((((options.subViewOptions.runnerToPosition
-        + options.subViewOptions.runnerLength / 2) / options.subViewOptions.sliderLength)
-        * (this.max - this.min) + this.min).toFixed(
-        this.numberOfCharactersAfterDot,
-      ));
+      this.to = to;
     }
 
     if (options.subViewOptions.isMaxTo) {

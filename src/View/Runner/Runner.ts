@@ -40,12 +40,28 @@ class Runner {
   };
 
   public calculateMinRunnerPosition = (options: Options): void => {
+    if (options.modelOptions.minRemains !== 0) {
+      this.runnerPosition = ((options.modelOptions.maxRemains
+        / options.modelOptions.step)
+        * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
+
+      return;
+    }
+
     this.runnerPosition = 0 - options.subViewOptions.runnerLength / 2;
 
     this.isMinFrom = this.isMinFrom !== true;
   };
 
   public calculateMaxRunnerPosition = (options: Options): void => {
+    if (options.modelOptions.maxRemains !== 0) {
+      this.runnerPosition = options.subViewOptions.sliderLength
+        - ((options.modelOptions.maxRemains / options.modelOptions.step)
+        * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
+
+      return;
+    }
+
     this.runnerPosition = options.subViewOptions.sliderLength
       - options.subViewOptions.runnerLength / 2;
 

@@ -133,27 +133,23 @@ class Stripe {
       && options.subViewOptions.sliderLength - this.runnerFrom.runnerPosition
       + options.subViewOptions.runnerLength / 2 < options.modelOptions.stepLength;
 
+    if (isRunnerFromPositionLessThanMinimum) {
+      this.runnerFrom.runnerPosition = 0 - options.subViewOptions.runnerLength / 2;
+    } else if (isRunnerFromPositionMoreThanMaximum) {
+      this.runnerFrom.runnerPosition = options.subViewOptions.sliderLength
+        - options.subViewOptions.runnerLength / 2;
+    }
+
     if (isRunnerFromNearMaxWithRemains) {
       this.runnerFrom.runnerPosition = options.subViewOptions.sliderLength
         - ((options.modelOptions.maxRemains / options.modelOptions.step)
         * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
-
-      return;
     }
 
     if (isRunnerFromNearMinWithRemains) {
       this.runnerFrom.runnerPosition = ((options.modelOptions.maxRemains
         / options.modelOptions.step)
         * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
-
-      return;
-    }
-
-    if (isRunnerFromPositionLessThanMinimum) {
-      this.runnerFrom.runnerPosition = 0 - options.subViewOptions.runnerLength / 2;
-    } else if (isRunnerFromPositionMoreThanMaximum) {
-      this.runnerFrom.runnerPosition = options.subViewOptions.sliderLength
-        - options.subViewOptions.runnerLength / 2;
     }
 
     if (isRunnerFromPositionMoreThanRunnerToPosition) {
@@ -168,6 +164,19 @@ class Stripe {
       < this.runnerFrom.runnerPosition;
     const isRunnerToPositionMoreThanMaximum: boolean = this.runnerTo.runnerPosition
       > options.subViewOptions.sliderLength - options.subViewOptions.runnerLength / 2;
+
+    const isRunnerToNearMaxWithRemains: boolean = options.modelOptions.maxRemains !== 0
+      && options.subViewOptions.isCursorNearStepAheadTo
+      && options.subViewOptions.sliderLength - this.runnerTo.runnerPosition
+      + options.subViewOptions.runnerLength / 2 < options.modelOptions.stepLength;
+
+    if (isRunnerToNearMaxWithRemains) {
+      this.runnerTo.runnerPosition = options.subViewOptions.sliderLength
+        - ((options.modelOptions.maxRemains / options.modelOptions.step)
+        * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
+
+      return;
+    }
 
     if (isRunnerFromPositionLessThanRunnerToPosition) {
       this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
