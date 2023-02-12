@@ -22,7 +22,7 @@ html, body {
 .double-slider-container,
 .single-slider-container,
 .vertical-slider-container,
-.simple-slider-container {
+.default-slider-container {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -56,7 +56,7 @@ html, body {
   margin: 100px 0;
 }
 
-.simple-slider-wrapper {
+.default-slider-wrapper {
   width: 650px;
   height: 6px;
   margin: 100px 0;

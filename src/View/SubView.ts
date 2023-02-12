@@ -217,20 +217,17 @@ class SubView {
     this.scaleElementLength = parseInt(`${$target.css(this.getOptions().modelOptions.lengthParameter)}`, 10);
     this.scaleElementValue = Number(targetValue);
 
-    const isRemainsOnScaleValue: boolean = parseFloat((this.scaleElementValue
-        % this.getOptions().modelOptions.step).toFixed(
-      this.getOptions().modelOptions.numberOfCharactersAfterDot,
-    )) !== 0;
+    // const isRemainsOnScaleValue: boolean = parseFloat((this.scaleElementValue
+    //     % this.getOptions().modelOptions.step).toFixed(
+    //   this.getOptions().modelOptions.numberOfCharactersAfterDot,
+    // )) !== 0 && this.getOptions().modelOptions.isStepSet;
 
-    // && `${(this.scaleElementValue / this.getOptions().modelOptions.step)}`.split('.')[1]?.length
-    //     === this.getOptions().modelOptions.numberOfCharactersAfterDot;
+    // if (isRemainsOnScaleValue) {
+    //   this.isScaleElementOnDown = false;
+    //   this.scaleElementValue = 0;
 
-    if (isRemainsOnScaleValue) {
-      this.isScaleElementOnDown = false;
-      this.scaleElementValue = 0;
-
-      return;
-    }
+    //   return;
+    // }
 
     if (this.scaleElementValue === this.getOptions().modelOptions.max
           && this.getOptions().modelOptions.double) {
@@ -255,6 +252,9 @@ class SubView {
     this.stripe.isClickAheadOfRunnerTo = false;
     this.stripe.isClickBehindOfRunnerTo = false;
     this.stripe.isClickForRunnerTo = false;
+    this.runnerFrom.isMinFrom = false;
+    this.runnerFrom.isMaxFrom = false;
+    this.runnerTo.isMaxTo = false;
   };
 
   public getSubViewOptions = (): SubViewOptions => {

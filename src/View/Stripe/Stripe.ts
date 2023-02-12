@@ -142,12 +142,12 @@ class Stripe {
 
     if (isRunnerFromNearMaxWithRemains) {
       this.runnerFrom.runnerPosition = options.subViewOptions.sliderLength
-        - ((options.modelOptions.maxRemains / options.modelOptions.step)
+        - ((Math.abs(options.modelOptions.maxRemains) / options.modelOptions.step)
         * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
     }
 
     if (isRunnerFromNearMinWithRemains) {
-      this.runnerFrom.runnerPosition = ((options.modelOptions.maxRemains
+      this.runnerFrom.runnerPosition = ((Math.abs(options.modelOptions.minRemains)
         / options.modelOptions.step)
         * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
     }
@@ -172,7 +172,7 @@ class Stripe {
 
     if (isRunnerToNearMaxWithRemains) {
       this.runnerTo.runnerPosition = options.subViewOptions.sliderLength
-        - ((options.modelOptions.maxRemains / options.modelOptions.step)
+        - (((options.modelOptions.maxRemains) / options.modelOptions.step)
         * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
 
       return;

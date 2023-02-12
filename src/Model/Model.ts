@@ -138,7 +138,9 @@ class Model {
       && this.step > -(this.min - this.max);
     const isStepIncorrect: boolean = isLimitsPositiveAndStepMoreThanDifference
       || isLimitsNegativeAndStepMoreThanDifference
-      || this.step < 0;
+      || this.step < 0
+      || (this.step > Math.abs(this.min) && this.step > Math.abs(this.max))
+      || Math.floor(Math.abs(this.max - this.min) / this.step) <= 1;
 
     if (this.min > this.max) {
       const { min } = this;
@@ -179,16 +181,67 @@ class Model {
     this.minRemains = parseFloat((this.min % this.step).toFixed(this.numberOfCharactersAfterDot));
     this.maxRemains = parseFloat((this.max % this.step).toFixed(this.numberOfCharactersAfterDot));
 
-    if (Math.abs(this.minRemains) === Math.abs(this.step)) this.minRemains = 0;
-    if (Math.abs(this.maxRemains) === Math.abs(this.step)) this.maxRemains = 0;
+    if (this.min > 0 && this.isStepSet) {
+      this.minRemains = this.step - this.min;
+    }
 
-    // const isRemainsReal = `${(this.from / this.step)}`.split('.')[1]?.length === this.numberOfCharactersAfterDot || 0;
-    // const isRemainsCorrect: boolean = this.remains !== 0;
+    if (Math.abs(this.fromRemains) === Math.abs(this.step)) this.fromRemains = 0;
+    if (Math.abs(this.toRemains) === Math.abs(this.step)) this.toRemains = 0;
 
-    // if (isRemainsCorrect && isRemainsReal) {
-      this.from -= this.fromRemains;
-      this.to -= this.toRemains;
-    // }
+    const fromCharactersAfterDot: number = `${this.from}`.split('.')[1]?.length;
+    const toCharactersAfterDot: number = `${this.to}`.split('.')[1]?.length;
+    const stepCharactersAfterDot: number = `${this.step}`.split('.')[1]?.length;
+
+    const isFromMatchWithStep: boolean = this.isStepSet
+      && (fromCharactersAfterDot || 0) !== (stepCharactersAfterDot || 0)
+      && this.fromRemains !== 0;
+    const isToMatchWithStep: boolean = this.isStepSet
+      && (toCharactersAfterDot || 0) !== (stepCharactersAfterDot || 0)
+      && this.toRemains !== 0;
+
+    if (isFromMatchWithStep) {
+      this.fromRemains = this.from % this.step;
+    }
+
+    if (isToMatchWithStep) {
+      this.toRemains = this.to % this.step;
+    }
+
+    if (Math.abs(this.minRemains) === Math.abs(this.step)) {
+      this.minRemains = 0;
+    } else if (Math.abs(this.min) < Math.abs(this.step) && this.min < 0) {
+      this.minRemains = Math.abs(this.step) - Math.abs(this.min);
+    }
+    if (Math.abs(this.maxRemains) === Math.abs(this.step)) {
+      this.maxRemains = 0;
+    } else if (Math.abs(this.max) < Math.abs(this.step) && this.max < 0) {
+      this.maxRemains = Math.abs(this.step) - Math.abs(this.max);
+    }
+
+    this.from -= this.fromRemains;
+    this.to -= this.toRemains;
+
+    const isFromEqualZeroWithNegativeLimins: boolean = this.from === 0
+      && this.min < 0 && this.max < 0;
+    const isFromEqualZeroWithPositiveLimins: boolean = this.from === 0
+      && this.min > 0 && this.max > 0;
+    const isToEqualZeroWithNegativeLimins: boolean = this.to === 0
+      && this.min < 0 && this.max < 0;
+    const isToEqualZeroWithPositiveLimins: boolean = this.to === 0
+      && this.min > 0 && this.max > 0;
+
+    if (isFromEqualZeroWithNegativeLimins) {
+      this.from -= this.step;
+    }
+    if (isFromEqualZeroWithPositiveLimins) {
+      this.from += this.step;
+    }
+    if (isToEqualZeroWithNegativeLimins) {
+      this.to -= this.step;
+    }
+    if (isToEqualZeroWithPositiveLimins) {
+      this.to += this.step;
+    }
   };
 
   public setPositionParameters = (): void => {
@@ -278,6 +331,8 @@ class Model {
     const isFromLessThanMinimum: boolean = this.from < this.min;
     const isIntervalAndFromMoreThanTo: boolean = this.double && this.from > this.to;
     const isFromMoreThanMaximum: boolean = this.from > this.max;
+    const isFromMoreThanMaxRemains: boolean = this.from > this.max - this.maxRemains;
+    const isFromLessThanMinRemains: boolean = this.from < this.min + this.minRemains;
 
     if (isFromLessThanMinimum) {
       this.from = this.min;
@@ -285,6 +340,12 @@ class Model {
       this.from = this.to;
     } else if (isFromMoreThanMaximum) {
       this.from = this.max;
+    }
+
+    if (isFromMoreThanMaxRemains) {
+      this.from = this.max - this.maxRemains;
+    } else if (isFromLessThanMinRemains) {
+      this.from = this.min + this.minRemains;
     }
   };
 
@@ -325,11 +386,16 @@ class Model {
 
     const isToLessThanFrom: boolean = this.to < this.from;
     const isToMoreThanMaximum: boolean = this.to > this.max;
+    const isToMoreThanMaxRemains: boolean = this.to > this.max - this.maxRemains;
 
     if (isToLessThanFrom) {
       this.to = this.from;
     } else if (isToMoreThanMaximum) {
       this.to = this.max;
+    }
+
+    if (isToMoreThanMaxRemains) {
+      this.to = this.max - this.maxRemains;
     }
   };
 
@@ -369,32 +435,10 @@ class Model {
   };
 
   public calculateScaleElementsNumber = (): void => {
-    const isDifferenceBetweenMaxMinValuesLessOrEqualToOne: boolean = this.max - this.min
-      <= 1 && this.numberOfCharactersAfterDot === 0;
-    const isDifferenceBetweenMaxMinValuesLessOrEqualToTwo: boolean = this.max - this.min
-      <= 2 && this.numberOfCharactersAfterDot === 0;
-    const isDifferenceBetweenMaxMinValuesLessOrEqualToFour: boolean = this.max - this.min
-      <= 4 && this.numberOfCharactersAfterDot === 0;
-    const isDifferenceBetweenMaxMinValuesLessThanTen: boolean = this.max - this.min < 10;
-    const isMinValueNegativeMaxValuePositive: boolean = this.min < 0 && this.max > 0;
-    const isMinOrMaxFourDigit: boolean = (Math.abs(this.min) > 999 && Math.abs(this.min) < 10000)
-    || (Math.abs(this.max) > 999 && Math.abs(this.max) < 10000);
-    const isMinOrMaxFiveDigit: boolean = Math.abs(this.min) > 9999 || Math.abs(this.max) > 9999;
-
     if (this.userConfig.scaleNumber) {
       this.scaleNumber = this.userConfig.scaleNumber;
-    } else if (isDifferenceBetweenMaxMinValuesLessOrEqualToOne) {
-      this.scaleNumber = 2;
-    } else if (isDifferenceBetweenMaxMinValuesLessOrEqualToTwo) {
-      this.scaleNumber = 3;
-    } else if (isDifferenceBetweenMaxMinValuesLessOrEqualToFour || isMinOrMaxFiveDigit) {
-      this.scaleNumber = 4;
-    } else if (isDifferenceBetweenMaxMinValuesLessThanTen || isMinOrMaxFourDigit) {
-      this.scaleNumber = 5;
-    } else if (isMinValueNegativeMaxValuePositive) {
-      this.scaleNumber = 11;
     } else {
-      this.scaleNumber = 5;
+      this.scaleNumber = 2;
     }
   };
 

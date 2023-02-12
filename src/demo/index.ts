@@ -13,9 +13,10 @@ $(document).ready(() => {
     showScale: true,
     min: -12.5,
     max: 12.5,
-    step: 5,
+    step: 2.5,
     from: -5.5,
     to: 5,
+    scaleNumber: 11,
   });
 
   const pooshkaSliderSingle = new PooshkaSlider('.js-single-slider-container');
@@ -42,7 +43,7 @@ $(document).ready(() => {
     double: true,
     vertical: true,
     showTooltip: true,
-    showLimit: false,
+    showLimit: true,
     showRange: true,
     showScale: true,
     min: -125,
@@ -53,7 +54,7 @@ $(document).ready(() => {
     scaleNumber: 7,
   });
 
-  const pooshkaSliderSimple = new PooshkaSlider('.js-simple-slider-container');
+  const pooshkaSliderDefault = new PooshkaSlider('.js-default-slider-container');
 
-  pooshkaSliderSimple.initializePlugin();
+  pooshkaSliderDefault.initializePlugin();
 });

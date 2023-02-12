@@ -197,6 +197,7 @@ class Presenter {
     this.model.to = value;
     this.model.restrictTo();
     this.model.validateInitialValues();
+    this.model.calculateRemains();
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
