@@ -66,7 +66,8 @@ class Presenter {
     this.view.SubView.runnerFrom.setRunnerPosition(this.model.getOptions());
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.runnerTo.setRunnerPosition(this.model.getOptions());
-    this.updateModel(this.view.SubView.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+    // this.updateModel(this.view.SubView.getOptions());
     this.view.SubView.range.calculateRangePosition(this.model.getOptions());
     this.view.SubView.range.setRangePosition(this.model.getOptions());
     this.view.SubView.range.calculateRangeLength(this.model.getOptions());

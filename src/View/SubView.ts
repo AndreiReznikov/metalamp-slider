@@ -357,9 +357,9 @@ class SubView {
     this.lastPoint.x = pageX1;
     this.lastPoint.y = pageY1;
 
-    const clientAxis: number = this.getOptions().modelOptions.vertical ? pageY1 : pageX1;
+    const pageAxis: number = this.getOptions().modelOptions.vertical ? pageY1 : pageX1;
 
-    this.clickPosition = clientAxis - this.sliderPosition;
+    this.clickPosition = pageAxis - this.sliderPosition;
   };
 
   private getCoords = (element: JQuery<HTMLElement>): number => {

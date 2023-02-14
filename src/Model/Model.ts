@@ -174,6 +174,11 @@ class Model {
   };
 
   public calculateRemains = (): void => {
+    this.fromRemains = 0;
+    this.toRemains = 0;
+    this.minRemains = 0;
+    this.maxRemains = 0;
+
     if (!this.isStepSet) return;
 
     this.fromRemains = parseFloat((this.from % this.step).toFixed(this.numberOfCharactersAfterDot));
@@ -182,7 +187,7 @@ class Model {
     this.maxRemains = parseFloat((this.max % this.step).toFixed(this.numberOfCharactersAfterDot));
 
     if (this.min > 0 && this.isStepSet) {
-      this.minRemains = this.step - this.min;
+      this.minRemains = this.step - this.minRemains;
     }
 
     if (Math.abs(this.fromRemains) === Math.abs(this.step)) this.fromRemains = 0;
@@ -210,12 +215,21 @@ class Model {
     if (Math.abs(this.minRemains) === Math.abs(this.step)) {
       this.minRemains = 0;
     } else if (Math.abs(this.min) < Math.abs(this.step) && this.min < 0) {
-      this.minRemains = Math.abs(this.step) - Math.abs(this.min);
+      this.minRemains = this.step - (Math.abs(this.step) - Math.abs(this.min));
     }
+
+    const isNegativeMaxLessThanStep: boolean = Math.abs(this.max) < Math.abs(this.step)
+      && this.max < 0 && this.maxRemains !== 0;
+    const isNegativeMaxMoreThanStep: boolean = Math.abs(this.max) > Math.abs(this.step)
+      && this.max < 0 && this.maxRemains !== 0;
+
     if (Math.abs(this.maxRemains) === Math.abs(this.step)) {
       this.maxRemains = 0;
-    } else if (Math.abs(this.max) < Math.abs(this.step) && this.max < 0) {
+    } else if (isNegativeMaxLessThanStep) {
       this.maxRemains = Math.abs(this.step) - Math.abs(this.max);
+    } else if (isNegativeMaxMoreThanStep) {
+      this.maxRemains = (Math.trunc(Math.abs(this.max) / Math.abs(this.step))
+        * this.step + this.step) - Math.abs(this.max);
     }
 
     this.from -= this.fromRemains;
@@ -300,10 +314,14 @@ class Model {
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
     if (this.isStepSet) {
-      const currentFromRemains: number = from % this.step;
+      const currentFromRemains: number = parseFloat(
+        (from % this.step).toFixed(this.numberOfCharactersAfterDot),
+      );
 
-      if (currentFromRemains && this.numberOfCharactersAfterDot === 0) {
-        this.from = from - currentFromRemains;
+      if (currentFromRemains !== 0 && Math.abs(currentFromRemains) !== this.step) {
+        this.from = parseFloat(
+          (from - currentFromRemains).toFixed(this.numberOfCharactersAfterDot),
+        );
       } else {
         this.from = from;
       }
@@ -331,8 +349,10 @@ class Model {
     const isFromLessThanMinimum: boolean = this.from < this.min;
     const isIntervalAndFromMoreThanTo: boolean = this.double && this.from > this.to;
     const isFromMoreThanMaximum: boolean = this.from > this.max;
-    const isFromMoreThanMaxRemains: boolean = this.from > this.max - this.maxRemains;
-    const isFromLessThanMinRemains: boolean = this.from < this.min + this.minRemains;
+    const isFromMoreThanMaxRemains: boolean = this.from > this.max - this.maxRemains
+      && this.isStepSet;
+    const isFromLessThanMinRemains: boolean = this.from < this.min + this.minRemains
+      && this.isStepSet;
 
     if (isFromLessThanMinimum) {
       this.from = this.min;
@@ -357,10 +377,14 @@ class Model {
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
     if (this.isStepSet) {
-      const currentToRemains: number = to % this.step;
+      const currentToRemains: number = parseFloat(
+        (to % this.step).toFixed(this.numberOfCharactersAfterDot),
+      );
 
-      if (currentToRemains && this.numberOfCharactersAfterDot === 0) {
-        this.to = to - currentToRemains;
+      if (currentToRemains !== 0 && Math.abs(currentToRemains) !== this.step) {
+        this.to = parseFloat(
+          (to - currentToRemains).toFixed(this.numberOfCharactersAfterDot),
+        );
       } else {
         this.to = to;
       }
@@ -382,11 +406,9 @@ class Model {
   };
 
   public restrictTo = (): void => {
-    if (!this.double) return;
-
     const isToLessThanFrom: boolean = this.to < this.from;
     const isToMoreThanMaximum: boolean = this.to > this.max;
-    const isToMoreThanMaxRemains: boolean = this.to > this.max - this.maxRemains;
+    const isToMoreThanMaxRemains: boolean = this.to > this.max - this.maxRemains && this.isStepSet;
 
     if (isToLessThanFrom) {
       this.to = this.from;

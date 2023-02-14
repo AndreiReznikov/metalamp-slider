@@ -41,7 +41,7 @@ class Runner {
 
   public calculateMinRunnerPosition = (options: Options): void => {
     if (options.modelOptions.minRemains !== 0) {
-      this.runnerPosition = ((options.modelOptions.maxRemains
+      this.runnerPosition = ((Math.abs(options.modelOptions.minRemains)
         / options.modelOptions.step)
         * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
 
@@ -56,7 +56,7 @@ class Runner {
   public calculateMaxRunnerPosition = (options: Options): void => {
     if (options.modelOptions.maxRemains !== 0) {
       this.runnerPosition = options.subViewOptions.sliderLength
-        - ((options.modelOptions.maxRemains / options.modelOptions.step)
+        - ((Math.abs(options.modelOptions.maxRemains) / options.modelOptions.step)
         * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
 
       return;

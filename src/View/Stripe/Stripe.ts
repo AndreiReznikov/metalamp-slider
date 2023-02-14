@@ -244,7 +244,7 @@ class Stripe {
     }
   };
 
-  private joinTooltips = (options: Options): void => {
+  public joinTooltips = (options: Options): void => {
     this.areTooltipsClose = options.modelOptions.double
       && this.tooltipFrom.tooltipPosition
       + this.tooltipFrom.tooltipLength
