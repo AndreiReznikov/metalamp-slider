@@ -58,20 +58,19 @@ class Stripe {
   }
 
   public calculateRunnerPositionAfterSliderOnDown = (options: Options): void => {
+    const { runnerLength, clickPosition } = options.subViewOptions;
+    const { stepLength, isStepSet } = options.modelOptions;
+
     const intervalForRunnerFromSteps: number = this.runnerFrom.runnerPosition
-      + options.subViewOptions.runnerLength
-      / 2 - options.subViewOptions.clickPosition;
-    this.runnerFromStepsNumber = Math.round(intervalForRunnerFromSteps
-      / options.modelOptions.stepLength);
+      + runnerLength / 2 - clickPosition;
+    this.runnerFromStepsNumber = Math.round(intervalForRunnerFromSteps / stepLength);
 
     this.runnerFromStepsNumber = this.runnerFromStepsNumber < 0
       ? -this.runnerFromStepsNumber : this.runnerFromStepsNumber;
 
     const intervalForRunnerToSteps: number = this.runnerTo.runnerPosition
-      + options.subViewOptions.runnerLength
-      / 2 - options.subViewOptions.clickPosition;
-    this.runnerToStepsNumber = Math.round(intervalForRunnerToSteps
-      / options.modelOptions.stepLength);
+      + runnerLength / 2 - clickPosition;
+    this.runnerToStepsNumber = Math.round(intervalForRunnerToSteps / stepLength);
 
     this.runnerToStepsNumber = this.runnerToStepsNumber < 0
       ? -this.runnerToStepsNumber : this.runnerToStepsNumber;
@@ -79,77 +78,78 @@ class Stripe {
     this.defineClickLocation(options);
     this.alignRunners(options);
 
-    if (options.modelOptions.isStepSet) {
+    if (isStepSet) {
       if (this.isClickAheadOfRunnerFrom) {
-        this.runnerFrom.runnerPosition += this.runnerFromStepsNumber
-          * options.modelOptions.stepLength;
+        this.runnerFrom.runnerPosition += this.runnerFromStepsNumber * stepLength;
       } else if (this.isClickBehindOfRunnerFrom) {
-        this.runnerFrom.runnerPosition -= this.runnerFromStepsNumber
-          * options.modelOptions.stepLength;
+        this.runnerFrom.runnerPosition -= this.runnerFromStepsNumber * stepLength;
       } else if (this.isClickAheadOfRunnerTo) {
-        this.runnerTo.runnerPosition += this.runnerToStepsNumber
-          * options.modelOptions.stepLength;
+        this.runnerTo.runnerPosition += this.runnerToStepsNumber * stepLength;
       } else if (this.isClickBehindOfRunnerTo) {
-        this.runnerTo.runnerPosition -= this.runnerToStepsNumber
-        * options.modelOptions.stepLength;
+        this.runnerTo.runnerPosition -= this.runnerToStepsNumber * stepLength;
       }
     } else if (this.isClickForRunnerFrom) {
-      this.runnerFrom.runnerPosition = options.subViewOptions.clickPosition
-        - options.subViewOptions.runnerLength / 2;
+      this.runnerFrom.runnerPosition = clickPosition - runnerLength / 2;
     } else if (this.isClickForRunnerTo) {
-      this.runnerTo.runnerPosition = options.subViewOptions.clickPosition
-        - options.subViewOptions.runnerLength / 2;
+      this.runnerTo.runnerPosition = clickPosition - runnerLength / 2;
     }
   };
 
   public calculateRunnerPositionAfterScaleOnDown = (options: Options): void => {
+    const { scaleElementPosition, scaleElementLength, runnerLength } = options.subViewOptions;
     this.defineClickLocation(options);
 
     if (this.isClickForRunnerFrom) {
-      this.runnerFrom.runnerPosition = options.subViewOptions.scaleElementPosition
-        + options.subViewOptions.scaleElementLength
-        / 2 - options.subViewOptions.runnerLength / 2;
+      this.runnerFrom.runnerPosition = scaleElementPosition
+        + scaleElementLength / 2 - runnerLength / 2;
     } else if (this.isClickForRunnerTo) {
-      this.runnerTo.runnerPosition = options.subViewOptions.scaleElementPosition
-        + options.subViewOptions.scaleElementLength
-        / 2 - options.subViewOptions.runnerLength / 2;
+      this.runnerTo.runnerPosition = scaleElementPosition
+        + scaleElementLength / 2 - runnerLength / 2;
     }
   };
 
   public restrictRunnerFromPosition = (options: Options): void => {
+    const {
+      runnerLength,
+      sliderLength,
+      isCursorNearStepAheadFrom,
+      isCursorNearStepBehindFrom,
+    } = options.subViewOptions;
+    const {
+      double, minRemains, stepLength, maxRemains, step,
+    } = options.modelOptions;
+
     const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFrom.runnerPosition
-      < 0 - options.subViewOptions.runnerLength / 2;
+      < 0 - runnerLength / 2;
     const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition
-      > options.subViewOptions.sliderLength - options.subViewOptions.runnerLength / 2;
+      > sliderLength - runnerLength / 2;
     const
-      isRunnerFromPositionMoreThanRunnerToPosition: boolean = options.modelOptions.double
+      isRunnerFromPositionMoreThanRunnerToPosition: boolean = double
       && this.runnerFrom.runnerPosition > this.runnerTo.runnerPosition;
-    const isRunnerFromNearMinWithRemains: boolean = options.modelOptions.minRemains !== 0
-      && options.subViewOptions.isCursorNearStepBehindFrom
-      && this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength
-      / 2 < options.modelOptions.stepLength;
-    const isRunnerFromNearMaxWithRemains: boolean = options.modelOptions.maxRemains !== 0
-      && options.subViewOptions.isCursorNearStepAheadFrom
-      && options.subViewOptions.sliderLength - this.runnerFrom.runnerPosition
-      + options.subViewOptions.runnerLength / 2 < options.modelOptions.stepLength;
+    const isRunnerFromNearMinWithRemains: boolean = minRemains !== 0
+      && isCursorNearStepBehindFrom
+      && this.runnerFrom.runnerPosition + runnerLength
+      / 2 < stepLength;
+    const isRunnerFromNearMaxWithRemains: boolean = maxRemains !== 0
+      && isCursorNearStepAheadFrom
+      && sliderLength - this.runnerFrom.runnerPosition
+      + runnerLength / 2 < stepLength;
 
     if (isRunnerFromPositionLessThanMinimum) {
-      this.runnerFrom.runnerPosition = 0 - options.subViewOptions.runnerLength / 2;
+      this.runnerFrom.runnerPosition = 0 - runnerLength / 2;
     } else if (isRunnerFromPositionMoreThanMaximum) {
-      this.runnerFrom.runnerPosition = options.subViewOptions.sliderLength
-        - options.subViewOptions.runnerLength / 2;
+      this.runnerFrom.runnerPosition = sliderLength - runnerLength / 2;
     }
 
     if (isRunnerFromNearMaxWithRemains) {
-      this.runnerFrom.runnerPosition = options.subViewOptions.sliderLength
-        - ((Math.abs(options.modelOptions.maxRemains) / options.modelOptions.step)
-        * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
+      this.runnerFrom.runnerPosition = sliderLength
+        - ((Math.abs(maxRemains) / step)
+        * stepLength) - runnerLength / 2;
     }
 
     if (isRunnerFromNearMinWithRemains) {
-      this.runnerFrom.runnerPosition = ((Math.abs(options.modelOptions.minRemains)
-        / options.modelOptions.step)
-        * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
+      this.runnerFrom.runnerPosition = ((Math.abs(minRemains)
+        / step) * stepLength) - runnerLength / 2;
     }
 
     if (isRunnerFromPositionMoreThanRunnerToPosition) {
@@ -160,20 +160,23 @@ class Stripe {
   };
 
   public restrictRunnerToPosition = (options: Options): void => {
+    const { maxRemains, stepLength, step } = options.modelOptions;
+    const { sliderLength, runnerLength, isCursorNearStepAheadTo } = options.subViewOptions;
+
     const isRunnerFromPositionLessThanRunnerToPosition: boolean = this.runnerTo.runnerPosition
       < this.runnerFrom.runnerPosition;
     const isRunnerToPositionMoreThanMaximum: boolean = this.runnerTo.runnerPosition
-      > options.subViewOptions.sliderLength - options.subViewOptions.runnerLength / 2;
+      > sliderLength - runnerLength / 2;
 
-    const isRunnerToNearMaxWithRemains: boolean = options.modelOptions.maxRemains !== 0
-      && options.subViewOptions.isCursorNearStepAheadTo
-      && options.subViewOptions.sliderLength - this.runnerTo.runnerPosition
-      + options.subViewOptions.runnerLength / 2 < options.modelOptions.stepLength;
+    const isRunnerToNearMaxWithRemains: boolean = maxRemains !== 0
+      && isCursorNearStepAheadTo
+      && sliderLength - this.runnerTo.runnerPosition
+      + runnerLength / 2 < stepLength;
 
     if (isRunnerToNearMaxWithRemains) {
-      this.runnerTo.runnerPosition = options.subViewOptions.sliderLength
-        - (((options.modelOptions.maxRemains) / options.modelOptions.step)
-        * options.modelOptions.stepLength) - options.subViewOptions.runnerLength / 2;
+      this.runnerTo.runnerPosition = sliderLength
+        - (((maxRemains) / step)
+        * stepLength) - runnerLength / 2;
 
       return;
     }
@@ -181,15 +184,17 @@ class Stripe {
     if (isRunnerFromPositionLessThanRunnerToPosition) {
       this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
     } else if (isRunnerToPositionMoreThanMaximum) {
-      this.runnerTo.runnerPosition = options.subViewOptions.sliderLength
-        - options.subViewOptions.runnerLength / 2;
+      this.runnerTo.runnerPosition = sliderLength - runnerLength / 2;
     }
 
     this.joinTooltips(options);
   };
 
   public showLimit = (options: Options): void => {
-    if (!options.modelOptions.showLimit) return;
+    const { showLimit, double } = options.modelOptions;
+    const { runnerLength, sliderLength } = options.subViewOptions;
+
+    if (!showLimit) return;
 
     this.isLimitMinShown = true;
     this.isLimitMaxShown = true;
@@ -197,12 +202,12 @@ class Stripe {
     const isTooltipFromNearLimitMin: boolean = this.runnerFrom.runnerPosition
       <= 0;
     const isTooltipFromNearLimitMax: boolean = this.runnerFrom.runnerPosition
-      + options.subViewOptions.runnerLength
-      > options.subViewOptions.sliderLength;
-    const isTooltipToNearLimitMax: boolean = options.modelOptions.double
+      + runnerLength
+      > sliderLength;
+    const isTooltipToNearLimitMax: boolean = double
       && this.runnerTo.runnerPosition
-      + options.subViewOptions.runnerLength
-      > options.subViewOptions.sliderLength;
+      + runnerLength
+      > sliderLength;
 
     if (isTooltipFromNearLimitMin) {
       this.isLimitMinShown = false;
@@ -214,16 +219,19 @@ class Stripe {
   };
 
   public restrictRunnerPositionAfterSliderOnDown = (options: Options): void => {
-    if (!options.modelOptions.isStepSet) return;
+    const { isStepSet, stepLength, double } = options.modelOptions;
+    const { sliderLength, clickPosition } = options.subViewOptions;
 
-    const isClickNearMinimum: boolean = options.subViewOptions.clickPosition
-      < options.modelOptions.stepLength / 2;
-    const isClickNearMaximumWithoutInterval: boolean = options.subViewOptions.sliderLength
-    - options.subViewOptions.clickPosition < options.modelOptions.stepLength / 2
-    && !options.modelOptions.double;
-    const isClickNearMaximum: boolean = options.subViewOptions.sliderLength
-      - options.subViewOptions.clickPosition < options.modelOptions.stepLength / 2
-      && options.modelOptions.double;
+    if (!isStepSet) return;
+
+    const isClickNearMinimum: boolean = clickPosition
+      < stepLength / 2;
+    const isClickNearMaximumWithoutInterval: boolean = sliderLength
+      - clickPosition < stepLength / 2
+      && !double;
+    const isClickNearMaximum: boolean = sliderLength
+      - clickPosition < stepLength / 2
+      && double;
 
     if (isClickNearMaximumWithoutInterval) {
       this.runnerFrom.calculateMaxRunnerPosition(options);
@@ -245,48 +253,55 @@ class Stripe {
   };
 
   public joinTooltips = (options: Options): void => {
-    this.areTooltipsClose = options.modelOptions.double
+    const { double } = options.modelOptions;
+
+    this.areTooltipsClose = double
       && this.tooltipFrom.tooltipPosition
       + this.tooltipFrom.tooltipLength
       > this.tooltipTo.tooltipPosition;
   };
 
   private defineClickLocation = (options: Options): void => {
-    const isClickAheadOfRunnerFromWithInterval = options.subViewOptions.clickPosition
-      > this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength
-      && options.subViewOptions.clickPosition
-      < this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength
-      + (this.runnerTo.runnerPosition - this.runnerFrom.runnerPosition
-        - options.subViewOptions.runnerLength) / 2;
-    const isClickAheadOfRunnerFromWithoutInterval = options.subViewOptions.clickPosition
-      > this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength;
+    const { clickPosition, runnerLength } = options.subViewOptions;
+    const { double } = options.modelOptions;
 
-    this.isClickAheadOfRunnerFrom = options.modelOptions.double
+    const isClickAheadOfRunnerFromWithInterval = clickPosition
+      > this.runnerFrom.runnerPosition + runnerLength
+      && clickPosition
+      < this.runnerFrom.runnerPosition + runnerLength
+      + (this.runnerTo.runnerPosition - this.runnerFrom.runnerPosition
+      - runnerLength) / 2;
+    const isClickAheadOfRunnerFromWithoutInterval = clickPosition
+      > this.runnerFrom.runnerPosition + runnerLength;
+
+    this.isClickAheadOfRunnerFrom = double
       ? isClickAheadOfRunnerFromWithInterval : isClickAheadOfRunnerFromWithoutInterval;
-    this.isClickBehindOfRunnerFrom = options.subViewOptions.clickPosition
+    this.isClickBehindOfRunnerFrom = clickPosition
       < this.runnerFrom.runnerPosition;
     this.isClickForRunnerFrom = this.isClickAheadOfRunnerFrom || this.isClickBehindOfRunnerFrom;
 
-    if (!options.modelOptions.double) return;
+    if (!double) return;
 
-    this.isClickAheadOfRunnerTo = options.subViewOptions.clickPosition
-      > this.runnerTo.runnerPosition + options.subViewOptions.runnerLength;
-    this.isClickBehindOfRunnerTo = options.subViewOptions.clickPosition
-      < this.runnerTo.runnerPosition && options.subViewOptions.clickPosition
-      >= this.runnerFrom.runnerPosition + options.subViewOptions.runnerLength
+    this.isClickAheadOfRunnerTo = clickPosition
+      > this.runnerTo.runnerPosition + runnerLength;
+    this.isClickBehindOfRunnerTo = clickPosition
+      < this.runnerTo.runnerPosition && clickPosition
+      >= this.runnerFrom.runnerPosition + runnerLength
       + (this.runnerTo.runnerPosition - this.runnerFrom.runnerPosition
-        - options.subViewOptions.runnerLength) / 2;
+      - runnerLength) / 2;
     this.isClickForRunnerTo = this.isClickAheadOfRunnerTo || this.isClickBehindOfRunnerTo;
   };
 
   private alignRunners = (options: Options): void => {
-    const isRunnerFromNearRunnerTo: boolean = options.modelOptions.double
+    const { double, stepLength } = options.modelOptions;
+
+    const isRunnerFromNearRunnerTo: boolean = double
       && Math.floor(this.runnerTo.runnerPosition
-      - this.runnerFrom.runnerPosition) <= Math.round(options.modelOptions.stepLength)
+      - this.runnerFrom.runnerPosition) <= Math.round(stepLength)
       && this.isClickAheadOfRunnerFrom;
-    const isRunnerToNearRunnerFrom: boolean = options.modelOptions.double
+    const isRunnerToNearRunnerFrom: boolean = double
       && Math.floor(this.runnerTo.runnerPosition
-      - this.runnerFrom.runnerPosition) <= Math.round(options.modelOptions.stepLength)
+      - this.runnerFrom.runnerPosition) <= Math.round(stepLength)
       && this.isClickBehindOfRunnerTo;
 
     if (isRunnerToNearRunnerFrom) {

@@ -309,8 +309,19 @@ class Model {
   };
 
   public calculateFrom = (options: Options): void => {
-    const from = parseFloat((((options.subViewOptions.runnerFromPosition
-      + options.subViewOptions.runnerLength / 2) / options.subViewOptions.sliderLength)
+    const {
+      runnerFromPosition,
+      runnerLength,
+      sliderLength,
+      isMinFrom,
+      isMaxFrom,
+      isScaleElementOnDown,
+      isClickForRunnerFrom,
+      scaleElementValue,
+    } = options.subViewOptions;
+
+    const from = parseFloat((((runnerFromPosition
+      + runnerLength / 2) / sliderLength)
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
     if (this.isStepSet) {
@@ -329,15 +340,15 @@ class Model {
       this.from = from;
     }
 
-    if (options.subViewOptions.isMinFrom) {
+    if (isMinFrom) {
       this.from = this.min;
     }
-    if (options.subViewOptions.isMaxFrom) {
+    if (isMaxFrom) {
       this.from = this.max;
     }
-    if (options.subViewOptions.isScaleElementOnDown
-        && options.subViewOptions.isClickForRunnerFrom) {
-      this.from = Number(options.subViewOptions.scaleElementValue);
+    if (isScaleElementOnDown
+        && isClickForRunnerFrom) {
+      this.from = Number(scaleElementValue);
     }
 
     this.restrictFrom();
@@ -372,8 +383,18 @@ class Model {
   public calculateTo = (options: Options): void => {
     if (!this.double) return;
 
-    const to = parseFloat((((options.subViewOptions.runnerToPosition
-      + options.subViewOptions.runnerLength / 2) / options.subViewOptions.sliderLength)
+    const {
+      runnerToPosition,
+      runnerLength,
+      sliderLength,
+      isMaxTo,
+      isScaleElementOnDown,
+      isClickForRunnerTo,
+      scaleElementValue,
+    } = options.subViewOptions;
+
+    const to = parseFloat((((runnerToPosition
+      + runnerLength / 2) / sliderLength)
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
     if (this.isStepSet) {
@@ -392,12 +413,12 @@ class Model {
       this.to = to;
     }
 
-    if (options.subViewOptions.isMaxTo) {
+    if (isMaxTo) {
       this.to = this.max;
     }
-    if (options.subViewOptions.isScaleElementOnDown
-      && options.subViewOptions.isClickForRunnerTo) {
-      this.to = Number(options.subViewOptions.scaleElementValue);
+    if (isScaleElementOnDown
+      && isClickForRunnerTo) {
+      this.to = Number(scaleElementValue);
     }
 
     this.restrictTo();

@@ -58,16 +58,20 @@ class View {
   }
 
   public initializeView = (options: Options): void => {
+    const {
+      showRange, showLimit, showScale, showTooltip, double,
+    } = options.modelOptions;
+
     this.$slider.css({ width: '100%', height: '100%', 'box-sizing': 'border-box' });
     this.$stripe.css({ width: '100%', height: '100%' });
 
-    if (options.modelOptions.showRange) {
+    if (showRange) {
       this.$range.css('display', 'block');
     } else {
       this.$range.css('display', 'none');
     }
 
-    if (options.modelOptions.showLimit) {
+    if (showLimit) {
       this.$limitMin.css('display', 'flex');
       this.$limitMax.css('display', 'flex');
     } else {
@@ -75,22 +79,22 @@ class View {
       this.$limitMax.css('display', 'none');
     }
 
-    if (options.modelOptions.showScale) {
+    if (showScale) {
       this.$scaleContainer.css('display', 'flex');
     } else {
       this.$scaleContainer.css('display', 'none');
     }
 
-    if (options.modelOptions.double) {
+    if (double) {
       this.$runnerTo.css('display', 'block');
     } else {
       this.$runnerTo.css('display', 'none');
     }
 
-    if (options.modelOptions.showTooltip) {
+    if (showTooltip) {
       this.$tooltipFrom.css('display', 'flex');
 
-      if (options.modelOptions.double) {
+      if (double) {
         this.$tooltipTo.css('display', 'flex');
       } else {
         this.$tooltipTo.css('display', 'none');
@@ -102,6 +106,9 @@ class View {
   };
 
   public setPlane = (options: Options): void => {
+    const { vertical } = options.modelOptions;
+    const { runnerLength } = options.subViewOptions;
+
     this.$runnerFrom.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
     this.$runnerTo.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
     this.$range.css({
@@ -115,7 +122,7 @@ class View {
       right: 0, top: 0, width: 0, height: 0,
     });
 
-    if (options.modelOptions.vertical) {
+    if (vertical) {
       this.$container.css({
         width: this.containerParameters.containerHeight,
         height: this.containerParameters.containerWidth,
@@ -123,10 +130,10 @@ class View {
       this.$runnerFrom.css({ left: '50%', transform: 'translateX(-50%)' });
       this.$runnerTo.css({ left: '50%', transform: 'translateX(-50%)' });
       this.$range.css({ width: '100%' });
-      this.$tooltipFrom.css({ left: options.subViewOptions.runnerLength });
-      this.$tooltipTo.css({ left: options.subViewOptions.runnerLength });
-      this.$limitMin.css({ left: options.subViewOptions.runnerLength });
-      this.$limitMax.css({ left: options.subViewOptions.runnerLength });
+      this.$tooltipFrom.css({ left: runnerLength });
+      this.$tooltipTo.css({ left: runnerLength });
+      this.$limitMin.css({ left: runnerLength });
+      this.$limitMax.css({ left: runnerLength });
 
       return;
     }
@@ -138,10 +145,10 @@ class View {
     this.$runnerFrom.css({ top: '50%', transform: 'translateY(-50%)' });
     this.$runnerTo.css({ top: '50%', transform: 'translateY(-50%)' });
     this.$range.css({ height: '100%' });
-    this.$tooltipFrom.css({ bottom: options.subViewOptions.runnerLength, top: '' });
-    this.$tooltipTo.css({ bottom: options.subViewOptions.runnerLength, top: '' });
-    this.$limitMin.css({ bottom: options.subViewOptions.runnerLength, top: '' });
-    this.$limitMax.css({ bottom: options.subViewOptions.runnerLength, top: '' });
+    this.$tooltipFrom.css({ bottom: runnerLength, top: '' });
+    this.$tooltipTo.css({ bottom: runnerLength, top: '' });
+    this.$limitMin.css({ bottom: runnerLength, top: '' });
+    this.$limitMax.css({ bottom: runnerLength, top: '' });
   };
 
   private renderView = (): void => {

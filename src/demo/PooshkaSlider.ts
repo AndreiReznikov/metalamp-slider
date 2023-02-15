@@ -1,45 +1,45 @@
 import { UserConfig } from '../interfaces/interfaces';
 
 class PooshkaSlider {
-  $sliderContainer: JQuery<HTMLElement> = $('div');
+  $sliderContainer: JQuery<HTMLElement> = $('<div/>');
 
-  $slider: JQuery<HTMLElement> = $('div');
+  $slider: JQuery<HTMLElement> = $('<div/>');
 
-  $pooshkaSlider: JQuery<HTMLElement> = $('div');
+  $pooshkaSlider: JQuery<HTMLElement> = $('<div/>');
 
-  $inputDouble: JQuery<HTMLElement> = $('div');
+  $inputDouble: JQuery<HTMLElement> = $('<div/>');
 
-  $inputTooltip: JQuery<HTMLElement> = $('div');
+  $inputTooltip: JQuery<HTMLElement> = $('<div/>');
 
-  $inputRange: JQuery<HTMLElement> = $('div');
+  $inputRange: JQuery<HTMLElement> = $('<div/>');
 
-  $inputScale: JQuery<HTMLElement> = $('div');
+  $inputScale: JQuery<HTMLElement> = $('<div/>');
 
-  $inputVertical: JQuery<HTMLElement> = $('div');
+  $inputVertical: JQuery<HTMLElement> = $('<div/>');
 
-  $inputFrom: JQuery<HTMLElement> = $('div');
+  $inputFrom: JQuery<HTMLElement> = $('<div/>');
 
-  $inputTo: JQuery<HTMLElement> = $('div');
+  $inputTo: JQuery<HTMLElement> = $('<div/>');
 
-  $inputMin: JQuery<HTMLElement> = $('div');
+  $inputMin: JQuery<HTMLElement> = $('<div/>');
 
-  $inputMax: JQuery<HTMLElement> = $('div');
+  $inputMax: JQuery<HTMLElement> = $('<div/>');
 
-  $inputStep: JQuery<HTMLElement> = $('div');
+  $inputStep: JQuery<HTMLElement> = $('<div/>');
 
   $document: JQuery<Document> = $(document);
 
-  $stripe: JQuery<HTMLElement> = $('div');
+  $stripe: JQuery<HTMLElement> = $('<div/>');
 
-  $runnerFrom: JQuery<HTMLElement> = $('div');
+  $runnerFrom: JQuery<HTMLElement> = $('<div/>');
 
-  $runnerTo: JQuery<HTMLElement> = $('div');
+  $runnerTo: JQuery<HTMLElement> = $('<div/>');
 
-  $limitMin: JQuery<HTMLElement> = $('div');
+  $limitMin: JQuery<HTMLElement> = $('<div/>');
 
-  $limitMax: JQuery<HTMLElement> = $('div');
+  $limitMax: JQuery<HTMLElement> = $('<div/>');
 
-  $scaleContainer: JQuery<HTMLElement> = $('div');
+  $scaleContainer: JQuery<HTMLElement> = $('<div/>');
 
   constructor(container: string) {
     this.findElements(container);
@@ -57,36 +57,42 @@ class PooshkaSlider {
   };
 
   private setPanelValues = () => {
-    this.$inputFrom.attr('step', `${
-      this.$pooshkaSlider.data('api').getModelOptions().isStepSet
-        ? this.$pooshkaSlider.data('api').getModelOptions().step
-        : (0.1).toFixed(this.$pooshkaSlider.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
-    this.$inputTo.attr('step', `${
-      this.$pooshkaSlider.data('api').getModelOptions().isStepSet
-        ? this.$pooshkaSlider.data('api').getModelOptions().step
-        : (0.1).toFixed(this.$pooshkaSlider.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
-    this.$inputMin.attr('step', `${
-      this.$pooshkaSlider.data('api').getModelOptions().isStepSet
-        ? this.$pooshkaSlider.data('api').getModelOptions().step
-        : (0.1).toFixed(this.$pooshkaSlider.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
-    this.$inputMax.attr('step', `${
-      this.$pooshkaSlider.data('api').getModelOptions().isStepSet
-        ? this.$pooshkaSlider.data('api').getModelOptions().step
-        : (0.1).toFixed(this.$pooshkaSlider.data('api').getModelOptions().numberOfCharactersAfterDot)
-    }`);
-    this.$inputStep.attr('step', `${
-      (0.1).toFixed(this.$pooshkaSlider.data('api').getModelOptions().numberOfCharactersAfterDot)}`);
+    const {
+      isStepSet,
+      step,
+      numberOfCharactersAfterDot,
+      double,
+      showTooltip,
+      showRange,
+      showScale,
+      vertical,
+      from,
+      to,
+      min,
+      max,
+    } = this.$pooshkaSlider.data('api').getModelOptions();
 
-    this.$inputDouble.prop('checked', this.$pooshkaSlider.data('api').getModelOptions().double);
-    this.$inputTooltip.prop('checked', this.$pooshkaSlider.data('api').getModelOptions().showTooltip);
-    this.$inputRange.prop('checked', this.$pooshkaSlider.data('api').getModelOptions().showRange);
-    this.$inputScale.prop('checked', this.$pooshkaSlider.data('api').getModelOptions().showScale);
-    this.$inputVertical.prop('checked', this.$pooshkaSlider.data('api').getModelOptions().vertical);
-    this.$inputFrom.prop('value', this.$pooshkaSlider.data('api').getModelOptions().from);
-    this.$inputTo.prop('value', this.$pooshkaSlider.data('api').getModelOptions().to);
-    this.$inputMin.prop('value', this.$pooshkaSlider.data('api').getModelOptions().min);
-    this.$inputMax.prop('value', this.$pooshkaSlider.data('api').getModelOptions().max);
-    this.$inputStep.prop('value', this.$pooshkaSlider.data('api').getModelOptions().step);
+    this.$inputFrom.attr('step', `${isStepSet
+      ? step : (0.1).toFixed(numberOfCharactersAfterDot)}`);
+    this.$inputTo.attr('step', `${isStepSet
+      ? step : (0.1).toFixed(numberOfCharactersAfterDot)}`);
+    this.$inputMin.attr('step', `${isStepSet
+      ? step : (0.1).toFixed(numberOfCharactersAfterDot)}`);
+    this.$inputMax.attr('step', `${isStepSet
+      ? step : (0.1).toFixed(numberOfCharactersAfterDot)
+    }`);
+    this.$inputStep.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
+
+    this.$inputDouble.prop('checked', double);
+    this.$inputTooltip.prop('checked', showTooltip);
+    this.$inputRange.prop('checked', showRange);
+    this.$inputScale.prop('checked', showScale);
+    this.$inputVertical.prop('checked', vertical);
+    this.$inputFrom.prop('value', from);
+    this.$inputTo.prop('value', to);
+    this.$inputMin.prop('value', min);
+    this.$inputMax.prop('value', max);
+    this.$inputStep.prop('value', step);
   };
 
   private setSliderElements = () => {

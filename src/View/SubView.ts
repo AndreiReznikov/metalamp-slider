@@ -209,20 +209,23 @@ class SubView {
 
     if (this.isWrongButtonPressed) return;
 
+    const {
+      positionParameter, lengthParameter, max, min, double,
+    } = this.getOptions().modelOptions;
+
     const $target: JQuery<EventTarget> = $(event.target);
     const targetValue: string = this.modelOptions.localeString ? $target.html().split('&nbsp;').join('') : $target.html();
 
     this.isScaleElementOnDown = $target.hasClass('js-slider__scale-element');
-    this.scaleElementPosition = parseInt(`${$target.css(this.getOptions().modelOptions.positionParameter)}`, 10);
-    this.scaleElementLength = parseInt(`${$target.css(this.getOptions().modelOptions.lengthParameter)}`, 10);
+    this.scaleElementPosition = parseInt(`${$target.css(positionParameter)}`, 10);
+    this.scaleElementLength = parseInt(`${$target.css(lengthParameter)}`, 10);
     this.scaleElementValue = Number(targetValue);
 
-    if (this.scaleElementValue === this.getOptions().modelOptions.max
-          && this.getOptions().modelOptions.double) {
+    if (this.scaleElementValue === max && double) {
       this.runnerTo.calculateMaxRunnerPosition(this.getOptions());
-    } else if (this.scaleElementValue === this.getOptions().modelOptions.max) {
+    } else if (this.scaleElementValue === max) {
       this.runnerFrom.calculateMaxRunnerPosition(this.getOptions());
-    } else if (this.scaleElementValue === this.getOptions().modelOptions.min) {
+    } else if (this.scaleElementValue === min) {
       this.runnerFrom.calculateMinRunnerPosition(this.getOptions());
     } else {
       this.calculateClickPosition(event);
@@ -287,15 +290,11 @@ class SubView {
   };
 
   public setElementParameters = () => {
+    const { lengthParameter } = this.getOptions().modelOptions;
+
     this.sliderPosition = this.getCoords(this.$stripe);
-    this.sliderLength = parseInt(
-      this.$stripe.css(this.getOptions().modelOptions.lengthParameter),
-      10,
-    );
-    this.runnerLength = parseInt(
-      this.runnerFrom.$runner.css(this.getOptions().modelOptions.lengthParameter),
-      10,
-    );
+    this.sliderLength = parseInt(this.$stripe.css(lengthParameter), 10);
+    this.runnerLength = parseInt(this.runnerFrom.$runner.css(lengthParameter), 10);
   };
 
   private handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
@@ -329,16 +328,10 @@ class SubView {
   };
 
   private calculateClickPosition = (event: JQuery.TriggeredEvent): void => {
-    let pageX1 = 0;
-    let pageY1 = 0;
+    const { vertical } = this.getOptions().modelOptions;
 
-    if (event.pageX !== undefined) {
-      pageX1 = event.pageX;
-    }
-
-    if (event.pageY !== undefined) {
-      pageY1 = event.pageY;
-    }
+    const pageX1 = event.pageX || 0;
+    const pageY1 = event.pageY || 0;
 
     this.leftOrRight = pageX1 > this.lastPoint.x ? 'right' : 'left';
     this.upOrDown = pageY1 > this.lastPoint.y ? 'down' : 'up';
@@ -346,16 +339,18 @@ class SubView {
     this.lastPoint.x = pageX1;
     this.lastPoint.y = pageY1;
 
-    const pageAxis: number = this.getOptions().modelOptions.vertical ? pageY1 : pageX1;
+    const pageAxis: number = vertical ? pageY1 : pageX1;
 
     this.clickPosition = pageAxis - this.sliderPosition;
   };
 
   private getCoords = (element: JQuery<HTMLElement>): number => {
+    const { vertical } = this.getOptions().modelOptions;
+
     const coords: JQuery.Coordinates | undefined = element.offset();
     let coord = 0;
 
-    if (coords) coord = this.getOptions().modelOptions.vertical ? coords.top : coords.left;
+    if (coords) coord = vertical ? coords.top : coords.left;
 
     return coord;
   };

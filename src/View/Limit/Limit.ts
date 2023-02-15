@@ -14,28 +14,33 @@ class Limit {
   }
 
   public calculateLimitPosition = (options: Options): void => {
+    const { sliderLength, limitMaxLength } = options.subViewOptions;
+
     this.limitPosition = 0;
 
     if (this.limitType !== 'max') return;
 
-    this.limitPosition = options.subViewOptions.sliderLength
-      - options.subViewOptions.limitMaxLength;
+    this.limitPosition = sliderLength - limitMaxLength;
   };
 
   public setLimitPosition = (options: Options): void => {
-    this.$limit.css(options.modelOptions.positionParameter, this.limitPosition);
+    const { positionParameter } = options.modelOptions;
+
+    this.$limit.css(positionParameter, this.limitPosition);
   };
 
   public setLimitValue = (options: Options): void => {
+    const { min, max, localeString } = options.modelOptions;
+
     let limitValue: number | string = 0;
 
     if (this.limitType === 'min') {
-      limitValue = options.modelOptions.min;
+      limitValue = min;
     } else if (this.limitType === 'max') {
-      limitValue = options.modelOptions.max;
+      limitValue = max;
     }
 
-    if (options.modelOptions.localeString) {
+    if (localeString) {
       limitValue = limitValue.toLocaleString();
     }
 
@@ -44,22 +49,27 @@ class Limit {
     this.setLimitLength(options);
   };
 
-  public setLimitOpacity = (opitons: Options): void => {
+  public setLimitOpacity = (options: Options): void => {
+    const { isLimitMaxShown, isLimitMinShown } = options.subViewOptions;
+    const { showTooltip } = options.modelOptions;
+
     this.$limit.css('opacity', 1);
 
-    if (!opitons.modelOptions.showTooltip) return;
+    if (!showTooltip) return;
 
     this.$limit.css('opacity', 0);
 
-    if (opitons.subViewOptions.isLimitMaxShown && this.limitType === 'max') {
+    if (isLimitMaxShown && this.limitType === 'max') {
       this.$limit.css('opacity', 1);
-    } else if (opitons.subViewOptions.isLimitMinShown && this.limitType === 'min') {
+    } else if (isLimitMinShown && this.limitType === 'min') {
       this.$limit.css('opacity', 1);
     }
   };
 
   private setLimitLength = (options: Options): void => {
-    this.limitLength = parseInt(this.$limit.css(options.modelOptions.lengthParameter), 10);
+    const { lengthParameter } = options.modelOptions;
+
+    this.limitLength = parseInt(this.$limit.css(lengthParameter), 10);
   };
 }
 
