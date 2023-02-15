@@ -328,6 +328,8 @@ class SubView {
   };
 
   private calculateClickPosition = (event: JQuery.TriggeredEvent): void => {
+    this.setElementParameters();
+
     const { vertical } = this.getOptions().modelOptions;
 
     const pageX1 = event.pageX || 0;
