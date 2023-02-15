@@ -68,8 +68,7 @@ class Runner {
       return;
     }
 
-    this.runnerPosition = sliderLength
-      - runnerLength / 2;
+    this.runnerPosition = sliderLength - runnerLength / 2;
 
     if (double) {
       this.isMaxTo = this.isMaxTo !== true;

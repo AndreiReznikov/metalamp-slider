@@ -186,7 +186,7 @@ class Model {
     this.minRemains = parseFloat((this.min % this.step).toFixed(this.numberOfCharactersAfterDot));
     this.maxRemains = parseFloat((this.max % this.step).toFixed(this.numberOfCharactersAfterDot));
 
-    if (this.min > 0 && this.isStepSet) {
+    if (this.min > 0) {
       this.minRemains = this.step - this.minRemains;
     }
 
@@ -197,11 +197,11 @@ class Model {
     const toCharactersAfterDot: number = `${this.to}`.split('.')[1]?.length;
     const stepCharactersAfterDot: number = `${this.step}`.split('.')[1]?.length;
 
-    const isFromMatchWithStep: boolean = this.isStepSet
-      && (fromCharactersAfterDot || 0) !== (stepCharactersAfterDot || 0)
+    const isFromMatchWithStep: boolean = (fromCharactersAfterDot || 0)
+      !== (stepCharactersAfterDot || 0)
       && this.fromRemains !== 0;
-    const isToMatchWithStep: boolean = this.isStepSet
-      && (toCharactersAfterDot || 0) !== (stepCharactersAfterDot || 0)
+    const isToMatchWithStep: boolean = (toCharactersAfterDot || 0)
+      !== (stepCharactersAfterDot || 0)
       && this.toRemains !== 0;
 
     if (isFromMatchWithStep) {

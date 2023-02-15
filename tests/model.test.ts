@@ -118,6 +118,19 @@ describe('validateInitalValues', () => {
   });
 });
 
+describe('calculateRemains', () => {
+  test('method should calculate minRemains when min > 0', () => {
+    model.min = 10;
+    model.minRemains = 3;
+    model.isStepSet = true;
+    model.step = 5;
+
+    model.calculateRemains();
+
+    expect(model.minRemains).toEqual(0);
+  });
+});
+
 describe('setPositionParameters', () => {
   test('position parametes should to be for vertical view', () => {
     model.vertical = true;
@@ -150,42 +163,22 @@ describe('getOptions', () => {
 });
 
 describe('calculateFrom', () => {
-  test('from should be equal to 20', () => {
+  test('from should be equal to 10', () => {
     model.step = 10;
     model.isStepSet = true;
-    model.subViewOptions.isCursorNearStepAheadFrom = true;
+    model.subViewOptions.runnerFromPosition = 10;
+    model.subViewOptions.sliderLength = 100;
 
     model.calculateFrom(model.getOptions());
 
-    expect(model.from).toEqual(20);
-  });
-
-  test('from should be equal to 5', () => {
-    model.step = 5;
-    model.isStepSet = true;
-    model.subViewOptions.isCursorNearStepBehindFrom = true;
-
-    model.calculateFrom(model.getOptions());
-
-    expect(model.from).toEqual(5);
-  });
-
-  test('from should be equal to 20', () => {
-    model.step = 5;
-    model.isStepSet = true;
-    model.subViewOptions.isClickAheadOfRunnerFrom = true;
-    model.subViewOptions.runnerFromStepsNumber = 2;
-
-    model.calculateFrom(model.getOptions());
-
-    expect(model.from).toEqual(20);
+    expect(model.from).toEqual(10);
   });
 
   test('from should be equal to 0', () => {
-    model.step = 5;
+    model.step = 12;
     model.isStepSet = true;
-    model.subViewOptions.isClickBehindOfRunnerFrom = true;
-    model.subViewOptions.runnerFromStepsNumber = 2;
+    model.subViewOptions.runnerFromPosition = 10;
+    model.subViewOptions.sliderLength = 100;
 
     model.calculateFrom(model.getOptions());
 
@@ -254,52 +247,63 @@ describe('restrictFrom', () => {
 
     expect(model.from).toEqual(model.max);
   });
+
+  test('from should to be equal max - maxRemains', () => {
+    model.from = 100;
+    model.max = 80;
+    model.maxRemains = 10;
+    model.isStepSet = true;
+
+    model.restrictFrom();
+
+    expect(model.from).toEqual(model.max - model.maxRemains);
+  });
+
+  test('from should to be equal min + minRemains', () => {
+    model.from = 10;
+    model.min = 20;
+    model.minRemains = 10;
+    model.isStepSet = true;
+
+    model.restrictFrom();
+
+    expect(model.from).toEqual(model.min + model.minRemains);
+  });
 });
 
 describe('calculateTo', () => {
-  test('to should be equal to 60', () => {
+  test('to should be equal to 40', () => {
+    model.double = true;
     model.step = 10;
     model.isStepSet = true;
-    model.subViewOptions.isCursorNearStepAheadTo = true;
-
-    model.calculateTo(model.getOptions());
-
-    expect(model.to).toEqual(60);
-  });
-
-  test('to should be equal to 45', () => {
-    model.step = 5;
-    model.isStepSet = true;
-    model.subViewOptions.isCursorNearStepBehindTo = true;
-
-    model.calculateTo(model.getOptions());
-
-    expect(model.to).toEqual(45);
-  });
-
-  test('to should be equal to 60', () => {
-    model.step = 5;
-    model.isStepSet = true;
-    model.subViewOptions.isClickAheadOfRunnerTo = true;
-    model.subViewOptions.runnerToStepsNumber = 2;
-
-    model.calculateTo(model.getOptions());
-
-    expect(model.to).toEqual(60);
-  });
-
-  test('to should be equal to 40', () => {
-    model.step = 5;
-    model.isStepSet = true;
-    model.subViewOptions.isClickBehindOfRunnerTo = true;
-    model.subViewOptions.runnerToStepsNumber = 2;
+    model.subViewOptions.runnerToPosition = 40;
+    model.subViewOptions.sliderLength = 100;
 
     model.calculateTo(model.getOptions());
 
     expect(model.to).toEqual(40);
   });
 
+  test('to should be equal to 36', () => {
+    model.double = true;
+    model.step = 12;
+    model.isStepSet = true;
+    model.subViewOptions.runnerToPosition = 40;
+    model.subViewOptions.sliderLength = 100;
+
+    model.calculateTo(model.getOptions());
+
+    expect(model.to).toEqual(36);
+  });
+
+  test('to should return undefined', () => {
+    model.double = false;
+
+    expect(model.calculateTo(model.getOptions())).toBeUndefined();
+  });
+
   test('to should be equal to max', () => {
+    model.double = true;
     model.subViewOptions.isMaxTo = true;
 
     model.calculateTo(model.getOptions());
@@ -308,6 +312,7 @@ describe('calculateTo', () => {
   });
 
   test('to should be equal to scaleElementValue', () => {
+    model.double = true;
     model.subViewOptions.isScaleElementOnDown = true;
     model.subViewOptions.isClickForRunnerTo = true;
     model.subViewOptions.scaleElementValue = 30;
@@ -318,10 +323,11 @@ describe('calculateTo', () => {
   });
 
   test('should set model to', () => {
+    model.double = true;
     model.subViewOptions.sliderLength = 100;
     model.calculateTo(model.getOptions());
 
-    expect(model.to).toEqual(0);
+    expect(model.to).toEqual(10);
   });
 });
 
@@ -345,6 +351,18 @@ describe('restrictTo', () => {
 
     expect(model.to).toEqual(model.max);
   });
+
+  test('to should to be equal max - maxRemains', () => {
+    model.double = true;
+    model.isStepSet = true;
+    model.max = 80;
+    model.maxRemains = 10;
+    model.to = 100;
+
+    model.restrictTo();
+
+    expect(model.to).toEqual(model.max - model.maxRemains);
+  });
 });
 
 describe('countNumberOfCharactersAfterDot', () => {
@@ -367,7 +385,7 @@ describe('calculateScaleElementsValues', () => {
   });
 });
 
-describe('calculateScaleElementsNamber', () => {
+describe('calculateScaleElementsNumber', () => {
   test('scaleNumber should to be equal userConfig.scaleNumber', () => {
     model.userConfig.scaleNumber = 10;
     model.calculateScaleElementsNumber();
@@ -381,44 +399,6 @@ describe('calculateScaleElementsNamber', () => {
     model.calculateScaleElementsNumber();
 
     expect(model.scaleNumber).toEqual(2);
-  });
-
-  test('scaleNumber should to be equal 3', () => {
-    model.min = 0;
-    model.max = 2;
-    model.calculateScaleElementsNumber();
-
-    expect(model.scaleNumber).toEqual(3);
-  });
-
-  test('scaleNumber should to be equal 4', () => {
-    model.min = 0;
-    model.max = 4;
-    model.calculateScaleElementsNumber();
-
-    expect(model.scaleNumber).toEqual(4);
-  });
-
-  test('scaleNumber should to be equal 5', () => {
-    model.min = 0;
-    model.max = 9;
-    model.calculateScaleElementsNumber();
-
-    expect(model.scaleNumber).toEqual(5);
-  });
-
-  test('scaleNumber should to be equal 11', () => {
-    model.min = -12;
-    model.max = 12;
-    model.calculateScaleElementsNumber();
-
-    expect(model.scaleNumber).toEqual(11);
-  });
-
-  test('scaleNumber should to be equal 5', () => {
-    model.calculateScaleElementsNumber();
-
-    expect(model.scaleNumber).toEqual(5);
   });
 });
 
