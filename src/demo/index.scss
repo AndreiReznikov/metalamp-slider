@@ -114,11 +114,14 @@ html, body {
   border: 3px solid rgb(47, 50, 53);
 }
 
-.panel__min-button,
-.panel__max-button,
-.panel__from-button,
-.panel__to-button,
-.panel__step-button {
+.panel__min,
+.panel__max,
+.panel__from,
+.panel__to,
+.panel__step {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 45px;
   height: 26px;
   background-color: rgb(47, 50, 53);
@@ -129,7 +132,6 @@ html, body {
   font-weight: bold;
   box-sizing: border-box;
   z-index: 2;
-  cursor: pointer;
 }
 
 .panel__toggle-label {
@@ -203,14 +205,11 @@ html, body {
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .panel__stripe,
-  .panel__button-from,
-  .panel__button-to,
-  .panel__min-button,
-  .panel__max-button,
-  .panel__from-button,
-  .panel__to-button,
-  .panel__step-button,
+  .panel__min,
+  .panel__max,
+  .panel__from,
+  .panel__to,
+  .panel__step,
   .panel__custom-toggle {
     cursor: auto;
   }
