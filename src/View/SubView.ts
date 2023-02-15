@@ -217,18 +217,6 @@ class SubView {
     this.scaleElementLength = parseInt(`${$target.css(this.getOptions().modelOptions.lengthParameter)}`, 10);
     this.scaleElementValue = Number(targetValue);
 
-    // const isRemainsOnScaleValue: boolean = parseFloat((this.scaleElementValue
-    //     % this.getOptions().modelOptions.step).toFixed(
-    //   this.getOptions().modelOptions.numberOfCharactersAfterDot,
-    // )) !== 0 && this.getOptions().modelOptions.isStepSet;
-
-    // if (isRemainsOnScaleValue) {
-    //   this.isScaleElementOnDown = false;
-    //   this.scaleElementValue = 0;
-
-    //   return;
-    // }
-
     if (this.scaleElementValue === this.getOptions().modelOptions.max
           && this.getOptions().modelOptions.double) {
       this.runnerTo.calculateMaxRunnerPosition(this.getOptions());
@@ -239,8 +227,9 @@ class SubView {
     } else {
       this.calculateClickPosition(event);
       this.stripe.calculateRunnerPositionAfterScaleOnDown(this.getOptions());
-      this.stripe.showLimit(this.getOptions());
     }
+
+    this.stripe.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
 

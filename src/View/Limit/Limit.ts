@@ -45,6 +45,10 @@ class Limit {
   };
 
   public setLimitOpacity = (opitons: Options): void => {
+    this.$limit.css('opacity', 1);
+
+    if (!opitons.modelOptions.showTooltip) return;
+
     this.$limit.css('opacity', 0);
 
     if (opitons.subViewOptions.isLimitMaxShown && this.limitType === 'max') {

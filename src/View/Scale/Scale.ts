@@ -15,7 +15,7 @@ class Scale {
   public setScalePosition = (options: Options): void => {
     const scaleElementsWidths: number[] = [];
 
-    this.$scaleContainer.find('.js-slider__scale-element').each(function getScaleElementWidth() {
+    this.$scaleContainer.children().each(function getScaleElementWidth() {
       const scaleElementWidth: number = parseInt($(this).css('width'), 10);
 
       scaleElementsWidths.push(scaleElementWidth);
@@ -67,6 +67,28 @@ class Scale {
 
       scaleElementPosition += this.lengthBetweenScaleElements;
     }
+  };
+
+  public findNonMultipleScaleValues = (options: Options): void => {
+    if (!options.modelOptions.isStepSet) return;
+
+    this.$scaleContainer.children().each(function findValues() {
+      const $scaleElement: JQuery<HTMLElement> = $(this);
+      const value: number = options.modelOptions.localeString
+        ? Number($scaleElement.html().split('&nbsp;').join('')) : Number($scaleElement.html());
+
+      const isRemainsOnScaleValue: boolean = parseFloat((Math.abs(value)
+        % options.modelOptions.step).toFixed(
+        options.modelOptions.numberOfCharactersAfterDot,
+      )) !== 0;
+
+      if (isRemainsOnScaleValue) {
+        $scaleElement.css({
+          opacity: 0.5,
+          'pointer-events': 'none',
+        });
+      }
+    });
   };
 }
 
