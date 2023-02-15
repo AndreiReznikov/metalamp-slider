@@ -6,16 +6,19 @@ class Scale {
   lengthBetweenScaleElements = 0;
 
   public setScaleLength = (options: Options): void => {
-    this.$scaleContainer.css(
-      options.modelOptions.lengthParameter,
-      options.subViewOptions.sliderLength,
-    );
+    const { lengthParameter } = options.modelOptions;
+    const { sliderLength } = options.subViewOptions;
+
+    this.$scaleContainer.css(lengthParameter, sliderLength);
   };
 
   public setScalePosition = (options: Options): void => {
+    const { scalePositionParameter } = options.modelOptions;
+    const { runnerLength } = options.subViewOptions;
+
     const scaleElementsWidths: number[] = [];
 
-    this.$scaleContainer.find('.js-slider__scale-element').each(function getScaleElementWidth() {
+    this.$scaleContainer.children().each(function getScaleElementWidth() {
       const scaleElementWidth: number = parseInt($(this).css('width'), 10);
 
       scaleElementsWidths.push(scaleElementWidth);
@@ -24,23 +27,23 @@ class Scale {
     const maxScaleElementsWidth: number = Math.max(...scaleElementsWidths);
 
     this.$scaleContainer.css(
-      options.modelOptions.scalePositionParameter,
-      options.modelOptions.scalePositionParameter === 'right'
-        ? maxScaleElementsWidth + options.subViewOptions.runnerLength
-        : options.subViewOptions.runnerLength,
+      scalePositionParameter,
+      scalePositionParameter === 'right'
+        ? maxScaleElementsWidth + runnerLength
+        : runnerLength,
     );
   };
 
   public setScaleElementsValues = (options: Options): void => {
-    this.$scaleContainer.empty();
+    const { scaleElements, localeString } = options.modelOptions;
 
-    const { scaleElements } = options.modelOptions;
+    this.$scaleContainer.empty();
 
     for (let i = 0; i < scaleElements.length; i += 1) {
       const $scaleElement: JQuery<HTMLElement> = $('<span>').addClass(
         `slider__scale-element js-slider__scale-element js-slider__scale-element_${i}`,
       );
-      const scaleElementValue: string = options.modelOptions.localeString
+      const scaleElementValue: string = localeString
         ? scaleElements[i].toLocaleString() : `${scaleElements[i]}`;
 
       $scaleElement.html(scaleElementValue);
@@ -49,24 +52,53 @@ class Scale {
   };
 
   public calculateLengthBetweenScaleElements = (options: Options): void => {
-    this.lengthBetweenScaleElements = options.subViewOptions.sliderLength
-      / (options.modelOptions.scaleNumber - 1);
+    const { scaleNumber } = options.modelOptions;
+    const { sliderLength } = options.subViewOptions;
+
+    this.lengthBetweenScaleElements = sliderLength / (scaleNumber - 1);
   };
 
   public setScaleElementsPositions = (options: Options): void => {
+    const { scaleElements, lengthParameter, positionParameter } = options.modelOptions;
+
     let scaleElementPosition = 0;
 
-    for (let i = 0; i < options.modelOptions.scaleElements.length; i += 1) {
+    for (let i = 0; i < scaleElements.length; i += 1) {
       const $scaleElement: JQuery<HTMLElement> = this.$scaleContainer.find(`.js-slider__scale-element_${i}`);
-      const scaleElementLength: number = parseInt(`${$scaleElement.css(options.modelOptions.lengthParameter)}`, 10);
+      const scaleElementLength: number = parseInt(`${$scaleElement.css(lengthParameter)}`, 10);
 
       $scaleElement.css(
-        options.modelOptions.positionParameter,
+        positionParameter,
         scaleElementPosition - scaleElementLength / 2,
       );
 
       scaleElementPosition += this.lengthBetweenScaleElements;
     }
+  };
+
+  public findNonMultipleScaleValues = (options: Options): void => {
+    const {
+      isStepSet, localeString, step, numberOfCharactersAfterDot,
+    } = options.modelOptions;
+
+    if (!isStepSet) return;
+
+    this.$scaleContainer.children().each(function findValues() {
+      const $scaleElement: JQuery<HTMLElement> = $(this);
+      const value: number = localeString
+        ? Number($scaleElement.html().split('&nbsp;').join('')) : Number($scaleElement.html());
+
+      const isRemainsOnScaleValue: boolean = parseFloat(
+        (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
+      ) !== 0;
+
+      if (isRemainsOnScaleValue) {
+        $scaleElement.css({
+          opacity: 0.5,
+          'pointer-events': 'none',
+        });
+      }
+    });
   };
 }
 

@@ -1,0 +1,61 @@
+-
+  const sliders = [
+    {
+      type: 'double',
+      title: 'Double slider:',
+    },
+    {
+      type: 'single',
+      title: 'Single/step slider:',
+    },
+    {
+      type: 'vertical',
+      title: 'vertical slider:',
+    },
+    {
+      type: 'default',
+      title: 'Default slider:',
+    },
+  ];
+
+  const togglers = [
+    {
+      class: 'panel__input panel__input_tooltip js-panel__input js-panel__input_tooltip',
+      text: 'tooltips'
+    },
+    {
+      class: 'panel__input panel__input_double js-panel__input js-panel__input_double',
+      text: 'double'
+    },
+    {
+      class: 'panel__input panel__input_range js-panel__input js-panel__input_range',
+      text: 'range'
+    },
+    {
+      class: 'panel__input panel__input_scale js-panel__input js-panel__input_scale',
+      text: 'scale'
+    },
+    {
+      class: 'panel__input panel__input_vertical js-panel__input js-panel__input_vertical',
+      text: 'vertical'
+    },
+  ];
+
+  const inputs = ['from', 'to', 'min', 'max', 'step'];
+
+mixin panelToggler(options)
+  label.panel__toggle-label
+    input(class=options.class type="checkbox")
+    span.panel__custom-toggle
+    span.panel__toggle-text=options.text
+
+mixin panelInputs(valueType)
+  -
+    const valueTypeClassName = 'panel__' + valueType + ' '
+      + 'js-panel__' + valueType;
+    const inputClassName = 'panel__' + valueType + '-input' + ' '
+      + 'js-panel__' + valueType + '-input';
+
+  .panel__input-container
+    div(class=valueTypeClassName)=valueType
+    input(class=inputClassName type="number")

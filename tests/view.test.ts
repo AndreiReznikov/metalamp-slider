@@ -3,13 +3,13 @@ import View from '../src/View/View';
 
 document.body.innerHTML = `
   <div class='container'>
-    <div class='slider'></div>
+    <div class='slider js-slider'></div>
   </div>`;
 
 const $container = $('.container');
 $container.css({ width: 100, height: 8 });
 
-const $slider = $('.slider');
+const $slider = $('.js-slider');
 
 const view = new View($slider);
 view.initializeView(view.SubView.getOptions());
@@ -33,6 +33,10 @@ view.SubView.modelOptions = {
   stepLength: 0,
   min: 0,
   max: 100,
+  fromRemains: 0,
+  toRemains: 0,
+  minRemains: 0,
+  maxRemains: 0,
   scaleNumber: 0,
   scaleElements: [],
   numberOfCharactersAfterDot: 0,
@@ -47,6 +51,8 @@ view.SubView.subViewOptions = {
   limitMaxLength: 0,
   shiftAxis: 0,
   clickPosition: 0,
+  leftOrRight: '',
+  upOrDown: '',
   isMinFrom: false,
   isMaxFrom: false,
   isMaxTo: false,
@@ -142,6 +148,10 @@ beforeEach(() => {
     stepLength: 0,
     min: 0,
     max: 100,
+    fromRemains: 0,
+    toRemains: 0,
+    minRemains: 0,
+    maxRemains: 0,
     scaleNumber: 0,
     scaleElements: [],
     numberOfCharactersAfterDot: 0,
@@ -156,6 +166,8 @@ beforeEach(() => {
     limitMaxLength: 0,
     shiftAxis: 0,
     clickPosition: 0,
+    leftOrRight: '',
+    upOrDown: '',
     isMinFrom: false,
     isMaxFrom: false,
     isMaxTo: false,
@@ -427,6 +439,48 @@ describe('handleScaleCalculateRunnerPositionAfterOnDown', () => {
       view.SubView.handleScaleCalculateRunnerPositionAfterOnDown(eventSimulation),
     ).toBeUndefined();
   });
+
+  test('runnerTo position should to be equal max position', () => {
+    view.SubView.modelOptions.double = true;
+    view.SubView.modelOptions.max = 100;
+    view.SubView.modelOptions.maxRemains = 0;
+    view.SubView.sliderLength = 100;
+
+    view.SubView.scale.$scaleContainer.on('click', getEvent);
+    view.SubView.scale.$scaleContainer.trigger('click');
+
+    eventSimulation.target = $('<div/>').width(10).height(10).html('100');
+
+    view.SubView.handleScaleCalculateRunnerPositionAfterOnDown(eventSimulation);
+
+    expect(view.SubView.runnerTo.runnerPosition).toEqual(view.SubView.modelOptions.max);
+  });
+
+  test('runnnerFrom position should to be equal max position', () => {
+    view.SubView.modelOptions.max = 100;
+    view.SubView.modelOptions.maxRemains = 0;
+    view.SubView.sliderLength = 100;
+
+    view.SubView.scale.$scaleContainer.on('click', getEvent);
+    view.SubView.scale.$scaleContainer.trigger('click');
+
+    eventSimulation.target = $('<div/>').width(10).height(10).html('100');
+
+    view.SubView.handleScaleCalculateRunnerPositionAfterOnDown(eventSimulation);
+
+    expect(view.SubView.runnerFrom.runnerPosition).toEqual(view.SubView.modelOptions.max);
+  });
+
+  test('runnerFrom position should to be equal scaleElement position', () => {
+    view.SubView.scale.$scaleContainer.on('click', getEvent);
+    view.SubView.scale.$scaleContainer.trigger('click');
+
+    eventSimulation.target = $('<div/>').width(10).height(10).html('12');
+
+    view.SubView.handleScaleCalculateRunnerPositionAfterOnDown(eventSimulation);
+
+    expect(view.SubView.runnerFrom.runnerPosition).toEqual(0);
+  });
 });
 
 describe('setElementParameters', () => {
@@ -583,6 +637,33 @@ describe('Runner', () => {
     });
   });
 
+  describe('calculateMinRunnerPosition', () => {
+    test('method should calculate runnerFrom position with minRemains', () => {
+      options.modelOptions.minRemains = 1;
+      options.modelOptions.step = 5;
+      options.modelOptions.stepLength = 15;
+      options.subViewOptions.runnerLength = 2;
+
+      view.SubView.runnerFrom.calculateMinRunnerPosition(options);
+
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(2);
+    });
+  });
+
+  describe('calculateMaxRunnerPosition', () => {
+    test('method should calculate runnerFrom position with maxRemains', () => {
+      options.modelOptions.maxRemains = 1;
+      options.modelOptions.step = 5;
+      options.modelOptions.stepLength = 15;
+      options.subViewOptions.runnerLength = 2;
+      options.subViewOptions.sliderLength = 100;
+
+      view.SubView.runnerFrom.calculateMaxRunnerPosition(options);
+
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(96);
+    });
+  });
+
   describe('calculateRunnerPositionWhileMouseIsMoving', () => {
     test('method should increment runnerFrom position with set step', () => {
       view.SubView.runnerFrom.runnerPosition = 10;
@@ -592,7 +673,7 @@ describe('Runner', () => {
 
       view.SubView.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(options);
 
-      expect(view.SubView.runnerFrom.runnerPosition).toEqual(15);
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(10);
     });
 
     test('method should decrement runnerFrom position with set step', () => {
@@ -603,7 +684,7 @@ describe('Runner', () => {
 
       view.SubView.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(options);
 
-      expect(view.SubView.runnerFrom.runnerPosition).toEqual(5);
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(0);
     });
   });
 
@@ -924,6 +1005,31 @@ describe('Stripe', () => {
 
       expect(view.SubView.runnerFrom.runnerPosition).toEqual(50);
     });
+
+    test('method should set runnerFrom with maxRemains', () => {
+      options.modelOptions.stepLength = 30;
+      options.modelOptions.maxRemains = 10;
+      options.modelOptions.step = 5;
+      options.subViewOptions.sliderLength = 100;
+      options.subViewOptions.isCursorNearStepAheadFrom = true;
+      view.SubView.runnerFrom.runnerPosition = 80;
+
+      view.SubView.stripe.restrictRunnerFromPosition(options);
+
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(40);
+    });
+
+    test('method should set runnerFrom with minRemains', () => {
+      options.modelOptions.stepLength = 30;
+      options.modelOptions.minRemains = 10;
+      options.modelOptions.step = 5;
+      options.subViewOptions.isCursorNearStepBehindFrom = true;
+      view.SubView.runnerFrom.runnerPosition = 20;
+
+      view.SubView.stripe.restrictRunnerFromPosition(options);
+
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(60);
+    });
   });
 
   describe('restrictRunnerToPosition', () => {
@@ -944,6 +1050,19 @@ describe('Stripe', () => {
       view.SubView.stripe.restrictRunnerToPosition(options);
 
       expect(view.SubView.runnerTo.runnerPosition).toEqual(100);
+    });
+
+    test('method should set runnerTo with maxRemains', () => {
+      options.modelOptions.stepLength = 30;
+      options.modelOptions.maxRemains = 10;
+      options.modelOptions.step = 5;
+      options.subViewOptions.sliderLength = 100;
+      options.subViewOptions.isCursorNearStepAheadTo = true;
+      view.SubView.runnerTo.runnerPosition = 80;
+
+      view.SubView.stripe.restrictRunnerToPosition(options);
+
+      expect(view.SubView.runnerTo.runnerPosition).toEqual(40);
     });
   });
 

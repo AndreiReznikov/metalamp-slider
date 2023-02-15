@@ -56,6 +56,12 @@ class SubView {
 
   subViewOptions: SubViewOptions;
 
+  lastPoint: { x: number; y: number; } = { x: 0, y: 0 };
+
+  leftOrRight = '';
+
+  upOrDown = '';
+
   constructor() {
     this.observer = new Observer();
 
@@ -91,6 +97,10 @@ class SubView {
       stepLength: 0,
       min: 0,
       max: 0,
+      fromRemains: 0,
+      toRemains: 0,
+      minRemains: 0,
+      maxRemains: 0,
       scaleNumber: 0,
       scaleElements: [],
       numberOfCharactersAfterDot: 0,
@@ -199,16 +209,29 @@ class SubView {
 
     if (this.isWrongButtonPressed) return;
 
+    const {
+      positionParameter, lengthParameter, max, min, double,
+    } = this.getOptions().modelOptions;
+
     const $target: JQuery<EventTarget> = $(event.target);
     const targetValue: string = this.modelOptions.localeString ? $target.html().split('&nbsp;').join('') : $target.html();
 
     this.isScaleElementOnDown = $target.hasClass('js-slider__scale-element');
-    this.scaleElementPosition = parseInt(`${$target.css(this.getOptions().modelOptions.positionParameter)}`, 10);
-    this.scaleElementLength = parseInt(`${$target.css(this.getOptions().modelOptions.lengthParameter)}`, 10);
+    this.scaleElementPosition = parseInt(`${$target.css(positionParameter)}`, 10);
+    this.scaleElementLength = parseInt(`${$target.css(lengthParameter)}`, 10);
     this.scaleElementValue = Number(targetValue);
 
-    this.calculateClickPosition(event);
-    this.stripe.calculateRunnerPositionAfterScaleOnDown(this.getOptions());
+    if (this.scaleElementValue === max && double) {
+      this.runnerTo.calculateMaxRunnerPosition(this.getOptions());
+    } else if (this.scaleElementValue === max) {
+      this.runnerFrom.calculateMaxRunnerPosition(this.getOptions());
+    } else if (this.scaleElementValue === min) {
+      this.runnerFrom.calculateMinRunnerPosition(this.getOptions());
+    } else {
+      this.calculateClickPosition(event);
+      this.stripe.calculateRunnerPositionAfterScaleOnDown(this.getOptions());
+    }
+
     this.stripe.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
@@ -221,6 +244,9 @@ class SubView {
     this.stripe.isClickAheadOfRunnerTo = false;
     this.stripe.isClickBehindOfRunnerTo = false;
     this.stripe.isClickForRunnerTo = false;
+    this.runnerFrom.isMinFrom = false;
+    this.runnerFrom.isMaxFrom = false;
+    this.runnerTo.isMaxTo = false;
   };
 
   public getSubViewOptions = (): SubViewOptions => {
@@ -233,6 +259,8 @@ class SubView {
       limitMinLength: this.limitMin.limitLength,
       limitMaxLength: this.limitMax.limitLength,
       clickPosition: this.clickPosition,
+      leftOrRight: this.leftOrRight,
+      upOrDown: this.upOrDown,
       shiftAxis: this.shiftAxis,
       isMinFrom: this.runnerFrom.isMinFrom,
       isMaxFrom: this.runnerFrom.isMaxFrom,
@@ -262,15 +290,11 @@ class SubView {
   };
 
   public setElementParameters = () => {
+    const { lengthParameter } = this.getOptions().modelOptions;
+
     this.sliderPosition = this.getCoords(this.$stripe);
-    this.sliderLength = parseInt(
-      this.$stripe.css(this.getOptions().modelOptions.lengthParameter),
-      10,
-    );
-    this.runnerLength = parseInt(
-      this.runnerFrom.$runner.css(this.getOptions().modelOptions.lengthParameter),
-      10,
-    );
+    this.sliderLength = parseInt(this.$stripe.css(lengthParameter), 10);
+    this.runnerLength = parseInt(this.runnerFrom.$runner.css(lengthParameter), 10);
   };
 
   private handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
@@ -295,34 +319,38 @@ class SubView {
 
   private attachPointermoveEvent = (valueType: string) => {
     const handleRunnerPointermove = valueType === 'from' ? this.handleRunnerFromPointermove : this.handleRunnerToPointermove;
-    const handleDocumentOffPointerMove = () => this.$document.off('pointermove.move', handleRunnerPointermove);
+    const handleDocumentOffPointerMove = () => {
+      this.$document.off('pointermove.move', handleRunnerPointermove);
+    };
 
     this.$document.on('pointermove.move', handleRunnerPointermove);
     this.$document.on('pointerup.move', handleDocumentOffPointerMove);
   };
 
   private calculateClickPosition = (event: JQuery.TriggeredEvent): void => {
-    let pageX1 = 0;
-    let pageY1 = 0;
+    const { vertical } = this.getOptions().modelOptions;
 
-    if (event.pageX !== undefined) {
-      pageX1 = event.pageX;
-    }
+    const pageX1 = event.pageX || 0;
+    const pageY1 = event.pageY || 0;
 
-    if (event.pageY !== undefined) {
-      pageY1 = event.pageY;
-    }
+    this.leftOrRight = pageX1 > this.lastPoint.x ? 'right' : 'left';
+    this.upOrDown = pageY1 > this.lastPoint.y ? 'down' : 'up';
 
-    const clientAxis: number = this.getOptions().modelOptions.vertical ? pageY1 : pageX1;
+    this.lastPoint.x = pageX1;
+    this.lastPoint.y = pageY1;
 
-    this.clickPosition = clientAxis - this.sliderPosition;
+    const pageAxis: number = vertical ? pageY1 : pageX1;
+
+    this.clickPosition = pageAxis - this.sliderPosition;
   };
 
   private getCoords = (element: JQuery<HTMLElement>): number => {
+    const { vertical } = this.getOptions().modelOptions;
+
     const coords: JQuery.Coordinates | undefined = element.offset();
     let coord = 0;
 
-    if (coords) coord = this.getOptions().modelOptions.vertical ? coords.top : coords.left;
+    if (coords) coord = vertical ? coords.top : coords.left;
 
     return coord;
   };

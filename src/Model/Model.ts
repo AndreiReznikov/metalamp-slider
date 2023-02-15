@@ -60,6 +60,14 @@ class Model {
 
   subViewOptions: SubViewOptions;
 
+  fromRemains = 0;
+
+  toRemains = 0;
+
+  minRemains = 0;
+
+  maxRemains = 0;
+
   constructor(userConfig: UserConfig = {}) {
     this.observer = new Observer();
 
@@ -95,6 +103,8 @@ class Model {
       limitMaxLength: 0,
       shiftAxis: 0,
       clickPosition: 0,
+      leftOrRight: '',
+      upOrDown: '',
       isMinFrom: false,
       isMaxFrom: false,
       isMaxTo: false,
@@ -126,9 +136,11 @@ class Model {
       && this.step > this.max - this.min;
     const isLimitsNegativeAndStepMoreThanDifference: boolean = areLimitsNegative
       && this.step > -(this.min - this.max);
-    const isStepIncorrect = isLimitsPositiveAndStepMoreThanDifference
+    const isStepIncorrect: boolean = isLimitsPositiveAndStepMoreThanDifference
       || isLimitsNegativeAndStepMoreThanDifference
-      || this.step < 0;
+      || this.step < 0
+      || (this.step > Math.abs(this.min) && this.step > Math.abs(this.max))
+      || Math.floor(Math.abs(this.max - this.min) / this.step) <= 1;
 
     if (this.min > this.max) {
       const { min } = this;
@@ -161,6 +173,91 @@ class Model {
     }
   };
 
+  public calculateRemains = (): void => {
+    this.fromRemains = 0;
+    this.toRemains = 0;
+    this.minRemains = 0;
+    this.maxRemains = 0;
+
+    if (!this.isStepSet) return;
+
+    this.fromRemains = parseFloat((this.from % this.step).toFixed(this.numberOfCharactersAfterDot));
+    this.toRemains = parseFloat((this.to % this.step).toFixed(this.numberOfCharactersAfterDot));
+    this.minRemains = parseFloat((this.min % this.step).toFixed(this.numberOfCharactersAfterDot));
+    this.maxRemains = parseFloat((this.max % this.step).toFixed(this.numberOfCharactersAfterDot));
+
+    if (this.min > 0) {
+      this.minRemains = this.step - this.minRemains;
+    }
+
+    if (Math.abs(this.fromRemains) === Math.abs(this.step)) this.fromRemains = 0;
+    if (Math.abs(this.toRemains) === Math.abs(this.step)) this.toRemains = 0;
+
+    const fromCharactersAfterDot: number = `${this.from}`.split('.')[1]?.length;
+    const toCharactersAfterDot: number = `${this.to}`.split('.')[1]?.length;
+    const stepCharactersAfterDot: number = `${this.step}`.split('.')[1]?.length;
+
+    const isFromMatchWithStep: boolean = (fromCharactersAfterDot || 0)
+      !== (stepCharactersAfterDot || 0)
+      && this.fromRemains !== 0;
+    const isToMatchWithStep: boolean = (toCharactersAfterDot || 0)
+      !== (stepCharactersAfterDot || 0)
+      && this.toRemains !== 0;
+
+    if (isFromMatchWithStep) {
+      this.fromRemains = this.from % this.step;
+    }
+
+    if (isToMatchWithStep) {
+      this.toRemains = this.to % this.step;
+    }
+
+    if (Math.abs(this.minRemains) === Math.abs(this.step)) {
+      this.minRemains = 0;
+    } else if (Math.abs(this.min) < Math.abs(this.step) && this.min < 0) {
+      this.minRemains = this.step - (Math.abs(this.step) - Math.abs(this.min));
+    }
+
+    const isNegativeMaxLessThanStep: boolean = Math.abs(this.max) < Math.abs(this.step)
+      && this.max < 0 && this.maxRemains !== 0;
+    const isNegativeMaxMoreThanStep: boolean = Math.abs(this.max) > Math.abs(this.step)
+      && this.max < 0 && this.maxRemains !== 0;
+
+    if (Math.abs(this.maxRemains) === Math.abs(this.step)) {
+      this.maxRemains = 0;
+    } else if (isNegativeMaxLessThanStep) {
+      this.maxRemains = Math.abs(this.step) - Math.abs(this.max);
+    } else if (isNegativeMaxMoreThanStep) {
+      this.maxRemains = (Math.trunc(Math.abs(this.max) / Math.abs(this.step))
+        * this.step + this.step) - Math.abs(this.max);
+    }
+
+    this.from -= this.fromRemains;
+    this.to -= this.toRemains;
+
+    const isFromEqualZeroWithNegativeLimins: boolean = this.from === 0
+      && this.min < 0 && this.max < 0;
+    const isFromEqualZeroWithPositiveLimins: boolean = this.from === 0
+      && this.min > 0 && this.max > 0;
+    const isToEqualZeroWithNegativeLimins: boolean = this.to === 0
+      && this.min < 0 && this.max < 0;
+    const isToEqualZeroWithPositiveLimins: boolean = this.to === 0
+      && this.min > 0 && this.max > 0;
+
+    if (isFromEqualZeroWithNegativeLimins) {
+      this.from -= this.step;
+    }
+    if (isFromEqualZeroWithPositiveLimins) {
+      this.from += this.step;
+    }
+    if (isToEqualZeroWithNegativeLimins) {
+      this.to -= this.step;
+    }
+    if (isToEqualZeroWithPositiveLimins) {
+      this.to += this.step;
+    }
+  };
+
   public setPositionParameters = (): void => {
     this.positionParameter = this.vertical ? 'top' : 'left';
     this.lengthParameter = this.vertical ? 'height' : 'width';
@@ -189,6 +286,10 @@ class Model {
       stepLength: this.stepLength,
       min: this.min,
       max: this.max,
+      fromRemains: this.fromRemains,
+      toRemains: this.toRemains,
+      minRemains: this.minRemains,
+      maxRemains: this.maxRemains,
       scalePositionParameter: this.scalePositionParameter,
       scaleNumber: this.scaleNumber,
       scaleElements: this.scaleElements,
@@ -208,35 +309,46 @@ class Model {
   };
 
   public calculateFrom = (options: Options): void => {
+    const {
+      runnerFromPosition,
+      runnerLength,
+      sliderLength,
+      isMinFrom,
+      isMaxFrom,
+      isScaleElementOnDown,
+      isClickForRunnerFrom,
+      scaleElementValue,
+    } = options.subViewOptions;
+
+    const from = parseFloat((((runnerFromPosition
+      + runnerLength / 2) / sliderLength)
+      * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
+
     if (this.isStepSet) {
-      if (options.subViewOptions.isCursorNearStepAheadFrom) {
-        this.from = parseFloat((this.from + this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isCursorNearStepBehindFrom) {
-        this.from = parseFloat((this.from - this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isClickAheadOfRunnerFrom) {
-        this.from = parseFloat((this.from + (options.subViewOptions.runnerFromStepsNumber
-          * this.step)).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isClickBehindOfRunnerFrom) {
-        this.from = parseFloat((this.from - (options.subViewOptions.runnerFromStepsNumber
-          * this.step)).toFixed(this.numberOfCharactersAfterDot));
+      const currentFromRemains: number = parseFloat(
+        (from % this.step).toFixed(this.numberOfCharactersAfterDot),
+      );
+
+      if (currentFromRemains !== 0 && Math.abs(currentFromRemains) !== this.step) {
+        this.from = parseFloat(
+          (from - currentFromRemains).toFixed(this.numberOfCharactersAfterDot),
+        );
+      } else {
+        this.from = from;
       }
     } else {
-      this.from = parseFloat((((options.subViewOptions.runnerFromPosition
-        + options.subViewOptions.runnerLength / 2) / options.subViewOptions.sliderLength)
-        * (this.max - this.min) + this.min).toFixed(
-        this.numberOfCharactersAfterDot,
-      ));
+      this.from = from;
     }
 
-    if (options.subViewOptions.isMinFrom) {
+    if (isMinFrom) {
       this.from = this.min;
     }
-    if (options.subViewOptions.isMaxFrom) {
+    if (isMaxFrom) {
       this.from = this.max;
     }
-    if (options.subViewOptions.isScaleElementOnDown
-        && options.subViewOptions.isClickForRunnerFrom) {
-      this.from = Number(options.subViewOptions.scaleElementValue);
+    if (isScaleElementOnDown
+        && isClickForRunnerFrom) {
+      this.from = Number(scaleElementValue);
     }
 
     this.restrictFrom();
@@ -248,6 +360,10 @@ class Model {
     const isFromLessThanMinimum: boolean = this.from < this.min;
     const isIntervalAndFromMoreThanTo: boolean = this.double && this.from > this.to;
     const isFromMoreThanMaximum: boolean = this.from > this.max;
+    const isFromMoreThanMaxRemains: boolean = this.from > this.max - this.maxRemains
+      && this.isStepSet;
+    const isFromLessThanMinRemains: boolean = this.from < this.min + this.minRemains
+      && this.isStepSet;
 
     if (isFromLessThanMinimum) {
       this.from = this.min;
@@ -256,35 +372,53 @@ class Model {
     } else if (isFromMoreThanMaximum) {
       this.from = this.max;
     }
+
+    if (isFromMoreThanMaxRemains) {
+      this.from = this.max - this.maxRemains;
+    } else if (isFromLessThanMinRemains) {
+      this.from = this.min + this.minRemains;
+    }
   };
 
   public calculateTo = (options: Options): void => {
+    if (!this.double) return;
+
+    const {
+      runnerToPosition,
+      runnerLength,
+      sliderLength,
+      isMaxTo,
+      isScaleElementOnDown,
+      isClickForRunnerTo,
+      scaleElementValue,
+    } = options.subViewOptions;
+
+    const to = parseFloat((((runnerToPosition
+      + runnerLength / 2) / sliderLength)
+      * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
+
     if (this.isStepSet) {
-      if (options.subViewOptions.isCursorNearStepAheadTo) {
-        this.to = parseFloat((this.to + this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isCursorNearStepBehindTo) {
-        this.to = parseFloat((this.to - this.step).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isClickAheadOfRunnerTo) {
-        this.to = parseFloat((this.to + (options.subViewOptions.runnerToStepsNumber
-          * this.step)).toFixed(this.numberOfCharactersAfterDot));
-      } else if (options.subViewOptions.isClickBehindOfRunnerTo) {
-        this.to = parseFloat((this.to - (options.subViewOptions.runnerToStepsNumber
-          * this.step)).toFixed(this.numberOfCharactersAfterDot));
+      const currentToRemains: number = parseFloat(
+        (to % this.step).toFixed(this.numberOfCharactersAfterDot),
+      );
+
+      if (currentToRemains !== 0 && Math.abs(currentToRemains) !== this.step) {
+        this.to = parseFloat(
+          (to - currentToRemains).toFixed(this.numberOfCharactersAfterDot),
+        );
+      } else {
+        this.to = to;
       }
     } else {
-      this.to = parseFloat((((options.subViewOptions.runnerToPosition
-        + options.subViewOptions.runnerLength / 2) / options.subViewOptions.sliderLength)
-        * (this.max - this.min) + this.min).toFixed(
-        this.numberOfCharactersAfterDot,
-      ));
+      this.to = to;
     }
 
-    if (options.subViewOptions.isMaxTo) {
+    if (isMaxTo) {
       this.to = this.max;
     }
-    if (options.subViewOptions.isScaleElementOnDown
-      && options.subViewOptions.isClickForRunnerTo) {
-      this.to = Number(options.subViewOptions.scaleElementValue);
+    if (isScaleElementOnDown
+      && isClickForRunnerTo) {
+      this.to = Number(scaleElementValue);
     }
 
     this.restrictTo();
@@ -293,30 +427,35 @@ class Model {
   };
 
   public restrictTo = (): void => {
-    if (!this.double) return;
-
     const isToLessThanFrom: boolean = this.to < this.from;
     const isToMoreThanMaximum: boolean = this.to > this.max;
+    const isToMoreThanMaxRemains: boolean = this.to > this.max - this.maxRemains && this.isStepSet;
 
     if (isToLessThanFrom) {
       this.to = this.from;
     } else if (isToMoreThanMaximum) {
       this.to = this.max;
     }
+
+    if (isToMoreThanMaxRemains) {
+      this.to = this.max - this.maxRemains;
+    }
   };
 
   public countNumberOfCharactersAfterDot = (): void => {
     const minValuesBeforeAndAfterDot: string[] = `${this.min}`.split('.');
     const maxValuesBeforeAndAfterDot: string[] = `${this.max}`.split('.');
+    const stepValuesBeforeAndAfterDot: string[] = `${this.step}`.split('.');
 
-    let minValuesAfterDot: string = minValuesBeforeAndAfterDot[1];
-    let maxValuesAfterDot: string = maxValuesBeforeAndAfterDot[1];
+    const minValuesAfterDot: string = minValuesBeforeAndAfterDot[1] || '';
+    const maxValuesAfterDot: string = maxValuesBeforeAndAfterDot[1] || '';
+    const stepValuesAfterDot: string = stepValuesBeforeAndAfterDot[1] || '';
 
-    if (minValuesAfterDot === undefined) minValuesAfterDot = '';
-    if (maxValuesAfterDot === undefined) maxValuesAfterDot = '';
-
-    this.numberOfCharactersAfterDot = minValuesAfterDot.length > maxValuesAfterDot.length
-      ? minValuesAfterDot.length : maxValuesAfterDot.length;
+    this.numberOfCharactersAfterDot = Math.max(
+      minValuesAfterDot.length,
+      maxValuesAfterDot.length,
+      stepValuesAfterDot.length,
+    );
   };
 
   public calculateScaleElementsValues = (): void => {
@@ -339,32 +478,10 @@ class Model {
   };
 
   public calculateScaleElementsNumber = (): void => {
-    const isDifferenceBetweenMaxMinValuesLessOrEqualToOne: boolean = this.max - this.min
-      <= 1 && this.numberOfCharactersAfterDot === 0;
-    const isDifferenceBetweenMaxMinValuesLessOrEqualToTwo: boolean = this.max - this.min
-      <= 2 && this.numberOfCharactersAfterDot === 0;
-    const isDifferenceBetweenMaxMinValuesLessOrEqualToFour: boolean = this.max - this.min
-      <= 4 && this.numberOfCharactersAfterDot === 0;
-    const isDifferenceBetweenMaxMinValuesLessThanTen: boolean = this.max - this.min < 10;
-    const isMinValueNegativeMaxValuePositive: boolean = this.min < 0 && this.max > 0;
-    const isMinOrMaxFourDigit: boolean = (Math.abs(this.min) > 999 && Math.abs(this.min) < 10000)
-    || (Math.abs(this.max) > 999 && Math.abs(this.max) < 10000);
-    const isMinOrMaxFiveDigit: boolean = Math.abs(this.min) > 9999 || Math.abs(this.max) > 9999;
-
     if (this.userConfig.scaleNumber) {
       this.scaleNumber = this.userConfig.scaleNumber;
-    } else if (isDifferenceBetweenMaxMinValuesLessOrEqualToOne) {
-      this.scaleNumber = 2;
-    } else if (isDifferenceBetweenMaxMinValuesLessOrEqualToTwo) {
-      this.scaleNumber = 3;
-    } else if (isDifferenceBetweenMaxMinValuesLessOrEqualToFour || isMinOrMaxFiveDigit) {
-      this.scaleNumber = 4;
-    } else if (isDifferenceBetweenMaxMinValuesLessThanTen || isMinOrMaxFourDigit) {
-      this.scaleNumber = 5;
-    } else if (isMinValueNegativeMaxValuePositive) {
-      this.scaleNumber = 11;
     } else {
-      this.scaleNumber = 5;
+      this.scaleNumber = 2;
     }
   };
 

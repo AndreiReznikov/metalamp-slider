@@ -8,30 +8,37 @@ class Range {
   rangeLength = 0;
 
   public calculateRangePosition = (options: Options): void => {
+    const { double } = options.modelOptions;
+    const { runnerFromPosition, runnerLength } = options.subViewOptions;
+
     this.rangePosition = 0;
 
-    if (!options.modelOptions.double) return;
+    if (!double) return;
 
-    this.rangePosition = options.subViewOptions.runnerFromPosition
-    + options.subViewOptions.runnerLength / 2;
+    this.rangePosition = runnerFromPosition + runnerLength / 2;
   };
 
   public calculateRangeLength = (options: Options): void => {
-    this.rangeLength = options.subViewOptions.runnerFromPosition
-    + options.subViewOptions.runnerLength / 2;
+    const { double } = options.modelOptions;
+    const { runnerFromPosition, runnerToPosition, runnerLength } = options.subViewOptions;
 
-    if (!options.modelOptions.double) return;
+    this.rangeLength = runnerFromPosition + runnerLength / 2;
 
-    this.rangeLength = options.subViewOptions.runnerToPosition
-    - options.subViewOptions.runnerFromPosition;
+    if (!double) return;
+
+    this.rangeLength = runnerToPosition - runnerFromPosition;
   };
 
   public setRangePosition = (options: Options): void => {
-    this.$range.css(options.modelOptions.positionParameter, this.rangePosition);
+    const { positionParameter } = options.modelOptions;
+
+    this.$range.css(positionParameter, this.rangePosition);
   };
 
   public setRangeLength = (options: Options): void => {
-    this.$range.css(options.modelOptions.lengthParameter, this.rangeLength);
+    const { lengthParameter } = options.modelOptions;
+
+    this.$range.css(lengthParameter, this.rangeLength);
   };
 }
 

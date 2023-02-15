@@ -1,7 +1,7 @@
 html, body {
   max-width: 1920px;
   min-width: 320px;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   background-color: #fff;
   font-family: Arial, Helvetica, sans-serif;
@@ -22,7 +22,7 @@ html, body {
 .double-slider-container,
 .single-slider-container,
 .vertical-slider-container,
-.simple-slider-container {
+.default-slider-container {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -56,7 +56,7 @@ html, body {
   margin: 100px 0;
 }
 
-.simple-slider-wrapper {
+.default-slider-wrapper {
   width: 650px;
   height: 6px;
   margin: 100px 0;
@@ -114,11 +114,14 @@ html, body {
   border: 3px solid rgb(47, 50, 53);
 }
 
-.panel__min-button,
-.panel__max-button,
-.panel__from-button,
-.panel__to-button,
-.panel__step-button {
+.panel__min,
+.panel__max,
+.panel__from,
+.panel__to,
+.panel__step {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 45px;
   height: 26px;
   background-color: rgb(47, 50, 53);
@@ -129,7 +132,6 @@ html, body {
   font-weight: bold;
   box-sizing: border-box;
   z-index: 2;
-  cursor: pointer;
 }
 
 .panel__toggle-label {
@@ -139,6 +141,7 @@ html, body {
   margin-right: 12px;
   line-height: 24px;
   font-size: 14px;
+  cursor: pointer;
 }
 
 .panel__toggle-label:last-child {
@@ -169,7 +172,6 @@ html, body {
   border-radius: 10px;
   box-sizing: content-box;
   z-index: 1;
-  cursor: pointer;
 }
 
 .panel__custom-toggle:after {
@@ -203,14 +205,11 @@ html, body {
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .panel__stripe,
-  .panel__button-from,
-  .panel__button-to,
-  .panel__min-button,
-  .panel__max-button,
-  .panel__from-button,
-  .panel__to-button,
-  .panel__step-button,
+  .panel__min,
+  .panel__max,
+  .panel__from,
+  .panel__to,
+  .panel__step,
   .panel__custom-toggle {
     cursor: auto;
   }

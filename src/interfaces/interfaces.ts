@@ -20,6 +20,10 @@ interface ModelOptions {
   stepLength: number;
   min: number;
   max: number;
+  fromRemains: number;
+  toRemains: number;
+  minRemains: number;
+  maxRemains: number;
   scalePositionParameter: string;
   scaleNumber: number;
   scaleElements: number[];
@@ -36,6 +40,8 @@ interface SubViewOptions {
   limitMaxLength: number;
   shiftAxis: number;
   clickPosition: number;
+  leftOrRight: string;
+  upOrDown: string;
   isMinFrom: boolean;
   isMaxFrom: boolean;
   isMaxTo: boolean;

@@ -47,6 +47,7 @@ class Presenter {
   private init = (): void => {
     this.model.validateInitialValues();
     this.model.countNumberOfCharactersAfterDot();
+    this.model.calculateRemains();
     this.model.calculateScaleElementsNumber();
     this.model.calculateScaleElementsValues();
     this.view.SubView.setModelOptions(this.model.getOptions());
@@ -65,7 +66,7 @@ class Presenter {
     this.view.SubView.runnerFrom.setRunnerPosition(this.model.getOptions());
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.runnerTo.setRunnerPosition(this.model.getOptions());
-    this.updateModel(this.view.SubView.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
     this.view.SubView.range.calculateRangePosition(this.model.getOptions());
     this.view.SubView.range.setRangePosition(this.model.getOptions());
     this.view.SubView.range.calculateRangeLength(this.model.getOptions());
@@ -123,6 +124,7 @@ class Presenter {
     this.view.SubView.scale.setScaleLength(options);
     this.view.SubView.scale.setScaleElementsPositions(options);
     this.view.SubView.scale.setScalePosition(options);
+    this.view.SubView.scale.findNonMultipleScaleValues(options);
   };
 
   private updateModel = (options: Options): void => {
@@ -177,9 +179,12 @@ class Presenter {
   };
 
   private setFrom = (value: number): void => {
+    if (Number.isNaN(value)) return;
+
     this.model.from = value;
     this.model.restrictFrom();
     this.model.validateInitialValues();
+    this.model.calculateRemains();
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
@@ -188,35 +193,53 @@ class Presenter {
   };
 
   private setTo = (value: number): void => {
+    if (Number.isNaN(value)) return;
+
     this.model.to = value;
     this.model.restrictTo();
     this.model.validateInitialValues();
+    this.model.calculateRemains();
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
-    this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
+    this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
   };
 
   private setMin = (value: number): void => {
+    if (Number.isNaN(value)) return;
+
     this.model.min = value;
 
     this.init();
   };
 
   private setMax = (value: number): void => {
+    if (Number.isNaN(value)) return;
+
     this.model.max = value;
 
     this.init();
   };
 
   private setStep = (value: number): void => {
+    if (Number.isNaN(value)) return;
+
     this.model.step = value;
 
     this.model.validateInitialValues();
+    this.model.countNumberOfCharactersAfterDot();
+    this.model.calculateRemains();
     this.model.calculateStepLength();
 
     this.view.SubView.setModelOptions(this.model.getOptions());
+    this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
+    this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
+    this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
   };
 }
 
