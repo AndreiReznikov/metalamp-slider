@@ -150,6 +150,11 @@ class Model {
       this.max = min;
     }
 
+    if (this.min === this.max) {
+      this.min = 0;
+      this.max = 100;
+    }
+
     if (isStepIncorrect) {
       this.step = 0;
     }
