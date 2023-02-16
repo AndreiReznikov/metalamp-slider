@@ -90,7 +90,9 @@ class Scale {
 
       const isRemainsOnScaleValue: boolean = parseFloat(
         (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
-      ) !== 0;
+      ) !== 0 && parseFloat(
+        (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
+      ) !== step;
 
       if (isRemainsOnScaleValue) {
         $scaleElement.css({
