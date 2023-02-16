@@ -365,7 +365,7 @@ describe('handleLimitMaxSetRunnerPosition', () => {
 
     view.SubView.handleLimitMaxSetRunnerPosition(eventSimulation);
 
-    expect(view.SubView.runnerFrom.runnerPosition).toEqual(0);
+    expect(view.SubView.runnerFrom.runnerPosition).toEqual(100);
   });
 
   test('method should set max runnerToPosition', () => {
@@ -376,7 +376,7 @@ describe('handleLimitMaxSetRunnerPosition', () => {
 
     view.SubView.handleLimitMaxSetRunnerPosition(eventSimulation);
 
-    expect(view.SubView.runnerTo.runnerPosition).toEqual(0);
+    expect(view.SubView.runnerTo.runnerPosition).toEqual(100);
   });
 
   test('method should return after wrong mouse button pressed', () => {
