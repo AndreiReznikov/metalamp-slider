@@ -1,6 +1,6 @@
 import { Options, UserConfig, Api } from '../interfaces/interfaces';
-import Model from '../Model/Model';
-import View from '../View/View';
+import Model from '../Model';
+import View from '../View';
 
 class Presenter {
   model: Model;
@@ -79,6 +79,8 @@ class Presenter {
   private launchEventManager = (): void => {
     this.view.$runnerFrom.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
     this.view.$runnerTo.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
+    this.view.$tooltipFrom.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
+    this.view.$tooltipTo.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
     this.view.$limitMin.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
     this.view.$limitMax.on('pointerdown.max', this.view.SubView.handleLimitMaxSetRunnerPosition);
     this.view.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);

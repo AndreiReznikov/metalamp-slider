@@ -1,11 +1,11 @@
 import { Options, ModelOptions, SubViewOptions } from '../interfaces/interfaces';
-import Observer from '../Observer/Observer';
-import Stripe from './Stripe/Stripe';
-import Range from './Range/Range';
-import Runner from './Runner/Runner';
-import Tooltip from './Tooltip/Tooltip';
-import Limit from './Limit/Limit';
-import Scale from './Scale/Scale';
+import Observer from '../Observer';
+import Stripe from './Stripe';
+import Range from './Range';
+import Runner from './Runner';
+import Tooltip from './Tooltip';
+import Limit from './Limit';
+import Scale from './Scale';
 
 class SubView {
   observer: Observer;
