@@ -464,22 +464,26 @@ class Model {
   };
 
   public calculateScaleElementsValues = (): void => {
-    this.scaleElements.length = 0;
+    this.scaleElements = [];
 
     let minScaleElementValue: number = parseFloat(
       this.min.toFixed(this.numberOfCharactersAfterDot),
     );
+
+    const scaleNumberWithoutMin: number = this.scaleNumber - 1;
     const intervalForScaleElements: number = (this.max - this.min)
-      / (this.scaleNumber - 1);
+      / (scaleNumberWithoutMin);
 
-    this.scaleElements.push(minScaleElementValue);
+    let scaleElements = new Array(scaleNumberWithoutMin).fill(0);
 
-    for (let i = 0; i < this.scaleNumber - 1; i += 1) {
-      const scaleElementValue: number = parseFloat((minScaleElementValue
+    scaleElements = scaleElements.map(() => {
+      const scaleElement = parseFloat((minScaleElementValue
         += intervalForScaleElements).toFixed(this.numberOfCharactersAfterDot));
 
-      this.scaleElements.push(scaleElementValue);
-    }
+      return scaleElement;
+    });
+
+    this.scaleElements = [this.min, ...scaleElements];
   };
 
   public calculateScaleElementsNumber = (): void => {

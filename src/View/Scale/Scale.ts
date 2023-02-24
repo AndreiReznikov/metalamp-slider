@@ -39,16 +39,16 @@ class Scale {
 
     this.$scaleContainer.empty();
 
-    for (let i = 0; i < scaleElements.length; i += 1) {
+    scaleElements.forEach((value, index) => {
       const $scaleElement: JQuery<HTMLElement> = $('<span>').addClass(
-        `slider__scale-element js-slider__scale-element js-slider__scale-element_${i}`,
+        `slider__scale-element js-slider__scale-element js-slider__scale-element_${index}`,
       );
       const scaleElementValue: string = localeString
-        ? scaleElements[i].toLocaleString() : `${scaleElements[i]}`;
+        ? value.toLocaleString() : `${value}`;
 
       $scaleElement.html(scaleElementValue);
       $scaleElement.appendTo(this.$scaleContainer);
-    }
+    });
   };
 
   public calculateLengthBetweenScaleElements = (options: Options): void => {
@@ -63,8 +63,8 @@ class Scale {
 
     let scaleElementPosition = 0;
 
-    for (let i = 0; i < scaleElements.length; i += 1) {
-      const $scaleElement: JQuery<HTMLElement> = this.$scaleContainer.find(`.js-slider__scale-element_${i}`);
+    scaleElements.forEach((item, index) => {
+      const $scaleElement: JQuery<HTMLElement> = this.$scaleContainer.find(`.js-slider__scale-element_${index}`);
       const scaleElementLength: number = parseInt(`${$scaleElement.css(lengthParameter)}`, 10);
 
       $scaleElement.css(
@@ -73,7 +73,7 @@ class Scale {
       );
 
       scaleElementPosition += this.lengthBetweenScaleElements;
-    }
+    });
   };
 
   public findNonMultipleScaleValues = (options: Options): void => {
