@@ -5,15 +5,15 @@ $(document).ready(() => {
   const pooshkaSlider = new PooshkaSlider('.js-double-slider-container');
 
   pooshkaSlider.initializePlugin({
-    double: true,
+    double: false,
     vertical: false,
     showTooltip: true,
     showLimit: true,
     showRange: true,
     showScale: true,
     min: -12.5,
-    max: 12.5,
-    step: 0,
+    max: 18,
+    step: 8,
     from: -5,
     to: 5,
     scaleNumber: 11,

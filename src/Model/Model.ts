@@ -26,7 +26,7 @@ class Model {
 
   to = 50;
 
-  scaleNumber = 5;
+  scaleNumber = 2;
 
   stepLength = 0;
 
@@ -85,7 +85,7 @@ class Model {
       from: 10,
       to: 50,
       step: 0,
-      scaleNumber: 5,
+      scaleNumber: 2,
     };
 
     this.config = $.extend({}, this.data, this.userConfig);
@@ -157,6 +157,10 @@ class Model {
 
     if (isStepIncorrect) {
       this.step = 0;
+    }
+
+    if (this.config.scaleNumber < 0) {
+      this.config.scaleNumber = 0;
     }
 
     this.isStepSet = this.step > 0;
@@ -470,28 +474,53 @@ class Model {
       this.min.toFixed(this.numberOfCharactersAfterDot),
     );
 
-    const scaleNumberWithoutMin: number = this.scaleNumber - 1;
+    let scaleElements: number[] = [];
+    // let isScaleIncorrect = false;
+
+    // const calculateScaleNumberWithStep = () => {
     const intervalForScaleElements: number = (this.max - this.min)
-      / (scaleNumberWithoutMin);
+      / (this.scaleNumber - 1);
 
-    let scaleElements = new Array(scaleNumberWithoutMin).fill(0);
+    scaleElements = new Array(this.scaleNumber).fill(0);
 
-    scaleElements = scaleElements.map(() => {
-      const scaleElement = parseFloat((minScaleElementValue
-        += intervalForScaleElements).toFixed(this.numberOfCharactersAfterDot));
+    scaleElements = scaleElements.map((item, index) => {
+      // if (isScaleIncorrect) return 0;
+      let scaleElement = 0;
+
+      if (index === 0) {
+        scaleElement = minScaleElementValue;
+      } else {
+        scaleElement = parseFloat((minScaleElementValue
+          += intervalForScaleElements).toFixed(this.numberOfCharactersAfterDot));
+      }
+
+      const isScaleElementIncorrect = this.isStepSet && parseFloat(
+        (Math.abs(scaleElement) % this.step).toFixed(this.numberOfCharactersAfterDot),
+      ) !== 0 && parseFloat(
+        (Math.abs(scaleElement) % this.step).toFixed(this.numberOfCharactersAfterDot),
+      ) !== this.step;
+
+      if (isScaleElementIncorrect) {
+        scaleElement = parseFloat(
+          (scaleElement - (scaleElement % this.step)
+          ).toFixed(this.numberOfCharactersAfterDot),
+        );
+      }
 
       return scaleElement;
     });
 
-    this.scaleElements = [this.min, ...scaleElements];
+    scaleElements = scaleElements.filter((item, index) => scaleElements.indexOf(item) === index);
+
+    this.scaleElements = [...scaleElements];
   };
 
   public calculateScaleElementsNumber = (): void => {
-    if (this.userConfig.scaleNumber) {
-      this.scaleNumber = this.userConfig.scaleNumber;
-    } else {
-      this.scaleNumber = 2;
-    }
+    // if (this.userConfig.scaleNumber) {
+    //   this.scaleNumber = this.userConfig.scaleNumber;
+    // } else {
+    //   this.scaleNumber = 2;
+    // }
   };
 
   public calculateStepLength = (): void => {

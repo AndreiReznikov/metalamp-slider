@@ -59,49 +59,59 @@ class Scale {
   };
 
   public setScaleElementsPositions = (options: Options): void => {
-    const { scaleElements, lengthParameter, positionParameter } = options.modelOptions;
+    const {
+      scaleElements, lengthParameter, positionParameter, min, max,
+    } = options.modelOptions;
+    const { sliderLength } = options.subViewOptions;
 
-    let scaleElementPosition = 0;
+    // let scaleElementPosition = 0;
 
-    scaleElements.forEach((item, index) => {
+    scaleElements.forEach((value, index) => {
       const $scaleElement: JQuery<HTMLElement> = this.$scaleContainer.find(`.js-slider__scale-element_${index}`);
       const scaleElementLength: number = parseInt(`${$scaleElement.css(lengthParameter)}`, 10);
+
+      const minRatio: number = min / (max - min);
+      const scaleElementRatio: number = value / (max - min);
+
+      const scaleElementPosition: number = Math.round(
+        (scaleElementRatio - minRatio) * sliderLength,
+      );
 
       $scaleElement.css(
         positionParameter,
         scaleElementPosition - scaleElementLength / 2,
       );
 
-      scaleElementPosition += this.lengthBetweenScaleElements;
+      // scaleElementPosition += this.lengthBetweenScaleElements;
     });
   };
 
-  public findNonMultipleScaleValues = (options: Options): void => {
-    const {
-      isStepSet, localeString, step, numberOfCharactersAfterDot,
-    } = options.modelOptions;
+  // public findNonMultipleScaleValues = (options: Options): void => {
+  //   const {
+  //     isStepSet, localeString, step, numberOfCharactersAfterDot,
+  //   } = options.modelOptions;
 
-    if (!isStepSet) return;
+  //   if (!isStepSet) return;
 
-    this.$scaleContainer.children().each(function findValues() {
-      const $scaleElement: JQuery<HTMLElement> = $(this);
-      const value: number = localeString
-        ? Number($scaleElement.html().split('&nbsp;').join('')) : Number($scaleElement.html());
+  //   this.$scaleContainer.children().each(function findValues() {
+  //     const $scaleElement: JQuery<HTMLElement> = $(this);
+  //     const value: number = localeString
+  //       ? Number($scaleElement.html().split('&nbsp;').join('')) : Number($scaleElement.html());
 
-      const isRemainsOnScaleValue: boolean = parseFloat(
-        (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
-      ) !== 0 && parseFloat(
-        (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
-      ) !== step;
+  //     const isRemainsOnScaleValue: boolean = parseFloat(
+  //       (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
+  //     ) !== 0 && parseFloat(
+  //       (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
+  //     ) !== step;
 
-      if (isRemainsOnScaleValue) {
-        $scaleElement.css({
-          opacity: 0.5,
-          'pointer-events': 'none',
-        });
-      }
-    });
-  };
+  //     if (isRemainsOnScaleValue) {
+  //       $scaleElement.css({
+  //         opacity: 0.5,
+  //         'pointer-events': 'none',
+  //       });
+  //     }
+  //   });
+  // };
 }
 
 export default Scale;

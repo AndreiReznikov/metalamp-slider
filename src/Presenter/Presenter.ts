@@ -48,7 +48,7 @@ class Presenter {
     this.model.validateInitialValues();
     this.model.countNumberOfCharactersAfterDot();
     this.model.calculateRemains();
-    this.model.calculateScaleElementsNumber();
+    // this.model.calculateScaleElementsNumber();
     this.model.calculateScaleElementsValues();
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.initializeView(this.model.getOptions());
@@ -126,7 +126,7 @@ class Presenter {
     this.view.SubView.scale.setScaleLength(options);
     this.view.SubView.scale.setScaleElementsPositions(options);
     this.view.SubView.scale.setScalePosition(options);
-    this.view.SubView.scale.findNonMultipleScaleValues(options);
+    // this.view.SubView.scale.findNonMultipleScaleValues(options);
   };
 
   private updateModel = (options: Options): void => {
@@ -233,6 +233,7 @@ class Presenter {
     this.model.countNumberOfCharactersAfterDot();
     this.model.calculateRemains();
     this.model.calculateStepLength();
+    this.model.calculateScaleElementsValues();
 
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
