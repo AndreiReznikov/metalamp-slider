@@ -74,6 +74,12 @@ class Presenter {
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.setPlane(this.model.getOptions());
     this.updateView(this.model.getOptions());
+    this.view.SubView.scale.setScaleElementsValues(this.view.SubView.getOptions());
+    this.view.SubView.scale.calculateLengthBetweenScaleElements(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScaleLength(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScaleElementsPositions(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScalePosition(this.view.SubView.getOptions());
+    this.view.SubView.scale.removeRedundantScaleElements(this.view.SubView.getOptions());
   };
 
   private launchEventManager = (): void => {
@@ -121,11 +127,12 @@ class Presenter {
     this.view.SubView.limitMax.setLimitPosition(options);
     this.view.SubView.limitMin.setLimitOpacity(options);
     this.view.SubView.limitMax.setLimitOpacity(options);
-    this.view.SubView.scale.setScaleElementsValues(options);
-    this.view.SubView.scale.calculateLengthBetweenScaleElements(options);
-    this.view.SubView.scale.setScaleLength(options);
-    this.view.SubView.scale.setScaleElementsPositions(options);
-    this.view.SubView.scale.setScalePosition(options);
+    // this.view.SubView.scale.setScaleElementsValues(options);
+    // this.view.SubView.scale.calculateLengthBetweenScaleElements(options);
+    // this.view.SubView.scale.setScaleLength(options);
+    // this.view.SubView.scale.setScaleElementsPositions(options);
+    // this.view.SubView.scale.setScalePosition(options);
+    // this.view.SubView.scale.removeScaleElements(options);
     // this.view.SubView.scale.findNonMultipleScaleValues(options);
   };
 
@@ -240,6 +247,12 @@ class Presenter {
     this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
+    this.view.SubView.scale.setScaleElementsValues(this.view.SubView.getOptions());
+    this.view.SubView.scale.calculateLengthBetweenScaleElements(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScaleLength(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScaleElementsPositions(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScalePosition(this.view.SubView.getOptions());
+    this.view.SubView.scale.removeRedundantScaleElements(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());

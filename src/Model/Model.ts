@@ -159,8 +159,8 @@ class Model {
       this.step = 0;
     }
 
-    if (this.config.scaleNumber < 0) {
-      this.config.scaleNumber = 0;
+    if (this.scaleNumber < 0) {
+      this.scaleNumber = 0;
     }
 
     this.isStepSet = this.step > 0;
@@ -473,18 +473,13 @@ class Model {
     let minScaleElementValue: number = parseFloat(
       this.min.toFixed(this.numberOfCharactersAfterDot),
     );
-
     let scaleElements: number[] = [];
-    // let isScaleIncorrect = false;
-
-    // const calculateScaleNumberWithStep = () => {
     const intervalForScaleElements: number = (this.max - this.min)
       / (this.scaleNumber - 1);
 
     scaleElements = new Array(this.scaleNumber).fill(0);
 
     scaleElements = scaleElements.map((item, index) => {
-      // if (isScaleIncorrect) return 0;
       let scaleElement = 0;
 
       if (index === 0) {
@@ -510,7 +505,9 @@ class Model {
       return scaleElement;
     });
 
-    scaleElements = scaleElements.filter((item, index) => scaleElements.indexOf(item) === index);
+    scaleElements = scaleElements.filter((scaleElement, index) => scaleElements.indexOf(
+      scaleElement,
+    ) === index);
 
     this.scaleElements = [...scaleElements];
   };

@@ -3,6 +3,10 @@ import { Options } from '../../interfaces/interfaces';
 class Scale {
   $scaleContainer: JQuery<HTMLElement> = $('<div/>');
 
+  scaleElementsWidth: number[] = [];
+
+  sumOfScaleElementsWith = 0;
+
   lengthBetweenScaleElements = 0;
 
   public setScaleLength = (options: Options): void => {
@@ -16,15 +20,24 @@ class Scale {
     const { scalePositionParameter } = options.modelOptions;
     const { runnerLength } = options.subViewOptions;
 
-    const scaleElementsWidths: number[] = [];
+    const scaleElementsWidth: number[] = [];
 
     this.$scaleContainer.children().each(function getScaleElementWidth() {
       const scaleElementWidth: number = parseInt($(this).css('width'), 10);
 
-      scaleElementsWidths.push(scaleElementWidth);
+      scaleElementsWidth.push(scaleElementWidth);
     });
 
-    const maxScaleElementsWidth: number = Math.max(...scaleElementsWidths);
+    this.scaleElementsWidth = scaleElementsWidth;
+
+    this.sumOfScaleElementsWith = this.scaleElementsWidth.reduce((sum, width) => {
+      let currentSum = sum;
+      currentSum += width;
+
+      return currentSum;
+    }, 0);
+
+    const maxScaleElementsWidth: number = Math.max(...this.scaleElementsWidth);
 
     this.$scaleContainer.css(
       scalePositionParameter,
@@ -64,8 +77,6 @@ class Scale {
     } = options.modelOptions;
     const { sliderLength } = options.subViewOptions;
 
-    // let scaleElementPosition = 0;
-
     scaleElements.forEach((value, index) => {
       const $scaleElement: JQuery<HTMLElement> = this.$scaleContainer.find(`.js-slider__scale-element_${index}`);
       const scaleElementLength: number = parseInt(`${$scaleElement.css(lengthParameter)}`, 10);
@@ -81,37 +92,25 @@ class Scale {
         positionParameter,
         scaleElementPosition - scaleElementLength / 2,
       );
-
-      // scaleElementPosition += this.lengthBetweenScaleElements;
     });
   };
 
-  // public findNonMultipleScaleValues = (options: Options): void => {
-  //   const {
-  //     isStepSet, localeString, step, numberOfCharactersAfterDot,
-  //   } = options.modelOptions;
+  public removeRedundantScaleElements = (options: Options): void => {
+    const { sliderLength } = options.subViewOptions;
 
-  //   if (!isStepSet) return;
+    if (!(sliderLength < this.sumOfScaleElementsWith)) return;
 
-  //   this.$scaleContainer.children().each(function findValues() {
-  //     const $scaleElement: JQuery<HTMLElement> = $(this);
-  //     const value: number = localeString
-  //       ? Number($scaleElement.html().split('&nbsp;').join('')) : Number($scaleElement.html());
+    this.$scaleContainer.children().each(function getScaleElementWidth(index) {
+      const $scaleElement = $(this);
 
-  //     const isRemainsOnScaleValue: boolean = parseFloat(
-  //       (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
-  //     ) !== 0 && parseFloat(
-  //       (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
-  //     ) !== step;
+      if (index % 2 !== 0) {
+        $scaleElement.remove();
+      }
+    });
 
-  //     if (isRemainsOnScaleValue) {
-  //       $scaleElement.css({
-  //         opacity: 0.5,
-  //         'pointer-events': 'none',
-  //       });
-  //     }
-  //   });
-  // };
+    this.sumOfScaleElementsWith /= 2;
+    this.removeRedundantScaleElements(options);
+  };
 }
 
 export default Scale;

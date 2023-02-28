@@ -12,11 +12,11 @@ $(document).ready(() => {
     showRange: true,
     showScale: true,
     min: -12.5,
-    max: 18,
-    step: 8,
+    max: 12.5,
+    step: 0,
     from: -5,
     to: 5,
-    scaleNumber: 11,
+    scaleNumber: 110,
   });
 
   const pooshkaSliderSingle = new PooshkaSlider('.js-single-slider-container');
