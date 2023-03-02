@@ -105,21 +105,7 @@ type Config = {
   scaleNumber: number;
 };
 
-type UserConfig = {
-  double?: boolean;
-  vertical?: boolean;
-  showTooltip?: boolean;
-  showLimit?: boolean;
-  showRange?: boolean;
-  showScale?: boolean;
-  localeString?: boolean;
-  min?: number;
-  max?: number;
-  from?: number;
-  to?: number;
-  step?: number;
-  scaleNumber?: number;
-};
+type UserConfig = Partial<Config>;
 
 enum DIRECTION {
   LEFT = 'left',
