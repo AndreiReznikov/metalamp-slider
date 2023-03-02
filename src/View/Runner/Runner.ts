@@ -1,9 +1,9 @@
-import { Options } from '../../interfaces/interfaces';
+import { Options, DIRECTION, RANGE } from '../../interfaces/interfaces';
 
 class Runner {
   $runner: JQuery<HTMLElement> = $('<button/>');
 
-  runnerType = 'from';
+  runnerType = RANGE.FROM;
 
   runnerPosition = 0;
 
@@ -21,7 +21,7 @@ class Runner {
 
   isMaxTo = false;
 
-  constructor(runnerType: string) {
+  constructor(runnerType: RANGE) {
     this.runnerType = runnerType;
   }
 
@@ -35,7 +35,7 @@ class Runner {
     const fromRatio: number = from / (max - min);
     const toRatio: number = to / (max - min);
 
-    const ratio = this.runnerType === 'from' ? fromRatio : toRatio;
+    const ratio = this.runnerType === RANGE.FROM ? fromRatio : toRatio;
 
     this.runnerPosition = Math.round((ratio - minRatio) * sliderLength - runnerLength / 2);
   };
@@ -115,13 +115,13 @@ class Runner {
     this.isCursorNearStepAhead = clickPosition
       > this.runnerPosition + runnerLength / 2
       + stepLength / 2
-      && (positionParameter === 'left'
-        ? leftOrRight === 'right' : upOrDown === 'down');
+      && (positionParameter === DIRECTION.LEFT
+        ? leftOrRight === DIRECTION.RIGHT : upOrDown === DIRECTION.BOTTOM);
     this.isCursorNearStepBehind = clickPosition
       < this.runnerPosition + runnerLength / 2
       - stepLength / 2
-      && (positionParameter === 'left'
-        ? leftOrRight === 'left' : upOrDown === 'up');
+      && (positionParameter === DIRECTION.LEFT
+        ? leftOrRight === DIRECTION.LEFT : upOrDown === DIRECTION.TOP);
 
     this.remainsAhead = (clickPosition
       - runnerLength / 2

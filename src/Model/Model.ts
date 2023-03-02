@@ -4,6 +4,8 @@ import {
   UserConfig,
   SubViewOptions,
   Options,
+  DIRECTION,
+  LENGTH,
 } from '../interfaces/interfaces';
 import Observer from '../Observer';
 
@@ -25,6 +27,14 @@ class Model {
   from = 10;
 
   to = 50;
+
+  fromRemains = 0;
+
+  toRemains = 0;
+
+  minRemains = 0;
+
+  maxRemains = 0;
 
   scaleNumber = 2;
 
@@ -50,23 +60,15 @@ class Model {
 
   isStepSet = false;
 
-  positionParameter = 'left';
+  positionParameter = DIRECTION.LEFT;
 
-  lengthParameter = 'width';
+  lengthParameter = LENGTH.WIDTH;
 
-  scalePositionParameter = 'top';
+  scalePositionParameter = DIRECTION.TOP;
 
   modelOptions: ModelOptions;
 
   subViewOptions: SubViewOptions;
-
-  fromRemains = 0;
-
-  toRemains = 0;
-
-  minRemains = 0;
-
-  maxRemains = 0;
 
   constructor(userConfig: UserConfig = {}) {
     this.observer = new Observer();
@@ -127,6 +129,7 @@ class Model {
       scaleElementPosition: 0,
       scaleElementLength: 0,
       scaleElementValue: 0,
+      scaleElementsCurrentNumber: 0,
     };
   }
 
@@ -268,9 +271,9 @@ class Model {
   };
 
   public setPositionParameters = (): void => {
-    this.positionParameter = this.vertical ? 'top' : 'left';
-    this.lengthParameter = this.vertical ? 'height' : 'width';
-    this.scalePositionParameter = this.vertical ? 'right' : 'top';
+    this.positionParameter = this.vertical ? DIRECTION.TOP : DIRECTION.LEFT;
+    this.lengthParameter = this.vertical ? LENGTH.HEIGHT : LENGTH.WIDTH;
+    this.scalePositionParameter = this.vertical ? DIRECTION.RIGHT : DIRECTION.TOP;
   };
 
   public setSubViewOptions = (options: Options): void => {
@@ -500,6 +503,9 @@ class Model {
           (scaleElement - (scaleElement % this.step)
           ).toFixed(this.numberOfCharactersAfterDot),
         );
+
+        scaleElement = scaleElement > this.max ? this.max - this.maxRemains : scaleElement;
+        scaleElement = scaleElement < this.min ? this.min - this.minRemains : scaleElement;
       }
 
       return scaleElement;
@@ -512,12 +518,8 @@ class Model {
     this.scaleElements = [...scaleElements];
   };
 
-  public calculateScaleElementsNumber = (): void => {
-    // if (this.userConfig.scaleNumber) {
-    //   this.scaleNumber = this.userConfig.scaleNumber;
-    // } else {
-    //   this.scaleNumber = 2;
-    // }
+  public calculateScaleElementsNumber = (options: Options): void => {
+    this.scaleNumber = options.subViewOptions.scaleElementsCurrentNumber;
   };
 
   public calculateStepLength = (): void => {

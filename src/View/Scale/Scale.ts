@@ -1,4 +1,4 @@
-import { Options } from '../../interfaces/interfaces';
+import { Options, DIRECTION, LENGTH } from '../../interfaces/interfaces';
 
 class Scale {
   $scaleContainer: JQuery<HTMLElement> = $('<div/>');
@@ -8,6 +8,8 @@ class Scale {
   sumOfScaleElementsWith = 0;
 
   lengthBetweenScaleElements = 0;
+
+  scaleElementsCurrentNumber = 0;
 
   public setScaleLength = (options: Options): void => {
     const { lengthParameter } = options.modelOptions;
@@ -23,7 +25,7 @@ class Scale {
     const scaleElementsWidth: number[] = [];
 
     this.$scaleContainer.children().each(function getScaleElementWidth() {
-      const scaleElementWidth: number = parseInt($(this).css('width'), 10);
+      const scaleElementWidth: number = parseInt($(this).css(LENGTH.WIDTH), 10);
 
       scaleElementsWidth.push(scaleElementWidth);
     });
@@ -41,7 +43,7 @@ class Scale {
 
     this.$scaleContainer.css(
       scalePositionParameter,
-      scalePositionParameter === 'right'
+      scalePositionParameter === DIRECTION.RIGHT
         ? maxScaleElementsWidth + runnerLength
         : runnerLength,
     );
@@ -98,7 +100,9 @@ class Scale {
   public removeRedundantScaleElements = (options: Options): void => {
     const { sliderLength } = options.subViewOptions;
 
-    if (!(sliderLength < this.sumOfScaleElementsWith)) return;
+    this.scaleElementsCurrentNumber = this.$scaleContainer.children().length;
+
+    if (sliderLength > this.sumOfScaleElementsWith) return;
 
     this.$scaleContainer.children().each(function getScaleElementWidth(index) {
       const $scaleElement = $(this);

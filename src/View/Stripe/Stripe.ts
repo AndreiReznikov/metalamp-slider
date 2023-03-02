@@ -1,4 +1,4 @@
-import { Options } from '../../interfaces/interfaces';
+import { Options, RANGE, LIMIT } from '../../interfaces/interfaces';
 import Range from '../Range/Range';
 import Runner from '../Runner/Runner';
 import Tooltip from '../Tooltip/Tooltip';
@@ -47,12 +47,12 @@ class Stripe {
   isLimitMaxShown = true;
 
   constructor() {
-    this.tooltipFrom = new Tooltip('from');
-    this.tooltipTo = new Tooltip('to');
-    this.runnerFrom = new Runner('from');
-    this.runnerTo = new Runner('to');
-    this.limitMin = new Limit('min');
-    this.limitMax = new Limit('max');
+    this.tooltipFrom = new Tooltip(RANGE.FROM);
+    this.tooltipTo = new Tooltip(RANGE.TO);
+    this.runnerFrom = new Runner(RANGE.FROM);
+    this.runnerTo = new Runner(RANGE.TO);
+    this.limitMin = new Limit(LIMIT.MIN);
+    this.limitMax = new Limit(LIMIT.MAX);
     this.range = new Range();
     this.scale = new Scale();
   }
@@ -242,11 +242,11 @@ class Stripe {
     }
   };
 
-  public changeRunnerZIndex = (runnerType: string): void => {
-    if (runnerType === 'from') {
+  public changeRunnerZIndex = (runnerType: RANGE): void => {
+    if (runnerType === RANGE.FROM) {
       this.runnerFrom.$runner.css('z-index', 3);
       this.runnerTo.$runner.css('z-index', 2);
-    } else if (runnerType === 'to') {
+    } else if (runnerType === RANGE.TO) {
       this.runnerFrom.$runner.css('z-index', 2);
       this.runnerTo.$runner.css('z-index', 3);
     }
@@ -307,11 +307,11 @@ class Stripe {
     if (isRunnerToNearRunnerFrom) {
       this.runnerFrom.runnerPosition = this.runnerTo.runnerPosition;
       this.runnerFrom.isCursorNearStepAhead = true;
-      this.changeRunnerZIndex('from');
+      this.changeRunnerZIndex(RANGE.FROM);
     } else if (isRunnerFromNearRunnerTo) {
       this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
       this.runnerTo.isCursorNearStepBehind = true;
-      this.changeRunnerZIndex('to');
+      this.changeRunnerZIndex(RANGE.TO);
     }
   };
 }

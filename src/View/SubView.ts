@@ -1,4 +1,11 @@
-import { Options, ModelOptions, SubViewOptions } from '../interfaces/interfaces';
+import {
+  Options,
+  ModelOptions,
+  SubViewOptions,
+  DIRECTION,
+  LENGTH,
+  RANGE,
+} from '../interfaces/interfaces';
 import Observer from '../Observer';
 import Stripe from './Stripe';
 import Range from './Range';
@@ -88,9 +95,9 @@ class SubView {
       showScale: false,
       localeString: false,
       isStepSet: false,
-      positionParameter: 'left',
-      lengthParameter: 'width',
-      scalePositionParameter: 'top',
+      positionParameter: DIRECTION.LEFT,
+      lengthParameter: LENGTH.WIDTH,
+      scalePositionParameter: DIRECTION.TOP,
       to: 0,
       from: 0,
       step: 0,
@@ -129,7 +136,7 @@ class SubView {
     this.calculateClickPosition(event);
     this.shiftAxis = this.runnerFrom.calculateShiftAxis(this.getOptions());
 
-    this.attachPointermoveEvent('from');
+    this.attachPointermoveEvent(RANGE.FROM);
   };
 
   public handleRunnerToStartPointermove = (event: JQuery.TriggeredEvent): void => {
@@ -141,7 +148,7 @@ class SubView {
     this.calculateClickPosition(event);
     this.shiftAxis = this.runnerTo.calculateShiftAxis(this.getOptions());
 
-    this.attachPointermoveEvent('to');
+    this.attachPointermoveEvent(RANGE.TO);
   };
 
   public handleLimitMinSetRunnerPosition = (event: JQuery.TriggeredEvent): void => {
@@ -284,6 +291,7 @@ class SubView {
       scaleElementPosition: this.scaleElementPosition,
       scaleElementLength: this.scaleElementLength,
       scaleElementValue: this.scaleElementValue,
+      scaleElementsCurrentNumber: this.scale.scaleElementsCurrentNumber,
     };
 
     return subViewOptions;
@@ -302,7 +310,7 @@ class SubView {
     this.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
     this.stripe.restrictRunnerFromPosition(this.getOptions());
     this.stripe.showLimit(this.getOptions());
-    this.stripe.changeRunnerZIndex('from');
+    this.stripe.changeRunnerZIndex(RANGE.FROM);
 
     this.observer.notifyObservers(this.getOptions());
   };
@@ -312,13 +320,14 @@ class SubView {
     this.runnerTo.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
     this.stripe.restrictRunnerToPosition(this.getOptions());
     this.stripe.showLimit(this.getOptions());
-    this.stripe.changeRunnerZIndex('to');
+    this.stripe.changeRunnerZIndex(RANGE.TO);
 
     this.observer.notifyObservers(this.getOptions());
   };
 
   private attachPointermoveEvent = (valueType: string) => {
-    const handleRunnerPointermove = valueType === 'from' ? this.handleRunnerFromPointermove : this.handleRunnerToPointermove;
+    const handleRunnerPointermove = valueType === RANGE.FROM
+      ? this.handleRunnerFromPointermove : this.handleRunnerToPointermove;
     const handleDocumentOffPointerMove = () => {
       this.$document.off('pointermove.move', handleRunnerPointermove);
     };
@@ -335,8 +344,8 @@ class SubView {
     const pageX1 = event.pageX || 0;
     const pageY1 = event.pageY || 0;
 
-    this.leftOrRight = pageX1 > this.lastPoint.x ? 'right' : 'left';
-    this.upOrDown = pageY1 > this.lastPoint.y ? 'down' : 'up';
+    this.leftOrRight = pageX1 > this.lastPoint.x ? DIRECTION.RIGHT : DIRECTION.LEFT;
+    this.upOrDown = pageY1 > this.lastPoint.y ? DIRECTION.BOTTOM : DIRECTION.TOP;
 
     this.lastPoint.x = pageX1;
     this.lastPoint.y = pageY1;

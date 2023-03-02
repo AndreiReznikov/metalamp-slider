@@ -1,4 +1,4 @@
-import { Options } from '../interfaces/interfaces';
+import { Options, LENGTH } from '../interfaces/interfaces';
 import SubView from './SubView';
 
 class View {
@@ -168,10 +168,10 @@ class View {
     this.$container = this.$slider.parent();
     this.$containerEnvironment = this.$container.parent();
 
-    const containerWidth = parseInt(this.$container.css('width'), 10);
-    const containerHeight = parseInt(this.$container.css('height'), 10);
-    const containerRelativeWidth = (parseInt(this.$container.css('width'), 10)
-    / parseInt(this.$containerEnvironment.css('width'), 10)) * 100;
+    const containerWidth = parseInt(this.$container.css(LENGTH.WIDTH), 10);
+    const containerHeight = parseInt(this.$container.css(LENGTH.HEIGHT), 10);
+    const containerRelativeWidth = (parseInt(this.$container.css(LENGTH.WIDTH), 10)
+    / parseInt(this.$containerEnvironment.css(LENGTH.WIDTH), 10)) * 100;
 
     this.containerParameters = {
       containerWidth,
