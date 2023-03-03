@@ -64,6 +64,7 @@ interface SubViewOptions {
   scaleElementPosition: number;
   scaleElementLength: number;
   scaleElementValue: number;
+  scaleElementsCurrentNumber: number;
 }
 
 type Api = {
@@ -104,22 +105,30 @@ type Config = {
   scaleNumber: number;
 };
 
-type UserConfig = {
-  double?: boolean;
-  vertical?: boolean;
-  showTooltip?: boolean;
-  showLimit?: boolean;
-  showRange?: boolean;
-  showScale?: boolean;
-  localeString?: boolean;
-  min?: number;
-  max?: number;
-  from?: number;
-  to?: number;
-  step?: number;
-  scaleNumber?: number;
-};
+type UserConfig = Partial<Config>;
+
+enum DIRECTION {
+  LEFT = 'left',
+  RIGHT = 'right',
+  TOP = 'top',
+  BOTTOM = 'bottom',
+}
+
+enum LENGTH {
+  WIDTH = 'width',
+  HEIGHT = 'height',
+}
+
+enum LIMIT {
+  MIN = 'min',
+  MAX = 'max',
+}
+
+enum RANGE {
+  FROM = 'from',
+  TO = 'to',
+}
 
 export {
-  Options, ModelOptions, Config, UserConfig, SubViewOptions, Api,
+  Options, ModelOptions, Config, UserConfig, SubViewOptions, Api, DIRECTION, LENGTH, LIMIT, RANGE,
 };

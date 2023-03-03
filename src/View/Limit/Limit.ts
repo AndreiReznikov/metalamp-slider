@@ -1,15 +1,15 @@
-import { Options } from '../../interfaces/interfaces';
+import { Options, LIMIT } from '../../interfaces/interfaces';
 
 class Limit {
   $limit: JQuery<HTMLElement> = $('<div/>');
 
-  limitType = 'min';
+  limitType = LIMIT.MIN;
 
   limitPosition = 0;
 
   limitLength = 0;
 
-  constructor(limitType: string) {
+  constructor(limitType: LIMIT) {
     this.limitType = limitType;
   }
 
@@ -18,7 +18,7 @@ class Limit {
 
     this.limitPosition = 0;
 
-    if (this.limitType !== 'max') return;
+    if (this.limitType !== LIMIT.MAX) return;
 
     this.limitPosition = sliderLength - limitMaxLength;
   };
@@ -34,9 +34,9 @@ class Limit {
 
     let limitValue: number | string = 0;
 
-    if (this.limitType === 'min') {
+    if (this.limitType === LIMIT.MIN) {
       limitValue = min;
-    } else if (this.limitType === 'max') {
+    } else if (this.limitType === LIMIT.MAX) {
       limitValue = max;
     }
 
@@ -59,9 +59,9 @@ class Limit {
 
     this.$limit.css('opacity', 0);
 
-    if (isLimitMaxShown && this.limitType === 'max') {
+    if (isLimitMaxShown && this.limitType === LIMIT.MAX) {
       this.$limit.css('opacity', 1);
-    } else if (isLimitMinShown && this.limitType === 'min') {
+    } else if (isLimitMinShown && this.limitType === LIMIT.MIN) {
       this.$limit.css('opacity', 1);
     }
   };

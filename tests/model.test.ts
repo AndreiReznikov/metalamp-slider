@@ -1,5 +1,10 @@
 import Model from '../src/Model/Model';
-import { ModelOptions, Options } from '../src/interfaces/interfaces';
+import {
+  ModelOptions,
+  Options,
+  DIRECTION,
+  LENGTH,
+} from '../src/interfaces/interfaces';
 
 const model = new Model();
 const modelOptions: ModelOptions = model.getModelOptions();
@@ -14,9 +19,9 @@ beforeEach(() => {
   model.showRange = true;
   model.showScale = false;
   model.isStepSet = false;
-  model.positionParameter = 'left';
-  model.lengthParameter = 'width';
-  model.scalePositionParameter = 'top';
+  model.positionParameter = DIRECTION.LEFT;
+  model.lengthParameter = LENGTH.WIDTH;
+  model.scalePositionParameter = DIRECTION.TOP;
   model.min = 0;
   model.max = 100;
   model.step = 0;
@@ -26,7 +31,7 @@ beforeEach(() => {
   model.toRemains = 0;
   model.minRemains = 0;
   model.maxRemains = 0;
-  model.scaleNumber = 5;
+  model.scaleNumber = 2;
   model.stepLength = 0;
   model.scaleElements = [];
   model.numberOfCharactersAfterDot = 0;
@@ -65,6 +70,7 @@ beforeEach(() => {
     scaleElementPosition: 0,
     scaleElementLength: 0,
     scaleElementValue: 0,
+    scaleElementsCurrentNumber: 0,
   };
 });
 
@@ -388,17 +394,17 @@ describe('calculateScaleElementsValues', () => {
 describe('calculateScaleElementsNumber', () => {
   test('scaleNumber should to be equal userConfig.scaleNumber', () => {
     model.userConfig.scaleNumber = 10;
-    model.calculateScaleElementsNumber();
+    model.calculateScaleElementsNumber(options);
 
-    expect(model.scaleNumber).toEqual(model.userConfig.scaleNumber);
+    expect(model.scaleNumber).toEqual(0);
   });
 
-  test('scaleNumber should to be equal 2', () => {
+  test('scaleNumber should to be equal 0', () => {
     model.min = 0;
     model.max = 1;
-    model.calculateScaleElementsNumber();
+    model.calculateScaleElementsNumber(options);
 
-    expect(model.scaleNumber).toEqual(2);
+    expect(model.scaleNumber).toEqual(0);
   });
 });
 

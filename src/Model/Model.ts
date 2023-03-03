@@ -1,133 +1,22 @@
 import {
   ModelOptions,
-  Config,
   UserConfig,
-  SubViewOptions,
   Options,
+  DIRECTION,
+  LENGTH,
 } from '../interfaces/interfaces';
-import Observer from '../Observer/Observer';
+import AbstractModel from './AbstractModel';
 
-class Model {
-  observer: Observer;
-
-  userConfig: UserConfig;
-
-  data: Config;
-
-  config: Config;
-
-  min = 0;
-
-  max = 100;
-
-  step = 0;
-
-  from = 10;
-
-  to = 50;
-
-  scaleNumber = 5;
-
-  stepLength = 0;
-
-  numberOfCharactersAfterDot = 0;
-
-  scaleElements: number[] = [];
-
-  double = false;
-
-  vertical = false;
-
-  showLimit = true;
-
-  showTooltip = true;
-
-  showRange = true;
-
-  showScale = true;
-
-  localeString = false;
-
-  isStepSet = false;
-
-  positionParameter = 'left';
-
-  lengthParameter = 'width';
-
-  scalePositionParameter = 'top';
-
+class Model extends AbstractModel {
   modelOptions: ModelOptions;
 
-  subViewOptions: SubViewOptions;
-
-  fromRemains = 0;
-
-  toRemains = 0;
-
-  minRemains = 0;
-
-  maxRemains = 0;
-
   constructor(userConfig: UserConfig = {}) {
-    this.observer = new Observer();
+    super(userConfig);
 
-    this.userConfig = userConfig;
-    this.data = {
-      double: false,
-      vertical: false,
-      showTooltip: true,
-      showLimit: true,
-      showRange: true,
-      showScale: false,
-      localeString: false,
-      min: 0,
-      max: 100,
-      from: 10,
-      to: 50,
-      step: 0,
-      scaleNumber: 5,
-    };
-
-    this.config = $.extend({}, this.data, this.userConfig);
     this.setConfig();
     this.setPositionParameters();
 
     this.modelOptions = this.getModelOptions();
-    this.subViewOptions = {
-      sliderPosition: 0,
-      sliderLength: 0,
-      runnerFromPosition: 0,
-      runnerToPosition: 0,
-      runnerLength: 0,
-      limitMinLength: 0,
-      limitMaxLength: 0,
-      shiftAxis: 0,
-      clickPosition: 0,
-      leftOrRight: '',
-      upOrDown: '',
-      isMinFrom: false,
-      isMaxFrom: false,
-      isMaxTo: false,
-      isCursorNearStepAheadFrom: false,
-      isCursorNearStepBehindFrom: false,
-      isCursorNearStepAheadTo: false,
-      isCursorNearStepBehindTo: false,
-      isClickAheadOfRunnerFrom: false,
-      isClickBehindOfRunnerFrom: false,
-      isClickForRunnerFrom: false,
-      isClickAheadOfRunnerTo: false,
-      isClickBehindOfRunnerTo: false,
-      isClickForRunnerTo: false,
-      areTooltipsClose: false,
-      isLimitMinShown: true,
-      isLimitMaxShown: true,
-      runnerFromStepsNumber: 0,
-      runnerToStepsNumber: 0,
-      isScaleElementOnDown: false,
-      scaleElementPosition: 0,
-      scaleElementLength: 0,
-      scaleElementValue: 0,
-    };
   }
 
   public validateInitialValues = (): void => {
@@ -157,6 +46,10 @@ class Model {
 
     if (isStepIncorrect) {
       this.step = 0;
+    }
+
+    if (this.scaleNumber < 0) {
+      this.scaleNumber = 0;
     }
 
     this.isStepSet = this.step > 0;
@@ -264,9 +157,9 @@ class Model {
   };
 
   public setPositionParameters = (): void => {
-    this.positionParameter = this.vertical ? 'top' : 'left';
-    this.lengthParameter = this.vertical ? 'height' : 'width';
-    this.scalePositionParameter = this.vertical ? 'right' : 'top';
+    this.positionParameter = this.vertical ? DIRECTION.TOP : DIRECTION.LEFT;
+    this.lengthParameter = this.vertical ? LENGTH.HEIGHT : LENGTH.WIDTH;
+    this.scalePositionParameter = this.vertical ? DIRECTION.RIGHT : DIRECTION.TOP;
   };
 
   public setSubViewOptions = (options: Options): void => {
@@ -464,30 +357,55 @@ class Model {
   };
 
   public calculateScaleElementsValues = (): void => {
-    this.scaleElements.length = 0;
+    this.scaleElements = [];
 
     let minScaleElementValue: number = parseFloat(
       this.min.toFixed(this.numberOfCharactersAfterDot),
     );
+    let scaleElements: number[] = [];
     const intervalForScaleElements: number = (this.max - this.min)
       / (this.scaleNumber - 1);
 
-    this.scaleElements.push(minScaleElementValue);
+    scaleElements = new Array(this.scaleNumber).fill(0);
 
-    for (let i = 0; i < this.scaleNumber - 1; i += 1) {
-      const scaleElementValue: number = parseFloat((minScaleElementValue
-        += intervalForScaleElements).toFixed(this.numberOfCharactersAfterDot));
+    scaleElements = scaleElements.map((item, index) => {
+      let scaleElement = 0;
 
-      this.scaleElements.push(scaleElementValue);
-    }
+      if (index === 0) {
+        scaleElement = minScaleElementValue;
+      } else {
+        scaleElement = parseFloat((minScaleElementValue
+          += intervalForScaleElements).toFixed(this.numberOfCharactersAfterDot));
+      }
+
+      const isScaleElementIncorrect = this.isStepSet && parseFloat(
+        (Math.abs(scaleElement) % this.step).toFixed(this.numberOfCharactersAfterDot),
+      ) !== 0 && parseFloat(
+        (Math.abs(scaleElement) % this.step).toFixed(this.numberOfCharactersAfterDot),
+      ) !== this.step;
+
+      if (isScaleElementIncorrect) {
+        scaleElement = parseFloat(
+          (scaleElement - (scaleElement % this.step)
+          ).toFixed(this.numberOfCharactersAfterDot),
+        );
+
+        scaleElement = scaleElement > this.max ? this.max - this.maxRemains : scaleElement;
+        scaleElement = scaleElement < this.min ? this.min - this.minRemains : scaleElement;
+      }
+
+      return scaleElement;
+    });
+
+    scaleElements = scaleElements.filter((scaleElement, index) => scaleElements.indexOf(
+      scaleElement,
+    ) === index);
+
+    this.scaleElements = [...scaleElements];
   };
 
-  public calculateScaleElementsNumber = (): void => {
-    if (this.userConfig.scaleNumber) {
-      this.scaleNumber = this.userConfig.scaleNumber;
-    } else {
-      this.scaleNumber = 2;
-    }
+  public calculateScaleElementsNumber = (options: Options): void => {
+    this.scaleNumber = options.subViewOptions.scaleElementsCurrentNumber;
   };
 
   public calculateStepLength = (): void => {

@@ -1,4 +1,6 @@
-import { Options } from '../src/interfaces/interfaces';
+import {
+  DIRECTION, LENGTH, LIMIT, Options, RANGE,
+} from '../src/interfaces/interfaces';
 import View from '../src/View/View';
 
 document.body.innerHTML = `
@@ -24,9 +26,9 @@ view.SubView.modelOptions = {
   showScale: false,
   localeString: false,
   isStepSet: false,
-  positionParameter: 'left',
-  lengthParameter: 'width',
-  scalePositionParameter: 'top',
+  positionParameter: DIRECTION.LEFT,
+  lengthParameter: LENGTH.WIDTH,
+  scalePositionParameter: DIRECTION.TOP,
   to: 50,
   from: 20,
   step: 0,
@@ -75,6 +77,7 @@ view.SubView.subViewOptions = {
   scaleElementPosition: 0,
   scaleElementLength: 0,
   scaleElementValue: 0,
+  scaleElementsCurrentNumber: 0,
 };
 
 let options: Options = view.SubView.getOptions();
@@ -91,18 +94,18 @@ beforeEach(() => {
   view.SubView.range.rangeLength = 0;
   view.SubView.limitMin.limitLength = 0;
   view.SubView.limitMin.limitPosition = 0;
-  view.SubView.limitMin.limitType = 'min';
+  view.SubView.limitMin.limitType = LIMIT.MIN;
   view.SubView.limitMax.limitLength = 0;
   view.SubView.limitMax.limitPosition = 0;
-  view.SubView.limitMax.limitType = 'max';
-  view.SubView.runnerFrom.runnerType = 'from';
+  view.SubView.limitMax.limitType = LIMIT.MAX;
+  view.SubView.runnerFrom.runnerType = RANGE.FROM;
   view.SubView.runnerFrom.runnerPosition = 0;
   view.SubView.runnerFrom.isCursorNearStepAhead = false;
   view.SubView.runnerFrom.isCursorNearStepBehind = false;
   view.SubView.runnerFrom.isMinFrom = false;
   view.SubView.runnerFrom.isMaxFrom = false;
   view.SubView.runnerFrom.isMaxTo = false;
-  view.SubView.runnerTo.runnerType = 'to';
+  view.SubView.runnerTo.runnerType = RANGE.TO;
   view.SubView.runnerTo.runnerPosition = 0;
   view.SubView.runnerTo.isCursorNearStepAhead = false;
   view.SubView.runnerTo.isCursorNearStepBehind = false;
@@ -110,11 +113,11 @@ beforeEach(() => {
   view.SubView.runnerTo.isMaxFrom = false;
   view.SubView.runnerTo.isMaxTo = false;
   view.SubView.scale.lengthBetweenScaleElements = 0;
-  view.SubView.tooltipFrom.tooltipType = 'from';
+  view.SubView.tooltipFrom.tooltipType = RANGE.FROM;
   view.SubView.tooltipFrom.tooltipLength = 0;
   view.SubView.tooltipFrom.tooltipPosition = 0;
   view.SubView.tooltipFrom.tooltipValue = 0;
-  view.SubView.tooltipTo.tooltipType = 'to';
+  view.SubView.tooltipTo.tooltipType = RANGE.TO;
   view.SubView.tooltipTo.tooltipLength = 0;
   view.SubView.tooltipTo.tooltipPosition = 0;
   view.SubView.tooltipTo.tooltipValue = 0;
@@ -139,9 +142,9 @@ beforeEach(() => {
     showScale: false,
     localeString: false,
     isStepSet: false,
-    positionParameter: 'left',
-    lengthParameter: 'width',
-    scalePositionParameter: 'top',
+    positionParameter: DIRECTION.LEFT,
+    lengthParameter: LENGTH.WIDTH,
+    scalePositionParameter: DIRECTION.TOP,
     from: 20,
     to: 50,
     step: 0,
@@ -190,6 +193,7 @@ beforeEach(() => {
     scaleElementPosition: 0,
     scaleElementLength: 0,
     scaleElementValue: 0,
+    scaleElementsCurrentNumber: 0,
   };
 
   options = view.SubView.getOptions();
@@ -767,33 +771,13 @@ describe('Scale', () => {
     });
   });
 
-  describe('calculateLengthBetweenScaleElements', () => {
-    test('method should calculate length between scale elements', () => {
-      options.modelOptions.scaleNumber = 5;
+  describe('removeRedundantScaleElements', () => {
+    test('the method should reduce sumOfScaleElementsWith', () => {
+      view.SubView.scale.sumOfScaleElementsWith = 150;
 
-      view.SubView.scale.calculateLengthBetweenScaleElements(options);
+      view.SubView.scale.removeRedundantScaleElements(options);
 
-      expect(view.SubView.scale.lengthBetweenScaleElements).toEqual(25);
-    });
-  });
-
-  describe('setScaleElementsPositions', () => {
-    test('method should calculate length between scale elements', () => {
-      options.modelOptions.scaleElements = [0, 1, 2, 3, 4, 5];
-      view.SubView.scale.lengthBetweenScaleElements = 25;
-      view.SubView.scale.setScaleElementsValues(options);
-      const $scaleElementCollection = $('.js-slider__scale-element');
-      let expectedValue = 0;
-
-      view.SubView.scale.setScaleElementsPositions(options);
-
-      $scaleElementCollection.each(function comparePositions() {
-        const $scaleElement = $(this);
-
-        expect($scaleElement.css('left')).toEqual(`${expectedValue}px`);
-
-        expectedValue += view.SubView.scale.lengthBetweenScaleElements;
-      });
+      expect(view.SubView.scale.sumOfScaleElementsWith).toEqual(75);
     });
   });
 });

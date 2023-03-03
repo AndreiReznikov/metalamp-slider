@@ -1,57 +1,9 @@
-import { Options } from '../interfaces/interfaces';
-import SubView from './SubView';
+import { Options, LENGTH } from '../interfaces/interfaces';
+import AbstractView from './AbstractView';
 
-class View {
-  SubView: SubView;
-
-  $window: JQuery<Window & typeof globalThis>;
-
-  $container: JQuery<HTMLElement> = $('<div/>');
-
-  $containerEnvironment: JQuery<HTMLElement> = $('<div/>');
-
-  $slider: JQuery<HTMLElement>;
-
-  $stripe: JQuery<HTMLElement>;
-
-  $runnerFrom: JQuery<HTMLElement>;
-
-  $runnerTo: JQuery<HTMLElement>;
-
-  $range: JQuery<HTMLElement>;
-
-  $limitMin: JQuery<HTMLElement>;
-
-  $limitMax: JQuery<HTMLElement>;
-
-  $scaleContainer: JQuery<HTMLElement>;
-
-  $tooltipFrom: JQuery<HTMLElement>;
-
-  $tooltipTo: JQuery<HTMLElement>;
-
-  containerParameters: {
-    containerWidth: number;
-    containerHeight: number;
-    containerRelativeWidth: number;
-  };
-
+class View extends AbstractView {
   constructor($slider: JQuery<HTMLElement> = $('<div/>')) {
-    this.SubView = new SubView();
-
-    this.$window = $(window);
-    this.$slider = $slider;
-    this.$stripe = this.SubView.$stripe;
-    this.$runnerFrom = this.SubView.runnerFrom.$runner;
-    this.$runnerTo = this.SubView.runnerTo.$runner;
-    this.$range = this.SubView.range.$range;
-    this.$limitMin = this.SubView.limitMin.$limit;
-    this.$limitMax = this.SubView.limitMax.$limit;
-    this.$scaleContainer = this.SubView.scale.$scaleContainer;
-    this.$tooltipFrom = this.SubView.tooltipFrom.$tooltip;
-    this.$tooltipTo = this.SubView.tooltipTo.$tooltip;
-
-    this.containerParameters = { containerWidth: 0, containerHeight: 0, containerRelativeWidth: 0 };
+    super($slider);
 
     this.setContainerParameters();
     this.renderView();
@@ -168,10 +120,10 @@ class View {
     this.$container = this.$slider.parent();
     this.$containerEnvironment = this.$container.parent();
 
-    const containerWidth = parseInt(this.$container.css('width'), 10);
-    const containerHeight = parseInt(this.$container.css('height'), 10);
-    const containerRelativeWidth = (parseInt(this.$container.css('width'), 10)
-    / parseInt(this.$containerEnvironment.css('width'), 10)) * 100;
+    const containerWidth = parseInt(this.$container.css(LENGTH.WIDTH), 10);
+    const containerHeight = parseInt(this.$container.css(LENGTH.HEIGHT), 10);
+    const containerRelativeWidth = (parseInt(this.$container.css(LENGTH.WIDTH), 10)
+    / parseInt(this.$containerEnvironment.css(LENGTH.WIDTH), 10)) * 100;
 
     this.containerParameters = {
       containerWidth,

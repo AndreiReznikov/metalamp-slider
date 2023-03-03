@@ -1,9 +1,15 @@
-import { Options } from '../../interfaces/interfaces';
+import { Options, DIRECTION, LENGTH } from '../../interfaces/interfaces';
 
 class Scale {
   $scaleContainer: JQuery<HTMLElement> = $('<div/>');
 
+  scaleElementsWidth: number[] = [];
+
+  sumOfScaleElementsWith = 0;
+
   lengthBetweenScaleElements = 0;
+
+  scaleElementsCurrentNumber = 0;
 
   public setScaleLength = (options: Options): void => {
     const { lengthParameter } = options.modelOptions;
@@ -16,19 +22,28 @@ class Scale {
     const { scalePositionParameter } = options.modelOptions;
     const { runnerLength } = options.subViewOptions;
 
-    const scaleElementsWidths: number[] = [];
+    const scaleElementsWidth: number[] = [];
 
     this.$scaleContainer.children().each(function getScaleElementWidth() {
-      const scaleElementWidth: number = parseInt($(this).css('width'), 10);
+      const scaleElementWidth: number = parseInt($(this).css(LENGTH.WIDTH), 10);
 
-      scaleElementsWidths.push(scaleElementWidth);
+      scaleElementsWidth.push(scaleElementWidth);
     });
 
-    const maxScaleElementsWidth: number = Math.max(...scaleElementsWidths);
+    this.scaleElementsWidth = scaleElementsWidth;
+
+    this.sumOfScaleElementsWith = this.scaleElementsWidth.reduce((sum, width) => {
+      let currentSum = sum;
+      currentSum += width;
+
+      return currentSum;
+    }, 0);
+
+    const maxScaleElementsWidth: number = Math.max(...this.scaleElementsWidth);
 
     this.$scaleContainer.css(
       scalePositionParameter,
-      scalePositionParameter === 'right'
+      scalePositionParameter === DIRECTION.RIGHT
         ? maxScaleElementsWidth + runnerLength
         : runnerLength,
     );
@@ -39,16 +54,16 @@ class Scale {
 
     this.$scaleContainer.empty();
 
-    for (let i = 0; i < scaleElements.length; i += 1) {
+    scaleElements.forEach((value, index) => {
       const $scaleElement: JQuery<HTMLElement> = $('<span>').addClass(
-        `slider__scale-element js-slider__scale-element js-slider__scale-element_${i}`,
+        `slider__scale-element js-slider__scale-element js-slider__scale-element_${index}`,
       );
       const scaleElementValue: string = localeString
-        ? scaleElements[i].toLocaleString() : `${scaleElements[i]}`;
+        ? value.toLocaleString() : `${value}`;
 
       $scaleElement.html(scaleElementValue);
       $scaleElement.appendTo(this.$scaleContainer);
-    }
+    });
   };
 
   public calculateLengthBetweenScaleElements = (options: Options): void => {
@@ -59,48 +74,46 @@ class Scale {
   };
 
   public setScaleElementsPositions = (options: Options): void => {
-    const { scaleElements, lengthParameter, positionParameter } = options.modelOptions;
+    const {
+      scaleElements, lengthParameter, positionParameter, min, max,
+    } = options.modelOptions;
+    const { sliderLength } = options.subViewOptions;
 
-    let scaleElementPosition = 0;
-
-    for (let i = 0; i < scaleElements.length; i += 1) {
-      const $scaleElement: JQuery<HTMLElement> = this.$scaleContainer.find(`.js-slider__scale-element_${i}`);
+    scaleElements.forEach((value, index) => {
+      const $scaleElement: JQuery<HTMLElement> = this.$scaleContainer.find(`.js-slider__scale-element_${index}`);
       const scaleElementLength: number = parseInt(`${$scaleElement.css(lengthParameter)}`, 10);
+
+      const minRatio: number = min / (max - min);
+      const scaleElementRatio: number = value / (max - min);
+
+      const scaleElementPosition: number = Math.round(
+        (scaleElementRatio - minRatio) * sliderLength,
+      );
 
       $scaleElement.css(
         positionParameter,
         scaleElementPosition - scaleElementLength / 2,
       );
-
-      scaleElementPosition += this.lengthBetweenScaleElements;
-    }
+    });
   };
 
-  public findNonMultipleScaleValues = (options: Options): void => {
-    const {
-      isStepSet, localeString, step, numberOfCharactersAfterDot,
-    } = options.modelOptions;
+  public removeRedundantScaleElements = (options: Options): void => {
+    const { sliderLength } = options.subViewOptions;
 
-    if (!isStepSet) return;
+    this.scaleElementsCurrentNumber = this.$scaleContainer.children().length;
 
-    this.$scaleContainer.children().each(function findValues() {
-      const $scaleElement: JQuery<HTMLElement> = $(this);
-      const value: number = localeString
-        ? Number($scaleElement.html().split('&nbsp;').join('')) : Number($scaleElement.html());
+    if (sliderLength > this.sumOfScaleElementsWith) return;
 
-      const isRemainsOnScaleValue: boolean = parseFloat(
-        (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
-      ) !== 0 && parseFloat(
-        (Math.abs(value) % step).toFixed(numberOfCharactersAfterDot),
-      ) !== step;
+    this.$scaleContainer.children().each(function getScaleElementWidth(index) {
+      const $scaleElement = $(this);
 
-      if (isRemainsOnScaleValue) {
-        $scaleElement.css({
-          opacity: 0.5,
-          'pointer-events': 'none',
-        });
+      if (index % 2 !== 0) {
+        $scaleElement.remove();
       }
     });
+
+    this.sumOfScaleElementsWith /= 2;
+    this.removeRedundantScaleElements(options);
   };
 }
 

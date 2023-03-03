@@ -1,60 +1,13 @@
-import { Options } from '../../interfaces/interfaces';
-import Range from '../Range/Range';
-import Runner from '../Runner/Runner';
-import Tooltip from '../Tooltip/Tooltip';
-import Limit from '../Limit/Limit';
-import Scale from '../Scale/Scale';
+import { Options, RANGE } from '../../interfaces/interfaces';
+import AbstractStripe from './AbstractStripe';
 
-class Stripe {
-  $stripe: JQuery<HTMLElement> = $('<div/>');
-
-  limitMin: Limit;
-
-  limitMax: Limit;
-
-  tooltipFrom: Tooltip;
-
-  tooltipTo: Tooltip;
-
-  runnerFrom: Runner;
-
-  runnerTo: Runner;
-
-  range: Range;
-
-  scale: Scale;
-
-  runnerFromStepsNumber = 0;
-
-  runnerToStepsNumber = 0;
-
-  isClickAheadOfRunnerFrom = false;
-
-  isClickBehindOfRunnerFrom = false;
-
-  isClickForRunnerFrom = false;
-
-  isClickAheadOfRunnerTo = false;
-
-  isClickBehindOfRunnerTo = false;
-
-  isClickForRunnerTo = false;
-
-  areTooltipsClose = false;
-
-  isLimitMinShown = true;
-
-  isLimitMaxShown = true;
+class Stripe extends AbstractStripe {
+  $stripe: JQuery<HTMLElement>;
 
   constructor() {
-    this.tooltipFrom = new Tooltip('from');
-    this.tooltipTo = new Tooltip('to');
-    this.runnerFrom = new Runner('from');
-    this.runnerTo = new Runner('to');
-    this.limitMin = new Limit('min');
-    this.limitMax = new Limit('max');
-    this.range = new Range();
-    this.scale = new Scale();
+    super();
+
+    this.$stripe = $('<div/>');
   }
 
   public calculateRunnerPositionAfterSliderOnDown = (options: Options): void => {
@@ -242,11 +195,11 @@ class Stripe {
     }
   };
 
-  public changeRunnerZIndex = (runnerType: string): void => {
-    if (runnerType === 'from') {
+  public changeRunnerZIndex = (runnerType: RANGE): void => {
+    if (runnerType === RANGE.FROM) {
       this.runnerFrom.$runner.css('z-index', 3);
       this.runnerTo.$runner.css('z-index', 2);
-    } else if (runnerType === 'to') {
+    } else if (runnerType === RANGE.TO) {
       this.runnerFrom.$runner.css('z-index', 2);
       this.runnerTo.$runner.css('z-index', 3);
     }
@@ -307,11 +260,11 @@ class Stripe {
     if (isRunnerToNearRunnerFrom) {
       this.runnerFrom.runnerPosition = this.runnerTo.runnerPosition;
       this.runnerFrom.isCursorNearStepAhead = true;
-      this.changeRunnerZIndex('from');
+      this.changeRunnerZIndex(RANGE.FROM);
     } else if (isRunnerFromNearRunnerTo) {
       this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
       this.runnerTo.isCursorNearStepBehind = true;
-      this.changeRunnerZIndex('to');
+      this.changeRunnerZIndex(RANGE.TO);
     }
   };
 }

@@ -1,6 +1,6 @@
 import { Options, UserConfig, Api } from '../interfaces/interfaces';
-import Model from '../Model/Model';
-import View from '../View/View';
+import Model from '../Model';
+import View from '../View';
 
 class Presenter {
   model: Model;
@@ -48,7 +48,6 @@ class Presenter {
     this.model.validateInitialValues();
     this.model.countNumberOfCharactersAfterDot();
     this.model.calculateRemains();
-    this.model.calculateScaleElementsNumber();
     this.model.calculateScaleElementsValues();
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.initializeView(this.model.getOptions());
@@ -74,11 +73,22 @@ class Presenter {
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.setPlane(this.model.getOptions());
     this.updateView(this.model.getOptions());
+    this.view.SubView.scale.setScaleElementsValues(this.view.SubView.getOptions());
+    this.view.SubView.scale.calculateLengthBetweenScaleElements(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScaleLength(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScaleElementsPositions(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScalePosition(this.view.SubView.getOptions());
+    this.view.SubView.scale.removeRedundantScaleElements(this.view.SubView.getOptions());
+    this.model.calculateScaleElementsNumber(this.view.SubView.getOptions());
+    this.model.calculateScaleElementsValues();
+    this.updateView(this.model.getOptions());
   };
 
   private launchEventManager = (): void => {
     this.view.$runnerFrom.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
     this.view.$runnerTo.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
+    this.view.$tooltipFrom.on('pointerdown.runner-from', this.view.SubView.handleRunnerFromStartPointermove);
+    this.view.$tooltipTo.on('pointerdown.runner-to', this.view.SubView.handleRunnerToStartPointermove);
     this.view.$limitMin.on('pointerdown.min-from', this.view.SubView.handleLimitMinSetRunnerPosition);
     this.view.$limitMax.on('pointerdown.max', this.view.SubView.handleLimitMaxSetRunnerPosition);
     this.view.$stripe.on('pointerdown.stripe', this.view.SubView.handleStripeCalculateRunnerPositionAfterOnDown);
@@ -124,7 +134,6 @@ class Presenter {
     this.view.SubView.scale.setScaleLength(options);
     this.view.SubView.scale.setScaleElementsPositions(options);
     this.view.SubView.scale.setScalePosition(options);
-    this.view.SubView.scale.findNonMultipleScaleValues(options);
   };
 
   private updateModel = (options: Options): void => {
@@ -231,12 +240,19 @@ class Presenter {
     this.model.countNumberOfCharactersAfterDot();
     this.model.calculateRemains();
     this.model.calculateStepLength();
+    this.model.calculateScaleElementsValues();
 
     this.view.SubView.setModelOptions(this.model.getOptions());
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
+    this.view.SubView.scale.setScaleElementsValues(this.view.SubView.getOptions());
+    this.view.SubView.scale.calculateLengthBetweenScaleElements(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScaleLength(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScaleElementsPositions(this.view.SubView.getOptions());
+    this.view.SubView.scale.setScalePosition(this.view.SubView.getOptions());
+    this.view.SubView.scale.removeRedundantScaleElements(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());

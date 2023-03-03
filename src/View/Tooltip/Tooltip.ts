@@ -1,9 +1,9 @@
-import { Options } from '../../interfaces/interfaces';
+import { Options, RANGE } from '../../interfaces/interfaces';
 
 class Tooltip {
   $tooltip: JQuery<HTMLElement> = $('<div/>');
 
-  tooltipType = 'from';
+  tooltipType = RANGE.FROM;
 
   tooltipLength = 0;
 
@@ -11,7 +11,7 @@ class Tooltip {
 
   tooltipValue: number | string = 0;
 
-  constructor(tooltipType: string) {
+  constructor(tooltipType: RANGE) {
     this.tooltipType = tooltipType;
   }
 
@@ -22,10 +22,10 @@ class Tooltip {
 
     this.setTooltipLength(options);
 
-    const runnerPosition = this.tooltipType === 'from'
+    const runnerPosition = this.tooltipType === RANGE.FROM
       ? runnerFromPosition : runnerToPosition;
 
-    if (areTooltipsClose && this.tooltipType === 'from') {
+    if (areTooltipsClose && this.tooltipType === RANGE.FROM) {
       this.tooltipPosition = runnerFromPosition + (
         runnerToPosition - runnerFromPosition
       ) / 2 + runnerLength / 2 - this.tooltipLength / 2;
@@ -57,10 +57,10 @@ class Tooltip {
       toValue = toValue.toLocaleString();
     }
 
-    if (areTooltipsClose && this.tooltipType === 'from') {
+    if (areTooltipsClose && this.tooltipType === RANGE.FROM) {
       this.tooltipValue = `${fromValue}&nbsp;&#8209;&nbsp;${toValue}`;
     } else {
-      this.tooltipValue = this.tooltipType === 'from'
+      this.tooltipValue = this.tooltipType === RANGE.FROM
         ? fromValue : toValue;
     }
 
@@ -73,7 +73,7 @@ class Tooltip {
 
     if (!areTooltipsClose || !double) {
       this.$tooltip.css('opacity', 1);
-    } else if (this.tooltipType === 'to') {
+    } else if (this.tooltipType === RANGE.TO) {
       this.$tooltip.css('opacity', 0);
     }
   };

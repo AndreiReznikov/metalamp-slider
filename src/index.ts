@@ -1,6 +1,6 @@
-import Model from './Model/Model';
-import View from './View/View';
-import Presenter from './Presenter/Presenter';
+import Model from './Model';
+import View from './View';
+import Presenter from './Presenter';
 import { UserConfig } from './interfaces/interfaces';
 import './index.scss';
 
