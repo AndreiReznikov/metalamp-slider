@@ -771,33 +771,13 @@ describe('Scale', () => {
     });
   });
 
-  describe('calculateLengthBetweenScaleElements', () => {
-    test('method should calculate length between scale elements', () => {
-      options.modelOptions.scaleNumber = 5;
+  describe('removeRedundantScaleElements', () => {
+    test('the method should reduce sumOfScaleElementsWith', () => {
+      view.SubView.scale.sumOfScaleElementsWith = 150;
 
-      view.SubView.scale.calculateLengthBetweenScaleElements(options);
+      view.SubView.scale.removeRedundantScaleElements(options);
 
-      expect(view.SubView.scale.lengthBetweenScaleElements).toEqual(25);
-    });
-  });
-
-  describe('setScaleElementsPositions', () => {
-    test('method should calculate length between scale elements', () => {
-      options.modelOptions.scaleElements = [0, 1, 2, 3, 4, 5];
-      view.SubView.scale.lengthBetweenScaleElements = 25;
-      view.SubView.scale.setScaleElementsValues(options);
-      const $scaleElementCollection = $('.js-slider__scale-element');
-      let expectedValue = 0;
-
-      view.SubView.scale.setScaleElementsPositions(options);
-
-      $scaleElementCollection.each(function comparePositions() {
-        const $scaleElement = $(this);
-
-        expect($scaleElement.css('left')).toEqual(`${expectedValue}px`);
-
-        expectedValue += view.SubView.scale.lengthBetweenScaleElements;
-      });
+      expect(view.SubView.scale.sumOfScaleElementsWith).toEqual(75);
     });
   });
 });

@@ -1,3 +1,3 @@
-import Stripe from "./Stripe";
+import Stripe from './Stripe';
 
 export default Stripe;

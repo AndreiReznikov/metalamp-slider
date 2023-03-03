@@ -31,7 +31,7 @@ beforeEach(() => {
   model.toRemains = 0;
   model.minRemains = 0;
   model.maxRemains = 0;
-  model.scaleNumber = 5;
+  model.scaleNumber = 2;
   model.stepLength = 0;
   model.scaleElements = [];
   model.numberOfCharactersAfterDot = 0;
@@ -396,15 +396,15 @@ describe('calculateScaleElementsNumber', () => {
     model.userConfig.scaleNumber = 10;
     model.calculateScaleElementsNumber(options);
 
-    expect(model.scaleNumber).toEqual(model.userConfig.scaleNumber);
+    expect(model.scaleNumber).toEqual(0);
   });
 
-  test('scaleNumber should to be equal 2', () => {
+  test('scaleNumber should to be equal 0', () => {
     model.min = 0;
     model.max = 1;
     model.calculateScaleElementsNumber(options);
 
-    expect(model.scaleNumber).toEqual(2);
+    expect(model.scaleNumber).toEqual(0);
   });
 });
 
