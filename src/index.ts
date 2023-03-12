@@ -20,9 +20,7 @@ import './index.scss';
     return $slider;
   };
 
-  jquery.fn.pooshkaSlider = function addMethods(
-    userConfig: UserConfig = {},
-  ): JQuery<HTMLElement> {
+  jquery.fn.pooshkaSlider = function addMethods(userConfig?: UserConfig): JQuery<HTMLElement> {
     this.update = (userConfig: UserConfig): JQuery<HTMLElement> => {
       const pastUserConfig = this.data('userConfig');
       const newUserConfig = $.extend({}, pastUserConfig, userConfig);
@@ -46,7 +44,7 @@ import './index.scss';
 
     const init = (): void => {
       this.data('pooshkaSlider', initializePooshkaSlider(this, userConfig));
-      this.data('userConfig', userConfig);
+      this.data('userConfig', userConfig || {});
     };
 
     return this.each(init);
