@@ -13,7 +13,7 @@ html(lang="ru")
     main.container
       h1.demo-page-title PooshkaSlider Demo
       each slider in sliders
-        div(class=`${slider.type}-slider-container js-${slider.type}-slider-container`)
+        form(class=`${slider.type}-slider-container js-${slider.type}-slider-container`)
           h2.subtitle=slider.title
           div(class=`${slider.type}-slider-wrapper`)
             div(class=`slider js-slider js-slider_${slider.type}`)
