@@ -44,7 +44,7 @@ import './index.scss';
 
     const init = (): void => {
       this.data('pooshkaSlider', initializePooshkaSlider(this, userConfig));
-      this.data('userConfig', userConfig || {});
+      this.data('userConfig', userConfig ?? {});
     };
 
     return this.each(init);

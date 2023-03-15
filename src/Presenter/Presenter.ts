@@ -97,8 +97,8 @@ class Presenter {
     this.view.$window.on('resize.slider', this.init);
   };
 
-  private updateUserConfig = (userConfig: UserConfig): void => {
-    this.model.userConfig = userConfig;
+  private updateUserConfig = (userConfig?: UserConfig): void => {
+    this.model.userConfig = userConfig ?? {};
     this.model.config = $.extend({}, this.model.data, this.model.userConfig);
     this.model.setConfig();
     this.view.SubView.setModelOptions(this.model.getOptions());
