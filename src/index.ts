@@ -11,7 +11,9 @@ import './index.scss';
     $slider: JQuery<HTMLElement> = $('div'),
     userConfig: UserConfig = {},
   ): JQuery<HTMLElement> => {
-    const model = new Model(userConfig);
+    const currentUserConfig: UserConfig = { ...userConfig, ...$slider.data() };
+
+    const model = new Model(currentUserConfig);
     const view = new View($slider);
     const presenter = new Presenter(model, view);
 
