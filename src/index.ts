@@ -20,6 +20,20 @@ import './index.scss';
     return $slider;
   };
 
+  const initializePooshkaSliderDefault = (): void => {
+    const $pooshkaSlidersCollection = $('.pooshka-slider');
+
+    if ($pooshkaSlidersCollection.length > 0) {
+      $pooshkaSlidersCollection.each(function initialize() {
+        const $slider = $(this);
+
+        initializePooshkaSlider($slider);
+      });
+    }
+  };
+
+  initializePooshkaSliderDefault();
+
   jquery.fn.pooshkaSlider = function addMethods(userConfig?: UserConfig): JQuery<HTMLElement> {
     this.update = (userConfig: UserConfig): JQuery<HTMLElement> => {
       const pastUserConfig = this.data('userConfig');
