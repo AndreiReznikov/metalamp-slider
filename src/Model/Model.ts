@@ -192,6 +192,7 @@ class Model extends AbstractModel {
       scaleNumber: this.scaleNumber,
       scaleElements: this.scaleElements,
       numberOfCharactersAfterDot: this.numberOfCharactersAfterDot,
+      onChange: this.config.onChange,
     };
 
     return modelOptions;

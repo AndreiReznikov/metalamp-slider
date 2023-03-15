@@ -12,6 +12,7 @@ class Presenter {
     this.view = view;
 
     this.model.observer.addObserver(this.updateView);
+    this.model.observer.addObserver(this.onChange);
     this.view.SubView.observer.addObserver(this.updateModel);
 
     this.init();
@@ -82,6 +83,7 @@ class Presenter {
     this.model.calculateScaleElementsNumber(this.view.SubView.getOptions());
     this.model.calculateScaleElementsValues();
     this.updateView(this.model.getOptions());
+    this.onChange(this.model.getOptions());
   };
 
   private launchEventManager = (): void => {
@@ -140,6 +142,12 @@ class Presenter {
     this.model.setSubViewOptions(options);
     this.model.calculateFrom(options);
     this.model.calculateTo(options);
+  };
+
+  private onChange = (options: Options): void => {
+    if (!options.modelOptions.onChange) return;
+
+    options.modelOptions.onChange();
   };
 
   private toggleTooltip = (): void => {
