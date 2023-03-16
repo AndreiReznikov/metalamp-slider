@@ -125,13 +125,13 @@ To use public methods, at first you must save slider instance to variable:
 To subscribe to slider changes, use the onChange parameter:
 
 `$('.js-slider').pooshkaSlider({
-   onChange: () => console.log('change'),
+   onChange: () => console.log('change')
  });`
 
- To unsubscribe from slider changes pass a function that returns false:
+ To unsubscribe from slider changes, pass a function that returns false using the public update method:
 
- `$('.js-slider').pooshkaSlider({
-   onChange: () => false,
+ `$slider.update({
+   onChange: () => false
  });`
 
 # Api
