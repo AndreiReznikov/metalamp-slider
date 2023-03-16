@@ -67,23 +67,40 @@ To initialise the slider, call pooshkaSlider on the element:
 
 `$('.js-slider').pooshkaSlider();`
 
+You can also initialize the slider by adding a class to your element *pooshka-range-slider*:
+
+`<div class="pooshka-range-slider"></div>`
+
 You can initialize the slider with the following parameters:
 
-| Option | Type | Defaults | Description |
-| --- | --- | --- | --- |
-| double | boolean | false | double or single slider |
-| vertical | boolean | false | vertical or horizontal |
-| showTooltip | boolean | true | whether to show tooltips over handles |
-| showMinAndMax | boolean | true | whether to show the minimum and maximum values |
-| showRange | boolean | true | whether to show the progress bar |
-| showScale | boolean | false | whether to show the scale |
-| localeString | boolean | false | use localString |
-| min | number | 0 | minimum value |
-| max | number | 100 | maximum value |
-| from | number | 10 | the value of the first handle |
-| to | number | 50 | the value of the second handle |
-| step | number | 0 | step value |
-| scaleNumber | number | 5 | number of values on the scale |
+| Option | Type | Defaults | Description | Data-attribute |
+| --- | --- | --- | --- | --- |
+| double | boolean | false | double or single slider | data-double |
+| vertical | boolean | false | vertical or horizontal | data-vertical |
+| showTooltip | boolean | true | whether to show tooltips over handles | data-show-tooltip |
+| showLimit | boolean | true | whether to show the minimum and maximum values | data-show-limit |
+| showRange | boolean | true | whether to show the progress bar | data-show-range |
+| showScale | boolean | false | whether to show the scale | data-show-scale |
+| localeString | boolean | false | use localString | data-locale-string |
+| min | number | 0 | minimum value | data-min |
+| max | number | 100 | maximum value | data-max |
+| from | number | 10 | the value of the first handle | data-from |
+| to | number | 50 | the value of the second handle | data-to |
+| step | number | 0 | step value | data-step |
+| scaleNumber | number | 5 | number of values on the scale | data-scale-number |
+| onChange | function | - | callback called when the slider state changes | data-on-change |
+
+Parameters are passed as an object as an argument:
+
+`$('.js-slider').pooshkaSlider({
+  double: true,
+  showTooltip: true,
+  step: 5,
+});`
+
+Parameters can also be passed through the data attributes of the element:
+
+`<div class="slider js-slider" data-min="0" data-max="100" data-vertical="true"></div>`
 
 # Public methods
 
@@ -91,10 +108,6 @@ To use public methods, at first you must save slider instance to variable:
 
 `$('.js-slider').pooshkaSlider({
    double: true,
-   min: 0,
-   max: 100,
-   from: 20,
-   to: 80,
  });`
 
  `const $slider = $('.js-slider').data('pooshkaSlider');`
@@ -106,6 +119,20 @@ To use public methods, at first you must save slider instance to variable:
     `$slider.update({
       double: false
     });`
+
+# Callback
+
+To subscribe to slider changes, use the onChange parameter:
+
+`$('.js-slider').pooshkaSlider({
+   onChange: () => console.log('change'),
+ });`
+
+ To unsubscribe from slider changes pass a function that returns false:
+
+ `$('.js-slider').pooshkaSlider({
+   onChange: () => false,
+ });`
 
 # Api
 
