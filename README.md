@@ -107,7 +107,7 @@ Parameters can also be passed through the data attributes of the element:
 To use public methods, at first you must save slider instance to variable:
 
 `$('.js-slider').pooshkaSlider({
-   double: true,
+   double: true
  });`
 
  `const $slider = $('.js-slider').data('pooshkaSlider');`
