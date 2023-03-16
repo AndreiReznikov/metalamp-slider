@@ -11,7 +11,9 @@ import './index.scss';
     $slider: JQuery<HTMLElement> = $('div'),
     userConfig: UserConfig = {},
   ): JQuery<HTMLElement> => {
-    const model = new Model(userConfig);
+    const currentUserConfig: UserConfig = { ...userConfig, ...$slider.data() };
+
+    const model = new Model(currentUserConfig);
     const view = new View($slider);
     const presenter = new Presenter(model, view);
 
@@ -20,9 +22,21 @@ import './index.scss';
     return $slider;
   };
 
-  jquery.fn.pooshkaSlider = function addMethods(
-    userConfig: UserConfig = {},
-  ): JQuery<HTMLElement> {
+  const initializePooshkaSliderDefault = (): void => {
+    const $pooshkaSlidersCollection = $('.pooshka-range-slider');
+
+    if ($pooshkaSlidersCollection.length > 0) {
+      $pooshkaSlidersCollection.each(function initialize() {
+        const $slider = $(this);
+
+        initializePooshkaSlider($slider);
+      });
+    }
+  };
+
+  initializePooshkaSliderDefault();
+
+  jquery.fn.pooshkaSlider = function addMethods(userConfig?: UserConfig): JQuery<HTMLElement> {
     this.update = (userConfig: UserConfig): JQuery<HTMLElement> => {
       const pastUserConfig = this.data('userConfig');
       const newUserConfig = $.extend({}, pastUserConfig, userConfig);
@@ -46,7 +60,7 @@ import './index.scss';
 
     const init = (): void => {
       this.data('pooshkaSlider', initializePooshkaSlider(this, userConfig));
-      this.data('userConfig', userConfig);
+      this.data('userConfig', userConfig ?? {});
     };
 
     return this.each(init);

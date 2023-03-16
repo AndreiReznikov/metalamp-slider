@@ -28,6 +28,7 @@ interface ModelOptions {
   scaleNumber: number;
   scaleElements: number[];
   numberOfCharactersAfterDot: number;
+  onChange?: (...args: unknown[]) => unknown;
 }
 
 interface SubViewOptions {
@@ -103,9 +104,15 @@ type Config = {
   to: number;
   step: number;
   scaleNumber: number;
+  onChange?: (...args: unknown[]) => unknown;
 };
 
 type UserConfig = Partial<Config>;
+
+enum DEFAULTS {
+  WIDTH = '100%',
+  HEIGHT = '6px',
+}
 
 enum DIRECTION {
   LEFT = 'left',
@@ -130,5 +137,15 @@ enum RANGE {
 }
 
 export {
-  Options, ModelOptions, Config, UserConfig, SubViewOptions, Api, DIRECTION, LENGTH, LIMIT, RANGE,
+  Options,
+  ModelOptions,
+  Config,
+  UserConfig,
+  SubViewOptions,
+  Api,
+  DEFAULTS,
+  DIRECTION,
+  LENGTH,
+  LIMIT,
+  RANGE,
 };

@@ -1,6 +1,8 @@
 import { UserConfig } from '../interfaces/interfaces';
 
 class PooshkaSlider {
+  $document: JQuery<Document> = $(document);
+
   $sliderContainer: JQuery<HTMLElement> = $('<div/>');
 
   $slider: JQuery<HTMLElement> = $('<div/>');
@@ -27,8 +29,6 @@ class PooshkaSlider {
 
   $inputStep: JQuery<HTMLElement> = $('<div/>');
 
-  $document: JQuery<Document> = $(document);
-
   $stripe: JQuery<HTMLElement> = $('<div/>');
 
   $runnerFrom: JQuery<HTMLElement> = $('<div/>');
@@ -43,9 +43,10 @@ class PooshkaSlider {
 
   constructor(container: string) {
     this.findElements(container);
+    this.stopFormSubmit();
   }
 
-  public initializePlugin = (config?: UserConfig) => {
+  public initializePlugin = (config?: UserConfig): void => {
     this.$slider.pooshkaSlider(config);
 
     this.$pooshkaSlider = this.$slider.data('pooshkaSlider');
@@ -56,7 +57,7 @@ class PooshkaSlider {
     this.addSliderEvents();
   };
 
-  private setPanelValues = () => {
+  private setPanelValues = (): void => {
     const {
       isStepSet,
       step,
@@ -95,7 +96,7 @@ class PooshkaSlider {
     this.$inputStep.prop('value', step);
   };
 
-  private setSliderElements = () => {
+  private setSliderElements = (): void => {
     const {
       $document,
       $stripe,
@@ -115,27 +116,27 @@ class PooshkaSlider {
     this.$scaleContainer = $scaleContainer;
   };
 
-  private addSliderEvents = () => {
-    const handleRunnerBindPointerEvents = (valueType: string) => {
-      const $runner = valueType === 'from' ? this.$runnerFrom : this.$runnerTo;
-      const handleDocumentOffPointerMove = () => this.$document.off('pointermove');
+  private stopFormSubmit = (): void => {
+    this.$sliderContainer.submit(() => false);
+  };
 
-      this.$document.on('pointermove', this.setPanelValues);
-      $runner.on('pointerup', handleDocumentOffPointerMove);
-    };
+  private handleRunnerBindPointerEvents = () => {
+    const handleDocumentOffPointerMove = () => this.$document.off('pointermove');
 
-    const handleRunnerFromBindPointerEvents = () => handleRunnerBindPointerEvents('from');
-    const handleRunnerToBindPointerEvents = () => handleRunnerBindPointerEvents('to');
+    this.$document.on('pointermove', this.setPanelValues);
+    this.$document.on('pointerup', handleDocumentOffPointerMove);
+  };
 
+  private addSliderEvents = (): void => {
     this.$limitMin.mousedown(this.setPanelValues);
     this.$limitMax.mousedown(this.setPanelValues);
     this.$stripe.mousedown(this.setPanelValues);
     this.$scaleContainer.mousedown(this.setPanelValues);
-    this.$runnerFrom.on('pointerdown', handleRunnerFromBindPointerEvents);
-    this.$runnerTo.on('pointerdown', handleRunnerToBindPointerEvents);
+    this.$runnerFrom.on('pointerdown', this.handleRunnerBindPointerEvents);
+    this.$runnerTo.on('pointerdown', this.handleRunnerBindPointerEvents);
   };
 
-  private addPanelEvents = () => {
+  private addPanelEvents = (): void => {
     this.$inputDouble.click(this.toggleDouble);
     this.$inputTooltip.click(this.toggleTooltip);
     this.$inputRange.click(this.toggleRange);
@@ -149,37 +150,37 @@ class PooshkaSlider {
     this.$inputStep.change(this.setStep);
   };
 
-  private toggleDouble = () => {
+  private toggleDouble = (): void => {
     this.$pooshkaSlider.data('api').toggleDouble();
 
     this.setPanelValues();
   };
 
-  private toggleTooltip = () => {
+  private toggleTooltip = (): void => {
     this.$pooshkaSlider.data('api').toggleTooltip();
 
     this.setPanelValues();
   };
 
-  private toggleRange = () => {
+  private toggleRange = (): void => {
     this.$pooshkaSlider.data('api').toggleRange();
 
     this.setPanelValues();
   };
 
-  private toggleScale = () => {
+  private toggleScale = (): void => {
     this.$pooshkaSlider.data('api').toggleScale();
 
     this.setPanelValues();
   };
 
-  private toggleVertical = () => {
+  private toggleVertical = (): void => {
     this.$pooshkaSlider.data('api').toggleVertical();
 
     this.setPanelValues();
   };
 
-  private setFrom = (event: JQuery.ChangeEvent) => {
+  private setFrom = (event: JQuery.ChangeEvent): void => {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
@@ -188,7 +189,7 @@ class PooshkaSlider {
     this.setPanelValues();
   };
 
-  private setTo = (event: JQuery.ChangeEvent) => {
+  private setTo = (event: JQuery.ChangeEvent): void => {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
@@ -197,7 +198,7 @@ class PooshkaSlider {
     this.setPanelValues();
   };
 
-  private setMin = (event: JQuery.ChangeEvent) => {
+  private setMin = (event: JQuery.ChangeEvent): void => {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
@@ -206,7 +207,7 @@ class PooshkaSlider {
     this.setPanelValues();
   };
 
-  private setMax = (event: JQuery.ChangeEvent) => {
+  private setMax = (event: JQuery.ChangeEvent): void => {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
@@ -215,7 +216,7 @@ class PooshkaSlider {
     this.setPanelValues();
   };
 
-  private setStep = (event: JQuery.ChangeEvent) => {
+  private setStep = (event: JQuery.ChangeEvent): void => {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
@@ -224,7 +225,7 @@ class PooshkaSlider {
     this.setPanelValues();
   };
 
-  private findElements = (container: string) => {
+  private findElements = (container: string): void => {
     this.$sliderContainer = $(container);
     this.$slider = this.$sliderContainer.find('.js-slider');
     this.$inputDouble = this.$sliderContainer.find('.js-panel__input_double');

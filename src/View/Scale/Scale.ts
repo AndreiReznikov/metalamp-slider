@@ -56,7 +56,7 @@ class Scale {
 
     scaleElements.forEach((value, index) => {
       const $scaleElement: JQuery<HTMLElement> = $('<span>').addClass(
-        `slider__scale-element js-slider__scale-element js-slider__scale-element_${index}`,
+        `pooshka-slider__scale-element js-pooshka-slider__scale-element js-pooshka-slider__scale-element_${index}`,
       );
       const scaleElementValue: string = localeString
         ? value.toLocaleString() : `${value}`;
@@ -80,7 +80,7 @@ class Scale {
     const { sliderLength } = options.subViewOptions;
 
     scaleElements.forEach((value, index) => {
-      const $scaleElement: JQuery<HTMLElement> = this.$scaleContainer.find(`.js-slider__scale-element_${index}`);
+      const $scaleElement: JQuery<HTMLElement> = this.$scaleContainer.find(`.js-pooshka-slider__scale-element_${index}`);
       const scaleElementLength: number = parseInt(`${$scaleElement.css(lengthParameter)}`, 10);
 
       const minRatio: number = min / (max - min);

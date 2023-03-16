@@ -12,6 +12,7 @@ class Presenter {
     this.view = view;
 
     this.model.observer.addObserver(this.updateView);
+    this.model.observer.addObserver(this.onChange);
     this.view.SubView.observer.addObserver(this.updateModel);
 
     this.init();
@@ -82,6 +83,7 @@ class Presenter {
     this.model.calculateScaleElementsNumber(this.view.SubView.getOptions());
     this.model.calculateScaleElementsValues();
     this.updateView(this.model.getOptions());
+    this.onChange(this.model.getOptions());
   };
 
   private launchEventManager = (): void => {
@@ -97,8 +99,8 @@ class Presenter {
     this.view.$window.on('resize.slider', this.init);
   };
 
-  private updateUserConfig = (userConfig: UserConfig): void => {
-    this.model.userConfig = userConfig;
+  private updateUserConfig = (userConfig?: UserConfig): void => {
+    this.model.userConfig = userConfig ?? {};
     this.model.config = $.extend({}, this.model.data, this.model.userConfig);
     this.model.setConfig();
     this.view.SubView.setModelOptions(this.model.getOptions());
@@ -140,6 +142,14 @@ class Presenter {
     this.model.setSubViewOptions(options);
     this.model.calculateFrom(options);
     this.model.calculateTo(options);
+  };
+
+  private onChange = (options: Options): void => {
+    const { onChange } = options.modelOptions;
+
+    if (!onChange) return;
+
+    onChange();
   };
 
   private toggleTooltip = (): void => {
