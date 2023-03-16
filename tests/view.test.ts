@@ -727,7 +727,7 @@ describe('Scale', () => {
         options.modelOptions.scalePositionParameter = 'right';
         options.subViewOptions.runnerLength = 15;
         const $scaleElement = $('<div/>', {
-          class: 'js-slider__scale-element',
+          class: 'js-pooshka-slider__scale-element',
         });
 
         $scaleElement.appendTo(view.SubView.scale.$scaleContainer);
@@ -745,7 +745,7 @@ describe('Scale', () => {
 
       view.SubView.scale.setScaleElementsValues(options);
 
-      expect($('.js-slider__scale-element').length).toEqual(6);
+      expect($('.js-pooshka-slider__scale-element').length).toEqual(6);
     });
 
     test('method should add elements to scaleContainer with localeString', () => {
@@ -754,14 +754,14 @@ describe('Scale', () => {
 
       view.SubView.scale.setScaleElementsValues(options);
 
-      expect($($('.js-slider__scale-element')[0]).html()).toEqual('1&nbsp;000');
+      expect($($('.js-pooshka-slider__scale-element')[0]).html()).toEqual('1&nbsp;000');
     });
 
     test('method should set elements values', () => {
       options.modelOptions.scaleElements = [0, 1, 2, 3, 4, 5];
 
       view.SubView.scale.setScaleElementsValues(options);
-      const $scaleElementCollection = $('.js-slider__scale-element');
+      const $scaleElementCollection = $('.js-pooshka-slider__scale-element');
 
       $scaleElementCollection.each(function compareValues(index) {
         const $scaleElement = $(this);
