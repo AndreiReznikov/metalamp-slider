@@ -145,9 +145,11 @@ class Presenter {
   };
 
   private onChange = (options: Options): void => {
-    if (!options.modelOptions.onChange) return;
+    const { onChange } = options.modelOptions;
 
-    options.modelOptions.onChange();
+    if (!onChange) return;
+
+    onChange();
   };
 
   private toggleTooltip = (): void => {

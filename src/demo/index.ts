@@ -2,9 +2,9 @@ import PooshkaSlider from './PooshkaSlider';
 import './index.scss';
 
 $(document).ready(() => {
-  const pooshkaSlider = new PooshkaSlider('.js-double-slider-container');
+  const pooshkaSliderDouble = new PooshkaSlider('.js-double-slider-container');
 
-  pooshkaSlider.initializePlugin({
+  pooshkaSliderDouble.initializePlugin({
     double: true,
     vertical: false,
     showTooltip: true,
