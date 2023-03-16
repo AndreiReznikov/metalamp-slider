@@ -109,6 +109,11 @@ type Config = {
 
 type UserConfig = Partial<Config>;
 
+enum DEFAULTS {
+  WIDTH = '100%',
+  HEIGHT = '6px',
+}
+
 enum DIRECTION {
   LEFT = 'left',
   RIGHT = 'right',
@@ -132,5 +137,15 @@ enum RANGE {
 }
 
 export {
-  Options, ModelOptions, Config, UserConfig, SubViewOptions, Api, DIRECTION, LENGTH, LIMIT, RANGE,
+  Options,
+  ModelOptions,
+  Config,
+  UserConfig,
+  SubViewOptions,
+  Api,
+  DEFAULTS,
+  DIRECTION,
+  LENGTH,
+  LIMIT,
+  RANGE,
 };

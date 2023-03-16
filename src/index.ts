@@ -23,7 +23,7 @@ import './index.scss';
   };
 
   const initializePooshkaSliderDefault = (): void => {
-    const $pooshkaSlidersCollection = $('.pooshka-slider');
+    const $pooshkaSlidersCollection = $('.pooshka-range-slider');
 
     if ($pooshkaSlidersCollection.length > 0) {
       $pooshkaSlidersCollection.each(function initialize() {

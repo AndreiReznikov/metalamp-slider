@@ -1,4 +1,4 @@
-import { Options, LENGTH } from '../interfaces/interfaces';
+import { Options, LENGTH, DEFAULTS } from '../interfaces/interfaces';
 import AbstractView from './AbstractView';
 
 class View extends AbstractView {
@@ -60,6 +60,11 @@ class View extends AbstractView {
   public setPlane = (options: Options): void => {
     const { vertical } = options.modelOptions;
     const { runnerLength } = options.subViewOptions;
+    const {
+      containerWidth,
+      containerRelativeWidth,
+      containerHeight,
+    } = this.containerParameters;
 
     this.$runnerFrom.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
     this.$runnerTo.css({ top: 0, left: 0, transform: 'translate(0, 0)' });
@@ -75,10 +80,8 @@ class View extends AbstractView {
     });
 
     if (vertical) {
-      this.$container.css({
-        width: this.containerParameters.containerHeight,
-        height: this.containerParameters.containerWidth,
-      });
+      this.$container.css({ width: containerHeight, height: containerWidth });
+      this.$slider.css({ width: DEFAULTS.HEIGHT });
       this.$runnerFrom.css({ left: '50%', transform: 'translateX(-50%)' });
       this.$runnerTo.css({ left: '50%', transform: 'translateX(-50%)' });
       this.$range.css({ width: '100%' });
@@ -90,10 +93,8 @@ class View extends AbstractView {
       return;
     }
 
-    this.$container.css({
-      width: `${this.containerParameters.containerRelativeWidth}%`,
-      height: this.containerParameters.containerHeight,
-    });
+    this.$container.css({ width: `${containerRelativeWidth}%`, height: containerHeight });
+    this.$slider.css({ height: DEFAULTS.HEIGHT });
     this.$runnerFrom.css({ top: '50%', transform: 'translateY(-50%)' });
     this.$runnerTo.css({ top: '50%', transform: 'translateY(-50%)' });
     this.$range.css({ height: '100%' });
@@ -104,16 +105,16 @@ class View extends AbstractView {
   };
 
   private renderView = (): void => {
-    this.$slider.addClass('slider js-slider');
-    this.$stripe.appendTo(this.$slider).addClass('slider__stripe js-slider__stripe');
-    this.$runnerFrom.appendTo(this.$stripe).addClass('slider__from js-slider__from');
-    this.$runnerTo.appendTo(this.$stripe).addClass('slider__to js-slider__to');
-    this.$range.appendTo(this.$stripe).addClass('slider__range js-slider__range');
-    this.$limitMin.appendTo(this.$stripe).addClass('slider__min js-slider__min');
-    this.$limitMax.appendTo(this.$stripe).addClass('slider__max js-slider__max');
-    this.$scaleContainer.appendTo(this.$stripe).addClass('slider__scale-container js-slider__scale-container');
-    this.$tooltipFrom.appendTo(this.$stripe).addClass('slider__tooltip-from js-slider__tooltip-from');
-    this.$tooltipTo.appendTo(this.$stripe).addClass('slider__tooltip-to js-slider__tooltip-to');
+    this.$slider.addClass('pooshka-slider js-pooshka-slider');
+    this.$stripe.appendTo(this.$slider).addClass('pooshka-slider__stripe js-pooshka-slider__stripe');
+    this.$runnerFrom.appendTo(this.$stripe).addClass('pooshka-slider__from js-pooshka-slider__from');
+    this.$runnerTo.appendTo(this.$stripe).addClass('pooshka-slider__to js-pooshka-slider__to');
+    this.$range.appendTo(this.$stripe).addClass('pooshka-slider__range js-pooshka-slider__range');
+    this.$limitMin.appendTo(this.$stripe).addClass('pooshka-slider__min js-pooshka-slider__min');
+    this.$limitMax.appendTo(this.$stripe).addClass('pooshka-slider__max js-pooshka-slider__max');
+    this.$scaleContainer.appendTo(this.$stripe).addClass('pooshka-slider__scale-container js-pooshka-slider__scale-container');
+    this.$tooltipFrom.appendTo(this.$stripe).addClass('pooshka-slider__tooltip-from js-pooshka-slider__tooltip-from');
+    this.$tooltipTo.appendTo(this.$stripe).addClass('pooshka-slider__tooltip-to js-pooshka-slider__tooltip-to');
   };
 
   private setContainerParameters = (): void => {
