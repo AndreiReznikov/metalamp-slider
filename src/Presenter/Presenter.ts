@@ -12,7 +12,6 @@ class Presenter {
     this.view = view;
 
     this.model.observer.addObserver(this.updateView);
-    this.model.observer.addObserver(this.onChange);
     this.view.SubView.observer.addObserver(this.updateModel);
 
     this.init();
@@ -83,7 +82,6 @@ class Presenter {
     this.model.calculateScaleElementsNumber(this.view.SubView.getOptions());
     this.model.calculateScaleElementsValues();
     this.updateView(this.model.getOptions());
-    this.onChange(this.model.getOptions());
   };
 
   private launchEventManager = (): void => {
@@ -144,23 +142,25 @@ class Presenter {
     this.model.calculateTo(options);
   };
 
-  private onChange = (options: Options): void => {
+  private onChange = (options: Options, event: JQuery.TriggeredEvent): void => {
     const { onChange } = options.modelOptions;
 
     if (!onChange) return;
 
-    onChange();
+    onChange(event);
   };
 
-  private toggleTooltip = (): void => {
+  private toggleTooltip = (event: JQuery.TriggeredEvent): void => {
     this.model.showTooltip = this.model.showTooltip !== true;
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.setModelOptions(this.model.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
+
+    this.onChange(this.model.getOptions(), event);
   };
 
-  private toggleDouble = (): void => {
+  private toggleDouble = (event: JQuery.TriggeredEvent): void => {
     this.model.double = this.model.double !== true;
 
     this.model.validateInitialValues();
@@ -172,32 +172,40 @@ class Presenter {
     this.model.restrictTo();
 
     this.model.observer.notifyObservers(this.model.getOptions());
+
+    this.onChange(this.model.getOptions(), event);
   };
 
-  private toggleRange = (): void => {
+  private toggleRange = (event: JQuery.TriggeredEvent): void => {
     this.model.showRange = this.model.showRange !== true;
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.setModelOptions(this.model.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
+
+    this.onChange(this.model.getOptions(), event);
   };
 
-  private toggleScale = (): void => {
+  private toggleScale = (event: JQuery.TriggeredEvent): void => {
     this.model.showScale = this.model.showScale !== true;
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.setModelOptions(this.model.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
+
+    this.onChange(this.model.getOptions(), event);
   };
 
-  private toggleVertical = (): void => {
+  private toggleVertical = (event: JQuery.TriggeredEvent): void => {
     this.model.vertical = this.model.vertical !== true;
     this.model.setPositionParameters();
 
     this.init();
+
+    this.onChange(this.model.getOptions(), event);
   };
 
-  private setFrom = (value: number): void => {
+  private setFrom = (event: JQuery.TriggeredEvent, value: number): void => {
     if (Number.isNaN(value)) return;
 
     this.model.from = value;
@@ -209,9 +217,11 @@ class Presenter {
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
+
+    this.onChange(this.model.getOptions(), event);
   };
 
-  private setTo = (value: number): void => {
+  private setTo = (event: JQuery.TriggeredEvent, value: number): void => {
     if (Number.isNaN(value)) return;
 
     this.model.to = value;
@@ -223,25 +233,31 @@ class Presenter {
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
+
+    this.onChange(this.model.getOptions(), event);
   };
 
-  private setMin = (value: number): void => {
+  private setMin = (event: JQuery.TriggeredEvent, value: number): void => {
     if (Number.isNaN(value)) return;
 
     this.model.min = value;
 
     this.init();
+
+    this.onChange(this.model.getOptions(), event);
   };
 
-  private setMax = (value: number): void => {
+  private setMax = (event: JQuery.TriggeredEvent, value: number): void => {
     if (Number.isNaN(value)) return;
 
     this.model.max = value;
 
     this.init();
+
+    this.onChange(this.model.getOptions(), event);
   };
 
-  private setStep = (value: number): void => {
+  private setStep = (event: JQuery.TriggeredEvent, value: number): void => {
     if (Number.isNaN(value)) return;
 
     this.model.step = value;
@@ -266,6 +282,8 @@ class Presenter {
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
+
+    this.onChange(this.model.getOptions(), event);
   };
 }
 

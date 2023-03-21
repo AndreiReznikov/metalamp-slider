@@ -38,6 +38,8 @@ class SubView extends AbstractSubView {
     this.shiftAxis = this.runnerFrom.calculateShiftAxis(this.getOptions());
 
     this.attachPointermoveEvent(RANGE.FROM);
+
+    this.onChange(this.getOptions(), event);
   };
 
   public handleRunnerToStartPointermove = (event: JQuery.TriggeredEvent): void => {
@@ -50,6 +52,8 @@ class SubView extends AbstractSubView {
     this.shiftAxis = this.runnerTo.calculateShiftAxis(this.getOptions());
 
     this.attachPointermoveEvent(RANGE.TO);
+
+    this.onChange(this.getOptions(), event);
   };
 
   public handleLimitMinSetRunnerPosition = (event: JQuery.TriggeredEvent): void => {
@@ -62,6 +66,8 @@ class SubView extends AbstractSubView {
     this.stripe.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
+
+    this.onChange(this.getOptions(), event);
 
     this.runnerFrom.isMinFrom = false;
   };
@@ -82,6 +88,8 @@ class SubView extends AbstractSubView {
 
     this.observer.notifyObservers(this.getOptions());
 
+    this.onChange(this.getOptions(), event);
+
     this.runnerFrom.isMaxFrom = false;
     this.runnerTo.isMaxTo = false;
   };
@@ -97,6 +105,8 @@ class SubView extends AbstractSubView {
     this.stripe.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
+
+    this.onChange(this.getOptions(), event);
 
     this.stripe.isClickAheadOfRunnerFrom = false;
     this.stripe.isClickBehindOfRunnerFrom = false;
@@ -143,6 +153,8 @@ class SubView extends AbstractSubView {
     this.stripe.showLimit(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
+
+    this.onChange(this.getOptions(), event);
 
     this.isScaleElementOnDown = false;
 
@@ -214,6 +226,13 @@ class SubView extends AbstractSubView {
     this.stripe.changeRunnerZIndex(RANGE.FROM);
 
     this.observer.notifyObservers(this.getOptions());
+
+    const stepNotDone = this.getOptions().modelOptions.step
+      && !(this.runnerFrom.isCursorNearStepAhead || this.runnerFrom.isCursorNearStepBehind);
+
+    if (stepNotDone) return;
+
+    this.onChange(this.getOptions(), event);
   };
 
   private handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
@@ -224,6 +243,13 @@ class SubView extends AbstractSubView {
     this.stripe.changeRunnerZIndex(RANGE.TO);
 
     this.observer.notifyObservers(this.getOptions());
+
+    const stepNotDone = this.getOptions().modelOptions.step
+      && !(this.runnerTo.isCursorNearStepAhead || this.runnerTo.isCursorNearStepBehind);
+
+    if (stepNotDone) return;
+
+    this.onChange(this.getOptions(), event);
   };
 
   private attachPointermoveEvent = (valueType: string) => {
@@ -254,6 +280,14 @@ class SubView extends AbstractSubView {
     const pageAxis: number = vertical ? pageY1 : pageX1;
 
     this.clickPosition = pageAxis - this.sliderPosition;
+  };
+
+  private onChange = (options: Options, event: JQuery.TriggeredEvent): void => {
+    const { onChange } = options.modelOptions;
+
+    if (!onChange) return;
+
+    onChange(event);
   };
 
   private getCoords = (element: JQuery<HTMLElement>): number => {
