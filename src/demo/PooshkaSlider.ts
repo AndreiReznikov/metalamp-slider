@@ -150,32 +150,32 @@ class PooshkaSlider {
     this.$inputStep.change(this.setStep);
   };
 
-  private toggleDouble = (): void => {
-    this.$pooshkaSlider.data('api').toggleDouble();
+  private toggleDouble = (event: JQuery.TriggeredEvent): void => {
+    this.$pooshkaSlider.data('api').toggleDouble(event);
 
     this.setPanelValues();
   };
 
-  private toggleTooltip = (): void => {
-    this.$pooshkaSlider.data('api').toggleTooltip();
+  private toggleTooltip = (event: JQuery.TriggeredEvent): void => {
+    this.$pooshkaSlider.data('api').toggleTooltip(event);
 
     this.setPanelValues();
   };
 
-  private toggleRange = (): void => {
-    this.$pooshkaSlider.data('api').toggleRange();
+  private toggleRange = (event: JQuery.TriggeredEvent): void => {
+    this.$pooshkaSlider.data('api').toggleRange(event);
 
     this.setPanelValues();
   };
 
-  private toggleScale = (): void => {
-    this.$pooshkaSlider.data('api').toggleScale();
+  private toggleScale = (event: JQuery.TriggeredEvent): void => {
+    this.$pooshkaSlider.data('api').toggleScale(event);
 
     this.setPanelValues();
   };
 
-  private toggleVertical = (): void => {
-    this.$pooshkaSlider.data('api').toggleVertical();
+  private toggleVertical = (event: JQuery.TriggeredEvent): void => {
+    this.$pooshkaSlider.data('api').toggleVertical(event);
 
     this.setPanelValues();
   };
@@ -184,7 +184,7 @@ class PooshkaSlider {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
-    this.$pooshkaSlider.data('api').setFrom(value);
+    this.$pooshkaSlider.data('api').setFrom(event, value);
 
     this.setPanelValues();
   };
@@ -193,7 +193,7 @@ class PooshkaSlider {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
-    this.$pooshkaSlider.data('api').setTo(value);
+    this.$pooshkaSlider.data('api').setTo(event, value);
 
     this.setPanelValues();
   };
@@ -202,7 +202,7 @@ class PooshkaSlider {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
-    this.$pooshkaSlider.data('api').setMin(value);
+    this.$pooshkaSlider.data('api').setMin(event, value);
 
     this.setPanelValues();
   };
@@ -211,7 +211,7 @@ class PooshkaSlider {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
-    this.$pooshkaSlider.data('api').setMax(value);
+    this.$pooshkaSlider.data('api').setMax(event, value);
 
     this.setPanelValues();
   };
@@ -220,7 +220,7 @@ class PooshkaSlider {
     const $input = $(event.currentTarget);
     const value = parseFloat(`${$input.val()}`);
 
-    this.$pooshkaSlider.data('api').setStep(value);
+    this.$pooshkaSlider.data('api').setStep(event, value);
 
     this.setPanelValues();
   };

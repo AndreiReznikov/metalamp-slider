@@ -78,16 +78,16 @@ type Api = {
   $scaleContainer: JQuery<HTMLElement>;
   getModelOptions: () => ModelOptions;
   updateUserConfig: (userConfig: UserConfig) => void;
-  toggleDouble: () => void;
-  toggleTooltip: () => void;
-  toggleRange: () => void;
-  toggleScale: () => void;
-  toggleVertical: () => void;
-  setFrom: (value: number) => void;
-  setTo: (value: number) => void;
-  setMin: (value: number) => void;
-  setMax: (value: number) => void;
-  setStep: (value: number) => void;
+  toggleDouble: (event: JQuery.TriggeredEvent) => void;
+  toggleTooltip: (event: JQuery.TriggeredEvent) => void;
+  toggleRange: (event: JQuery.TriggeredEvent) => void;
+  toggleScale: (event: JQuery.TriggeredEvent) => void;
+  toggleVertical: (event: JQuery.TriggeredEvent) => void;
+  setFrom: (event: JQuery.TriggeredEvent, value: number) => void;
+  setTo: (event: JQuery.TriggeredEvent, value: number) => void;
+  setMin: (event: JQuery.TriggeredEvent, value: number) => void;
+  setMax: (event: JQuery.TriggeredEvent, value: number) => void;
+  setStep: (event: JQuery.TriggeredEvent, value: number) => void;
 };
 
 type Config = {
