@@ -227,6 +227,11 @@ class SubView extends AbstractSubView {
 
     this.observer.notifyObservers(this.getOptions());
 
+    const stepNotDone = this.getOptions().modelOptions.step
+      && !(this.runnerFrom.isCursorNearStepAhead || this.runnerFrom.isCursorNearStepBehind);
+
+    if (stepNotDone) return;
+
     this.onChange(this.getOptions(), event);
   };
 
@@ -238,6 +243,11 @@ class SubView extends AbstractSubView {
     this.stripe.changeRunnerZIndex(RANGE.TO);
 
     this.observer.notifyObservers(this.getOptions());
+
+    const stepNotDone = this.getOptions().modelOptions.step
+      && !(this.runnerTo.isCursorNearStepAhead || this.runnerTo.isCursorNearStepBehind);
+
+    if (stepNotDone) return;
 
     this.onChange(this.getOptions(), event);
   };
