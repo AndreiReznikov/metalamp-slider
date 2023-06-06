@@ -134,6 +134,7 @@ class Presenter {
     this.view.SubView.scale.setScaleLength(options);
     this.view.SubView.scale.setScaleElementsPositions(options);
     this.view.SubView.scale.setScalePosition(options);
+    // this.view.SubView.setModelOptions(options);
   };
 
   private updateModel = (options: Options): void => {

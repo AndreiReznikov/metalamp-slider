@@ -219,24 +219,35 @@ class Model extends AbstractModel {
       scaleElementValue,
     } = options.subViewOptions;
 
-    const from = parseFloat((((runnerFromPosition
+    this.from = parseFloat((((runnerFromPosition
       + runnerLength / 2) / sliderLength)
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
-    if (this.isStepSet) {
-      const currentFromRemains: number = parseFloat(
-        (from % this.step).toFixed(this.numberOfCharactersAfterDot),
-      );
+    let currentFromRemains: number = parseFloat(
+      (
+        this.from - (Math.round(this.from / this.step) * this.step)
+      ).toFixed(this.numberOfCharactersAfterDot),
+    );
 
-      if (currentFromRemains !== 0 && Math.abs(currentFromRemains) !== this.step) {
-        this.from = parseFloat(
-          (from - currentFromRemains).toFixed(this.numberOfCharactersAfterDot),
-        );
-      } else {
-        this.from = from;
-      }
-    } else {
-      this.from = from;
+    const isFromLessThanStep: boolean = this.isStepSet
+      && this.from < this.step
+      && this.from > 0
+      && Math.round(this.from) !== 0;
+
+    if (isFromLessThanStep) {
+      currentFromRemains = -parseFloat(
+        (this.step - this.from).toFixed(this.numberOfCharactersAfterDot),
+      );
+    }
+
+    const isRemains: boolean = this.isStepSet
+      && currentFromRemains !== 0
+      && Math.abs(currentFromRemains) !== this.step;
+
+    if (isRemains) {
+      this.from = parseFloat(
+        (this.from - currentFromRemains).toFixed(this.numberOfCharactersAfterDot),
+      );
     }
 
     if (isMinFrom) {
@@ -292,24 +303,35 @@ class Model extends AbstractModel {
       scaleElementValue,
     } = options.subViewOptions;
 
-    const to = parseFloat((((runnerToPosition
+    this.to = parseFloat((((runnerToPosition
       + runnerLength / 2) / sliderLength)
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
-    if (this.isStepSet) {
-      const currentToRemains: number = parseFloat(
-        (to % this.step).toFixed(this.numberOfCharactersAfterDot),
-      );
+    let currentToRemains: number = parseFloat(
+      (
+        this.to - (Math.round(this.to / this.step) * this.step)
+      ).toFixed(this.numberOfCharactersAfterDot),
+    );
 
-      if (currentToRemains !== 0 && Math.abs(currentToRemains) !== this.step) {
-        this.to = parseFloat(
-          (to - currentToRemains).toFixed(this.numberOfCharactersAfterDot),
-        );
-      } else {
-        this.to = to;
-      }
-    } else {
-      this.to = to;
+    const isToLessThanStep: boolean = this.isStepSet
+      && this.to < this.step
+      && this.to > 0
+      && Math.round(this.to) !== 0;
+
+    if (isToLessThanStep) {
+      currentToRemains = -parseFloat(
+        (this.step - this.to).toFixed(this.numberOfCharactersAfterDot),
+      );
+    }
+
+    const isRemains: boolean = this.isStepSet
+      && currentToRemains !== 0
+      && Math.abs(currentToRemains) !== this.step;
+
+    if (isRemains) {
+      this.to = parseFloat(
+        (this.to - currentToRemains).toFixed(this.numberOfCharactersAfterDot),
+      );
     }
 
     if (isMaxTo) {
@@ -392,7 +414,7 @@ class Model extends AbstractModel {
         );
 
         scaleElement = scaleElement > this.max ? this.max - this.maxRemains : scaleElement;
-        scaleElement = scaleElement < this.min ? this.min - this.minRemains : scaleElement;
+        scaleElement = scaleElement < this.min ? this.min + this.minRemains : scaleElement;
       }
 
       return scaleElement;
