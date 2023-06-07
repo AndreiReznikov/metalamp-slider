@@ -17,6 +17,7 @@ $(document).ready(() => {
     from: -5,
     to: 5,
     scaleNumber: 11,
+    // onChange: (event, options) => console.log(options?.modelOptions.to),
   });
 
   const pooshkaSliderSingle = new PooshkaSlider('.js-single-slider-container');
