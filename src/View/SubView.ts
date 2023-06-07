@@ -39,7 +39,7 @@ class SubView extends AbstractSubView {
 
     this.attachPointermoveEvent(RANGE.FROM);
 
-    this.onChange(this.getOptions(), event);
+    this.onChange(event, this.getOptions());
   };
 
   public handleRunnerToStartPointermove = (event: JQuery.TriggeredEvent): void => {
@@ -53,7 +53,7 @@ class SubView extends AbstractSubView {
 
     this.attachPointermoveEvent(RANGE.TO);
 
-    this.onChange(this.getOptions(), event);
+    this.onChange(event, this.getOptions());
   };
 
   public handleLimitMinSetRunnerPosition = (event: JQuery.TriggeredEvent): void => {
@@ -67,7 +67,7 @@ class SubView extends AbstractSubView {
 
     this.observer.notifyObservers(this.getOptions());
 
-    this.onChange(this.getOptions(), event);
+    this.onChange(event, this.getOptions());
 
     this.runnerFrom.isMinFrom = false;
   };
@@ -88,7 +88,7 @@ class SubView extends AbstractSubView {
 
     this.observer.notifyObservers(this.getOptions());
 
-    this.onChange(this.getOptions(), event);
+    this.onChange(event, this.getOptions());
 
     this.runnerFrom.isMaxFrom = false;
     this.runnerTo.isMaxTo = false;
@@ -106,7 +106,7 @@ class SubView extends AbstractSubView {
 
     this.observer.notifyObservers(this.getOptions());
 
-    this.onChange(this.getOptions(), event);
+    this.onChange(event, this.getOptions());
 
     this.stripe.isClickAheadOfRunnerFrom = false;
     this.stripe.isClickBehindOfRunnerFrom = false;
@@ -154,7 +154,7 @@ class SubView extends AbstractSubView {
 
     this.observer.notifyObservers(this.getOptions());
 
-    this.onChange(this.getOptions(), event);
+    this.onChange(event, this.getOptions());
 
     this.isScaleElementOnDown = false;
 
@@ -232,7 +232,7 @@ class SubView extends AbstractSubView {
 
     if (stepNotDone) return;
 
-    this.onChange(this.getOptions(), event);
+    this.onChange(event, this.getOptions());
   };
 
   private handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
@@ -249,7 +249,7 @@ class SubView extends AbstractSubView {
 
     if (stepNotDone) return;
 
-    this.onChange(this.getOptions(), event);
+    this.onChange(event, this.getOptions());
   };
 
   private attachPointermoveEvent = (valueType: string) => {
@@ -282,12 +282,12 @@ class SubView extends AbstractSubView {
     this.clickPosition = pageAxis - this.sliderPosition;
   };
 
-  private onChange = (options: Options, event: JQuery.TriggeredEvent): void => {
+  private onChange = (event: JQuery.TriggeredEvent, options: Options): void => {
     const { onChange } = options.modelOptions;
 
     if (!onChange) return;
 
-    onChange(event);
+    onChange(event, options);
   };
 
   private getCoords = (element: JQuery<HTMLElement>): number => {

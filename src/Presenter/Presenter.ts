@@ -109,6 +109,7 @@ class Presenter {
   };
 
   private updateView = (options: Options): void => {
+    this.view.SubView.setModelOptions(options);
     this.view.SubView.runnerFrom.setRunnerPosition(options);
     this.view.SubView.runnerTo.setRunnerPosition(options);
     this.view.SubView.tooltipFrom.setTooltipValue(options);
@@ -142,12 +143,12 @@ class Presenter {
     this.model.calculateTo(options);
   };
 
-  private onChange = (options: Options, event: JQuery.TriggeredEvent): void => {
+  private onChange = (event: JQuery.TriggeredEvent, options: Options): void => {
     const { onChange } = options.modelOptions;
 
     if (!onChange) return;
 
-    onChange(event);
+    onChange(event, options);
   };
 
   private toggleTooltip = (event: JQuery.TriggeredEvent): void => {
@@ -157,7 +158,7 @@ class Presenter {
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
-    this.onChange(this.model.getOptions(), event);
+    this.onChange(event, this.model.getOptions());
   };
 
   private toggleDouble = (event: JQuery.TriggeredEvent): void => {
@@ -173,7 +174,7 @@ class Presenter {
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
-    this.onChange(this.model.getOptions(), event);
+    this.onChange(event, this.model.getOptions());
   };
 
   private toggleRange = (event: JQuery.TriggeredEvent): void => {
@@ -183,7 +184,7 @@ class Presenter {
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
-    this.onChange(this.model.getOptions(), event);
+    this.onChange(event, this.model.getOptions());
   };
 
   private toggleScale = (event: JQuery.TriggeredEvent): void => {
@@ -193,7 +194,7 @@ class Presenter {
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
-    this.onChange(this.model.getOptions(), event);
+    this.onChange(event, this.model.getOptions());
   };
 
   private toggleVertical = (event: JQuery.TriggeredEvent): void => {
@@ -202,7 +203,7 @@ class Presenter {
 
     this.init();
 
-    this.onChange(this.model.getOptions(), event);
+    this.onChange(event, this.model.getOptions());
   };
 
   private setFrom = (event: JQuery.TriggeredEvent, value: number): void => {
@@ -218,7 +219,7 @@ class Presenter {
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
-    this.onChange(this.model.getOptions(), event);
+    this.onChange(event, this.model.getOptions());
   };
 
   private setTo = (event: JQuery.TriggeredEvent, value: number): void => {
@@ -234,7 +235,7 @@ class Presenter {
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
-    this.onChange(this.model.getOptions(), event);
+    this.onChange(event, this.model.getOptions());
   };
 
   private setMin = (event: JQuery.TriggeredEvent, value: number): void => {
@@ -244,7 +245,7 @@ class Presenter {
 
     this.init();
 
-    this.onChange(this.model.getOptions(), event);
+    this.onChange(event, this.model.getOptions());
   };
 
   private setMax = (event: JQuery.TriggeredEvent, value: number): void => {
@@ -254,7 +255,7 @@ class Presenter {
 
     this.init();
 
-    this.onChange(this.model.getOptions(), event);
+    this.onChange(event, this.model.getOptions());
   };
 
   private setStep = (event: JQuery.TriggeredEvent, value: number): void => {
@@ -283,7 +284,7 @@ class Presenter {
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
-    this.onChange(this.model.getOptions(), event);
+    this.onChange(event, this.model.getOptions());
   };
 }
 
