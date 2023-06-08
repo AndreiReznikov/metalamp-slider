@@ -62,15 +62,8 @@ class Stripe extends AbstractStripe {
   };
 
   public restrictRunnerFromPosition = (options: Options): void => {
-    const {
-      runnerLength,
-      sliderLength,
-      isCursorNearStepAheadFrom,
-      isCursorNearStepBehindFrom,
-    } = options.subViewOptions;
-    const {
-      double, minRemains, stepLength, maxRemains, step,
-    } = options.modelOptions;
+    const { runnerLength, sliderLength } = options.subViewOptions;
+    const { double } = options.modelOptions;
 
     const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFrom.runnerPosition
       < 0 - runnerLength / 2;
@@ -79,30 +72,11 @@ class Stripe extends AbstractStripe {
     const
       isRunnerFromPositionMoreThanRunnerToPosition: boolean = double
       && this.runnerFrom.runnerPosition > this.runnerTo.runnerPosition;
-    const isRunnerFromNearMinWithRemains: boolean = minRemains !== 0
-      && isCursorNearStepBehindFrom
-      && this.runnerFrom.runnerPosition + runnerLength
-      / 2 < stepLength;
-    const isRunnerFromNearMaxWithRemains: boolean = maxRemains !== 0
-      && isCursorNearStepAheadFrom
-      && sliderLength - this.runnerFrom.runnerPosition
-      + runnerLength / 2 < stepLength;
 
     if (isRunnerFromPositionLessThanMinimum) {
       this.runnerFrom.runnerPosition = 0 - runnerLength / 2;
     } else if (isRunnerFromPositionMoreThanMaximum) {
       this.runnerFrom.runnerPosition = sliderLength - runnerLength / 2;
-    }
-
-    if (isRunnerFromNearMaxWithRemains) {
-      this.runnerFrom.runnerPosition = sliderLength
-        - ((Math.abs(maxRemains) / step)
-        * stepLength) - runnerLength / 2;
-    }
-
-    if (isRunnerFromNearMinWithRemains) {
-      this.runnerFrom.runnerPosition = ((Math.abs(minRemains)
-        / step) * stepLength) - runnerLength / 2;
     }
 
     if (isRunnerFromPositionMoreThanRunnerToPosition) {
@@ -113,26 +87,12 @@ class Stripe extends AbstractStripe {
   };
 
   public restrictRunnerToPosition = (options: Options): void => {
-    const { maxRemains, stepLength, step } = options.modelOptions;
-    const { sliderLength, runnerLength, isCursorNearStepAheadTo } = options.subViewOptions;
+    const { sliderLength, runnerLength } = options.subViewOptions;
 
     const isRunnerFromPositionLessThanRunnerToPosition: boolean = this.runnerTo.runnerPosition
       < this.runnerFrom.runnerPosition;
     const isRunnerToPositionMoreThanMaximum: boolean = this.runnerTo.runnerPosition
       > sliderLength - runnerLength / 2;
-
-    const isRunnerToNearMaxWithRemains: boolean = maxRemains !== 0
-      && isCursorNearStepAheadTo
-      && sliderLength - this.runnerTo.runnerPosition
-      + runnerLength / 2 < stepLength;
-
-    if (isRunnerToNearMaxWithRemains) {
-      this.runnerTo.runnerPosition = sliderLength
-        - (((maxRemains) / step)
-        * stepLength) - runnerLength / 2;
-
-      return;
-    }
 
     if (isRunnerFromPositionLessThanRunnerToPosition) {
       this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
