@@ -223,26 +223,17 @@ class Model extends AbstractModel {
       + runnerLength / 2) / sliderLength)
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
-    let currentFromRemains: number = parseFloat(
+    const currentFromRemains: number = parseFloat(
       (
         this.from - (Math.round(this.from / this.step) * this.step)
       ).toFixed(this.numberOfCharactersAfterDot),
     );
 
-    const isFromLessThanStep: boolean = this.isStepSet
-      && this.from < this.step
-      && this.from > 0
-      && Math.round(this.from) !== 0;
-
-    if (isFromLessThanStep) {
-      currentFromRemains = -parseFloat(
-        (this.step - this.from).toFixed(this.numberOfCharactersAfterDot),
-      );
-    }
-
     const isRemains: boolean = this.isStepSet
       && currentFromRemains !== 0
-      && Math.abs(currentFromRemains) !== this.step;
+      && Math.abs(currentFromRemains) !== this.step
+      && this.from !== this.min
+      && this.from !== this.max;
 
     if (isRemains) {
       this.from = parseFloat(
@@ -270,10 +261,6 @@ class Model extends AbstractModel {
     const isFromLessThanMinimum: boolean = this.from < this.min;
     const isIntervalAndFromMoreThanTo: boolean = this.double && this.from > this.to;
     const isFromMoreThanMaximum: boolean = this.from > this.max;
-    const isFromMoreThanMaxRemains: boolean = this.from > this.max - this.maxRemains
-      && this.isStepSet;
-    const isFromLessThanMinRemains: boolean = this.from < this.min + this.minRemains
-      && this.isStepSet;
 
     if (isFromLessThanMinimum) {
       this.from = this.min;
@@ -281,12 +268,6 @@ class Model extends AbstractModel {
       this.from = this.to;
     } else if (isFromMoreThanMaximum) {
       this.from = this.max;
-    }
-
-    if (isFromMoreThanMaxRemains) {
-      this.from = this.max - this.maxRemains;
-    } else if (isFromLessThanMinRemains) {
-      this.from = this.min + this.minRemains;
     }
   };
 
@@ -307,26 +288,17 @@ class Model extends AbstractModel {
       + runnerLength / 2) / sliderLength)
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
-    let currentToRemains: number = parseFloat(
+    const currentToRemains: number = parseFloat(
       (
         this.to - (Math.round(this.to / this.step) * this.step)
       ).toFixed(this.numberOfCharactersAfterDot),
     );
 
-    const isToLessThanStep: boolean = this.isStepSet
-      && this.to < this.step
-      && this.to > 0
-      && Math.round(this.to) !== 0;
-
-    if (isToLessThanStep) {
-      currentToRemains = -parseFloat(
-        (this.step - this.to).toFixed(this.numberOfCharactersAfterDot),
-      );
-    }
-
     const isRemains: boolean = this.isStepSet
       && currentToRemains !== 0
-      && Math.abs(currentToRemains) !== this.step;
+      && Math.abs(currentToRemains) !== this.step
+      && this.to !== this.min
+      && this.to !== this.max;
 
     if (isRemains) {
       this.to = parseFloat(
@@ -350,16 +322,11 @@ class Model extends AbstractModel {
   public restrictTo = (): void => {
     const isToLessThanFrom: boolean = this.to < this.from;
     const isToMoreThanMaximum: boolean = this.to > this.max;
-    const isToMoreThanMaxRemains: boolean = this.to > this.max - this.maxRemains && this.isStepSet;
 
     if (isToLessThanFrom) {
       this.to = this.from;
     } else if (isToMoreThanMaximum) {
       this.to = this.max;
-    }
-
-    if (isToMoreThanMaxRemains) {
-      this.to = this.max - this.maxRemains;
     }
   };
 

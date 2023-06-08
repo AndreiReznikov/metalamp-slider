@@ -41,14 +41,7 @@ class Runner {
   };
 
   public calculateMinRunnerPosition = (options: Options): void => {
-    const { minRemains, step, stepLength } = options.modelOptions;
     const { runnerLength } = options.subViewOptions;
-
-    if (minRemains !== 0) {
-      this.runnerPosition = ((Math.abs(minRemains) / step) * stepLength) - runnerLength / 2;
-
-      return;
-    }
 
     this.runnerPosition = 0 - runnerLength / 2;
 
@@ -56,17 +49,8 @@ class Runner {
   };
 
   public calculateMaxRunnerPosition = (options: Options): void => {
-    const {
-      maxRemains, step, stepLength, double,
-    } = options.modelOptions;
+    const { double } = options.modelOptions;
     const { sliderLength, runnerLength } = options.subViewOptions;
-
-    if (maxRemains !== 0) {
-      this.runnerPosition = sliderLength - ((Math.abs(maxRemains) / step)
-        * stepLength) - runnerLength / 2;
-
-      return;
-    }
 
     this.runnerPosition = sliderLength - runnerLength / 2;
 
@@ -107,19 +91,32 @@ class Runner {
   };
 
   private calculateRunnerPositionWithSetStep = (options: Options): void => {
-    const { stepLength, positionParameter } = options.modelOptions;
     const {
-      clickPosition, runnerLength, leftOrRight, upOrDown,
+      stepLength, positionParameter, minRemains, maxRemains, max, min, from, to,
+    } = options.modelOptions;
+    const {
+      clickPosition, runnerLength, leftOrRight, upOrDown, sliderLength,
     } = options.subViewOptions;
+
+    const stepParameterAhead: number = (this.runnerType === RANGE.FROM && from === max
+      - Math.abs(maxRemains)) || (this.runnerType === RANGE.TO && to === max
+      - Math.abs(maxRemains)) || (this.runnerType === RANGE.FROM && from === min)
+      || (this.runnerType === RANGE.TO && to === min)
+      ? Math.abs(maxRemains / (max - min)) * sliderLength : stepLength;
+    const stepParameterBehind: number = (this.runnerType === RANGE.FROM && from === min
+      + Math.abs(minRemains)) || (this.runnerType === RANGE.TO && to === min
+      + Math.abs(minRemains)) || (this.runnerType === RANGE.FROM && from === max)
+      || (this.runnerType === RANGE.TO && to === max)
+      ? Math.abs(minRemains / (max - min)) * sliderLength : stepLength;
 
     this.isCursorNearStepAhead = clickPosition
       > this.runnerPosition + runnerLength / 2
-      + stepLength / 2
+      + stepParameterAhead / 2
       && (positionParameter === DIRECTION.LEFT
         ? leftOrRight === DIRECTION.RIGHT : upOrDown === DIRECTION.BOTTOM);
     this.isCursorNearStepBehind = clickPosition
       < this.runnerPosition + runnerLength / 2
-      - stepLength / 2
+      - stepParameterBehind / 2
       && (positionParameter === DIRECTION.LEFT
         ? leftOrRight === DIRECTION.LEFT : upOrDown === DIRECTION.TOP);
 
@@ -133,13 +130,21 @@ class Runner {
       % stepLength;
 
     if (this.isCursorNearStepAhead) {
-      this.runnerPosition = clickPosition
+      const isMinRunnerPosition: boolean = this.runnerPosition === 0
+        - runnerLength / 2 && minRemains !== 0;
+
+      this.runnerPosition = isMinRunnerPosition ? (
+        Math.abs(minRemains / (max - min)) * sliderLength
+      ) - runnerLength / 2 : clickPosition
         - runnerLength / 2
         + stepLength - this.remainsAhead;
     } else if (this.isCursorNearStepBehind) {
-      this.runnerPosition = clickPosition
-        - runnerLength / 2
-        - stepLength + this.remainsBehind;
+      const isMaxRunnerPosition: boolean = this.runnerPosition === sliderLength
+        - runnerLength / 2 && maxRemains !== 0;
+
+      this.runnerPosition = isMaxRunnerPosition ? sliderLength
+        - (Math.abs(maxRemains / (max - min)) * sliderLength) - runnerLength / 2 : clickPosition
+        - runnerLength / 2 - stepLength + this.remainsBehind;
     }
   };
 }
