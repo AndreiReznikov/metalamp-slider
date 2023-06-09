@@ -11,35 +11,67 @@ class Stripe extends AbstractStripe {
   }
 
   public calculateRunnerPositionAfterSliderOnDown = (options: Options): void => {
-    const { runnerLength, clickPosition } = options.subViewOptions;
-    const { stepLength, isStepSet } = options.modelOptions;
-
-    const intervalForRunnerFromSteps: number = this.runnerFrom.runnerPosition
-      + runnerLength / 2 - clickPosition;
-    this.runnerFromStepsNumber = Math.round(intervalForRunnerFromSteps / stepLength);
-
-    this.runnerFromStepsNumber = this.runnerFromStepsNumber < 0
-      ? -this.runnerFromStepsNumber : this.runnerFromStepsNumber;
-
-    const intervalForRunnerToSteps: number = this.runnerTo.runnerPosition
-      + runnerLength / 2 - clickPosition;
-    this.runnerToStepsNumber = Math.round(intervalForRunnerToSteps / stepLength);
-
-    this.runnerToStepsNumber = this.runnerToStepsNumber < 0
-      ? -this.runnerToStepsNumber : this.runnerToStepsNumber;
+    const { runnerLength, clickPosition, sliderLength } = options.subViewOptions;
+    const {
+      stepLength, isStepSet, max, min, maxRemains, minRemains, double,
+    } = options.modelOptions;
 
     this.defineClickLocation(options);
+
+    const isClickBehindFromWithMaxRemains: boolean = Math.abs(maxRemains) > 0
+      && this.runnerFrom.runnerPosition === sliderLength - runnerLength / 2
+      && clickPosition < sliderLength - ((Math.abs(maxRemains / (max - min)) * sliderLength) / 2);
+    const isClickBehindToWithMaxRemains: boolean = double && Math.abs(maxRemains) > 0
+      && this.runnerTo.runnerPosition === sliderLength - runnerLength / 2
+      && clickPosition < sliderLength - ((Math.abs(maxRemains / (max - min)) * sliderLength) / 2);
+    const isClickAheadFromWithMinRemains: boolean = Math.abs(minRemains) > 0
+      && this.runnerFrom.runnerPosition === 0 - runnerLength / 2
+      && clickPosition > (Math.abs(minRemains / (max - min)) * sliderLength) / 2;
+    const isClickAheadToWithMinRemains: boolean = Math.abs(minRemains) > 0
+      && this.runnerTo.runnerPosition === 0 - runnerLength / 2
+      && clickPosition > (Math.abs(minRemains / (max - min)) * sliderLength) / 2;
+
+    let intervalForRunnerFromSteps: number = this.runnerFrom.runnerPosition
+      + runnerLength / 2 - clickPosition;
+
+    if (isClickBehindFromWithMaxRemains) {
+      intervalForRunnerFromSteps -= Math.abs(maxRemains / (max - min)) * sliderLength;
+    } else if (isClickAheadFromWithMinRemains) {
+      intervalForRunnerFromSteps += Math.abs(minRemains / (max - min)) * sliderLength;
+    }
+
+    this.runnerFromStepsNumber = Math.abs(Math.round(intervalForRunnerFromSteps / stepLength));
+
+    let intervalForRunnerToSteps: number = this.runnerTo.runnerPosition
+      + runnerLength / 2 - clickPosition;
+
+    if (isClickBehindToWithMaxRemains) {
+      intervalForRunnerToSteps -= Math.abs(maxRemains / (max - min)) * sliderLength;
+    } else if (isClickAheadToWithMinRemains) {
+      intervalForRunnerToSteps += Math.abs(minRemains / (max - min)) * sliderLength;
+    }
+
+    this.runnerToStepsNumber = Math.abs(Math.round(intervalForRunnerToSteps / stepLength));
+
     this.alignRunners(options);
 
     if (isStepSet) {
       if (this.isClickAheadOfRunnerFrom) {
-        this.runnerFrom.runnerPosition += this.runnerFromStepsNumber * stepLength;
+        this.runnerFrom.runnerPosition += this.runnerFromStepsNumber * stepLength
+          + (isClickAheadFromWithMinRemains ? Math.abs(minRemains / (max - min)) * sliderLength
+            : 0);
       } else if (this.isClickBehindOfRunnerFrom) {
-        this.runnerFrom.runnerPosition -= this.runnerFromStepsNumber * stepLength;
+        this.runnerFrom.runnerPosition -= this.runnerFromStepsNumber * stepLength
+          + (isClickBehindFromWithMaxRemains ? Math.abs(maxRemains / (max - min)) * sliderLength
+            : 0);
       } else if (this.isClickAheadOfRunnerTo) {
-        this.runnerTo.runnerPosition += this.runnerToStepsNumber * stepLength;
+        this.runnerTo.runnerPosition += this.runnerToStepsNumber * stepLength
+          + (isClickAheadToWithMinRemains ? Math.abs(minRemains / (max - min)) * sliderLength
+            : 0);
       } else if (this.isClickBehindOfRunnerTo) {
-        this.runnerTo.runnerPosition -= this.runnerToStepsNumber * stepLength;
+        this.runnerTo.runnerPosition -= this.runnerToStepsNumber * stepLength
+          + (isClickBehindToWithMaxRemains ? Math.abs(maxRemains / (max - min)) * sliderLength
+            : 0);
       }
     } else if (this.isClickForRunnerFrom) {
       this.runnerFrom.runnerPosition = clickPosition - runnerLength / 2;
@@ -132,19 +164,27 @@ class Stripe extends AbstractStripe {
   };
 
   public restrictRunnerPositionAfterSliderOnDown = (options: Options): void => {
-    const { isStepSet, stepLength, double } = options.modelOptions;
+    const {
+      isStepSet, stepLength, double, min, max, maxRemains, minRemains,
+    } = options.modelOptions;
     const { sliderLength, clickPosition } = options.subViewOptions;
 
     if (!isStepSet) return;
 
     const isClickNearMinimum: boolean = clickPosition
-      < stepLength / 2;
+      < (Math.abs(minRemains) > 0
+        ? (Math.abs(minRemains / (max - min)) * sliderLength) : stepLength / 2)
+      && this.isClickBehindOfRunnerFrom;
     const isClickNearMaximumWithoutInterval: boolean = sliderLength
-      - clickPosition < stepLength / 2
-      && !double;
+      - clickPosition < (Math.abs(maxRemains) > 0
+      ? (Math.abs(maxRemains / (max - min)) * sliderLength) : stepLength / 2)
+      && !double
+      && this.isClickAheadOfRunnerFrom;
     const isClickNearMaximum: boolean = sliderLength
-      - clickPosition < stepLength / 2
-      && double;
+      - clickPosition < (Math.abs(maxRemains) > 0
+      ? (Math.abs(maxRemains / (max - min)) * sliderLength) : stepLength / 2)
+      && double
+      && this.isClickAheadOfRunnerTo;
 
     if (isClickNearMaximumWithoutInterval) {
       this.runnerFrom.calculateMaxRunnerPosition(options);
