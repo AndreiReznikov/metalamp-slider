@@ -1,28 +1,28 @@
 doctype html
-html(lang="ru")
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    meta(name="keywords" content="JQuery plugin, slider, MVP, TypeScript, education")
-    meta(name="description" content="Slider")
-    title pooshkaSlider
-    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js")
-  body
+html.demo-page(lang="ru")
+  head.demo-page__head
+    meta.demo-page__meta-charset(charset="UTF-8")
+    meta.demo-page__meta-viewport(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta.demo-page__meta-keywords(name="keywords" content="JQuery plugin, slider, MVP, TypeScript, education")
+    meta.demo-page__meta-description(name="description" content="Slider")
+    title.demo-page__head-title pooshkaSlider
+    script.demo-page__script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js")
+  body.demo-page__body
     include vars-and-mixins
 
-    main.container
-      h1.demo-page-title PooshkaSlider Demo
+    main.demo-page__container
+      h1.demo-page__title PooshkaSlider Demo
       each slider in sliders
-        form(class=`${slider.type}-slider-container js-${slider.type}-slider-container`)
-          h2.subtitle=slider.title
-          div(class=`${slider.type}-slider-wrapper`)
-            div(class=`slider js-slider js-slider_${slider.type}`)
+        form.demo-page__form(class=`demo-page__${slider.type}-slider-container js-demo-page__${slider.type}-slider-container`)
+          h2.demo-page__subtitle=slider.title
+          div(class=`demo-page__${slider.type}-slider-wrapper`)
+            div(class=`demo-page__slider js-demo-page__slider js-demo-page__slider_${slider.type}`)
 
-          .panel
-            .panel__toggle-inputs-container
+          .demo-page__panel
+            .demo-page__panel-toggle-inputs-container
               each toggler in togglers
                 +panelToggler(toggler)
 
-            .panel__text-inputs-container
+            .demo-page__panel-text-inputs-container
               each input in inputs
                 +panelInputs(input)
