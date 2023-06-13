@@ -103,6 +103,7 @@ abstract class AbstractSubView {
       minRemains: 0,
       maxRemains: 0,
       scaleNumber: 0,
+      defaultScaleNumber: 0,
       scaleElements: [],
       numberOfCharactersAfterDot: 0,
     };

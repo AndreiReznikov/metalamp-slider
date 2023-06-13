@@ -36,6 +36,8 @@ abstract class AbstractModel {
 
   scaleNumber = 2;
 
+  defaultScaleNumber = 0;
+
   stepLength = 0;
 
   numberOfCharactersAfterDot = 0;

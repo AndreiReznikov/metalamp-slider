@@ -40,6 +40,7 @@ view.SubView.modelOptions = {
   minRemains: 0,
   maxRemains: 0,
   scaleNumber: 0,
+  defaultScaleNumber: 0,
   scaleElements: [],
   numberOfCharactersAfterDot: 0,
 };
@@ -156,6 +157,7 @@ beforeEach(() => {
     minRemains: 0,
     maxRemains: 0,
     scaleNumber: 0,
+    defaultScaleNumber: 0,
     scaleElements: [],
     numberOfCharactersAfterDot: 0,
   };

@@ -190,6 +190,7 @@ class Model extends AbstractModel {
       maxRemains: this.maxRemains,
       scalePositionParameter: this.scalePositionParameter,
       scaleNumber: this.scaleNumber,
+      defaultScaleNumber: this.defaultScaleNumber,
       scaleElements: this.scaleElements,
       numberOfCharactersAfterDot: this.numberOfCharactersAfterDot,
       onChange: this.config.onChange,
@@ -412,6 +413,7 @@ class Model extends AbstractModel {
     this.from = this.config.from;
     this.to = this.config.to;
     this.scaleNumber = this.config.scaleNumber;
+    this.defaultScaleNumber = this.config.scaleNumber;
   };
 }
 

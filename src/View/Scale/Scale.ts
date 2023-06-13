@@ -99,8 +99,16 @@ class Scale {
 
   public removeRedundantScaleElements = (options: Options): void => {
     const { sliderLength } = options.subViewOptions;
+    const { defaultScaleNumber } = options.modelOptions;
 
     this.scaleElementsCurrentNumber = this.$scaleContainer.children().length;
+
+    if (sliderLength / 2 > this.sumOfScaleElementsWith) {
+      this.scaleElementsCurrentNumber *= 2;
+
+      this.scaleElementsCurrentNumber = this.scaleElementsCurrentNumber > defaultScaleNumber
+        ? defaultScaleNumber : this.scaleElementsCurrentNumber;
+    }
 
     if (sliderLength > this.sumOfScaleElementsWith) return;
 

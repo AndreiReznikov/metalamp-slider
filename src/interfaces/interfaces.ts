@@ -26,6 +26,7 @@ interface ModelOptions {
   maxRemains: number;
   scalePositionParameter: string;
   scaleNumber: number;
+  defaultScaleNumber: number;
   scaleElements: number[];
   numberOfCharactersAfterDot: number;
   onChange?: ({ event, options }: { event?: JQuery.TriggeredEvent, options?: Options }) => unknown;
