@@ -173,16 +173,16 @@ class Stripe extends AbstractStripe {
 
     const isClickNearMinimum: boolean = clickPosition
       < (Math.abs(minRemains) > 0
-        ? (Math.abs(minRemains / (max - min)) * sliderLength) : stepLength / 2)
+        ? (Math.abs(minRemains / (max - min)) * sliderLength) / 2 : stepLength / 2)
       && this.isClickBehindOfRunnerFrom;
     const isClickNearMaximumWithoutInterval: boolean = sliderLength
       - clickPosition < (Math.abs(maxRemains) > 0
-      ? (Math.abs(maxRemains / (max - min)) * sliderLength) : stepLength / 2)
+      ? (Math.abs(maxRemains / (max - min)) * sliderLength) / 2 : stepLength / 2)
       && !double
       && this.isClickAheadOfRunnerFrom;
     const isClickNearMaximum: boolean = sliderLength
       - clickPosition < (Math.abs(maxRemains) > 0
-      ? (Math.abs(maxRemains / (max - min)) * sliderLength) : stepLength / 2)
+      ? (Math.abs(maxRemains / (max - min)) * sliderLength) / 2 : stepLength / 2)
       && double
       && this.isClickAheadOfRunnerTo;
 
