@@ -133,25 +133,25 @@ class Model extends AbstractModel {
     this.from -= this.fromRemains;
     this.to -= this.toRemains;
 
-    const isFromEqualZeroWithNegativeLimins: boolean = this.from === 0
+    const isFromEqualZeroWithNegativeLimits: boolean = this.from === 0
       && this.min < 0 && this.max < 0;
-    const isFromEqualZeroWithPositiveLimins: boolean = this.from === 0
+    const isFromEqualZeroWithPositiveLimits: boolean = this.from === 0
       && this.min > 0 && this.max > 0;
-    const isToEqualZeroWithNegativeLimins: boolean = this.to === 0
+    const isToEqualZeroWithNegativeLimits: boolean = this.to === 0
       && this.min < 0 && this.max < 0;
-    const isToEqualZeroWithPositiveLimins: boolean = this.to === 0
+    const isToEqualZeroWithPositiveLimits: boolean = this.to === 0
       && this.min > 0 && this.max > 0;
 
-    if (isFromEqualZeroWithNegativeLimins) {
+    if (isFromEqualZeroWithNegativeLimits) {
       this.from -= this.step;
     }
-    if (isFromEqualZeroWithPositiveLimins) {
+    if (isFromEqualZeroWithPositiveLimits) {
       this.from += this.step;
     }
-    if (isToEqualZeroWithNegativeLimins) {
+    if (isToEqualZeroWithNegativeLimits) {
       this.to -= this.step;
     }
-    if (isToEqualZeroWithPositiveLimins) {
+    if (isToEqualZeroWithPositiveLimits) {
       this.to += this.step;
     }
   };

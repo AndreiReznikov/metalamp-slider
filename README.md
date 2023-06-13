@@ -63,7 +63,7 @@ The slider is created based on the div element. It needs to be placed in a conta
 
 `<div class="slider js-slider"></div>`
 
-To initialise the slider, call pooshkaSlider on the element:
+To initialize the slider, call pooshkaSlider on the element:
 
 `$('.js-slider').pooshkaSlider();`
 
