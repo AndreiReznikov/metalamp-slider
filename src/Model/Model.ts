@@ -359,14 +359,8 @@ class Model extends AbstractModel {
     scaleElements = new Array(this.scaleNumber).fill(0);
 
     scaleElements = scaleElements.map((item, index) => {
-      let scaleElement = 0;
-
-      if (index === 0) {
-        scaleElement = minScaleElementValue;
-      } else {
-        scaleElement = parseFloat((minScaleElementValue
-          += intervalForScaleElements).toFixed(this.numberOfCharactersAfterDot));
-      }
+      let scaleElement = index === 0 ? minScaleElementValue : parseFloat((minScaleElementValue
+        += intervalForScaleElements).toFixed(this.numberOfCharactersAfterDot));
 
       const isScaleElementIncorrect = this.isStepSet && parseFloat(
         (Math.abs(scaleElement) % this.step).toFixed(this.numberOfCharactersAfterDot),

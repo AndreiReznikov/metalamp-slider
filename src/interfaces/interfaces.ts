@@ -28,7 +28,7 @@ interface ModelOptions {
   scaleNumber: number;
   scaleElements: number[];
   numberOfCharactersAfterDot: number;
-  onChange?: (event?: JQuery.TriggeredEvent, options?: Options) => unknown;
+  onChange?: ({ event, options }: { event?: JQuery.TriggeredEvent, options?: Options }) => unknown;
 }
 
 interface SubViewOptions {
@@ -104,7 +104,7 @@ type Config = {
   to: number;
   step: number;
   scaleNumber: number;
-  onChange?: (event?: JQuery.TriggeredEvent, options?: Options) => unknown;
+  onChange?: ({ event, options }: { event?: JQuery.TriggeredEvent, options?: Options }) => unknown;
 };
 
 type UserConfig = Partial<Config>;

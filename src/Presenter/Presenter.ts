@@ -148,7 +148,7 @@ class Presenter {
 
     if (!onChange) return;
 
-    onChange(event, options);
+    onChange({ event, options });
   };
 
   private toggleTooltip = (event: JQuery.TriggeredEvent): void => {
