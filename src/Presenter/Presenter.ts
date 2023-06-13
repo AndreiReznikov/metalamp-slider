@@ -78,7 +78,7 @@ class Presenter {
     this.view.SubView.scale.setScaleLength(this.view.SubView.getOptions());
     this.view.SubView.scale.setScaleElementsPositions(this.view.SubView.getOptions());
     this.view.SubView.scale.setScalePosition(this.view.SubView.getOptions());
-    this.view.SubView.scale.removeRedundantScaleElements(this.view.SubView.getOptions());
+    this.view.SubView.scale.changeNumberOfScaleElementsWhenResizing(this.view.SubView.getOptions());
     this.model.calculateScaleElementsNumber(this.view.SubView.getOptions());
     this.model.calculateScaleElementsValues();
     this.updateView(this.model.getOptions());
@@ -277,7 +277,7 @@ class Presenter {
     this.view.SubView.scale.setScaleLength(this.view.SubView.getOptions());
     this.view.SubView.scale.setScaleElementsPositions(this.view.SubView.getOptions());
     this.view.SubView.scale.setScalePosition(this.view.SubView.getOptions());
-    this.view.SubView.scale.removeRedundantScaleElements(this.view.SubView.getOptions());
+    this.view.SubView.scale.changeNumberOfScaleElementsWhenResizing(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());

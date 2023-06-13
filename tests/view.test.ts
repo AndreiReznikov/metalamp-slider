@@ -773,11 +773,11 @@ describe('Scale', () => {
     });
   });
 
-  describe('removeRedundantScaleElements', () => {
+  describe('changeNumberOfScaleElementsWhenResizing', () => {
     test('the method should reduce sumOfScaleElementsWith', () => {
       view.SubView.scale.sumOfScaleElementsWith = 150;
 
-      view.SubView.scale.removeRedundantScaleElements(options);
+      view.SubView.scale.changeNumberOfScaleElementsWhenResizing(options);
 
       expect(view.SubView.scale.sumOfScaleElementsWith).toEqual(75);
     });

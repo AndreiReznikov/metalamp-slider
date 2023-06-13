@@ -97,7 +97,7 @@ class Scale {
     });
   };
 
-  public removeRedundantScaleElements = (options: Options): void => {
+  public changeNumberOfScaleElementsWhenResizing = (options: Options): void => {
     const { sliderLength } = options.subViewOptions;
     const { defaultScaleNumber } = options.modelOptions;
 
@@ -121,7 +121,7 @@ class Scale {
     });
 
     this.sumOfScaleElementsWith /= 2;
-    this.removeRedundantScaleElements(options);
+    this.changeNumberOfScaleElementsWhenResizing(options);
   };
 }
 
