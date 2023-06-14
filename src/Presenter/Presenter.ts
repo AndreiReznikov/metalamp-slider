@@ -78,7 +78,7 @@ class Presenter {
     this.view.SubView.scale.setScaleLength(this.view.SubView.getOptions());
     this.view.SubView.scale.setScaleElementsPositions(this.view.SubView.getOptions());
     this.view.SubView.scale.setScalePosition(this.view.SubView.getOptions());
-    this.view.SubView.scale.removeRedundantScaleElements(this.view.SubView.getOptions());
+    this.view.SubView.scale.changeNumberOfScaleElementsWhenResizing(this.view.SubView.getOptions());
     this.model.calculateScaleElementsNumber(this.view.SubView.getOptions());
     this.model.calculateScaleElementsValues();
     this.updateView(this.model.getOptions());
@@ -148,7 +148,7 @@ class Presenter {
 
     if (!onChange) return;
 
-    onChange(event, options);
+    onChange({ event, options });
   };
 
   private toggleTooltip = (event: JQuery.TriggeredEvent): void => {
@@ -212,7 +212,6 @@ class Presenter {
     this.model.from = value;
     this.model.restrictFrom();
     this.model.validateInitialValues();
-    this.model.calculateRemains();
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
@@ -228,7 +227,6 @@ class Presenter {
     this.model.to = value;
     this.model.restrictTo();
     this.model.validateInitialValues();
-    this.model.calculateRemains();
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
@@ -279,7 +277,7 @@ class Presenter {
     this.view.SubView.scale.setScaleLength(this.view.SubView.getOptions());
     this.view.SubView.scale.setScaleElementsPositions(this.view.SubView.getOptions());
     this.view.SubView.scale.setScalePosition(this.view.SubView.getOptions());
-    this.view.SubView.scale.removeRedundantScaleElements(this.view.SubView.getOptions());
+    this.view.SubView.scale.changeNumberOfScaleElementsWhenResizing(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());

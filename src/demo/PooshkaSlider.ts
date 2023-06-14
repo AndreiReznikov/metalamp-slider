@@ -227,17 +227,17 @@ class PooshkaSlider {
 
   private findElements = (container: string): void => {
     this.$sliderContainer = $(container);
-    this.$slider = this.$sliderContainer.find('.js-slider');
-    this.$inputDouble = this.$sliderContainer.find('.js-panel__input_double');
-    this.$inputTooltip = this.$sliderContainer.find('.js-panel__input_tooltip');
-    this.$inputRange = this.$sliderContainer.find('.js-panel__input_range');
-    this.$inputScale = this.$sliderContainer.find('.js-panel__input_scale');
-    this.$inputVertical = this.$sliderContainer.find('.js-panel__input_vertical');
-    this.$inputFrom = this.$sliderContainer.find('.js-panel__from-input');
-    this.$inputTo = this.$sliderContainer.find('.js-panel__to-input');
-    this.$inputMin = this.$sliderContainer.find('.js-panel__min-input');
-    this.$inputMax = this.$sliderContainer.find('.js-panel__max-input');
-    this.$inputStep = this.$sliderContainer.find('.js-panel__step-input');
+    this.$slider = this.$sliderContainer.find('.js-demo-page__slider');
+    this.$inputDouble = this.$sliderContainer.find('.js-demo-page__panel-input_double');
+    this.$inputTooltip = this.$sliderContainer.find('.js-demo-page__panel-input_tooltip');
+    this.$inputRange = this.$sliderContainer.find('.js-demo-page__panel-input_range');
+    this.$inputScale = this.$sliderContainer.find('.js-demo-page__panel-input_scale');
+    this.$inputVertical = this.$sliderContainer.find('.js-demo-page__panel-input_vertical');
+    this.$inputFrom = this.$sliderContainer.find('.js-demo-page__panel-from-input');
+    this.$inputTo = this.$sliderContainer.find('.js-demo-page__panel-to-input');
+    this.$inputMin = this.$sliderContainer.find('.js-demo-page__panel-min-input');
+    this.$inputMax = this.$sliderContainer.find('.js-demo-page__panel-max-input');
+    this.$inputStep = this.$sliderContainer.find('.js-demo-page__panel-step-input');
   };
 }
 

@@ -20,23 +20,23 @@
 
   const togglers = [
     {
-      class: 'panel__input panel__input_tooltip js-panel__input js-panel__input_tooltip',
+      class: 'demo-page__panel-input demo-page__panel-input_tooltip js-demo-page__panel-input js-demo-page__panel-input_tooltip',
       text: 'tooltips'
     },
     {
-      class: 'panel__input panel__input_double js-panel__input js-panel__input_double',
+      class: 'demo-page__panel-input demo-page__panel-input_double js-demo-page__panel-input js-demo-page__panel-input_double',
       text: 'double'
     },
     {
-      class: 'panel__input panel__input_range js-panel__input js-panel__input_range',
+      class: 'demo-page__panel-input demo-page__panel-input_range js-demo-page__panel-input js-demo-page__panel-input_range',
       text: 'range'
     },
     {
-      class: 'panel__input panel__input_scale js-panel__input js-panel__input_scale',
+      class: 'demo-page__panel-input demo-page__panel-input_scale js-demo-page__panel-input js-demo-page__panel-input_scale',
       text: 'scale'
     },
     {
-      class: 'panel__input panel__input_vertical js-panel__input js-panel__input_vertical',
+      class: 'demo-page__panel-input demo-page__panel-input_vertical js-demo-page__panel-input js-demo-page__panel-input_vertical',
       text: 'vertical'
     },
   ];
@@ -44,18 +44,18 @@
   const inputs = ['from', 'to', 'min', 'max', 'step'];
 
 mixin panelToggler(options)
-  label.panel__toggle-label
+  label.demo-page__panel-toggle-label
     input(class=options.class type="checkbox")
-    span.panel__custom-toggle
-    span.panel__toggle-text=options.text
+    span.demo-page__panel-custom-toggle
+    span.demo-page__panel-toggle-text=options.text
 
 mixin panelInputs(valueType)
   -
-    const valueTypeClassName = 'panel__' + valueType + ' '
-      + 'js-panel__' + valueType;
-    const inputClassName = 'panel__' + valueType + '-input' + ' '
-      + 'js-panel__' + valueType + '-input';
+    const valueTypeClassName = 'demo-page__panel-' + valueType + ' '
+      + 'js-demo-page__panel-' + valueType;
+    const inputClassName = 'demo-page__panel-' + valueType + '-input' + ' '
+      + 'js-demo-page__panel-' + valueType + '-input';
 
-  .panel__input-container
+  .demo-page__panel-input-container
     div(class=valueTypeClassName)=valueType
     input(class=inputClassName type="number")

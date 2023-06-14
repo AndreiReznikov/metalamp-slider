@@ -97,10 +97,18 @@ class Scale {
     });
   };
 
-  public removeRedundantScaleElements = (options: Options): void => {
+  public changeNumberOfScaleElementsWhenResizing = (options: Options): void => {
     const { sliderLength } = options.subViewOptions;
+    const { defaultScaleNumber } = options.modelOptions;
 
     this.scaleElementsCurrentNumber = this.$scaleContainer.children().length;
+
+    if (sliderLength / 2 > this.sumOfScaleElementsWith) {
+      this.scaleElementsCurrentNumber *= 2;
+
+      this.scaleElementsCurrentNumber = this.scaleElementsCurrentNumber > defaultScaleNumber
+        ? defaultScaleNumber : this.scaleElementsCurrentNumber;
+    }
 
     if (sliderLength > this.sumOfScaleElementsWith) return;
 
@@ -113,7 +121,7 @@ class Scale {
     });
 
     this.sumOfScaleElementsWith /= 2;
-    this.removeRedundantScaleElements(options);
+    this.changeNumberOfScaleElementsWhenResizing(options);
   };
 }
 

@@ -40,6 +40,7 @@ view.SubView.modelOptions = {
   minRemains: 0,
   maxRemains: 0,
   scaleNumber: 0,
+  defaultScaleNumber: 0,
   scaleElements: [],
   numberOfCharactersAfterDot: 0,
 };
@@ -156,6 +157,7 @@ beforeEach(() => {
     minRemains: 0,
     maxRemains: 0,
     scaleNumber: 0,
+    defaultScaleNumber: 0,
     scaleElements: [],
     numberOfCharactersAfterDot: 0,
   };
@@ -771,11 +773,11 @@ describe('Scale', () => {
     });
   });
 
-  describe('removeRedundantScaleElements', () => {
+  describe('changeNumberOfScaleElementsWhenResizing', () => {
     test('the method should reduce sumOfScaleElementsWith', () => {
       view.SubView.scale.sumOfScaleElementsWith = 150;
 
-      view.SubView.scale.removeRedundantScaleElements(options);
+      view.SubView.scale.changeNumberOfScaleElementsWhenResizing(options);
 
       expect(view.SubView.scale.sumOfScaleElementsWith).toEqual(75);
     });

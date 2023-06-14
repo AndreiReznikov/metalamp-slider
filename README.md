@@ -63,7 +63,7 @@ The slider is created based on the div element. It needs to be placed in a conta
 
 `<div class="slider js-slider"></div>`
 
-To initialise the slider, call pooshkaSlider on the element:
+To initialize the slider, call pooshkaSlider on the element:
 
 `$('.js-slider').pooshkaSlider();`
 
@@ -128,18 +128,18 @@ To subscribe to slider changes, use the onChange parameter:
    onChange: () => console.log('change')
  });`
 
- You can use the following arguments:
+ You can use the following arguments using destructurization:
 
  - event - to get an event inside a function
 
  `$('.js-slider').pooshkaSlider({
-   onChange: (event) => console.log(event)
+   onChange: ({ event }) => console.log(event)
  });`
 
  - options - to get slider options inside the function
 
  `$('.js-slider').pooshkaSlider({
-   onChange: (options) => console.log(options.modelOptions.from)
+   onChange: ({ options }) => console.log(options.modelOptions.from)
  });`
 
  To unsubscribe from slider changes, pass a function that returns false using the public update method:

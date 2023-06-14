@@ -133,25 +133,25 @@ class Model extends AbstractModel {
     this.from -= this.fromRemains;
     this.to -= this.toRemains;
 
-    const isFromEqualZeroWithNegativeLimins: boolean = this.from === 0
+    const isFromEqualZeroWithNegativeLimits: boolean = this.from === 0
       && this.min < 0 && this.max < 0;
-    const isFromEqualZeroWithPositiveLimins: boolean = this.from === 0
+    const isFromEqualZeroWithPositiveLimits: boolean = this.from === 0
       && this.min > 0 && this.max > 0;
-    const isToEqualZeroWithNegativeLimins: boolean = this.to === 0
+    const isToEqualZeroWithNegativeLimits: boolean = this.to === 0
       && this.min < 0 && this.max < 0;
-    const isToEqualZeroWithPositiveLimins: boolean = this.to === 0
+    const isToEqualZeroWithPositiveLimits: boolean = this.to === 0
       && this.min > 0 && this.max > 0;
 
-    if (isFromEqualZeroWithNegativeLimins) {
+    if (isFromEqualZeroWithNegativeLimits) {
       this.from -= this.step;
     }
-    if (isFromEqualZeroWithPositiveLimins) {
+    if (isFromEqualZeroWithPositiveLimits) {
       this.from += this.step;
     }
-    if (isToEqualZeroWithNegativeLimins) {
+    if (isToEqualZeroWithNegativeLimits) {
       this.to -= this.step;
     }
-    if (isToEqualZeroWithPositiveLimins) {
+    if (isToEqualZeroWithPositiveLimits) {
       this.to += this.step;
     }
   };
@@ -190,6 +190,7 @@ class Model extends AbstractModel {
       maxRemains: this.maxRemains,
       scalePositionParameter: this.scalePositionParameter,
       scaleNumber: this.scaleNumber,
+      defaultScaleNumber: this.defaultScaleNumber,
       scaleElements: this.scaleElements,
       numberOfCharactersAfterDot: this.numberOfCharactersAfterDot,
       onChange: this.config.onChange,
@@ -359,14 +360,8 @@ class Model extends AbstractModel {
     scaleElements = new Array(this.scaleNumber).fill(0);
 
     scaleElements = scaleElements.map((item, index) => {
-      let scaleElement = 0;
-
-      if (index === 0) {
-        scaleElement = minScaleElementValue;
-      } else {
-        scaleElement = parseFloat((minScaleElementValue
-          += intervalForScaleElements).toFixed(this.numberOfCharactersAfterDot));
-      }
+      let scaleElement = index === 0 ? minScaleElementValue : parseFloat((minScaleElementValue
+        += intervalForScaleElements).toFixed(this.numberOfCharactersAfterDot));
 
       const isScaleElementIncorrect = this.isStepSet && parseFloat(
         (Math.abs(scaleElement) % this.step).toFixed(this.numberOfCharactersAfterDot),
@@ -418,6 +413,7 @@ class Model extends AbstractModel {
     this.from = this.config.from;
     this.to = this.config.to;
     this.scaleNumber = this.config.scaleNumber;
+    this.defaultScaleNumber = this.config.scaleNumber;
   };
 }
 

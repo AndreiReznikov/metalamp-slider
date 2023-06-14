@@ -2,7 +2,7 @@ import PooshkaSlider from './PooshkaSlider';
 import './index.scss';
 
 $(document).ready(() => {
-  const pooshkaSliderDouble = new PooshkaSlider('.js-double-slider-container');
+  const pooshkaSliderDouble = new PooshkaSlider('.js-demo-page__double-slider-container');
 
   pooshkaSliderDouble.initializePlugin({
     double: true,
@@ -19,7 +19,7 @@ $(document).ready(() => {
     scaleNumber: 11,
   });
 
-  const pooshkaSliderSingle = new PooshkaSlider('.js-single-slider-container');
+  const pooshkaSliderSingle = new PooshkaSlider('.js-demo-page__single-slider-container');
 
   pooshkaSliderSingle.initializePlugin({
     double: false,
@@ -37,7 +37,7 @@ $(document).ready(() => {
     scaleNumber: 5,
   });
 
-  const pooshkaSliderVertical = new PooshkaSlider('.js-vertical-slider-container');
+  const pooshkaSliderVertical = new PooshkaSlider('.js-demo-page__vertical-slider-container');
 
   pooshkaSliderVertical.initializePlugin({
     double: true,
@@ -54,7 +54,7 @@ $(document).ready(() => {
     scaleNumber: 7,
   });
 
-  const pooshkaSliderDefault = new PooshkaSlider('.js-default-slider-container');
+  const pooshkaSliderDefault = new PooshkaSlider('.js-demo-page__default-slider-container');
 
   pooshkaSliderDefault.initializePlugin();
 });

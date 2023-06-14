@@ -287,7 +287,7 @@ class SubView extends AbstractSubView {
 
     if (!onChange) return;
 
-    onChange(event, options);
+    onChange({ event, options });
   };
 
   private getCoords = (element: JQuery<HTMLElement>): number => {
