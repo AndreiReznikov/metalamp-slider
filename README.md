@@ -43,13 +43,36 @@ Then you have to install all the necessary packages to work with the project. Us
 
 `npm install`
 
-To start the project, use the command:
+# Npm commands
 
-`npm run server`
-
-To test the project, use the command:
-
-`npm run test`
+- "build:prod": build a production bundle,
+```
+npm run prod
+```
+- "build:dev": build a development bundle,
+```
+npm run dev
+```
+- "build:demo": build a demo bundle,
+```
+npm run demo
+```
+- "server": start the local server,
+```
+npm run server
+```
+- "test": run jest tests,
+```
+npm run test
+```
+- "lint": check the project for linter errors,
+```
+npm run lint
+```
+- "fix": fix linter errors
+```
+npm run fix
+```
 
 # Initialization
 
