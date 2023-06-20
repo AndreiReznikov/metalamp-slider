@@ -45,27 +45,27 @@ Then you have to install all the necessary packages to work with the project. Us
 
 # Npm commands
 
-- "build:prod": build a production bundle,
+- "build:prod": build a production bundle
 ```
-npm run prod
+npm run build:prod
 ```
-- "build:dev": build a development bundle,
+- "build:dev": build a development bundle
 ```
-npm run dev
+npm run build:dev
 ```
-- "build:demo": build a demo bundle,
+- "build:demo": build a demo bundle
 ```
-npm run demo
+npm run build:demo
 ```
-- "server": start the local server,
+- "server": start the local server
 ```
 npm run server
 ```
-- "test": run jest tests,
+- "test": run jest tests
 ```
 npm run test
 ```
-- "lint": check the project for linter errors,
+- "lint": check the project for linter errors
 ```
 npm run lint
 ```
