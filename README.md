@@ -20,7 +20,7 @@ All DOM elements are subscribed to events in the Presenter class. Observers are 
 
 # Technologies
 
-The project is compatible with *jQuery 3.6.0* and *node 16.13.2*
+The project is compatible with *jQuery 3.6.0* and *node 18.16.1*
 
 # Usage
 
