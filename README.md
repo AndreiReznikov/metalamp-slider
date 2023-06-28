@@ -14,7 +14,7 @@ When the user interacts with the interface (View), the Model methods are called,
 
 All DOM elements are subscribed to events in the Presenter class. Observers are also designated in this class.
 
-![UML](/uml/UML-pooshkaSlider.png "UML")
+![UML](/uml/uml-pooshka-slider.png "UML")
 
 # Demo https://andreireznikov.github.io/metalamp-slider-demo/
 
