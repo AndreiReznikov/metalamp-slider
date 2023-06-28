@@ -73,6 +73,14 @@ npm run lint
 ```
 npm run fix
 ```
+- "stylelint": check the project for stylelint errors,
+```
+npm run stylelint
+```
+- "fix:stylelint": fix stylelint errors
+```
+npm run fix:stylelint
+```
 
 # Initialization
 
