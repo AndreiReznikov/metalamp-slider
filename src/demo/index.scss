@@ -1,5 +1,4 @@
 .demo-page {
-
   &__html, &__body {
     max-width: 1920px;
     min-width: 320px;
@@ -13,8 +12,7 @@
 
   &__container {
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+    flex-flow: column wrap;
     justify-content: center;
     align-items: center;
     width: 100%;
@@ -26,8 +24,7 @@
   &__vertical-slider-container,
   &__default-slider-container {
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+    flex-flow: column wrap;
     justify-content: center;
     align-items: center;
     width: 100%;
@@ -99,7 +96,7 @@
   {
     width: 65px;
     height: 26px;
-    border: 2px solid rgb(47, 50, 53);
+    border: 2px solid rgb(47 50 53);
     border-radius: 0 4px 4px 0;
     font-size: 18px;
     box-sizing: border-box;
@@ -113,7 +110,7 @@
   &__panel-to-input:focus,
   &__panel-step-input:focus
   {
-    border: 3px solid rgb(47, 50, 53);
+    border: 3px solid rgb(47 50 53);
   }
 
   &__panel-min,
@@ -126,7 +123,7 @@
     align-items: center;
     width: 45px;
     height: 26px;
-    background-color: rgb(47, 50, 53);
+    background-color: rgb(47 50 53);
     border-radius: 4px 0 0 4px;
     border: none;
     color: #fff;
@@ -157,8 +154,6 @@
   }
 
   &__panel-input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
   }
 
@@ -169,22 +164,21 @@
     width: 38px;
     height: 18px;
     background-color: #fff;
-    border: 1px solid rgb(47, 50, 53);
+    border: 1px solid rgb(47 50 53);
     opacity: 0.5;
     border-radius: 10px;
     box-sizing: content-box;
     z-index: 1;
   }
 
-  &__panel-custom-toggle:after {
+  &__panel-custom-toggle::after {
     position: absolute;
     content: '';
     width: 12px;
     height: 12px;
     margin: 0 3px;
-    background: rgb(47, 50, 53);
+    background: rgb(47 50 53);
     border-radius: 10px;
-    -webkit-transition: .4s;
     transition: .4s;
   }
 
@@ -196,9 +190,7 @@
     opacity: 1;
   }
 
-  &__panel-input:checked + &__panel-custom-toggle:after {
-    -webkit-transform: translateX(20px);
-    -ms-transform: translateX(20px);
+  &__panel-input:checked + &__panel-custom-toggle::after {
     transform: translateX(20px);
   }
 

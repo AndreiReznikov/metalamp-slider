@@ -10,7 +10,9 @@
     "server": "cross-env NODE_ENV=development webpack-dev-server --config webpack.demo.config.js",
     "lint": "eslint . --ext .ts",
     "fix": "eslint --fix",
-    "test": "jest"
+    "test": "jest",
+    "stylelint": "stylelint **/*.scss",
+    "fix:stylelint": "stylelint **/*.scss --fix"
   },
   "author": "Andrei Reznikov",
   "license": "ISC",
@@ -28,6 +30,8 @@
     "eslint-plugin-jest": "^26.1.1",
     "jest": "^27.5.1",
     "jsdom": "^20.0.3",
+    "stylelint": "^15.9.0",
+    "stylelint-config-standard-scss": "^9.0.0",
     "ts-jest": "^27.0.5"
   },
   "dependencies": {
