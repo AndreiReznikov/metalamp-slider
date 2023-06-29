@@ -14,13 +14,13 @@ When the user interacts with the interface (View), the Model methods are called,
 
 All DOM elements are subscribed to events in the Presenter class. Observers are also designated in this class.
 
-![UML](/uml/UML-pooshkaSlider.png "UML")
+![UML](/uml/uml-pooshka-slider.png "UML")
 
 # Demo https://andreireznikov.github.io/metalamp-slider-demo/
 
 # Technologies
 
-The project is compatible with *jQuery 3.6.0* and *node 16.13.2*
+The project is compatible with *jQuery 3.6.0* and *node 18.16.1*
 
 # Usage
 
@@ -72,6 +72,14 @@ npm run lint
 - "fix": fix linter errors
 ```
 npm run fix
+```
+- "stylelint": check the project for stylelint errors,
+```
+npm run stylelint
+```
+- "fix:stylelint": fix stylelint errors
+```
+npm run fix:stylelint
 ```
 
 # Initialization
