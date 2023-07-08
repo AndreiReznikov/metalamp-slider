@@ -1,4 +1,4 @@
-import { Options, UserConfig, Api } from '../interfaces/interfaces';
+import { Options, UserConfig, Api, RANGE } from '../interfaces/interfaces';
 import Model from '../Model';
 import View from '../View';
 
@@ -217,6 +217,7 @@ class Presenter {
     this.view.SubView.stripe.showLimit(this.model.getOptions());
     this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
+    this.view.SubView.stripe.changeRunnerZIndex(RANGE.FROM);
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
@@ -234,6 +235,7 @@ class Presenter {
     this.view.SubView.stripe.showLimit(this.model.getOptions());
     this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
+    this.view.SubView.stripe.changeRunnerZIndex(RANGE.TO);
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
