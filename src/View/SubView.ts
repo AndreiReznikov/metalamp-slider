@@ -63,7 +63,9 @@ class SubView extends AbstractSubView {
     if (this.isWrongButtonPressed) return;
 
     this.runnerFrom.calculateMinRunnerPosition(this.getOptions());
+    
     this.stripe.showLimit(this.getOptions());
+    this.stripe.joinTooltips(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
 
@@ -85,6 +87,7 @@ class SubView extends AbstractSubView {
     }
 
     this.stripe.showLimit(this.getOptions());
+    this.stripe.joinTooltips(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
 
@@ -151,6 +154,7 @@ class SubView extends AbstractSubView {
     }
 
     this.stripe.showLimit(this.getOptions());
+    this.stripe.joinTooltips(this.getOptions());
 
     this.observer.notifyObservers(this.getOptions());
 

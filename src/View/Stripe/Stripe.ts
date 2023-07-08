@@ -81,7 +81,7 @@ class Stripe extends AbstractStripe {
   };
 
   public calculateRunnerPositionAfterScaleOnDown = (options: Options): void => {
-    const { scaleElementPosition, scaleElementLength, runnerLength } = options.subViewOptions;
+    const { scaleElementPosition, scaleElementLength } = options.subViewOptions;
     this.defineClickLocation(options);
 
     if (this.isClickForRunnerFrom) {
@@ -191,6 +191,8 @@ class Stripe extends AbstractStripe {
     } else if (isClickNearMaximum) {
       this.runnerTo.calculateMaxRunnerPosition(options);
     }
+
+    this.joinTooltips(options);
   };
 
   public changeRunnerZIndex = (runnerType: RANGE): void => {
@@ -205,6 +207,9 @@ class Stripe extends AbstractStripe {
 
   public joinTooltips = (options: Options): void => {
     const { double } = options.modelOptions;
+
+    this.tooltipFrom.calculateTooltipPosition(options);
+    this.tooltipTo.calculateTooltipPosition(options);
 
     this.areTooltipsClose = double
       && this.tooltipFrom.tooltipPosition

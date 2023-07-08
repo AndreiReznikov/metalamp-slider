@@ -214,6 +214,8 @@ class Presenter {
     this.model.validateInitialValues();
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
@@ -229,6 +231,8 @@ class Presenter {
     this.model.validateInitialValues();
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
