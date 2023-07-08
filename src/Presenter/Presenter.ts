@@ -247,6 +247,12 @@ class Presenter {
 
     this.init();
 
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+
     this.onChange(event, this.model.getOptions());
   };
 
@@ -256,6 +262,12 @@ class Presenter {
     this.model.max = value;
 
     this.init();
+
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
 
     this.onChange(event, this.model.getOptions());
   };
@@ -282,6 +294,8 @@ class Presenter {
     this.view.SubView.scale.setScaleElementsPositions(this.view.SubView.getOptions());
     this.view.SubView.scale.setScalePosition(this.view.SubView.getOptions());
     this.view.SubView.scale.changeNumberOfScaleElementsWhenResizing(this.view.SubView.getOptions());
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
