@@ -214,8 +214,8 @@ class SubView extends AbstractSubView {
     const { lengthParameter } = this.getOptions().modelOptions;
 
     this.sliderPosition = this.getCoords(this.$stripe);
-    this.sliderLength = parseInt(this.$stripe.css(lengthParameter), 10);
     this.runnerLength = parseInt(this.runnerFrom.$runner.css(lengthParameter), 10);
+    this.sliderLength = parseInt(this.$stripe.css(lengthParameter), 10) - this.runnerLength;
   };
 
   private handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {

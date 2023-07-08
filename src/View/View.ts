@@ -76,7 +76,7 @@ class View extends AbstractView {
     this.$limitMin.css({ left: 0, bottom: 0, top: 0 });
     this.$limitMax.css({ left: 0, bottom: 0, top: 0 });
     this.$scaleContainer.css({
-      right: 0, top: 0, width: 0, height: 0,
+      right: -runnerLength / 2, top: runnerLength / 2, width: 0, height: 0,
     });
 
     if (vertical) {

@@ -211,7 +211,6 @@ class Model extends AbstractModel {
   public calculateFrom = (options: Options): void => {
     const {
       runnerFromPosition,
-      runnerLength,
       sliderLength,
       isMinFrom,
       isMaxFrom,
@@ -220,8 +219,7 @@ class Model extends AbstractModel {
       scaleElementValue,
     } = options.subViewOptions;
 
-    this.from = parseFloat((((runnerFromPosition
-      + runnerLength / 2) / sliderLength)
+    this.from = parseFloat(((runnerFromPosition / sliderLength)
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
     const currentFromRemains: number = parseFloat(
@@ -277,7 +275,6 @@ class Model extends AbstractModel {
 
     const {
       runnerToPosition,
-      runnerLength,
       sliderLength,
       isMaxTo,
       isScaleElementOnDown,
@@ -285,8 +282,7 @@ class Model extends AbstractModel {
       scaleElementValue,
     } = options.subViewOptions;
 
-    this.to = parseFloat((((runnerToPosition
-      + runnerLength / 2) / sliderLength)
+    this.to = parseFloat(((runnerToPosition / sliderLength)
       * (this.max - this.min) + this.min).toFixed(this.numberOfCharactersAfterDot));
 
     const currentToRemains: number = parseFloat(
