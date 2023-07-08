@@ -14,13 +14,13 @@ class Limit {
   }
 
   public calculateLimitPosition = (options: Options): void => {
-    const { sliderLength, limitMaxLength } = options.subViewOptions;
+    const { sliderLength, limitMaxLength, runnerLength } = options.subViewOptions;
 
     this.limitPosition = 0;
 
     if (this.limitType !== LIMIT.MAX) return;
 
-    this.limitPosition = sliderLength - limitMaxLength;
+    this.limitPosition = sliderLength - limitMaxLength + runnerLength ;
   };
 
   public setLimitPosition = (options: Options): void => {

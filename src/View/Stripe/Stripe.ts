@@ -19,16 +19,16 @@ class Stripe extends AbstractStripe {
     this.defineClickLocation(options);
 
     const isClickBehindFromWithMaxRemains: boolean = Math.abs(maxRemains) > 0
-      && this.runnerFrom.runnerPosition === sliderLength - runnerLength / 2
+      && this.runnerFrom.runnerPosition === sliderLength
       && clickPosition < sliderLength - ((Math.abs(maxRemains / (max - min)) * sliderLength) / 2);
     const isClickBehindToWithMaxRemains: boolean = double && Math.abs(maxRemains) > 0
-      && this.runnerTo.runnerPosition === sliderLength - runnerLength / 2
+      && this.runnerTo.runnerPosition === sliderLength
       && clickPosition < sliderLength - ((Math.abs(maxRemains / (max - min)) * sliderLength) / 2);
     const isClickAheadFromWithMinRemains: boolean = Math.abs(minRemains) > 0
-      && this.runnerFrom.runnerPosition === 0 - runnerLength / 2
+      && this.runnerFrom.runnerPosition === 0
       && clickPosition > (Math.abs(minRemains / (max - min)) * sliderLength) / 2;
     const isClickAheadToWithMinRemains: boolean = Math.abs(minRemains) > 0
-      && this.runnerTo.runnerPosition === 0 - runnerLength / 2
+      && this.runnerTo.runnerPosition === 0
       && clickPosition > (Math.abs(minRemains / (max - min)) * sliderLength) / 2;
 
     let intervalForRunnerFromSteps: number = this.runnerFrom.runnerPosition
@@ -86,29 +86,27 @@ class Stripe extends AbstractStripe {
 
     if (this.isClickForRunnerFrom) {
       this.runnerFrom.runnerPosition = scaleElementPosition
-        + scaleElementLength / 2 - runnerLength / 2;
+        + scaleElementLength / 2;
     } else if (this.isClickForRunnerTo) {
       this.runnerTo.runnerPosition = scaleElementPosition
-        + scaleElementLength / 2 - runnerLength / 2;
+        + scaleElementLength / 2;
     }
   };
 
   public restrictRunnerFromPosition = (options: Options): void => {
-    const { runnerLength, sliderLength } = options.subViewOptions;
+    const { sliderLength } = options.subViewOptions;
     const { double } = options.modelOptions;
 
-    const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFrom.runnerPosition
-      < 0 - runnerLength / 2;
-    const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition
-      > sliderLength - runnerLength / 2;
+    const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFrom.runnerPosition < 0;
+    const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition > sliderLength;
     const
       isRunnerFromPositionMoreThanRunnerToPosition: boolean = double
       && this.runnerFrom.runnerPosition > this.runnerTo.runnerPosition;
 
     if (isRunnerFromPositionLessThanMinimum) {
-      this.runnerFrom.runnerPosition = 0 - runnerLength / 2;
+      this.runnerFrom.runnerPosition = 0;
     } else if (isRunnerFromPositionMoreThanMaximum) {
-      this.runnerFrom.runnerPosition = sliderLength - runnerLength / 2;
+      this.runnerFrom.runnerPosition = sliderLength;
     }
 
     if (isRunnerFromPositionMoreThanRunnerToPosition) {
@@ -119,17 +117,17 @@ class Stripe extends AbstractStripe {
   };
 
   public restrictRunnerToPosition = (options: Options): void => {
-    const { sliderLength, runnerLength } = options.subViewOptions;
+    const { sliderLength } = options.subViewOptions;
 
     const isRunnerFromPositionLessThanRunnerToPosition: boolean = this.runnerTo.runnerPosition
       < this.runnerFrom.runnerPosition;
     const isRunnerToPositionMoreThanMaximum: boolean = this.runnerTo.runnerPosition
-      > sliderLength - runnerLength / 2;
+      > sliderLength;
 
     if (isRunnerFromPositionLessThanRunnerToPosition) {
       this.runnerTo.runnerPosition = this.runnerFrom.runnerPosition;
     } else if (isRunnerToPositionMoreThanMaximum) {
-      this.runnerTo.runnerPosition = sliderLength - runnerLength / 2;
+      this.runnerTo.runnerPosition = sliderLength;
     }
 
     this.joinTooltips(options);
@@ -167,7 +165,7 @@ class Stripe extends AbstractStripe {
     const {
       isStepSet, stepLength, double, min, max, maxRemains, minRemains,
     } = options.modelOptions;
-    const { sliderLength, clickPosition } = options.subViewOptions;
+    const { sliderLength, clickPosition, runnerLength } = options.subViewOptions;
 
     if (!isStepSet) return;
 

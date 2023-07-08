@@ -68,9 +68,9 @@ class Scale {
 
   public calculateLengthBetweenScaleElements = (options: Options): void => {
     const { scaleNumber } = options.modelOptions;
-    const { sliderLength } = options.subViewOptions;
+    const { sliderLength, runnerLength } = options.subViewOptions;
 
-    this.lengthBetweenScaleElements = sliderLength / (scaleNumber - 1);
+    this.lengthBetweenScaleElements = (sliderLength + runnerLength) / (scaleNumber - 1);
   };
 
   public setScaleElementsPositions = (options: Options): void => {
