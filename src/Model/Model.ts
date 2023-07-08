@@ -29,7 +29,7 @@ class Model extends AbstractModel {
       || isLimitsNegativeAndStepMoreThanDifference
       || this.step < 0
       || (this.step > Math.abs(this.min) && this.step > Math.abs(this.max))
-      || Math.floor(Math.abs(this.max - this.min) / this.step) <= 1;
+      || Math.floor(Math.abs(this.max - this.min) / this.step) < 1;
 
     if (this.min > this.max) {
       const { min } = this;

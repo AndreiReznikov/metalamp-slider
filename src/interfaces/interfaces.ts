@@ -74,6 +74,8 @@ type Api = {
   $stripe: JQuery<HTMLElement>;
   $runnerFrom: JQuery<HTMLElement>;
   $runnerTo: JQuery<HTMLElement>;
+  $tooltipFrom: JQuery<HTMLElement>;
+  $tooltipTo: JQuery<HTMLElement>;
   $limitMin: JQuery<HTMLElement>;
   $limitMax: JQuery<HTMLElement>;
   $scaleContainer: JQuery<HTMLElement>;

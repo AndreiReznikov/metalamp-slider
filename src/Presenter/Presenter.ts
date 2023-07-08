@@ -1,4 +1,4 @@
-import { Options, UserConfig, Api } from '../interfaces/interfaces';
+import { Options, UserConfig, Api, RANGE } from '../interfaces/interfaces';
 import Model from '../Model';
 import View from '../View';
 
@@ -24,6 +24,8 @@ class Presenter {
       $stripe: this.view.$stripe,
       $runnerFrom: this.view.$runnerFrom,
       $runnerTo: this.view.$runnerTo,
+      $tooltipFrom: this.view.$tooltipFrom,
+      $tooltipTo: this.view.$tooltipTo,
       $limitMin: this.view.$limitMin,
       $limitMax: this.view.$limitMax,
       $scaleContainer: this.view.$scaleContainer,
@@ -169,6 +171,8 @@ class Presenter {
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
     this.model.restrictTo();
 
@@ -214,7 +218,10 @@ class Presenter {
     this.model.validateInitialValues();
     this.view.SubView.runnerFrom.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerFromPosition(this.model.getOptions());
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
+    this.view.SubView.stripe.changeRunnerZIndex(RANGE.FROM);
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
@@ -229,7 +236,10 @@ class Presenter {
     this.model.validateInitialValues();
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
+    this.view.SubView.stripe.changeRunnerZIndex(RANGE.TO);
 
     this.model.observer.notifyObservers(this.model.getOptions());
 
@@ -243,6 +253,12 @@ class Presenter {
 
     this.init();
 
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
+
     this.onChange(event, this.model.getOptions());
   };
 
@@ -252,6 +268,12 @@ class Presenter {
     this.model.max = value;
 
     this.init();
+
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
+    this.model.setSubViewOptions(this.view.SubView.getOptions());
+
+    this.model.observer.notifyObservers(this.model.getOptions());
 
     this.onChange(event, this.model.getOptions());
   };
@@ -278,6 +300,8 @@ class Presenter {
     this.view.SubView.scale.setScaleElementsPositions(this.view.SubView.getOptions());
     this.view.SubView.scale.setScalePosition(this.view.SubView.getOptions());
     this.view.SubView.scale.changeNumberOfScaleElementsWhenResizing(this.view.SubView.getOptions());
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
 
     this.model.observer.notifyObservers(this.model.getOptions());
