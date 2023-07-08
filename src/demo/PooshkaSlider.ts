@@ -35,6 +35,10 @@ class PooshkaSlider {
 
   $runnerTo: JQuery<HTMLElement> = $('<div/>');
 
+  $tooltipFrom: JQuery<HTMLElement> = $('<div/>');
+
+  $tooltipTo: JQuery<HTMLElement> = $('<div/>');
+
   $limitMin: JQuery<HTMLElement> = $('<div/>');
 
   $limitMax: JQuery<HTMLElement> = $('<div/>');
@@ -102,6 +106,8 @@ class PooshkaSlider {
       $stripe,
       $runnerFrom,
       $runnerTo,
+      $tooltipFrom,
+      $tooltipTo,
       $limitMin,
       $limitMax,
       $scaleContainer,
@@ -111,6 +117,8 @@ class PooshkaSlider {
     this.$stripe = $stripe;
     this.$runnerFrom = $runnerFrom;
     this.$runnerTo = $runnerTo;
+    this.$tooltipFrom = $tooltipFrom;
+    this.$tooltipTo = $tooltipTo;
     this.$limitMin = $limitMin;
     this.$limitMax = $limitMax;
     this.$scaleContainer = $scaleContainer;
@@ -134,6 +142,8 @@ class PooshkaSlider {
     this.$scaleContainer.mousedown(this.setPanelValues);
     this.$runnerFrom.on('pointerdown', this.handleRunnerBindPointerEvents);
     this.$runnerTo.on('pointerdown', this.handleRunnerBindPointerEvents);
+    this.$tooltipFrom.on('pointerdown', this.handleRunnerBindPointerEvents);
+    this.$tooltipTo.on('pointerdown', this.handleRunnerBindPointerEvents);
   };
 
   private addPanelEvents = (): void => {

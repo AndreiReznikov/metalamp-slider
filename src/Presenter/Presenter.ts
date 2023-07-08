@@ -24,6 +24,8 @@ class Presenter {
       $stripe: this.view.$stripe,
       $runnerFrom: this.view.$runnerFrom,
       $runnerTo: this.view.$runnerTo,
+      $tooltipFrom: this.view.$tooltipFrom,
+      $tooltipTo: this.view.$tooltipTo,
       $limitMin: this.view.$limitMin,
       $limitMax: this.view.$limitMax,
       $scaleContainer: this.view.$scaleContainer,
