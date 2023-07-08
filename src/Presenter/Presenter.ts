@@ -171,6 +171,8 @@ class Presenter {
     this.view.initializeView(this.model.getOptions());
     this.view.SubView.runnerTo.calculateInitialRunnerPosition(this.model.getOptions());
     this.view.SubView.stripe.restrictRunnerToPosition(this.model.getOptions());
+    this.view.SubView.stripe.showLimit(this.model.getOptions());
+    this.view.SubView.stripe.joinTooltips(this.view.SubView.getOptions());
     this.model.setSubViewOptions(this.view.SubView.getOptions());
     this.model.restrictTo();
 
