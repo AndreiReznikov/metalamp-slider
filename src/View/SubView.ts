@@ -181,6 +181,8 @@ class SubView extends AbstractSubView {
       runnerFromPosition: this.runnerFrom.runnerPosition,
       runnerToPosition: this.runnerTo.runnerPosition,
       runnerLength: this.runnerLength,
+      tooltipFromLength: this.tooltipFrom.tooltipLength,
+      tooltipToLength: this.tooltipTo.tooltipLength,
       limitMinLength: this.limitMin.limitLength,
       limitMaxLength: this.limitMax.limitLength,
       clickPosition: this.clickPosition,
@@ -190,6 +192,8 @@ class SubView extends AbstractSubView {
       isMinFrom: this.runnerFrom.isMinFrom,
       isMaxFrom: this.runnerFrom.isMaxFrom,
       isMaxTo: this.runnerTo.isMaxTo,
+      isTooltipFromOnDown: this.isTooltipFromOnDown,
+      isTooltipToOnDown: this.isTooltipToOnDown,
       isCursorNearStepAheadFrom: this.runnerFrom.isCursorNearStepAhead,
       isCursorNearStepBehindFrom: this.runnerFrom.isCursorNearStepBehind,
       isCursorNearStepAheadTo: this.runnerTo.isCursorNearStepAhead,
@@ -224,6 +228,10 @@ class SubView extends AbstractSubView {
   };
 
   private handleRunnerFromPointermove = (event: JQuery.TriggeredEvent): void => {
+    const $target = $(event.target);
+
+    this.isTooltipFromOnDown = $target.is(this.tooltipFrom.$tooltip);
+
     this.calculateClickPosition(event);
     this.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
     this.stripe.restrictRunnerFromPosition(this.getOptions());
@@ -241,6 +249,10 @@ class SubView extends AbstractSubView {
   };
 
   private handleRunnerToPointermove = (event: JQuery.TriggeredEvent): void => {
+    const $target = $(event.target);
+
+    this.isTooltipToOnDown = $target.is(this.tooltipTo.$tooltip);
+
     this.calculateClickPosition(event);
     this.runnerTo.calculateRunnerPositionWhileMouseIsMoving(this.getOptions());
     this.stripe.restrictRunnerToPosition(this.getOptions());

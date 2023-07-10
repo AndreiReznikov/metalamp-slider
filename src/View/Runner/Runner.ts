@@ -90,11 +90,39 @@ class Runner {
 
   private calculateRunnerPositionWithSetStep = (options: Options): void => {
     const {
-      stepLength, positionParameter, minRemains, maxRemains, max, min, from, to,
+      stepLength, positionParameter, minRemains, maxRemains, max, min, from, to, vertical
     } = options.modelOptions;
-    const {
-      clickPosition, runnerLength, leftOrRight, upOrDown, sliderLength,
+    let {
+      clickPosition,
+      runnerLength,
+      leftOrRight,
+      upOrDown,
+      sliderLength,
+      shiftAxis,
+      tooltipFromLength,
+      tooltipToLength,
+      isTooltipFromOnDown,
+      isTooltipToOnDown,
     } = options.subViewOptions;
+
+    let smallStepTargetLength = runnerLength;
+
+    if (isTooltipFromOnDown) {
+      smallStepTargetLength = tooltipFromLength;
+    } else if (isTooltipToOnDown) {
+      smallStepTargetLength = tooltipToLength;
+    }
+
+    const directionLeft = (positionParameter === DIRECTION.LEFT
+      ? leftOrRight === DIRECTION.LEFT : upOrDown === DIRECTION.TOP);
+    const directionRight = (positionParameter === DIRECTION.LEFT
+      ? leftOrRight === DIRECTION.RIGHT : upOrDown === DIRECTION.BOTTOM);
+
+    const isStepLessThenHalfRunnerLength: boolean = stepLength < tooltipFromLength / 2;
+    const isClickAhead: boolean = isStepLessThenHalfRunnerLength
+      && clickPosition > this.runnerPosition + runnerLength / 2;
+    const isClickBehind: boolean = isStepLessThenHalfRunnerLength
+      && clickPosition < this.runnerPosition + runnerLength / 2;
 
     const stepParameterAheadMaxRemains: boolean = (this.runnerType === RANGE.FROM && from === max
       - Math.abs(maxRemains)) || (this.runnerType === RANGE.TO && to === max - Math.abs(maxRemains));
@@ -102,8 +130,7 @@ class Runner {
       || (this.runnerType === RANGE.TO && to === min && minRemains !== 0);
     const stepParameterBehindMinRemains: boolean = (this.runnerType === RANGE.FROM && from === min
       + Math.abs(minRemains)) || (this.runnerType === RANGE.TO && to === min + Math.abs(minRemains))
-      && (positionParameter === DIRECTION.LEFT
-        ? leftOrRight === DIRECTION.LEFT : upOrDown === DIRECTION.TOP);;
+      && directionLeft;
     const stepParameterBehindMax: boolean = (this.runnerType === RANGE.FROM && from === max && maxRemains !== 0)
       || (this.runnerType === RANGE.TO && to === max && maxRemains !== 0);
 
@@ -118,16 +145,18 @@ class Runner {
 
       const stepParameter = getRemains();
 
+    clickPosition -= isClickAhead ? shiftAxis - smallStepTargetLength / 2 : 0;
+    clickPosition += isClickBehind ? smallStepTargetLength / 2 - shiftAxis : 0;
+    clickPosition -= (isTooltipFromOnDown || isTooltipToOnDown) && !vertical ? runnerLength / 2 : 0;
+
     this.isCursorNearStepAhead = clickPosition
       > this.runnerPosition + runnerLength / 2
       + (stepParameterAheadMin || stepParameterAheadMaxRemains ? stepParameter / 2 : stepLength / 2)
-      && (positionParameter === DIRECTION.LEFT
-        ? leftOrRight === DIRECTION.RIGHT : upOrDown === DIRECTION.BOTTOM);
+      && directionRight;
     this.isCursorNearStepBehind = clickPosition
       < this.runnerPosition + runnerLength / 2
       - (stepParameterBehindMinRemains || stepParameterBehindMax ? stepParameter / 2 : stepLength /2)
-      && (positionParameter === DIRECTION.LEFT
-        ? leftOrRight === DIRECTION.LEFT : upOrDown === DIRECTION.TOP);
+      && directionLeft;
 
     this.remainsAhead = (clickPosition
       - runnerLength / 2

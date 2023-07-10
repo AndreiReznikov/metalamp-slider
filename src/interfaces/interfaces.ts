@@ -38,6 +38,8 @@ interface SubViewOptions {
   runnerFromPosition: number;
   runnerToPosition: number;
   runnerLength: number;
+  tooltipFromLength: number;
+  tooltipToLength: number;
   limitMinLength: number;
   limitMaxLength: number;
   shiftAxis: number;
@@ -47,6 +49,8 @@ interface SubViewOptions {
   isMinFrom: boolean;
   isMaxFrom: boolean;
   isMaxTo: boolean;
+  isTooltipFromOnDown: boolean;
+  isTooltipToOnDown: boolean;
   isCursorNearStepAheadFrom: boolean;
   isCursorNearStepBehindFrom: boolean;
   isClickForRunnerFrom: boolean;

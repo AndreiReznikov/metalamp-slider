@@ -56,6 +56,10 @@ abstract class AbstractSubView {
 
   isScaleElementOnDown = false;
 
+  isTooltipFromOnDown = false;
+
+  isTooltipToOnDown = false;
+
   modelOptions: ModelOptions;
 
   lastPoint: { x: number; y: number; } = { x: 0, y: 0 };
