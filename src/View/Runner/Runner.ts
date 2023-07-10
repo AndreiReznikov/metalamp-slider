@@ -118,11 +118,11 @@ class Runner {
     const directionRight = (positionParameter === DIRECTION.LEFT
       ? leftOrRight === DIRECTION.RIGHT : upOrDown === DIRECTION.BOTTOM);
 
-    const isStepLessThenHalfRunnerLength: boolean = stepLength < tooltipFromLength / 2;
+    const isStepLessThenHalfRunnerLength: boolean = stepLength <= smallStepTargetLength / 2;
     const isClickAhead: boolean = isStepLessThenHalfRunnerLength
       && clickPosition > this.runnerPosition + runnerLength / 2;
     const isClickBehind: boolean = isStepLessThenHalfRunnerLength
-      && clickPosition < this.runnerPosition + runnerLength / 2;
+      && clickPosition <= this.runnerPosition + runnerLength / 2;
 
     const stepParameterAheadMaxRemains: boolean = (this.runnerType === RANGE.FROM && from === max
       - Math.abs(maxRemains)) || (this.runnerType === RANGE.TO && to === max - Math.abs(maxRemains));
@@ -134,20 +134,19 @@ class Runner {
     const stepParameterBehindMax: boolean = (this.runnerType === RANGE.FROM && from === max && maxRemains !== 0)
       || (this.runnerType === RANGE.TO && to === max && maxRemains !== 0);
 
-      const getRemains = () => {
-        let remains = 0;
+    const getRemains = () => {
+      let remains = 0;
 
-        if (stepParameterAheadMin || stepParameterBehindMinRemains) remains = minRemains;
-        else if (stepParameterAheadMaxRemains || stepParameterBehindMax) remains = maxRemains;
+      if (stepParameterAheadMin || stepParameterBehindMinRemains) remains = minRemains;
+      else if (stepParameterAheadMaxRemains || stepParameterBehindMax) remains = maxRemains;
 
-        return Math.abs(remains / (max - min)) * sliderLength;
-      };
+      return Math.abs(remains / (max - min)) * sliderLength;
+    };
 
-      const stepParameter = getRemains();
+    const stepParameter = getRemains();
 
-    clickPosition -= isClickAhead ? shiftAxis - smallStepTargetLength / 2 : 0;
-    clickPosition += isClickBehind ? smallStepTargetLength / 2 - shiftAxis : 0;
-    clickPosition -= (isTooltipFromOnDown || isTooltipToOnDown) && !vertical ? runnerLength / 2 : 0;
+    clickPosition -= isClickAhead ? shiftAxis - runnerLength / 2 : 0;
+    clickPosition += isClickBehind ? runnerLength / 2 - shiftAxis : 0;
 
     this.isCursorNearStepAhead = clickPosition
       > this.runnerPosition + runnerLength / 2
