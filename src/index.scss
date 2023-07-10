@@ -22,12 +22,12 @@
     position: absolute;
     height: 20px;
     width: 20px;
-    box-sizing: border-box;
     box-shadow: 0 0 0 2px #fff;
     border-radius: 50%;
     border: none;
     background-color: rgb(47 50 53);
     touch-action: none;
+    box-sizing: border-box;
     z-index: 2;
     cursor: pointer;
   }
