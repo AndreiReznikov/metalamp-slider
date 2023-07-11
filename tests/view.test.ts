@@ -25,13 +25,12 @@ view.SubView.modelOptions = {
   showRange: false,
   showScale: false,
   localeString: false,
-  isStepSet: false,
   positionParameter: DIRECTION.LEFT,
   lengthParameter: LENGTH.WIDTH,
   scalePositionParameter: DIRECTION.TOP,
   to: 50,
   from: 20,
-  step: 0,
+  step: 1,
   stepLength: 0,
   min: 0,
   max: 100,
@@ -146,13 +145,12 @@ beforeEach(() => {
     showRange: false,
     showScale: false,
     localeString: false,
-    isStepSet: false,
     positionParameter: DIRECTION.LEFT,
     lengthParameter: LENGTH.WIDTH,
     scalePositionParameter: DIRECTION.TOP,
     from: 20,
     to: 50,
-    step: 0,
+    step: 1,
     stepLength: 0,
     min: 0,
     max: 100,
@@ -682,7 +680,6 @@ describe('Runner', () => {
     test('method should increment runnerFrom position with set step', () => {
       view.SubView.runnerFrom.runnerPosition = 10;
       options.subViewOptions.clickPosition = 18;
-      options.modelOptions.isStepSet = true;
       options.modelOptions.stepLength = 5;
 
       view.SubView.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(options);
@@ -693,7 +690,6 @@ describe('Runner', () => {
     test('method should decrement runnerFrom position with set step', () => {
       view.SubView.runnerFrom.runnerPosition = 10;
       options.subViewOptions.clickPosition = 2;
-      options.modelOptions.isStepSet = true;
       options.modelOptions.stepLength = 5;
 
       view.SubView.runnerFrom.calculateRunnerPositionWhileMouseIsMoving(options);
@@ -899,7 +895,6 @@ describe('Stripe', () => {
     });
 
     test('method should calculate runnerFrom position ahead', () => {
-      options.modelOptions.isStepSet = true;
       options.modelOptions.stepLength = 5;
       view.SubView.runnerFrom.runnerPosition = 10;
       options.subViewOptions.clickPosition = 50;
@@ -910,7 +905,6 @@ describe('Stripe', () => {
     });
 
     test('method should calculate runnerFrom position behind', () => {
-      options.modelOptions.isStepSet = true;
       options.modelOptions.stepLength = 5;
       view.SubView.runnerFrom.runnerPosition = 50;
       options.subViewOptions.clickPosition = 10;
@@ -921,7 +915,6 @@ describe('Stripe', () => {
     });
 
     test('method should calculate runnerTo position ahead', () => {
-      options.modelOptions.isStepSet = true;
       options.modelOptions.double = true;
       options.modelOptions.stepLength = 5;
       view.SubView.runnerFrom.runnerPosition = 10;
@@ -934,7 +927,6 @@ describe('Stripe', () => {
     });
 
     test('method should calculate runnerTo position behind', () => {
-      options.modelOptions.isStepSet = true;
       options.modelOptions.double = true;
       options.modelOptions.stepLength = 5;
       view.SubView.runnerFrom.runnerPosition = 10;
@@ -1083,7 +1075,6 @@ describe('Stripe', () => {
 
   describe('restrictRunnerPositionAfterSliderOnDown', () => {
     test('method should set min runnerFrom position', () => {
-      options.modelOptions.isStepSet = true;
       options.modelOptions.stepLength = 20;
       options.subViewOptions.clickPosition = 5;
       view.SubView.runnerFrom.runnerPosition = 40;
@@ -1094,7 +1085,6 @@ describe('Stripe', () => {
     });
 
     test('method should set max runnerFrom position', () => {
-      options.modelOptions.isStepSet = true;
       options.modelOptions.stepLength = 20;
       options.subViewOptions.clickPosition = 95;
       view.SubView.runnerFrom.runnerPosition = 40;
@@ -1105,7 +1095,6 @@ describe('Stripe', () => {
     });
 
     test('method should set max runnerTo position', () => {
-      options.modelOptions.isStepSet = true;
       options.modelOptions.double = true;
       options.modelOptions.stepLength = 20;
       options.subViewOptions.clickPosition = 95;

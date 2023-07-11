@@ -20,7 +20,7 @@ abstract class AbstractModel {
 
   max = 100;
 
-  step = 0;
+  step = 1;
 
   from = 10;
 
@@ -58,8 +58,6 @@ abstract class AbstractModel {
 
   localeString = false;
 
-  isStepSet = false;
-
   positionParameter = DIRECTION.LEFT;
 
   lengthParameter = LENGTH.WIDTH;
@@ -84,7 +82,7 @@ abstract class AbstractModel {
       max: 100,
       from: 10,
       to: 50,
-      step: 0,
+      step: 1,
       scaleNumber: 2,
     };
 

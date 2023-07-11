@@ -63,7 +63,6 @@ class PooshkaSlider {
 
   private setPanelValues = (): void => {
     const {
-      isStepSet,
       step,
       numberOfCharactersAfterDot,
       double,
@@ -77,15 +76,10 @@ class PooshkaSlider {
       max,
     } = this.$pooshkaSlider.data('api').getModelOptions();
 
-    this.$inputFrom.attr('step', `${isStepSet
-      ? step : (0.1).toFixed(numberOfCharactersAfterDot)}`);
-    this.$inputTo.attr('step', `${isStepSet
-      ? step : (0.1).toFixed(numberOfCharactersAfterDot)}`);
-    this.$inputMin.attr('step', `${isStepSet
-      ? step : (0.1).toFixed(numberOfCharactersAfterDot)}`);
-    this.$inputMax.attr('step', `${isStepSet
-      ? step : (0.1).toFixed(numberOfCharactersAfterDot)
-    }`);
+    this.$inputFrom.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
+    this.$inputTo.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
+    this.$inputMin.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
+    this.$inputMax.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
     this.$inputStep.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
 
     this.$inputDouble.prop('checked', double);

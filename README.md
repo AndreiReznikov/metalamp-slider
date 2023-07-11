@@ -197,7 +197,7 @@ You can use the following Api methods:
 
 | Method | Description | Example |
 | --- | --- | --- |
-| getModelOptions | Returns the current values: double, vertical, showTooltip, showLimit, showRange, show Scale, localeString, isStepSet,  positionParameter, lengthParameter, to, from, step, stepLength, min, max, scalePositionParameter, scaleNumber, scaleElements, numberOfCharactersAfterDot | $slider.data('api').getModelOptions().double |
+| getModelOptions | Returns the current values: double, vertical, showTooltip, showLimit, showRange, show Scale, localeString,  positionParameter, lengthParameter, to, from, step, stepLength, min, max, scalePositionParameter, scaleNumber, scaleElements, numberOfCharactersAfterDot | $slider.data('api').getModelOptions().double |
 | updateUserConfig | Update model values | $slider.data('api').updateUserConfig({'vertical': true}) |
 | toggleDouble | Toggle double value | $slider.data('api').toggleDouble() |
 | toggleTooltip | Toggle showTooltip value | $slider.data('api').toggleTooltip() |

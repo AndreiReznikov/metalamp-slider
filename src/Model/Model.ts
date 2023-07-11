@@ -27,9 +27,10 @@ class Model extends AbstractModel {
       && this.step > -(this.min - this.max);
     const isStepIncorrect: boolean = isLimitsPositiveAndStepMoreThanDifference
       || isLimitsNegativeAndStepMoreThanDifference
-      || this.step < 0
+      || this.step <= 0
       || (this.step > Math.abs(this.min) && this.step > Math.abs(this.max))
       || Math.floor(Math.abs(this.max - this.min) / this.step) < 1;
+    const areLimitsLessThanOne: boolean = Math.abs(this.max - this.min) < 1 && isStepIncorrect;
 
     if (this.min > this.max) {
       const { min } = this;
@@ -45,14 +46,16 @@ class Model extends AbstractModel {
     }
 
     if (isStepIncorrect) {
-      this.step = 0;
+      this.step = 1;
+    }
+
+    if (areLimitsLessThanOne) {
+      this.step = areLimitsNegative ? Math.abs(this.min) : Math.abs(this.max);
     }
 
     if (this.scaleNumber < 0) {
       this.scaleNumber = 0;
     }
-
-    this.isStepSet = this.step > 0;
 
     if (this.from < this.min) {
       this.from = this.min;
@@ -76,8 +79,6 @@ class Model extends AbstractModel {
     this.toRemains = 0;
     this.minRemains = 0;
     this.maxRemains = 0;
-
-    if (!this.isStepSet) return;
 
     this.fromRemains = parseFloat((this.from % this.step).toFixed(this.numberOfCharactersAfterDot));
     this.toRemains = parseFloat((this.to % this.step).toFixed(this.numberOfCharactersAfterDot));
@@ -175,7 +176,6 @@ class Model extends AbstractModel {
       showRange: this.showRange,
       showScale: this.showScale,
       localeString: this.localeString,
-      isStepSet: this.isStepSet,
       positionParameter: this.positionParameter,
       lengthParameter: this.lengthParameter,
       to: this.to,
@@ -228,8 +228,7 @@ class Model extends AbstractModel {
       ).toFixed(this.numberOfCharactersAfterDot),
     );
 
-    const isRemains: boolean = this.isStepSet
-      && currentFromRemains !== 0
+    const isRemains: boolean = currentFromRemains !== 0
       && Math.abs(currentFromRemains) !== this.step
       && this.from !== this.min
       && this.from !== this.max;
@@ -291,8 +290,7 @@ class Model extends AbstractModel {
       ).toFixed(this.numberOfCharactersAfterDot),
     );
 
-    const isRemains: boolean = this.isStepSet
-      && currentToRemains !== 0
+    const isRemains: boolean = currentToRemains !== 0
       && Math.abs(currentToRemains) !== this.step
       && this.to !== this.min
       && this.to !== this.max;
@@ -359,7 +357,7 @@ class Model extends AbstractModel {
       let scaleElement = index === 0 ? minScaleElementValue : parseFloat((minScaleElementValue
         += intervalForScaleElements).toFixed(this.numberOfCharactersAfterDot));
 
-      const isScaleElementIncorrect = this.isStepSet && parseFloat(
+      const isScaleElementIncorrect = parseFloat(
         (Math.abs(scaleElement) % this.step).toFixed(this.numberOfCharactersAfterDot),
       ) !== 0 && parseFloat(
         (Math.abs(scaleElement) % this.step).toFixed(this.numberOfCharactersAfterDot),
