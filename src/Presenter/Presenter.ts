@@ -1,4 +1,6 @@
-import { Options, UserConfig, Api, RANGE } from '../interfaces/interfaces';
+import {
+  Options, UserConfig, Api, RANGE,
+} from '../interfaces/interfaces';
 import Model from '../Model';
 import View from '../View';
 

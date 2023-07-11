@@ -656,7 +656,7 @@ describe('Runner', () => {
       options.modelOptions.stepLength = 15;
       options.subViewOptions.runnerLength = 2;
 
-      view.SubView.runnerFrom.calculateMinRunnerPosition(options);
+      view.SubView.runnerFrom.calculateMinRunnerPosition();
 
       expect(view.SubView.runnerFrom.runnerPosition).toEqual(0);
     });

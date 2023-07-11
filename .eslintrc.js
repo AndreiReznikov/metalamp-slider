@@ -2,7 +2,6 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    es2021: true,
     jquery: true,
     'jest/globals': true,
   },

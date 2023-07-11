@@ -20,7 +20,7 @@ class Limit {
 
     if (this.limitType !== LIMIT.MAX) return;
 
-    this.limitPosition = sliderLength - limitMaxLength + runnerLength ;
+    this.limitPosition = sliderLength - limitMaxLength + runnerLength;
   };
 
   public setLimitPosition = (options: Options): void => {
