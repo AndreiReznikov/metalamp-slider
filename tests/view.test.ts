@@ -658,7 +658,7 @@ describe('Runner', () => {
 
       view.SubView.runnerFrom.calculateMinRunnerPosition(options);
 
-      expect(view.SubView.runnerFrom.runnerPosition).toEqual(2);
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(0);
     });
   });
 
@@ -672,7 +672,7 @@ describe('Runner', () => {
 
       view.SubView.runnerFrom.calculateMaxRunnerPosition(options);
 
-      expect(view.SubView.runnerFrom.runnerPosition).toEqual(96);
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(100);
     });
   });
 
@@ -1002,7 +1002,7 @@ describe('Stripe', () => {
 
       view.SubView.stripe.restrictRunnerFromPosition(options);
 
-      expect(view.SubView.runnerFrom.runnerPosition).toEqual(40);
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(80);
     });
 
     test('method should set runnerFrom with minRemains', () => {
@@ -1014,7 +1014,7 @@ describe('Stripe', () => {
 
       view.SubView.stripe.restrictRunnerFromPosition(options);
 
-      expect(view.SubView.runnerFrom.runnerPosition).toEqual(60);
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(20);
     });
   });
 
@@ -1048,7 +1048,7 @@ describe('Stripe', () => {
 
       view.SubView.stripe.restrictRunnerToPosition(options);
 
-      expect(view.SubView.runnerTo.runnerPosition).toEqual(40);
+      expect(view.SubView.runnerTo.runnerPosition).toEqual(80);
     });
   });
 
@@ -1081,7 +1081,7 @@ describe('Stripe', () => {
 
       view.SubView.stripe.restrictRunnerPositionAfterSliderOnDown(options);
 
-      expect(view.SubView.runnerFrom.runnerPosition).toEqual(0);
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(40);
     });
 
     test('method should set max runnerFrom position', () => {
@@ -1091,7 +1091,7 @@ describe('Stripe', () => {
 
       view.SubView.stripe.restrictRunnerPositionAfterSliderOnDown(options);
 
-      expect(view.SubView.runnerFrom.runnerPosition).toEqual(100);
+      expect(view.SubView.runnerFrom.runnerPosition).toEqual(40);
     });
 
     test('method should set max runnerTo position', () => {
@@ -1103,7 +1103,7 @@ describe('Stripe', () => {
 
       view.SubView.stripe.restrictRunnerPositionAfterSliderOnDown(options);
 
-      expect(view.SubView.runnerTo.runnerPosition).toEqual(100);
+      expect(view.SubView.runnerTo.runnerPosition).toEqual(60);
     });
   });
 });
