@@ -48,7 +48,6 @@ $(document).ready(() => {
     showScale: true,
     min: -125,
     max: -5,
-    step: 0,
     from: -85,
     to: -45,
     scaleNumber: 7,

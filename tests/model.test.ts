@@ -18,13 +18,12 @@ beforeEach(() => {
   model.showLimit = true;
   model.showRange = true;
   model.showScale = false;
-  model.isStepSet = false;
   model.positionParameter = DIRECTION.LEFT;
   model.lengthParameter = LENGTH.WIDTH;
   model.scalePositionParameter = DIRECTION.TOP;
   model.min = 0;
   model.max = 100;
-  model.step = 0;
+  model.step = 1;
   model.from = 10;
   model.to = 50;
   model.fromRemains = 0;
@@ -132,7 +131,6 @@ describe('calculateRemains', () => {
   test('method should calculate minRemains when min > 0', () => {
     model.min = 10;
     model.minRemains = 3;
-    model.isStepSet = true;
     model.step = 5;
 
     model.calculateRemains();
@@ -175,7 +173,6 @@ describe('getOptions', () => {
 describe('calculateFrom', () => {
   test('from should be equal to 10', () => {
     model.step = 10;
-    model.isStepSet = true;
     model.subViewOptions.runnerFromPosition = 10;
     model.subViewOptions.sliderLength = 100;
 
@@ -186,7 +183,6 @@ describe('calculateFrom', () => {
 
   test('from should be equal to 0', () => {
     model.step = 12;
-    model.isStepSet = true;
     model.subViewOptions.runnerFromPosition = 10;
     model.subViewOptions.sliderLength = 100;
 
@@ -262,7 +258,6 @@ describe('restrictFrom', () => {
     model.from = 100;
     model.max = 80;
     model.maxRemains = 10;
-    model.isStepSet = true;
 
     model.restrictFrom();
 
@@ -273,7 +268,6 @@ describe('restrictFrom', () => {
     model.from = 10;
     model.min = 20;
     model.minRemains = 10;
-    model.isStepSet = true;
 
     model.restrictFrom();
 
@@ -285,7 +279,6 @@ describe('calculateTo', () => {
   test('to should be equal to 40', () => {
     model.double = true;
     model.step = 10;
-    model.isStepSet = true;
     model.subViewOptions.runnerToPosition = 40;
     model.subViewOptions.sliderLength = 100;
 
@@ -297,7 +290,6 @@ describe('calculateTo', () => {
   test('to should be equal to 36', () => {
     model.double = true;
     model.step = 12;
-    model.isStepSet = true;
     model.subViewOptions.runnerToPosition = 40;
     model.subViewOptions.sliderLength = 100;
 
@@ -364,7 +356,6 @@ describe('restrictTo', () => {
 
   test('to should to be equal max - maxRemains', () => {
     model.double = true;
-    model.isStepSet = true;
     model.max = 80;
     model.maxRemains = 10;
     model.to = 100;

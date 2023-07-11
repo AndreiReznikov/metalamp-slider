@@ -11,7 +11,6 @@ interface ModelOptions {
   showRange: boolean;
   showScale: boolean;
   localeString: boolean;
-  isStepSet: boolean;
   positionParameter: string;
   lengthParameter: string;
   to: number;

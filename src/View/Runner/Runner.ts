@@ -68,18 +68,13 @@ class Runner {
   };
 
   public calculateRunnerPositionWhileMouseIsMoving = (options: Options): void => {
-    const { isStepSet } = options.modelOptions;
     const { clickPosition, shiftAxis } = options.subViewOptions;
 
     this.isMinFrom = false;
     this.isMaxFrom = false;
     this.isMaxTo = false;
 
-    if (isStepSet) {
-      this.calculateRunnerPositionWithSetStep(options);
-    } else {
-      this.runnerPosition = clickPosition - shiftAxis;
-    }
+    this.calculateRunnerPositionWithSetStep(options);
   };
 
   public setRunnerPosition = (options: Options): void => {
@@ -118,10 +113,10 @@ class Runner {
     const directionRight = (positionParameter === DIRECTION.LEFT
       ? leftOrRight === DIRECTION.RIGHT : upOrDown === DIRECTION.BOTTOM);
 
-    const isStepLessThenHalfRunnerLength: boolean = stepLength <= smallStepTargetLength / 2;
-    const isClickAhead: boolean = isStepLessThenHalfRunnerLength
+    const isStepLessThanHalfRunnerLength: boolean = stepLength <= smallStepTargetLength / 2;
+    const isClickAhead: boolean = isStepLessThanHalfRunnerLength
       && clickPosition > this.runnerPosition + runnerLength / 2;
-    const isClickBehind: boolean = isStepLessThenHalfRunnerLength
+    const isClickBehind: boolean = isStepLessThanHalfRunnerLength
       && clickPosition <= this.runnerPosition + runnerLength / 2;
 
     const stepParameterAheadMaxRemains: boolean = (this.runnerType === RANGE.FROM && from === max

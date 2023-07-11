@@ -36,7 +36,7 @@ beforeEach(() => {
   presenter.model.to = 0;
   presenter.model.min = 0;
   presenter.model.max = 0;
-  presenter.model.step = 0;
+  presenter.model.step = 1;
 });
 
 describe('getApi', () => {

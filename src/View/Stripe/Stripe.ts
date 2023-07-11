@@ -13,7 +13,7 @@ class Stripe extends AbstractStripe {
   public calculateRunnerPositionAfterSliderOnDown = (options: Options): void => {
     const { runnerLength, clickPosition, sliderLength } = options.subViewOptions;
     const {
-      stepLength, isStepSet, max, min, maxRemains, minRemains, double,
+      stepLength, max, min, maxRemains, minRemains, double,
     } = options.modelOptions;
 
     this.defineClickLocation(options);
@@ -55,28 +55,22 @@ class Stripe extends AbstractStripe {
 
     this.alignRunners(options);
 
-    if (isStepSet) {
-      if (this.isClickAheadOfRunnerFrom) {
-        this.runnerFrom.runnerPosition += this.runnerFromStepsNumber * stepLength
-          + (isClickAheadFromWithMinRemains ? Math.abs(minRemains / (max - min)) * sliderLength
-            : 0);
-      } else if (this.isClickBehindOfRunnerFrom) {
-        this.runnerFrom.runnerPosition -= this.runnerFromStepsNumber * stepLength
-          + (isClickBehindFromWithMaxRemains ? Math.abs(maxRemains / (max - min)) * sliderLength
-            : 0);
-      } else if (this.isClickAheadOfRunnerTo) {
-        this.runnerTo.runnerPosition += this.runnerToStepsNumber * stepLength
-          + (isClickAheadToWithMinRemains ? Math.abs(minRemains / (max - min)) * sliderLength
-            : 0);
-      } else if (this.isClickBehindOfRunnerTo) {
-        this.runnerTo.runnerPosition -= this.runnerToStepsNumber * stepLength
-          + (isClickBehindToWithMaxRemains ? Math.abs(maxRemains / (max - min)) * sliderLength
-            : 0);
-      }
-    } else if (this.isClickForRunnerFrom) {
-      this.runnerFrom.runnerPosition = clickPosition - runnerLength / 2;
-    } else if (this.isClickForRunnerTo) {
-      this.runnerTo.runnerPosition = clickPosition - runnerLength / 2;
+    if (this.isClickAheadOfRunnerFrom) {
+      this.runnerFrom.runnerPosition += this.runnerFromStepsNumber * stepLength
+        + (isClickAheadFromWithMinRemains ? Math.abs(minRemains / (max - min)) * sliderLength
+          : 0);
+    } else if (this.isClickBehindOfRunnerFrom) {
+      this.runnerFrom.runnerPosition -= this.runnerFromStepsNumber * stepLength
+        + (isClickBehindFromWithMaxRemains ? Math.abs(maxRemains / (max - min)) * sliderLength
+          : 0);
+    } else if (this.isClickAheadOfRunnerTo) {
+      this.runnerTo.runnerPosition += this.runnerToStepsNumber * stepLength
+        + (isClickAheadToWithMinRemains ? Math.abs(minRemains / (max - min)) * sliderLength
+          : 0);
+    } else if (this.isClickBehindOfRunnerTo) {
+      this.runnerTo.runnerPosition -= this.runnerToStepsNumber * stepLength
+        + (isClickBehindToWithMaxRemains ? Math.abs(maxRemains / (max - min)) * sliderLength
+          : 0);
     }
   };
 
@@ -163,11 +157,9 @@ class Stripe extends AbstractStripe {
 
   public restrictRunnerPositionAfterSliderOnDown = (options: Options): void => {
     const {
-      isStepSet, stepLength, double, min, max, maxRemains, minRemains,
+      stepLength, double, min, max, maxRemains, minRemains,
     } = options.modelOptions;
     const { sliderLength, clickPosition, runnerLength } = options.subViewOptions;
-
-    if (!isStepSet) return;
 
     const isClickNearMinimum: boolean = clickPosition
       < (Math.abs(minRemains) > 0
