@@ -879,6 +879,7 @@ describe('Stripe', () => {
   describe('calculateRunnerPositionAfterSliderOnDown', () => {
     test('method should calculate runnerFrom position', () => {
       options.subViewOptions.clickPosition = 50;
+      options.modelOptions.stepLength = 1;
 
       view.SubView.stripe.calculateRunnerPositionAfterSliderOnDown(options);
 
@@ -888,6 +889,7 @@ describe('Stripe', () => {
     test('method should calculate runnerTo position', () => {
       options.modelOptions.double = true;
       options.subViewOptions.clickPosition = 50;
+      options.modelOptions.stepLength = 1;
 
       view.SubView.stripe.calculateRunnerPositionAfterSliderOnDown(options);
 
