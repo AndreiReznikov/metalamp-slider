@@ -24,7 +24,7 @@ class SubView extends AbstractSubView {
     return options;
   };
 
-  public setModelOptions = (options: Options) => {
+  public setModelOptions = (options: Options): void => {
     this.modelOptions = options.modelOptions;
   };
 
@@ -62,7 +62,7 @@ class SubView extends AbstractSubView {
 
     if (this.isWrongButtonPressed) return;
 
-    this.runnerFrom.calculateMinRunnerPosition(this.getOptions());
+    this.runnerFrom.calculateMinRunnerPosition();
 
     this.stripe.showLimit(this.getOptions());
     this.stripe.joinTooltips(this.getOptions());
@@ -148,7 +148,7 @@ class SubView extends AbstractSubView {
     } else if (this.scaleElementValue === max) {
       this.runnerFrom.calculateMaxRunnerPosition(this.getOptions());
     } else if (this.scaleElementValue === min) {
-      this.runnerFrom.calculateMinRunnerPosition(this.getOptions());
+      this.runnerFrom.calculateMinRunnerPosition();
     } else {
       this.calculateClickPosition(event);
       this.stripe.calculateRunnerPositionAfterScaleOnDown(this.getOptions());
@@ -219,7 +219,7 @@ class SubView extends AbstractSubView {
     return subViewOptions;
   };
 
-  public setElementParameters = () => {
+  public setElementParameters = (): void => {
     const { lengthParameter } = this.getOptions().modelOptions;
 
     this.sliderPosition = this.getCoords(this.$stripe);

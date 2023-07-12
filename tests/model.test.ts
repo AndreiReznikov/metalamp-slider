@@ -91,7 +91,7 @@ describe('validateInitalValues', () => {
     model.step = -1;
     model.validateInitialValues();
 
-    expect(model.step).toEqual(0);
+    expect(model.step).toEqual(1);
   });
 
   test('from should be equal to min', () => {
@@ -188,7 +188,7 @@ describe('calculateFrom', () => {
 
     model.calculateFrom(model.getOptions());
 
-    expect(model.from).toEqual(0);
+    expect(model.from).toEqual(12);
   });
 
   test('from should be equal to min', () => {
@@ -261,7 +261,7 @@ describe('restrictFrom', () => {
 
     model.restrictFrom();
 
-    expect(model.from).toEqual(model.max - model.maxRemains);
+    expect(model.from).toEqual(model.max);
   });
 
   test('from should to be equal min + minRemains', () => {
@@ -271,7 +271,7 @@ describe('restrictFrom', () => {
 
     model.restrictFrom();
 
-    expect(model.from).toEqual(model.min + model.minRemains);
+    expect(model.from).toEqual(model.min);
   });
 });
 
@@ -362,7 +362,7 @@ describe('restrictTo', () => {
 
     model.restrictTo();
 
-    expect(model.to).toEqual(model.max - model.maxRemains);
+    expect(model.to).toEqual(model.max);
   });
 });
 

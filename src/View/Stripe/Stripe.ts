@@ -92,7 +92,8 @@ class Stripe extends AbstractStripe {
     const { double } = options.modelOptions;
 
     const isRunnerFromPositionLessThanMinimum: boolean = this.runnerFrom.runnerPosition < 0;
-    const isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition > sliderLength;
+    const
+      isRunnerFromPositionMoreThanMaximum: boolean = this.runnerFrom.runnerPosition > sliderLength;
     const
       isRunnerFromPositionMoreThanRunnerToPosition: boolean = double
       && this.runnerFrom.runnerPosition > this.runnerTo.runnerPosition;
@@ -159,7 +160,7 @@ class Stripe extends AbstractStripe {
     const {
       stepLength, double, min, max, maxRemains, minRemains,
     } = options.modelOptions;
-    const { sliderLength, clickPosition, runnerLength } = options.subViewOptions;
+    const { sliderLength, clickPosition } = options.subViewOptions;
 
     const isClickNearMinimum: boolean = clickPosition
       < (Math.abs(minRemains) > 0
@@ -179,7 +180,7 @@ class Stripe extends AbstractStripe {
     if (isClickNearMaximumWithoutInterval) {
       this.runnerFrom.calculateMaxRunnerPosition(options);
     } else if (isClickNearMinimum) {
-      this.runnerFrom.calculateMinRunnerPosition(options);
+      this.runnerFrom.calculateMinRunnerPosition();
     } else if (isClickNearMaximum) {
       this.runnerTo.calculateMaxRunnerPosition(options);
     }

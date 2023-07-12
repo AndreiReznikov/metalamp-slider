@@ -40,7 +40,7 @@ class Runner {
     this.runnerPosition = Math.round((ratio - minRatio) * sliderLength);
   };
 
-  public calculateMinRunnerPosition = (options: Options): void => {
+  public calculateMinRunnerPosition = (): void => {
     this.runnerPosition = 0;
 
     this.isMinFrom = this.isMinFrom !== true;
@@ -68,8 +68,6 @@ class Runner {
   };
 
   public calculateRunnerPositionWhileMouseIsMoving = (options: Options): void => {
-    const { clickPosition, shiftAxis } = options.subViewOptions;
-
     this.isMinFrom = false;
     this.isMaxFrom = false;
     this.isMaxTo = false;
@@ -85,10 +83,10 @@ class Runner {
 
   private calculateRunnerPositionWithSetStep = (options: Options): void => {
     const {
-      stepLength, positionParameter, minRemains, maxRemains, max, min, from, to, vertical
+      stepLength, positionParameter, minRemains, maxRemains, max, min, from, to,
     } = options.modelOptions;
-    let {
-      clickPosition,
+    let { clickPosition } = options.subViewOptions;
+    const {
       runnerLength,
       leftOrRight,
       upOrDown,
@@ -120,13 +118,17 @@ class Runner {
       && clickPosition <= this.runnerPosition + runnerLength / 2;
 
     const stepParameterAheadMaxRemains: boolean = (this.runnerType === RANGE.FROM && from === max
-      - Math.abs(maxRemains)) || (this.runnerType === RANGE.TO && to === max - Math.abs(maxRemains));
-    const stepParameterAheadMin: boolean = (this.runnerType === RANGE.FROM && from === min && minRemains !== 0)
+      - Math.abs(maxRemains)) || (this.runnerType === RANGE.TO
+      && to === max - Math.abs(maxRemains));
+    const stepParameterAheadMin: boolean = (this.runnerType === RANGE.FROM
+      && from === min && minRemains !== 0)
       || (this.runnerType === RANGE.TO && to === min && minRemains !== 0);
-    const stepParameterBehindMinRemains: boolean = (this.runnerType === RANGE.FROM && from === min
-      + Math.abs(minRemains)) || (this.runnerType === RANGE.TO && to === min + Math.abs(minRemains))
+    const stepParameterBehindMinRemains: boolean = ((this.runnerType === RANGE.FROM
+      && from === min + Math.abs(minRemains))
+      || (this.runnerType === RANGE.TO && to === min + Math.abs(minRemains)))
       && directionLeft;
-    const stepParameterBehindMax: boolean = (this.runnerType === RANGE.FROM && from === max && maxRemains !== 0)
+    const stepParameterBehindMax: boolean = (this.runnerType === RANGE.FROM
+      && from === max && maxRemains !== 0)
       || (this.runnerType === RANGE.TO && to === max && maxRemains !== 0);
 
     const getRemains = () => {
@@ -143,13 +145,12 @@ class Runner {
     clickPosition -= isClickAhead ? shiftAxis - runnerLength / 2 : 0;
     clickPosition += isClickBehind ? runnerLength / 2 - shiftAxis : 0;
 
-    this.isCursorNearStepAhead = clickPosition
-      > this.runnerPosition + runnerLength / 2
+    this.isCursorNearStepAhead = clickPosition > this.runnerPosition + runnerLength / 2
       + (stepParameterAheadMin || stepParameterAheadMaxRemains ? stepParameter / 2 : stepLength / 2)
       && directionRight;
-    this.isCursorNearStepBehind = clickPosition
-      < this.runnerPosition + runnerLength / 2
-      - (stepParameterBehindMinRemains || stepParameterBehindMax ? stepParameter / 2 : stepLength /2)
+    this.isCursorNearStepBehind = clickPosition < this.runnerPosition + runnerLength / 2
+      - (stepParameterBehindMinRemains || stepParameterBehindMax
+        ? stepParameter / 2 : stepLength / 2)
       && directionLeft;
 
     this.remainsAhead = (clickPosition
