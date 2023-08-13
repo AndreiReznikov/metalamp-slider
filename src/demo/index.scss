@@ -95,7 +95,7 @@
   &__panel-step-input
   {
     width: 65px;
-    height: 26px;
+    min-height: 26px;
     border: 2px solid rgb(47 50 53);
     border-radius: 0 4px 4px 0;
     font-size: 18px;
@@ -121,8 +121,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 45px;
-    height: 26px;
+    min-width: 45px;
+    min-height: 26px;
     background-color: rgb(47 50 53);
     border-radius: 4px 0 0 4px;
     border: none;
