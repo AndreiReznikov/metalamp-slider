@@ -1,4 +1,4 @@
-import { Options, DIRECTION, RANGE } from '../../interfaces/interfaces';
+import { Options, DIRECTION, RANGE } from '~/interfaces/interfaces';
 
 class Runner {
   $runner: JQuery<HTMLElement> = $('<button/>');

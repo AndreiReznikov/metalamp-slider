@@ -5,14 +5,17 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { NODE_ENV } = process.env;
 
 module.exports = {
-  resolve: {
-    extensions: ['.js', '.ts', '.json'],
-  },
   mode: NODE_ENV || 'development',
   entry: path.resolve(__dirname, 'src/index.ts'),
   output: {
     path: path.resolve(__dirname, 'pooshkaSlider'),
     filename: 'pooshkaSlider.min.js',
+  },
+  resolve: {
+    extensions: ['.js', '.ts', '.pug', '.scss', '.json'],
+    alias: {
+      '~': path.resolve(__dirname, 'src'),
+    }
   },
   externals: {
     jquery: 'jQuery',

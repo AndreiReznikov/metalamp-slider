@@ -4,7 +4,8 @@ import {
   Options,
   DIRECTION,
   LENGTH,
-} from '../interfaces/interfaces';
+} from '~/interfaces/interfaces';
+
 import AbstractModel from './AbstractModel';
 
 class Model extends AbstractModel {

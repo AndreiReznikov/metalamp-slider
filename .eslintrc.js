@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   env: {
     browser: true,
@@ -22,6 +24,17 @@ module.exports = {
     ecmaVersion: 'latest',
     project: './tsconfig.json',
   },
+  settings: {
+    'import/resolver':
+    {
+      alias: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+          map: [
+              ['~', path.join(__dirname, 'src')]
+          ]
+      },
+    },
+  },
   plugins: [
     'fsd',
     '@typescript-eslint',
@@ -30,5 +43,16 @@ module.exports = {
   rules: {
     'linebreak-style': 'off',
     '@typescript-eslint/no-shadow': 'off',
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+        mjs: 'never',
+      },
+    ],
   },
 };

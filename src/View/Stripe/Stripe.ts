@@ -1,4 +1,5 @@
-import { Options, RANGE } from '../../interfaces/interfaces';
+import { Options, RANGE } from '~/interfaces/interfaces';
+
 import AbstractStripe from './AbstractStripe';
 
 class Stripe extends AbstractStripe {

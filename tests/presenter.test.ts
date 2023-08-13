@@ -1,6 +1,6 @@
-import Model from '../src/Model/Model';
-import View from '../src/View/View';
-import Presenter from '../src/Presenter/Presenter';
+import Model from '~/Model/Model';
+import View from '~/View/View';
+import Presenter from '~/Presenter/Presenter';
 
 document.body.innerHTML = `
   <div class='container'>

@@ -4,8 +4,8 @@ import {
   SubViewOptions,
   DIRECTION,
   LENGTH,
-} from '../interfaces/interfaces';
-import Observer from '../Observer';
+} from '~/interfaces/interfaces';
+import Observer from '~/Observer';
 
 abstract class AbstractModel {
   observer: Observer;

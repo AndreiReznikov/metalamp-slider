@@ -1,0 +1,16 @@
+mixin panelToggler(options)
+  label.demo-page__panel-toggle-label
+    input(class=options.class type="checkbox")
+    span.demo-page__panel-custom-toggle
+    span.demo-page__panel-toggle-text=options.text
+
+mixin panelInputs(valueType)
+  -
+    const valueTypeClassName = 'demo-page__panel-' + valueType + ' '
+      + 'js-demo-page__panel-' + valueType;
+    const inputClassName = 'demo-page__panel-' + valueType + '-input' + ' '
+      + 'js-demo-page__panel-' + valueType + '-input';
+
+  .demo-page__panel-input-container
+    div(class=valueTypeClassName)=valueType
+    input(class=inputClassName type="number")

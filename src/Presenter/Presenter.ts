@@ -1,8 +1,8 @@
 import {
   Options, UserConfig, Api, RANGE,
-} from '../interfaces/interfaces';
-import Model from '../Model';
-import View from '../View';
+} from '~/interfaces/interfaces';
+import Model from '~/Model';
+import View from '~/View';
 
 class Presenter {
   model: Model;

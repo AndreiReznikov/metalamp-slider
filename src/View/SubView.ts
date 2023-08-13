@@ -3,7 +3,8 @@ import {
   SubViewOptions,
   DIRECTION,
   RANGE,
-} from '../interfaces/interfaces';
+} from '~/interfaces/interfaces';
+
 import AbstractSubView from './AbstractSubView';
 
 class SubView extends AbstractSubView {

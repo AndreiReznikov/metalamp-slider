@@ -1,4 +1,4 @@
-import { UserConfig } from '../interfaces/interfaces';
+import { UserConfig } from '~/interfaces/interfaces';
 
 class PooshkaSlider {
   $document: JQuery<Document> = $(document);

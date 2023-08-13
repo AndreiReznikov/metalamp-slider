@@ -1,4 +1,4 @@
-import { Options } from '../../interfaces/interfaces';
+import { Options } from '~/interfaces/interfaces';
 
 class Range {
   $range: JQuery<HTMLElement> = $('<div/>');

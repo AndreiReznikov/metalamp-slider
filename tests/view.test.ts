@@ -1,7 +1,7 @@
 import {
   DIRECTION, LENGTH, LIMIT, Options, RANGE,
-} from '../src/interfaces/interfaces';
-import View from '../src/View/View';
+} from '~/interfaces/interfaces';
+import View from '~/View/View';
 
 document.body.innerHTML = `
   <div class='container'>

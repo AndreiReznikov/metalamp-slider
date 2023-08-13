@@ -1,0 +1,43 @@
+{
+  "sliders": [
+    {
+      "type": "double",
+      "title": "Double slider:"
+    },
+    {
+      "type": "single",
+      "title": "Single slider:"
+    },
+    {
+      "type": "vertical",
+      "title": "Vertical slider:"
+    },
+    {
+      "type": "default",
+      "title": "Default slider:"
+    }
+  ],
+  "togglers": [
+    {
+      "class": "demo-page__panel-input demo-page__panel-input_tooltip js-demo-page__panel-input js-demo-page__panel-input_tooltip",
+      "text": "tooltips"
+    },
+    {
+      "class": "demo-page__panel-input demo-page__panel-input_double js-demo-page__panel-input js-demo-page__panel-input_double",
+      "text": "double"
+    },
+    {
+      "class": "demo-page__panel-input demo-page__panel-input_range js-demo-page__panel-input js-demo-page__panel-input_range",
+      "text": "range"
+    },
+    {
+      "class": "demo-page__panel-input demo-page__panel-input_scale js-demo-page__panel-input js-demo-page__panel-input_scale",
+      "text": "scale"
+    },
+    {
+      "class": "demo-page__panel-input demo-page__panel-input_vertical js-demo-page__panel-input js-demo-page__panel-input_vertical",
+      "text": "vertical"
+    }
+  ],
+  "inputs": ["from", "to", "min", "max", "step"]
+}

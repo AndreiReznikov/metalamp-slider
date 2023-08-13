@@ -1,9 +1,9 @@
-import { RANGE, LIMIT } from '../../interfaces/interfaces';
-import Range from '../Range/Range';
-import Runner from '../Runner/Runner';
-import Tooltip from '../Tooltip/Tooltip';
-import Limit from '../Limit/Limit';
-import Scale from '../Scale/Scale';
+import { RANGE, LIMIT } from '~/interfaces/interfaces';
+import Range from '~/View/Range/Range';
+import Runner from '~/View/Runner/Runner';
+import Tooltip from '~/View/Tooltip/Tooltip';
+import Limit from '~/View/Limit/Limit';
+import Scale from '~/View/Scale/Scale';
 
 abstract class AbstractStripe {
   limitMin: Limit;
