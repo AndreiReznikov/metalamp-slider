@@ -145,7 +145,7 @@
   }
 
   &__panel-toggle-text {
-    padding-left: 40px;
+    padding-left: 45px;
   }
 
   &__panel-input {
@@ -178,10 +178,6 @@
   }
 
   &__panel-input:checked ~ &__panel-custom-toggle {
-    opacity: 1;
-  }
-
-  &__panel-input:checked ~ &__panel-toggle-text {
     opacity: 1;
   }
 
