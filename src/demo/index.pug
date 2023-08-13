@@ -8,11 +8,14 @@ html.demo-page(lang="ru")
     title.demo-page__head-title pooshkaSlider
     script.demo-page__script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js")
   body.demo-page__body
-    include vars-and-mixins
+    include templates/mixins
+
+    -
+     let data = require('data/data.json');
 
     main.demo-page__container
       h1.demo-page__title PooshkaSlider Demo
-      each slider in sliders
+      each slider in data.sliders
         form.demo-page__form(class=`demo-page__${slider.type}-slider-container js-demo-page__${slider.type}-slider-container`)
           h2.demo-page__subtitle=slider.title
           div(class=`demo-page__${slider.type}-slider-wrapper`)
@@ -20,9 +23,9 @@ html.demo-page(lang="ru")
 
           .demo-page__panel
             .demo-page__panel-toggle-inputs-container
-              each toggler in togglers
+              each toggler in data.togglers
                 +panelToggler(toggler)
 
             .demo-page__panel-text-inputs-container
-              each input in inputs
+              each input in data.inputs
                 +panelInputs(input)
