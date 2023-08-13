@@ -59,6 +59,7 @@
     "webpack-dev-server": "^4.0.0"
   },
   "dependencies": {
-    "jquery": "^3.6.1"
+    "jquery": "^3.6.1",
+    "normalize.css": "^8.0.1"
   }
 }
