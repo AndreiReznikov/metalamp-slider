@@ -13,7 +13,6 @@ $(document).ready(() => {
     showScale: true,
     min: -12.5,
     max: 12.5,
-    step: 2.5,
     from: -5,
     to: 5,
     scaleNumber: 11,

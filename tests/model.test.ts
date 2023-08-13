@@ -1,10 +1,10 @@
-import Model from '../src/Model/Model';
+import Model from '~/Model/Model';
 import {
   ModelOptions,
   Options,
   DIRECTION,
   LENGTH,
-} from '../src/interfaces/interfaces';
+} from '~/interfaces/interfaces';
 
 const model = new Model();
 const modelOptions: ModelOptions = model.getModelOptions();

@@ -12,14 +12,17 @@ const entryPoints = {
 };
 
 module.exports = {
-  resolve: {
-    extensions: ['.js', '.ts', '.json'],
-  },
   mode: NODE_ENV || 'development',
   entry: entryPoints,
   output: {
     path: path.resolve(__dirname, 'pooshkaSliderDemo'),
     filename: "[name].min.js",
+  },
+  resolve: {
+    extensions: ['.js', '.ts', '.pug', '.scss', '.json'],
+    alias: {
+      '~': path.resolve(__dirname, 'src'),
+    }
   },
   externals: {
     jquery: 'jQuery',

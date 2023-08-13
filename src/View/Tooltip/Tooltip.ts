@@ -1,4 +1,4 @@
-import { Options, RANGE } from '../../interfaces/interfaces';
+import { Options, RANGE } from '~/interfaces/interfaces';
 
 class Tooltip {
   $tooltip: JQuery<HTMLElement> = $('<div/>');

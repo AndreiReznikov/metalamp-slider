@@ -1,4 +1,5 @@
-import { Options, LENGTH, DEFAULTS } from '../interfaces/interfaces';
+import { Options, LENGTH, DEFAULTS } from '~/interfaces/interfaces';
+
 import AbstractView from './AbstractView';
 
 class View extends AbstractView {

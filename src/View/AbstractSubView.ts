@@ -2,8 +2,9 @@ import {
   ModelOptions,
   DIRECTION,
   LENGTH,
-} from '../interfaces/interfaces';
-import Observer from '../Observer';
+} from '~/interfaces/interfaces';
+import Observer from '~/Observer';
+
 import Stripe from './Stripe/Stripe';
 import Range from './Range';
 import Runner from './Runner';

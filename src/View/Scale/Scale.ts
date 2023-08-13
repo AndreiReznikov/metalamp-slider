@@ -1,4 +1,4 @@
-import { Options, DIRECTION, LENGTH } from '../../interfaces/interfaces';
+import { Options, DIRECTION, LENGTH } from '~/interfaces/interfaces';
 
 class Scale {
   $scaleContainer: JQuery<HTMLElement> = $('<div/>');

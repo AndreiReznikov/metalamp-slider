@@ -1,4 +1,4 @@
-import { Options, LIMIT } from '../../interfaces/interfaces';
+import { Options, LIMIT } from '~/interfaces/interfaces';
 
 class Limit {
   $limit: JQuery<HTMLElement> = $('<div/>');
