@@ -141,17 +141,17 @@ class PooshkaSlider {
   };
 
   private addPanelEvents = (): void => {
-    this.$inputDouble.click(this.toggleDouble);
-    this.$inputTooltip.click(this.toggleTooltip);
-    this.$inputRange.click(this.toggleRange);
-    this.$inputScale.click(this.toggleScale);
-    this.$inputVertical.click(this.toggleVertical);
+    this.$inputDouble.on('click', this.toggleDouble);
+    this.$inputTooltip.on('click', this.toggleTooltip);
+    this.$inputRange.on('click', this.toggleRange);
+    this.$inputScale.on('click', this.toggleScale);
+    this.$inputVertical.on('click', this.toggleVertical);
 
-    this.$inputFrom.change(this.setFrom);
-    this.$inputTo.change(this.setTo);
-    this.$inputMin.change(this.setMin);
-    this.$inputMax.change(this.setMax);
-    this.$inputStep.change(this.setStep);
+    this.$inputFrom.on('change', this.setFrom);
+    this.$inputTo.on('change', this.setTo);
+    this.$inputMin.on('change', this.setMin);
+    this.$inputMax.on('change', this.setMax);
+    this.$inputStep.on('change', this.setStep);
   };
 
   private toggleDouble = (event: JQuery.TriggeredEvent): void => {

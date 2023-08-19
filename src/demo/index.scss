@@ -99,15 +99,10 @@
     box-sizing: border-box;
     z-index: 1;
     outline: none;
-  }
 
-  &__panel-min-input:focus,
-  &__panel-max-input:focus,
-  &__panel-from-input:focus,
-  &__panel-to-input:focus,
-  &__panel-step-input:focus
-  {
-    border: 3px solid rgb(47 50 53);
+    &:focus {
+      border: 3px solid rgb(47 50 53);
+    }
   }
 
   &__panel-min,
@@ -136,12 +131,11 @@
     align-items: center;
     margin-right: 12px;
     line-height: 24px;
-    font-size: 14px;
     cursor: pointer;
-  }
 
-  &__panel-toggle-label:last-child {
-    margin: 0;
+    &:last-child {
+      margin: 0;
+    }
   }
 
   &__panel-toggle-text {
@@ -164,17 +158,17 @@
     border-radius: 10px;
     box-sizing: content-box;
     z-index: 1;
-  }
 
-  &__panel-custom-toggle::after {
-    position: absolute;
-    content: '';
-    width: 12px;
-    height: 12px;
-    margin: 0 3px;
-    background: rgb(47 50 53);
-    border-radius: 10px;
-    transition: .4s;
+    &::after {
+      position: absolute;
+      content: '';
+      width: 12px;
+      height: 12px;
+      margin: 0 3px;
+      background: rgb(47 50 53);
+      border-radius: 10px;
+      transition: .4s;
+    }
   }
 
   &__panel-input:checked ~ &__panel-custom-toggle {
