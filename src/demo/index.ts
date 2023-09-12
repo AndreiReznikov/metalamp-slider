@@ -1,7 +1,7 @@
 import PooshkaSlider from './PooshkaSlider';
 import './index.scss';
 
-$(document).ready(() => {
+const initializePlugins = () => {
   const pooshkaSliderDouble = new PooshkaSlider('.js-demo-page__double-slider-container');
 
   pooshkaSliderDouble.initializePlugin({
@@ -56,4 +56,6 @@ $(document).ready(() => {
   const pooshkaSliderDefault = new PooshkaSlider('.js-demo-page__default-slider-container');
 
   pooshkaSliderDefault.initializePlugin();
-});
+};
+
+document.addEventListener('DOMContentLoaded', initializePlugins);
