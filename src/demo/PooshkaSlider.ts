@@ -76,8 +76,8 @@ class PooshkaSlider {
       max,
     } = this.$pooshkaSlider.data('api').getModelOptions();
 
-    this.$inputFrom.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
-    this.$inputTo.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
+    this.$inputFrom.attr('step', `${step !== 1 ? step : (step * 0.1).toFixed(numberOfCharactersAfterDot)}`);
+    this.$inputTo.attr('step', `${step !== 1 ? step : (step * 0.1).toFixed(numberOfCharactersAfterDot)}`);
     this.$inputMin.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
     this.$inputMax.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
     this.$inputStep.attr('step', `${(0.1).toFixed(numberOfCharactersAfterDot)}`);
@@ -119,7 +119,8 @@ class PooshkaSlider {
   };
 
   private stopFormSubmit = (): void => {
-    this.$sliderContainer.submit(() => false);
+    const getFalse = () => false;
+    this.$sliderContainer.on('submit', getFalse);
   };
 
   private handleRunnerBindPointerEvents = () => {
@@ -130,10 +131,10 @@ class PooshkaSlider {
   };
 
   private addSliderEvents = (): void => {
-    this.$limitMin.mousedown(this.setPanelValues);
-    this.$limitMax.mousedown(this.setPanelValues);
-    this.$stripe.mousedown(this.setPanelValues);
-    this.$scaleContainer.mousedown(this.setPanelValues);
+    this.$limitMin.on('mousedown', this.setPanelValues);
+    this.$limitMax.on('mousedown', this.setPanelValues);
+    this.$stripe.on('mousedown', this.setPanelValues);
+    this.$scaleContainer.on('mousedown', this.setPanelValues);
     this.$runnerFrom.on('pointerdown', this.handleRunnerBindPointerEvents);
     this.$runnerTo.on('pointerdown', this.handleRunnerBindPointerEvents);
     this.$tooltipFrom.on('pointerdown', this.handleRunnerBindPointerEvents);
